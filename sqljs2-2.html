@@ -40,20 +40,14 @@
     <input type="text" id="saveDbName" placeholder="Enter database name"><br>
     <button class="button button-small" id="saveDbButton" style="display:none;">Save Database</button>
 
-    <h4>Execute Query</h4>
-    <textarea id="sqlQuery" rows="3" cols="100">SELECT name FROM sqlite_master WHERE type='table';</textarea><br>
-    <button class="button button-small" id="executeButton">Execute</button><br>
-    <h5>Query Results</h5>
+    <textarea id="sqlQuery" rows="3" cols="100">pragma table_info();</textarea><br>
+    <button class="button button-small" id="executeButton">Execute query1</button><br>
     <div id="resultTable"></div>
-    
     <button class="button button-small" id="downloadCsvButton" style="display:none;">Download Results as CSV</button>
 
-    <h4>Execute Query2</h4>
-    <textarea id="sqlQuery2" rows="3" cols="100">SELECT name FROM sqlite_master WHERE type='table';</textarea><br>
-    <button class="button button-small" id="executeButton2">Execute</button><br>
-    <h5>Query Results2</h5>
+    <textarea id="sqlQuery2" rows="3" cols="100">pragma table_info();</textarea><br>
+    <button class="button button-small" id="executeButton2">Execute query2</button><br>
     <div id="resultTable2"></div>
-
     <button class="button button-small" id="downloadCsvButton2" style="display:none;">Download Results as CSV</button>
 
     <script>
@@ -146,7 +140,7 @@
             } else {
                 grid = new gridjs.Grid({
                     columns: columns,
-                    data: data
+                    data: data,
                 }).render(resultTable);
             }
 
