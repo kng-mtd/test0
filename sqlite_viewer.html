@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>SQLite Database Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <!-- Milligram CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+    <link rel="stylesheet" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+
+    <style>
+        #resultTable {
+            margin: 10px;
+        }
+        #resultTable2 {
+            margin: 10px;
+        }
+        .gridjs .gridjs-th, .gridjs .gridjs-td {
+            font-size: 1.2rem
+        }
+        .button-small {
+            font-size: 0.8rem;
+            height: 2.5rem;
+            line-height: 2.5rem;
+            padding: 0 1.5rem;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .input-group input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h3>SQLite Database Viewer</h3>
+    Choose SQLite DB file >> <input type="file" id="fileInput"><br>
+    <pre id="tableList"></pre>
+    
+    <div class="input-group">
+    <textarea id="sqlQuery" rows="3" cols="100">pragma table_info();</textarea><br>
+    <button class="button button-small" id="executeButton">Execute query1</button><br>
+    </div>
+    <div id="resultTable"></div>
+    <div class="input-group">
+        <input type="text" id="csvFileName1" placeholder="Enter CSV file name">
+        <button class="button button-small" id="downloadCsvButton" style="display:none;">Download Results as CSV</button>
+    </div>
+
+	<div class="input-group">
+    <textarea id="sqlQuery2" rows="3" cols="100">pragma table_info();</textarea><br>
+    <button class="button button-small" id="executeButton2">Execute query2</button><br>
+    </div>
+    <div id="resultTable2"></div>
+    <div class="input-group">
+        <input type="text" id="csvFileName2" placeholder="Enter CSV file name">
+        <button class="button button-small" id="downloadCsvButton2" style="display:none;">Download Results as CSV</button>
+    </div>
+
+	<div class="input-group">
+    <input type="text" id="saveDbName" placeholder="Enter database name">
+    <button class="button button-small" id="saveDbButton" style="display:none;">Download SQLite Database</button>
+	</div>
+	
+    <script>
+        let db = null;
+        let queryResults = null;
+        let queryResults2 = null;
+        let grid = null;
+        let grid2 = null;
+
+        async function loadSQL() {
+            const SQL = await initSqlJs({ locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${file}` });
+            return SQL;
+        }
+
+        document.getElementById('fileInput').addEventListener('change', async function(event) {
+            const file = event.target.files[0];
+            const arrayBuffer = await file.arrayBuffer();
+            const uint8Array = new Uint8Array(arrayBuffer);
+
+            const SQL = await loadSQL();
+            db = new SQL.Database(uint8Array);
+
+            updateTableList();
+            document.getElementById('saveDbButton').style.display = 'block';
+        });
+
+        function updateTableList() {
+            const query = "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';";
+            try {
+                const results = db.exec(query);
+                if (results.length > 0) {
+                    const tableNames = results[0].values.map(row => row[0]);
+                    document.getElementById('tableList').textContent = `Tables in database:\n${tableNames.join('\n')}`;
+                } else {
+                    document.getElementById('tableList').textContent = 'No tables found';
+                }
+            } catch (e) {
+                document.getElementById('tableList').textContent = 'Error: ' + e.message;
+            }
+        }
+
+        document.getElementById('executeButton').addEventListener('click', function() {
+            if (db) {
+                const query = document.getElementById('sqlQuery').value;
+                try {
+                    queryResults = db.exec(query);
+                    if (queryResults.length > 0) {
+                        displayResults(queryResults);
+                    } else {
+                        document.getElementById('resultTable').textContent = 'No results';
+                    }
+                } catch (e) {
+                    document.getElementById('resultTable').textContent = 'Error: ' + e.message;
+                }
+            } else {
+                document.getElementById('resultTable').textContent = 'No database opened';
+            }
+        });
+
+        document.getElementById('executeButton2').addEventListener('click', function() {
+            if (db) {
+                const query = document.getElementById('sqlQuery2').value;
+                try {
+                    queryResults2 = db.exec(query);
+                    if (queryResults2.length > 0) {
+                        displayResults2(queryResults2);
+                    } else {
+                        document.getElementById('resultTable2').textContent = 'No results';
+                    }
+                } catch (e) {
+                    document.getElementById('resultTable2').textContent = 'Error: ' + e.message;
+                }
+            } else {
+                document.getElementById('resultTable2').textContent = 'No database opened';
+            }
+        });
+
+        function displayResults(results) {
+            const resultTable = document.getElementById('resultTable');
+            resultTable.innerHTML = '';
+
+            const columns = results[0].columns;
+            const data = results[0].values;
+
+            if (grid) {
+                grid.updateConfig({
+                    columns: columns,
+                    data: data
+                }).forceRender();
+            } else {
+                grid = new gridjs.Grid({
+                    columns: columns,
+                    data: data,
+                }).render(resultTable);
+            }
+
+            document.getElementById('downloadCsvButton').style.display = 'block';
+        }
+
+        function displayResults2(results) {
+            const resultTable = document.getElementById('resultTable2');
+            resultTable.innerHTML = '';
+
+            const columns = results[0].columns;
+            const data = results[0].values;
+
+            if (grid2) {
+                grid2.updateConfig({
+                    columns: columns,
+                    data: data,
+                }).forceRender();
+            } else {
+                grid2 = new gridjs.Grid({
+                    columns: columns,
+                    data: data
+                }).render(resultTable);
+            }
+
+            document.getElementById('downloadCsvButton2').style.display = 'block';
+        }
+
+        document.getElementById('downloadCsvButton').addEventListener('click', function() {
+            if (queryResults) {
+                const fileName = document.getElementById('csvFileName1').value || 'query_results';
+                const csv = Papa.unparse({
+                    fields: queryResults[0].columns,
+                    data: queryResults[0].values
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${fileName}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+        
+        document.getElementById('downloadCsvButton2').addEventListener('click', function() {
+            if (queryResults2) {
+                const fileName = document.getElementById('csvFileName2').value || 'query_results2';
+                const csv = Papa.unparse({
+                    fields: queryResults2[0].columns,
+                    data: queryResults2[0].values
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${fileName}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+
+        document.getElementById('saveDbButton').addEventListener('click', function() {
+            if (!db) {
+                alert('No database loaded.');
+                return;
+            }
+
+            const dbName = document.getElementById('saveDbName').value.trim();
+            if (!dbName) {
+                alert('Please enter a database name.');
+                return;
+            }
+
+            const binaryArray = db.export();
+            const blob = new Blob([binaryArray], { type: 'application/x-sqlite3' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${dbName}.sqlite`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+    </script>
+</body>
+</html>

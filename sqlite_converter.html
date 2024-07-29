@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to SQLite Converter</title>
+</head>
+<body>
+    <h1>CSV to SQLite Converter</h1>
+    <form id="csvForm">
+        <input type="file" id="csvFile" accept=".csv">
+        <button type="submit">Convert to SQLite</button>
+    </form>
+    <div id="result"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.1/sql-wasm.js"></script>
+
+<script>
+
+document.getElementById('csvForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById('csvFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('Please select a CSV file.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const contents = event.target.result;
+        const csvData = contents.trim();
+        convertCSVtoSQLite(csvData);
+    };
+
+    reader.readAsText(file);
+});
+
+function convertCSVtoSQLite(csvData) {
+    // Initialize SQL.js
+    SQL = window.SQL;
+    const db = new SQL.Database();
+
+    // Parse CSV data
+    const rows = csvData.split('\n');
+    const headers = rows[0].split(',');
+
+    // Create table
+    let createTableQuery = `CREATE TABLE IF NOT EXISTS data (${headers.map(h => `"${h.trim()}" TEXT`).join(', ')});`;
+    db.run(createTableQuery);
+
+    // Insert data
+    db.run("BEGIN;");
+    for (let i = 1; i < rows.length; i++) {
+        const values = rows[i].split(',');
+        let insertQuery = `INSERT INTO data VALUES (${values.map(v => `'${v.trim()}'`).join(', ')});`;
+        db.run(insertQuery);
+    }
+    db.run("COMMIT;");
+
+    // Export SQLite database as a file
+    const buffer = db.export();
+    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+
+    // Create download link
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'converted_database.sqlite';
+    a.textContent = 'Download SQLite Database';
+    document.getElementById('result').appendChild(a);
+}
+
+</script>
+</body>
+</html>
