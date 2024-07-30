@@ -8,13 +8,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
     <!-- Milligram CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+    <style>
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <h1>CSV to SQLite Converter</h1>
+    <h2>CSV to SQLite Converter</h2>
     <form id="csvForm">
-        <input type="file" id="csvFile" accept=".csv">
+        Choose SQLite file >> <input type="file" id="csvFile" accept=".csv">
         <button type="submit">Convert to SQLite</button>
     </form>
+    <div id="spinner" class="spinner"></div>
     <div id="result"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.1/sql-wasm.js"></script>
@@ -31,6 +48,9 @@
                 return;
             }
 
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'inline-block';
+
             const reader = new FileReader();
             reader.onload = function(event) {
                 const contents = event.target.result;
@@ -46,20 +66,15 @@
         });
 
         function convertCSVtoSQLite(data) {
-            // Initialize SQL.js with a correct locateFile function
             initSqlJs({
                 locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.1/${file}`
             }).then(function(SQL) {
                 const db = new SQL.Database();
-
-                // Get headers from the first data row
                 const headers = Object.keys(data[0]);
 
-                // Create table
                 let createTableQuery = `CREATE TABLE IF NOT EXISTS table0 (${headers.map(h => `"${h.trim()}" TEXT`).join(', ')});`;
                 db.run(createTableQuery);
 
-                // Insert data
                 db.run("BEGIN;");
                 data.forEach(row => {
                     const values = headers.map(h => row[h] !== undefined ? `'${row[h].replace(/'/g, "''")}'` : 'NULL');
@@ -68,19 +83,22 @@
                 });
                 db.run("COMMIT;");
 
-                // Export SQLite database as a file
                 const buffer = db.export();
                 const blob = new Blob([buffer], { type: 'application/octet-stream' });
                 const url = URL.createObjectURL(blob);
 
-                // Create download link
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = 'database.sqlite';
                 a.textContent = 'Download SQLite Database';
                 document.getElementById('result').appendChild(a);
+
+                // Hide spinner
+                document.getElementById('spinner').style.display = 'none';
             }).catch(function(error) {
                 console.error("Error loading SQL.js:", error);
+                // Hide spinner in case of error
+                document.getElementById('spinner').style.display = 'none';
             });
         }
     </script>
