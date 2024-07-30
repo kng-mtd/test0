@@ -8,22 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
     <!-- Milligram CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
-    <style>
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #000;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            display: none;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
 </head>
 <body>
     <h2>CSV to SQLite Converter</h2>
@@ -31,7 +15,7 @@
         Choose SQLite file >> <input type="file" id="csvFile" accept=".csv">
         <button type="submit">Convert to SQLite</button>
     </form>
-    <div id="spinner" class="spinner"></div>
+	<progress id="wait" style="display:none;"></progress>
     <div id="result"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.1/sql-wasm.js"></script>
@@ -48,8 +32,8 @@
                 return;
             }
 
-            const spinner = document.getElementById('spinner');
-            spinner.style.display = 'inline-block';
+            const wait = document.getElementById('wait');
+            wait.style.display = 'block';
 
             const reader = new FileReader();
             reader.onload = function(event) {
@@ -93,12 +77,12 @@
                 a.textContent = 'Download SQLite Database';
                 document.getElementById('result').appendChild(a);
 
-                // Hide spinner
-                document.getElementById('spinner').style.display = 'none';
+                // Hide progress
+                document.getElementById('wait').style.display = 'none';
             }).catch(function(error) {
                 console.error("Error loading SQL.js:", error);
-                // Hide spinner in case of error
-                document.getElementById('spinner').style.display = 'none';
+                // Hide progress in case of error
+                document.getElementById('wait').style.display = 'none';
             });
         }
     </script>
