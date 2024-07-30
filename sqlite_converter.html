@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV to SQLite Converter</title>
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <!-- Milligram CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
 </head>
 <body>
     <h1>CSV to SQLite Converter</h1>
@@ -14,64 +18,71 @@
     <div id="result"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.1/sql-wasm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
-<script>
+    <script>
+        document.getElementById('csvForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
 
-document.getElementById('csvForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const fileInput = document.getElementById('csvFile');
-    const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a CSV file.');
+                return;
+            }
 
-    if (!file) {
-        alert('Please select a CSV file.');
-        return;
-    }
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const contents = event.target.result;
+                Papa.parse(contents, {
+                    header: true,
+                    complete: function(results) {
+                        convertCSVtoSQLite(results.data);
+                    }
+                });
+            };
 
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const contents = event.target.result;
-        const csvData = contents.trim();
-        convertCSVtoSQLite(csvData);
-    };
+            reader.readAsText(file);
+        });
 
-    reader.readAsText(file);
-});
+        function convertCSVtoSQLite(data) {
+            // Initialize SQL.js with a correct locateFile function
+            initSqlJs({
+                locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.1/${file}`
+            }).then(function(SQL) {
+                const db = new SQL.Database();
 
-function convertCSVtoSQLite(csvData) {
-    // Initialize SQL.js
-    SQL = window.SQL;
-    const db = new SQL.Database();
+                // Get headers from the first data row
+                const headers = Object.keys(data[0]);
 
-    // Parse CSV data
-    const rows = csvData.split('\n');
-    const headers = rows[0].split(',');
+                // Create table
+                let createTableQuery = `CREATE TABLE IF NOT EXISTS table0 (${headers.map(h => `"${h.trim()}" TEXT`).join(', ')});`;
+                db.run(createTableQuery);
 
-    // Create table
-    let createTableQuery = `CREATE TABLE IF NOT EXISTS data (${headers.map(h => `"${h.trim()}" TEXT`).join(', ')});`;
-    db.run(createTableQuery);
+                // Insert data
+                db.run("BEGIN;");
+                data.forEach(row => {
+                    const values = headers.map(h => row[h] !== undefined ? `'${row[h].replace(/'/g, "''")}'` : 'NULL');
+                    let insertQuery = `INSERT INTO table0 VALUES (${values.join(', ')});`;
+                    db.run(insertQuery);
+                });
+                db.run("COMMIT;");
 
-    // Insert data
-    db.run("BEGIN;");
-    for (let i = 1; i < rows.length; i++) {
-        const values = rows[i].split(',');
-        let insertQuery = `INSERT INTO data VALUES (${values.map(v => `'${v.trim()}'`).join(', ')});`;
-        db.run(insertQuery);
-    }
-    db.run("COMMIT;");
+                // Export SQLite database as a file
+                const buffer = db.export();
+                const blob = new Blob([buffer], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
 
-    // Export SQLite database as a file
-    const buffer = db.export();
-    const blob = new Blob([buffer], { type: 'application/octet-stream' });
-    const url = URL.createObjectURL(blob);
-
-    // Create download link
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'converted_database.sqlite';
-    a.textContent = 'Download SQLite Database';
-    document.getElementById('result').appendChild(a);
-}
-
-</script>
+                // Create download link
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'database.sqlite';
+                a.textContent = 'Download SQLite Database';
+                document.getElementById('result').appendChild(a);
+            }).catch(function(error) {
+                console.error("Error loading SQL.js:", error);
+            });
+        }
+    </script>
 </body>
 </html>
