@@ -1582,16 +1582,16 @@ slice_sample(tb0,n=10)</code></pre>
 <pre><code># A tibble: 10 × 9
       id species   island    bill_length_mm bill_depth_mm flipper_length_mm
    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;
- 1   102 Adelie    Biscoe              41            20                 203
- 2   303 Chinstrap Dream               50.5          18.4               200
- 3    45 Adelie    Dream               37            16.9               185
- 4   336 Chinstrap Dream               45.6          19.4               194
- 5   309 Chinstrap Dream               42.5          16.7               187
- 6    80 Adelie    Torgersen           42.1          19.1               195
- 7   135 Adelie    Dream               38.1          17.6               187
- 8    40 Adelie    Dream               39.8          19.1               184
- 9   321 Chinstrap Dream               50.9          17.9               196
-10   259 Gentoo    Biscoe              41.7          14.7               210
+ 1   316 Chinstrap Dream               53.5          19.9               205
+ 2   233 Gentoo    Biscoe              49.1          14.5               212
+ 3    13 Adelie    Torgersen           41.1          17.6               182
+ 4   230 Gentoo    Biscoe              51.1          16.3               220
+ 5   120 Adelie    Torgersen           41.1          18.6               189
+ 6   279 Chinstrap Dream               51.3          19.2               193
+ 7   290 Chinstrap Dream               52            18.1               201
+ 8   211 Gentoo    Biscoe              43.2          14.5               208
+ 9    38 Adelie    Dream               42.2          18.5               180
+10   109 Adelie    Biscoe              38.1          17                 181
 # ℹ 3 more variables: body_mass_g &lt;dbl&gt;, sex &lt;chr&gt;, year &lt;dbl&gt;</code></pre>
 <pre class="r"><code>read_csv(&#39;penguins.csv&#39;,col_types=cols(.default=&#39;c&#39;)) |&gt;  
   type_convert()</code></pre>
@@ -1889,9 +1889,9 @@ select(tb,is.numeric) |&gt; floor()</code></pre>
 <div id="treat-datedatetime" class="section level2">
 <h2>treat date,datetime</h2>
 <pre class="r"><code>today()</code></pre>
-<pre><code>[1] &quot;2024-11-10&quot;</code></pre>
+<pre><code>[1] &quot;2024-11-14&quot;</code></pre>
 <pre class="r"><code>now()</code></pre>
-<pre><code>[1] &quot;2024-11-10 20:27:54 JST&quot;</code></pre>
+<pre><code>[1] &quot;2024-11-14 04:49:19 JST&quot;</code></pre>
 <pre class="r"><code>tb=tribble(~date,~datetime,
             &#39;20200123&#39;,&#39;20200123 112233&#39;,
             &#39;20210124&#39;,&#39;20210124 122334&#39;,
@@ -2723,52 +2723,52 @@ bind_cols(tb1,tb2)</code></pre>
 tb2=slice_sample(tb2,n=100)
 
 inner_join(tb1,tb2,join_by(id==id))</code></pre>
-<pre><code># A tibble: 30 × 9
-      id species   island    sex    year  bill_length_mm bill_depth_mm
-   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
- 1   316 Chinstrap Dream     male   2008            53.5          19.9
- 2   271 Gentoo    Biscoe    female 2009            47.2          13.7
- 3   138 Adelie    Dream     male   2009            40.2          20.1
- 4   117 Adelie    Torgersen female 2009            38.6          17  
- 5   309 Chinstrap Dream     female 2008            42.5          16.7
- 6   292 Chinstrap Dream     male   2007            50.5          19.6
- 7    84 Adelie    Torgersen male   2008            35.1          19.4
- 8   243 Gentoo    Biscoe    female 2009            47.5          15  
- 9   195 Gentoo    Biscoe    female 2008            45.3          13.7
-10    78 Adelie    Torgersen male   2008            37.2          19.4
-# ℹ 20 more rows
+<pre><code># A tibble: 28 × 9
+      id species   island sex    year  bill_length_mm bill_depth_mm
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
+ 1   166 Gentoo    Biscoe male   2007            48.4          14.6
+ 2    36 Adelie    Dream  male   2007            39.2          21.1
+ 3   102 Adelie    Biscoe male   2009            41            20  
+ 4   314 Chinstrap Dream  male   2008            52            20.7
+ 5   201 Gentoo    Biscoe female 2008            44.9          13.3
+ 6   265 Gentoo    Biscoe female 2009            43.5          15.2
+ 7    66 Adelie    Biscoe male   2008            41.6          18  
+ 8    27 Adelie    Biscoe male   2007            40.6          18.6
+ 9   199 Gentoo    Biscoe female 2008            45.5          13.9
+10    51 Adelie    Biscoe female 2008            39.6          17.7
+# ℹ 18 more rows
 # ℹ 2 more variables: flipper_length_mm &lt;dbl&gt;, body_mass_g &lt;dbl&gt;</code></pre>
 <pre class="r"><code>left_join(tb1,tb2,join_by(id==id))</code></pre>
 <pre><code># A tibble: 100 × 9
-      id species   island    sex    year  bill_length_mm bill_depth_mm
-   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
- 1   316 Chinstrap Dream     male   2008            53.5          19.9
- 2    76 Adelie    Torgersen male   2008            NA            NA  
- 3    13 Adelie    Torgersen female 2007            NA            NA  
- 4   271 Gentoo    Biscoe    female 2009            47.2          13.7
- 5    26 Adelie    Biscoe    female 2007            NA            NA  
- 6   138 Adelie    Dream     male   2009            40.2          20.1
- 7   323 Chinstrap Dream     female 2009            NA            NA  
- 8   266 Gentoo    Biscoe    male   2009            NA            NA  
- 9   103 Adelie    Biscoe    female 2009            NA            NA  
-10   118 Adelie    Torgersen male   2009            NA            NA  
+      id species   island sex    year  bill_length_mm bill_depth_mm
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
+ 1   166 Gentoo    Biscoe male   2007            48.4          14.6
+ 2    36 Adelie    Dream  male   2007            39.2          21.1
+ 3   197 Gentoo    Biscoe male   2008            NA            NA  
+ 4   102 Adelie    Biscoe male   2009            41            20  
+ 5   307 Chinstrap Dream  female 2008            NA            NA  
+ 6    62 Adelie    Biscoe male   2008            NA            NA  
+ 7   295 Chinstrap Dream  female 2007            NA            NA  
+ 8   314 Chinstrap Dream  male   2008            52            20.7
+ 9   328 Chinstrap Dream  male   2009            NA            NA  
+10   301 Chinstrap Dream  female 2007            NA            NA  
 # ℹ 90 more rows
 # ℹ 2 more variables: flipper_length_mm &lt;dbl&gt;, body_mass_g &lt;dbl&gt;</code></pre>
 <pre class="r"><code>full_join(tb1,tb2,join_by(id==id))</code></pre>
-<pre><code># A tibble: 170 × 9
-      id species   island    sex    year  bill_length_mm bill_depth_mm
-   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
- 1   316 Chinstrap Dream     male   2008            53.5          19.9
- 2    76 Adelie    Torgersen male   2008            NA            NA  
- 3    13 Adelie    Torgersen female 2007            NA            NA  
- 4   271 Gentoo    Biscoe    female 2009            47.2          13.7
- 5    26 Adelie    Biscoe    female 2007            NA            NA  
- 6   138 Adelie    Dream     male   2009            40.2          20.1
- 7   323 Chinstrap Dream     female 2009            NA            NA  
- 8   266 Gentoo    Biscoe    male   2009            NA            NA  
- 9   103 Adelie    Biscoe    female 2009            NA            NA  
-10   118 Adelie    Torgersen male   2009            NA            NA  
-# ℹ 160 more rows
+<pre><code># A tibble: 172 × 9
+      id species   island sex    year  bill_length_mm bill_depth_mm
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
+ 1   166 Gentoo    Biscoe male   2007            48.4          14.6
+ 2    36 Adelie    Dream  male   2007            39.2          21.1
+ 3   197 Gentoo    Biscoe male   2008            NA            NA  
+ 4   102 Adelie    Biscoe male   2009            41            20  
+ 5   307 Chinstrap Dream  female 2008            NA            NA  
+ 6    62 Adelie    Biscoe male   2008            NA            NA  
+ 7   295 Chinstrap Dream  female 2007            NA            NA  
+ 8   314 Chinstrap Dream  male   2008            52            20.7
+ 9   328 Chinstrap Dream  male   2009            NA            NA  
+10   301 Chinstrap Dream  female 2007            NA            NA  
+# ℹ 162 more rows
 # ℹ 2 more variables: flipper_length_mm &lt;dbl&gt;, body_mass_g &lt;dbl&gt;</code></pre>
 </div>
 <div id="model-matrix-for-multi-regression" class="section level2">
@@ -2777,16 +2777,16 @@ inner_join(tb1,tb2,join_by(id==id))</code></pre>
 mx=model.matrix(~species+sex+bill_length_mm,tb)
 mx[sample(1:nrow(mx),10),]</code></pre>
 <pre><code>    (Intercept) speciesChinstrap speciesGentoo sexmale bill_length_mm
-56            1                0             0       1           41.3
-166           1                0             1       1           48.7
-263           1                0             1       1           50.4
-290           1                1             0       0           46.7
-147           1                0             1       0           46.1
-9             1                0             0       1           38.6
-98            1                0             0       1           37.8
-47            1                0             0       0           35.0
-115           1                0             0       0           36.2
-51            1                0             0       0           39.0</code></pre>
+42            1                0             0       1           41.1
+253           1                0             1       1           48.1
+259           1                0             1       1           55.1
+191           1                0             1       0           43.6
+318           1                1             0       0           45.7
+15            1                0             0       1           46.0
+291           1                1             0       1           52.0
+160           1                0             1       1           48.4
+292           1                1             0       0           50.5
+2             1                0             0       0           39.5</code></pre>
 </div>
 <div id="use-sqlite" class="section level2">
 <h2>use sqlite</h2>
@@ -2824,6 +2824,76 @@ dbDisconnect(con)</code></pre>
 df=read_parquet(&#39;data.parquet&#39;)
 
 write_parquet(df,&#39;data.parquet&#39;)</code></pre>
+</div>
+<div id="input-from-web-api" class="section level2">
+<h2>input from web API</h2>
+<pre class="r"><code>#library(httr)
+url0=&#39;https://api.excelapi.org/wikipedia/summary2?word=&#39;
+word=&#39;api&#39;
+url=paste0(url0,word,&#39;&amp;lang=en&#39;,&#39;&amp;mode=simple&#39;)
+
+GET(url) |&gt; content(&#39;text&#39;)</code></pre>
+<pre><code>[1] &quot;An application programming interface is a way for two or more computer programs or components to communicate with each other. &quot;</code></pre>
+<pre class="r"><code>URLencode(&#39;ヤクルトスワローズ&#39;)</code></pre>
+<pre><code>[1] &quot;%E3%83%A4%E3%82%AF%E3%83%AB%E3%83%88%E3%82%B9%E3%83%AF%E3%83%AD%E3%83%BC%E3%82%BA&quot;</code></pre>
+<pre class="r"><code># &quot;%E3%83%A4%E3%82%AF%E3%83%AB%E3%83%88%E3%82%B9%E3%83%AF%E3%83%AD%E3%83%BC%E3%82%BA&quot;
+
+enc=URLencode(&#39;ヤクルトスワローズ&#39;)
+url=paste0(url0,enc,&#39;&amp;lang=jp&#39;,&#39;&amp;mode=full&#39;)
+
+GET(url) |&gt; content(&#39;text&#39;,encoding=&#39;UTF-8&#39;)</code></pre>
+<pre><code>[1] &quot;&quot;</code></pre>
+<pre class="r"><code>GET(&#39;https://geoapi.heartrails.com/api/json?method=getPrefectures&#39;)</code></pre>
+<pre><code>Response [https://geoapi.heartrails.com/api/json?method=getPrefectures]
+  Date: 2024-11-13 19:49
+  Status: 200
+  Content-Type: application/json; charset=utf-8
+  Size: 1.03 kB</code></pre>
+<pre class="r"><code>GET(&#39;https://geoapi.heartrails.com/api/json?method=getCities&amp;prefecture=北海道&#39;)</code></pre>
+<pre><code>Response [https://geoapi.heartrails.com/api/json?method=getCities&amp;prefecture=北海道]
+  Date: 2024-11-13 19:49
+  Status: 200
+  Content-Type: application/json; charset=utf-8
+  Size: 23.7 kB</code></pre>
+<pre class="r"><code>GET(&#39;https://geoapi.heartrails.com/api/json?method=getTowns&amp;prefecture=北海道&amp;city=札幌市&#39;)</code></pre>
+<pre><code>Response [https://geoapi.heartrails.com/api/json?method=getTowns&amp;prefecture=北海道&amp;city=札幌市]
+  Date: 2024-11-13 19:49
+  Status: 200
+  Content-Type: application/json; charset=utf-8
+  Size: 120 kB</code></pre>
+<pre class="r"><code>arg0=list(method=&#39;getPrefectures&#39;)
+GET(&#39;https://geoapi.heartrails.com/api/json&#39;, query=arg0)</code></pre>
+<pre><code>Response [https://geoapi.heartrails.com/api/json?method=getPrefectures]
+  Date: 2024-11-13 19:49
+  Status: 200
+  Content-Type: application/json; charset=utf-8
+  Size: 1.03 kB</code></pre>
+<pre class="r"><code>arg0=list(method=&#39;getCities&#39;,prefecture=&#39;北海道&#39;)
+GET(&#39;https://geoapi.heartrails.com/api/json&#39;, query=arg0)</code></pre>
+<pre><code>Response [https://geoapi.heartrails.com/api/json?method=getCities&amp;prefecture=%E5%8C%97%E6%B5%B7%E9%81%93]
+  Date: 2024-11-13 19:49
+  Status: 200
+  Content-Type: application/json; charset=utf-8
+  Size: 23.7 kB</code></pre>
+<pre class="r"><code># error handling
+url=&#39;https://geoapi.heartrails.com/api/json?method=getPrefectures&#39;
+res=GET(url)
+
+if (status_code(res)==200) {
+  obj=fromJSON(content(res,&#39;text&#39;,encoding=&#39;UTF-8&#39;)) |&gt; print()
+} else {
+  print(paste(&quot;Error:&quot;,status_code(res)))
+}</code></pre>
+<pre><code>$response
+$response$prefecture
+ [1] &quot;北海道&quot;   &quot;青森県&quot;   &quot;岩手県&quot;   &quot;宮城県&quot;   &quot;秋田県&quot;   &quot;山形県&quot;  
+ [7] &quot;福島県&quot;   &quot;茨城県&quot;   &quot;栃木県&quot;   &quot;群馬県&quot;   &quot;埼玉県&quot;   &quot;千葉県&quot;  
+[13] &quot;東京都&quot;   &quot;神奈川県&quot; &quot;新潟県&quot;   &quot;富山県&quot;   &quot;石川県&quot;   &quot;福井県&quot;  
+[19] &quot;山梨県&quot;   &quot;長野県&quot;   &quot;岐阜県&quot;   &quot;静岡県&quot;   &quot;愛知県&quot;   &quot;三重県&quot;  
+[25] &quot;滋賀県&quot;   &quot;京都府&quot;   &quot;大阪府&quot;   &quot;兵庫県&quot;   &quot;奈良県&quot;   &quot;和歌山県&quot;
+[31] &quot;鳥取県&quot;   &quot;島根県&quot;   &quot;岡山県&quot;   &quot;広島県&quot;   &quot;山口県&quot;   &quot;徳島県&quot;  
+[37] &quot;香川県&quot;   &quot;愛媛県&quot;   &quot;高知県&quot;   &quot;福岡県&quot;   &quot;佐賀県&quot;   &quot;長崎県&quot;  
+[43] &quot;熊本県&quot;   &quot;大分県&quot;   &quot;宮崎県&quot;   &quot;鹿児島県&quot; &quot;沖縄県&quot;  </code></pre>
 </div>
 <div id="processing-json" class="section level2">
 <h2>processing json</h2>
@@ -2878,6 +2948,71 @@ $b$y
 <pre class="r"><code>fromJSON(&#39;{&quot;a&quot;:{&quot;x&quot;:11,&quot;y&quot;:12},&quot;b&quot;:{&quot;x&quot;:21,&quot;y&quot;:22}}&#39;) |&gt; unlist() # prefix named vector</code></pre>
 <pre><code>a.x a.y b.x b.y 
  11  12  21  22 </code></pre>
+<pre class="r"><code>json=&#39;{&quot;glossary&quot;: {&quot;title&quot;: &quot;example glossary&quot;,&quot;GlossDiv&quot;: {&quot;title&quot;: &quot;S&quot;,&quot;GlossList&quot;: {&quot;GlossEntry&quot;: {&quot;ID&quot;: &quot;SGML&quot;,&quot;SortAs&quot;: &quot;SGML&quot;,&quot;GlossTerm&quot;: &quot;Standard Generalized Markup Language&quot;,&quot;Acronym&quot;: &quot;SGML&quot;,&quot;Abbrev&quot;: &quot;ISO 8879:1986&quot;,&quot;GlossDef&quot;: {&quot;para&quot;: &quot;A meta-markup language, used to create markup languages such as DocBook.&quot;,&quot;GlossSeeAlso&quot;: [&quot;GML&quot;, &quot;XML&quot;]},&quot;GlossSee&quot;: &quot;markup&quot;}}}}}&#39;
+
+prettify(json)</code></pre>
+<pre><code>{
+    &quot;glossary&quot;: {
+        &quot;title&quot;: &quot;example glossary&quot;,
+        &quot;GlossDiv&quot;: {
+            &quot;title&quot;: &quot;S&quot;,
+            &quot;GlossList&quot;: {
+                &quot;GlossEntry&quot;: {
+                    &quot;ID&quot;: &quot;SGML&quot;,
+                    &quot;SortAs&quot;: &quot;SGML&quot;,
+                    &quot;GlossTerm&quot;: &quot;Standard Generalized Markup Language&quot;,
+                    &quot;Acronym&quot;: &quot;SGML&quot;,
+                    &quot;Abbrev&quot;: &quot;ISO 8879:1986&quot;,
+                    &quot;GlossDef&quot;: {
+                        &quot;para&quot;: &quot;A meta-markup language, used to create markup languages such as DocBook.&quot;,
+                        &quot;GlossSeeAlso&quot;: [
+                            &quot;GML&quot;,
+                            &quot;XML&quot;
+                        ]
+                    },
+                    &quot;GlossSee&quot;: &quot;markup&quot;
+                }
+            }
+        }
+    }
+}
+ </code></pre>
+<pre class="r"><code>minify(json)</code></pre>
+<pre><code>{&quot;glossary&quot;:{&quot;title&quot;:&quot;example glossary&quot;,&quot;GlossDiv&quot;:{&quot;title&quot;:&quot;S&quot;,&quot;GlossList&quot;:{&quot;GlossEntry&quot;:{&quot;ID&quot;:&quot;SGML&quot;,&quot;SortAs&quot;:&quot;SGML&quot;,&quot;GlossTerm&quot;:&quot;Standard Generalized Markup Language&quot;,&quot;Acronym&quot;:&quot;SGML&quot;,&quot;Abbrev&quot;:&quot;ISO 8879:1986&quot;,&quot;GlossDef&quot;:{&quot;para&quot;:&quot;A meta-markup language, used to create markup languages such as DocBook.&quot;,&quot;GlossSeeAlso&quot;:[&quot;GML&quot;,&quot;XML&quot;]},&quot;GlossSee&quot;:&quot;markup&quot;}}}}} </code></pre>
+<pre class="r"><code>obj=fromJSON(json,flatten=T)
+str(obj) # list with list, not include array (a key has just one value)</code></pre>
+<pre><code>List of 1
+ $ glossary:List of 2
+  ..$ title   : chr &quot;example glossary&quot;
+  ..$ GlossDiv:List of 2
+  .. ..$ title    : chr &quot;S&quot;
+  .. ..$ GlossList:List of 1
+  .. .. ..$ GlossEntry:List of 7
+  .. .. .. ..$ ID       : chr &quot;SGML&quot;
+  .. .. .. ..$ SortAs   : chr &quot;SGML&quot;
+  .. .. .. ..$ GlossTerm: chr &quot;Standard Generalized Markup Language&quot;
+  .. .. .. ..$ Acronym  : chr &quot;SGML&quot;
+  .. .. .. ..$ Abbrev   : chr &quot;ISO 8879:1986&quot;
+  .. .. .. ..$ GlossDef :List of 2
+  .. .. .. .. ..$ para        : chr &quot;A meta-markup language, used to create markup languages such as DocBook.&quot;
+  .. .. .. .. ..$ GlossSeeAlso: chr [1:2] &quot;GML&quot; &quot;XML&quot;
+  .. .. .. ..$ GlossSee : chr &quot;markup&quot;</code></pre>
+<pre class="r"><code>v=unlist(obj) # vector of each element with json path name 
+tibble(path=names(v),value=v)</code></pre>
+<pre><code># A tibble: 11 × 2
+   path                                                          value          
+   &lt;chr&gt;                                                         &lt;chr&gt;          
+ 1 glossary.title                                                example glossa…
+ 2 glossary.GlossDiv.title                                       S              
+ 3 glossary.GlossDiv.GlossList.GlossEntry.ID                     SGML           
+ 4 glossary.GlossDiv.GlossList.GlossEntry.SortAs                 SGML           
+ 5 glossary.GlossDiv.GlossList.GlossEntry.GlossTerm              Standard Gener…
+ 6 glossary.GlossDiv.GlossList.GlossEntry.Acronym                SGML           
+ 7 glossary.GlossDiv.GlossList.GlossEntry.Abbrev                 ISO 8879:1986  
+ 8 glossary.GlossDiv.GlossList.GlossEntry.GlossDef.para          A meta-markup …
+ 9 glossary.GlossDiv.GlossList.GlossEntry.GlossDef.GlossSeeAlso1 GML            
+10 glossary.GlossDiv.GlossList.GlossEntry.GlossDef.GlossSeeAlso2 XML            
+11 glossary.GlossDiv.GlossList.GlossEntry.GlossSee               markup         </code></pre>
 <pre class="r"><code>json=&#39;[{&quot;person&quot;:&quot;Taro Yamada&quot;,&quot;pets&quot;:{&quot;exists&quot;:true,&quot;details&quot;:[{&quot;name&quot;:&quot;mike&quot;,&quot;kind&quot;:&quot;cat&quot;},{&quot;name&quot;:&quot;pochi&quot;,&quot;kind&quot;:&quot;dog&quot;}]}},{&quot;person&quot;:&quot;Jiro Suzuki&quot;,&quot;pets&quot;:{&quot;exists&quot;:true,&quot;details&quot;:[{&quot;name&quot;:&quot;koro&quot;,&quot;kind&quot;:&quot;dog&quot;}]}},{&quot;person&quot;:&quot;Sabro Tanaka&quot;,&quot;pets&quot;:{&quot;exists&quot;:false}}]&#39;
 
 prettify(json)</code></pre>
@@ -2918,26 +3053,32 @@ prettify(json)</code></pre>
     }
 ]
  </code></pre>
-<pre class="r"><code>minify(json)</code></pre>
-<pre><code>[{&quot;person&quot;:&quot;Taro Yamada&quot;,&quot;pets&quot;:{&quot;exists&quot;:true,&quot;details&quot;:[{&quot;name&quot;:&quot;mike&quot;,&quot;kind&quot;:&quot;cat&quot;},{&quot;name&quot;:&quot;pochi&quot;,&quot;kind&quot;:&quot;dog&quot;}]}},{&quot;person&quot;:&quot;Jiro Suzuki&quot;,&quot;pets&quot;:{&quot;exists&quot;:true,&quot;details&quot;:[{&quot;name&quot;:&quot;koro&quot;,&quot;kind&quot;:&quot;dog&quot;}]}},{&quot;person&quot;:&quot;Sabro Tanaka&quot;,&quot;pets&quot;:{&quot;exists&quot;:false}}] </code></pre>
 <pre class="r"><code>obj=fromJSON(json,flatten=T)
-obj</code></pre>
-<pre><code>        person pets.exists          pets.details
-1  Taro Yamada        TRUE mike, pochi, cat, dog
-2  Jiro Suzuki        TRUE             koro, dog
-3 Sabro Tanaka       FALSE                  NULL</code></pre>
+str(obj) # data.frame with some list, include array (a key has plural value)</code></pre>
+<pre><code>&#39;data.frame&#39;:   3 obs. of  3 variables:
+ $ person      : chr  &quot;Taro Yamada&quot; &quot;Jiro Suzuki&quot; &quot;Sabro Tanaka&quot;
+ $ pets.exists : logi  TRUE TRUE FALSE
+ $ pets.details:List of 3
+  ..$ :&#39;data.frame&#39;:    2 obs. of  2 variables:
+  .. ..$ name: chr  &quot;mike&quot; &quot;pochi&quot;
+  .. ..$ kind: chr  &quot;cat&quot; &quot;dog&quot;
+  ..$ :&#39;data.frame&#39;:    1 obs. of  2 variables:
+  .. ..$ name: chr &quot;koro&quot;
+  .. ..$ kind: chr &quot;dog&quot;
+  ..$ : NULL</code></pre>
 <pre class="r"><code>obj[1,]</code></pre>
 <pre><code>       person pets.exists          pets.details
 1 Taro Yamada        TRUE mike, pochi, cat, dog</code></pre>
-<pre class="r"><code>select(obj,!is.list) |&gt; names()</code></pre>
+<pre class="r"><code>tb=as_tibble(obj)
+select(tb,!is.list) |&gt; names() # json path has array</code></pre>
 <pre><code>[1] &quot;person&quot;      &quot;pets.exists&quot;</code></pre>
-<pre class="r"><code>select(obj,is.list) |&gt; names()</code></pre>
+<pre class="r"><code>select(tb,is.list) |&gt; names() # json path has list</code></pre>
 <pre><code>[1] &quot;pets.details&quot;</code></pre>
 <pre class="r"><code>tb0=tibble()
-for(i in 1:nrow(obj)){
-tb1=bind_cols(obj[i,][&#39;person&#39;],
-          obj[i,][&#39;pets.exists&#39;],
-          obj[i,]$pets.details)
+for(i in 1:nrow(tb)){
+tb1=bind_cols(tb[i,][&#39;person&#39;], # for array [&#39;json-path&#39;]
+          tb[i,][&#39;pets.exists&#39;], # for array [&#39;json-path&#39;]
+          tb[i,]$pets.details) # for list $json-path
 tb0=bind_rows(tb0,tb1)
 }
 tb0</code></pre>
@@ -2948,6 +3089,613 @@ tb0</code></pre>
 2 Taro Yamada  TRUE        pochi dog  
 3 Jiro Suzuki  TRUE        koro  dog  
 4 Sabro Tanaka FALSE       &lt;NA&gt;  &lt;NA&gt; </code></pre>
+</div>
+<div id="treat-json-response" class="section level2">
+<h2>treat JSON response</h2>
+<pre class="r"><code>fromJSON(&#39;https://geoapi.heartrails.com/api/json?method=getPrefectures&#39;) # list has a vector</code></pre>
+<pre><code>$response
+$response$prefecture
+ [1] &quot;北海道&quot;   &quot;青森県&quot;   &quot;岩手県&quot;   &quot;宮城県&quot;   &quot;秋田県&quot;   &quot;山形県&quot;  
+ [7] &quot;福島県&quot;   &quot;茨城県&quot;   &quot;栃木県&quot;   &quot;群馬県&quot;   &quot;埼玉県&quot;   &quot;千葉県&quot;  
+[13] &quot;東京都&quot;   &quot;神奈川県&quot; &quot;新潟県&quot;   &quot;富山県&quot;   &quot;石川県&quot;   &quot;福井県&quot;  
+[19] &quot;山梨県&quot;   &quot;長野県&quot;   &quot;岐阜県&quot;   &quot;静岡県&quot;   &quot;愛知県&quot;   &quot;三重県&quot;  
+[25] &quot;滋賀県&quot;   &quot;京都府&quot;   &quot;大阪府&quot;   &quot;兵庫県&quot;   &quot;奈良県&quot;   &quot;和歌山県&quot;
+[31] &quot;鳥取県&quot;   &quot;島根県&quot;   &quot;岡山県&quot;   &quot;広島県&quot;   &quot;山口県&quot;   &quot;徳島県&quot;  
+[37] &quot;香川県&quot;   &quot;愛媛県&quot;   &quot;高知県&quot;   &quot;福岡県&quot;   &quot;佐賀県&quot;   &quot;長崎県&quot;  
+[43] &quot;熊本県&quot;   &quot;大分県&quot;   &quot;宮崎県&quot;   &quot;鹿児島県&quot; &quot;沖縄県&quot;  </code></pre>
+<pre class="r"><code>fromJSON(&#39;https://geoapi.heartrails.com/api/json?method=getCities&amp;prefecture=北海道&#39;) |&gt; glimpse() #list has a data.frama</code></pre>
+<pre><code>List of 1
+ $ response:List of 1
+  ..$ location:&#39;data.frame&#39;:    188 obs. of  2 variables:
+  .. ..$ city     : chr [1:188] &quot;札幌市中央区&quot; &quot;札幌市北区&quot; &quot;札幌市東区&quot; &quot;札幌市白石区&quot; ...
+  .. ..$ city_kana: chr [1:188] &quot;さっぽろしちゅうおうく&quot; &quot;さっぽろしきたく&quot; &quot;さっぽろしひがしく&quot; &quot;さっぽろししろいしく&quot; ...</code></pre>
+<pre class="r"><code>fromJSON(&#39;https://geoapi.heartrails.com/api/json?method=getTowns&amp;prefecture=北海道&amp;city=札幌市&#39;) |&gt; glimpse() # list has a data.frame</code></pre>
+<pre><code>List of 1
+ $ response:List of 1
+  ..$ location:&#39;data.frame&#39;:    400 obs. of  8 variables:
+  .. ..$ city      : chr [1:400] &quot;札幌市中央区&quot; &quot;札幌市中央区&quot; &quot;札幌市中央区&quot; &quot;札幌市中央区&quot; ...
+  .. ..$ city_kana : chr [1:400] &quot;さっぽろしちゅうおうく&quot; &quot;さっぽろしちゅうおうく&quot; &quot;さっぽろしちゅうおうく&quot; &quot;さっぽろしちゅうおうく&quot; ...
+  .. ..$ town      : chr [1:400] &quot;旭ケ丘&quot; &quot;円山西町&quot; &quot;界川&quot; &quot;宮ケ丘&quot; ...
+  .. ..$ town_kana : chr [1:400] &quot;あさひがおか&quot; &quot;まるやまにしまち&quot; &quot;さかいがわ&quot; &quot;みやがおか&quot; ...
+  .. ..$ x         : chr [1:400] &quot;141.320963&quot; &quot;141.306666&quot; &quot;141.315584&quot; &quot;141.310326&quot; ...
+  .. ..$ y         : chr [1:400] &quot;43.039021&quot; &quot;43.043488&quot; &quot;43.038201&quot; &quot;43.056851&quot; ...
+  .. ..$ prefecture: chr [1:400] &quot;北海道&quot; &quot;北海道&quot; &quot;北海道&quot; &quot;北海道&quot; ...
+  .. ..$ postal    : chr [1:400] &quot;0640941&quot; &quot;0640944&quot; &quot;0640943&quot; &quot;0640959&quot; ...</code></pre>
+<pre class="r"><code>read_json(&#39;https://jsonplaceholder.typicode.com/users&#39;) |&gt; glimpse() # list</code></pre>
+<pre><code>List of 10
+ $ :List of 8
+  ..$ id      : int 1
+  ..$ name    : chr &quot;Leanne Graham&quot;
+  ..$ username: chr &quot;Bret&quot;
+  ..$ email   : chr &quot;Sincere@april.biz&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Kulas Light&quot;
+  .. ..$ suite  : chr &quot;Apt. 556&quot;
+  .. ..$ city   : chr &quot;Gwenborough&quot;
+  .. ..$ zipcode: chr &quot;92998-3874&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;1-770-736-8031 x56442&quot;
+  ..$ website : chr &quot;hildegard.org&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Romaguera-Crona&quot;
+  .. ..$ catchPhrase: chr &quot;Multi-layered client-server neural-net&quot;
+  .. ..$ bs         : chr &quot;harness real-time e-markets&quot;
+ $ :List of 8
+  ..$ id      : int 2
+  ..$ name    : chr &quot;Ervin Howell&quot;
+  ..$ username: chr &quot;Antonette&quot;
+  ..$ email   : chr &quot;Shanna@melissa.tv&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Victor Plains&quot;
+  .. ..$ suite  : chr &quot;Suite 879&quot;
+  .. ..$ city   : chr &quot;Wisokyburgh&quot;
+  .. ..$ zipcode: chr &quot;90566-7771&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;010-692-6593 x09125&quot;
+  ..$ website : chr &quot;anastasia.net&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Deckow-Crist&quot;
+  .. ..$ catchPhrase: chr &quot;Proactive didactic contingency&quot;
+  .. ..$ bs         : chr &quot;synergize scalable supply-chains&quot;
+ $ :List of 8
+  ..$ id      : int 3
+  ..$ name    : chr &quot;Clementine Bauch&quot;
+  ..$ username: chr &quot;Samantha&quot;
+  ..$ email   : chr &quot;Nathan@yesenia.net&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Douglas Extension&quot;
+  .. ..$ suite  : chr &quot;Suite 847&quot;
+  .. ..$ city   : chr &quot;McKenziehaven&quot;
+  .. ..$ zipcode: chr &quot;59590-4157&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;1-463-123-4447&quot;
+  ..$ website : chr &quot;ramiro.info&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Romaguera-Jacobson&quot;
+  .. ..$ catchPhrase: chr &quot;Face to face bifurcated interface&quot;
+  .. ..$ bs         : chr &quot;e-enable strategic applications&quot;
+ $ :List of 8
+  ..$ id      : int 4
+  ..$ name    : chr &quot;Patricia Lebsack&quot;
+  ..$ username: chr &quot;Karianne&quot;
+  ..$ email   : chr &quot;Julianne.OConner@kory.org&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Hoeger Mall&quot;
+  .. ..$ suite  : chr &quot;Apt. 692&quot;
+  .. ..$ city   : chr &quot;South Elvis&quot;
+  .. ..$ zipcode: chr &quot;53919-4257&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;493-170-9623 x156&quot;
+  ..$ website : chr &quot;kale.biz&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Robel-Corkery&quot;
+  .. ..$ catchPhrase: chr &quot;Multi-tiered zero tolerance productivity&quot;
+  .. ..$ bs         : chr &quot;transition cutting-edge web services&quot;
+ $ :List of 8
+  ..$ id      : int 5
+  ..$ name    : chr &quot;Chelsey Dietrich&quot;
+  ..$ username: chr &quot;Kamren&quot;
+  ..$ email   : chr &quot;Lucio_Hettinger@annie.ca&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Skiles Walks&quot;
+  .. ..$ suite  : chr &quot;Suite 351&quot;
+  .. ..$ city   : chr &quot;Roscoeview&quot;
+  .. ..$ zipcode: chr &quot;33263&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;(254)954-1289&quot;
+  ..$ website : chr &quot;demarco.info&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Keebler LLC&quot;
+  .. ..$ catchPhrase: chr &quot;User-centric fault-tolerant solution&quot;
+  .. ..$ bs         : chr &quot;revolutionize end-to-end systems&quot;
+ $ :List of 8
+  ..$ id      : int 6
+  ..$ name    : chr &quot;Mrs. Dennis Schulist&quot;
+  ..$ username: chr &quot;Leopoldo_Corkery&quot;
+  ..$ email   : chr &quot;Karley_Dach@jasper.info&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Norberto Crossing&quot;
+  .. ..$ suite  : chr &quot;Apt. 950&quot;
+  .. ..$ city   : chr &quot;South Christy&quot;
+  .. ..$ zipcode: chr &quot;23505-1337&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;1-477-935-8478 x6430&quot;
+  ..$ website : chr &quot;ola.org&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Considine-Lockman&quot;
+  .. ..$ catchPhrase: chr &quot;Synchronised bottom-line interface&quot;
+  .. ..$ bs         : chr &quot;e-enable innovative applications&quot;
+ $ :List of 8
+  ..$ id      : int 7
+  ..$ name    : chr &quot;Kurtis Weissnat&quot;
+  ..$ username: chr &quot;Elwyn.Skiles&quot;
+  ..$ email   : chr &quot;Telly.Hoeger@billy.biz&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Rex Trail&quot;
+  .. ..$ suite  : chr &quot;Suite 280&quot;
+  .. ..$ city   : chr &quot;Howemouth&quot;
+  .. ..$ zipcode: chr &quot;58804-1099&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;210.067.6132&quot;
+  ..$ website : chr &quot;elvis.io&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Johns Group&quot;
+  .. ..$ catchPhrase: chr &quot;Configurable multimedia task-force&quot;
+  .. ..$ bs         : chr &quot;generate enterprise e-tailers&quot;
+ $ :List of 8
+  ..$ id      : int 8
+  ..$ name    : chr &quot;Nicholas Runolfsdottir V&quot;
+  ..$ username: chr &quot;Maxime_Nienow&quot;
+  ..$ email   : chr &quot;Sherwood@rosamond.me&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Ellsworth Summit&quot;
+  .. ..$ suite  : chr &quot;Suite 729&quot;
+  .. ..$ city   : chr &quot;Aliyaview&quot;
+  .. ..$ zipcode: chr &quot;45169&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;586.493.6943 x140&quot;
+  ..$ website : chr &quot;jacynthe.com&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Abernathy Group&quot;
+  .. ..$ catchPhrase: chr &quot;Implemented secondary concept&quot;
+  .. ..$ bs         : chr &quot;e-enable extensible e-tailers&quot;
+ $ :List of 8
+  ..$ id      : int 9
+  ..$ name    : chr &quot;Glenna Reichert&quot;
+  ..$ username: chr &quot;Delphine&quot;
+  ..$ email   : chr &quot;Chaim_McDermott@dana.io&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Dayna Park&quot;
+  .. ..$ suite  : chr &quot;Suite 449&quot;
+  .. ..$ city   : chr &quot;Bartholomebury&quot;
+  .. ..$ zipcode: chr &quot;76495-3109&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;(775)976-6794 x41206&quot;
+  ..$ website : chr &quot;conrad.com&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Yost and Sons&quot;
+  .. ..$ catchPhrase: chr &quot;Switchable contextually-based project&quot;
+  .. ..$ bs         : chr &quot;aggregate real-time technologies&quot;
+ $ :List of 8
+  ..$ id      : int 10
+  ..$ name    : chr &quot;Clementina DuBuque&quot;
+  ..$ username: chr &quot;Moriah.Stanton&quot;
+  ..$ email   : chr &quot;Rey.Padberg@karina.biz&quot;
+  ..$ address :List of 5
+  .. ..$ street : chr &quot;Kattie Turnpike&quot;
+  .. ..$ suite  : chr &quot;Suite 198&quot;
+  .. ..$ city   : chr &quot;Lebsackbury&quot;
+  .. ..$ zipcode: chr &quot;31428-2261&quot;
+  .. ..$ geo    :List of 2
+  ..$ phone   : chr &quot;024-648-3804&quot;
+  ..$ website : chr &quot;ambrose.net&quot;
+  ..$ company :List of 3
+  .. ..$ name       : chr &quot;Hoeger LLC&quot;
+  .. ..$ catchPhrase: chr &quot;Centralized empowering task-force&quot;
+  .. ..$ bs         : chr &quot;target end-to-end models&quot;</code></pre>
+<pre class="r"><code>fromJSON(&#39;https://jsonplaceholder.typicode.com/users&#39;,flatten = T) # simple data.frame</code></pre>
+<pre><code>   id                     name         username                     email
+1   1            Leanne Graham             Bret         Sincere@april.biz
+2   2             Ervin Howell        Antonette         Shanna@melissa.tv
+3   3         Clementine Bauch         Samantha        Nathan@yesenia.net
+4   4         Patricia Lebsack         Karianne Julianne.OConner@kory.org
+5   5         Chelsey Dietrich           Kamren  Lucio_Hettinger@annie.ca
+6   6     Mrs. Dennis Schulist Leopoldo_Corkery   Karley_Dach@jasper.info
+7   7          Kurtis Weissnat     Elwyn.Skiles    Telly.Hoeger@billy.biz
+8   8 Nicholas Runolfsdottir V    Maxime_Nienow      Sherwood@rosamond.me
+9   9          Glenna Reichert         Delphine   Chaim_McDermott@dana.io
+10 10       Clementina DuBuque   Moriah.Stanton    Rey.Padberg@karina.biz
+                   phone       website    address.street address.suite
+1  1-770-736-8031 x56442 hildegard.org       Kulas Light      Apt. 556
+2    010-692-6593 x09125 anastasia.net     Victor Plains     Suite 879
+3         1-463-123-4447   ramiro.info Douglas Extension     Suite 847
+4      493-170-9623 x156      kale.biz       Hoeger Mall      Apt. 692
+5          (254)954-1289  demarco.info      Skiles Walks     Suite 351
+6   1-477-935-8478 x6430       ola.org Norberto Crossing      Apt. 950
+7           210.067.6132      elvis.io         Rex Trail     Suite 280
+8      586.493.6943 x140  jacynthe.com  Ellsworth Summit     Suite 729
+9   (775)976-6794 x41206    conrad.com        Dayna Park     Suite 449
+10          024-648-3804   ambrose.net   Kattie Turnpike     Suite 198
+     address.city address.zipcode address.geo.lat address.geo.lng
+1     Gwenborough      92998-3874        -37.3159         81.1496
+2     Wisokyburgh      90566-7771        -43.9509        -34.4618
+3   McKenziehaven      59590-4157        -68.6102        -47.0653
+4     South Elvis      53919-4257         29.4572       -164.2990
+5      Roscoeview           33263        -31.8129         62.5342
+6   South Christy      23505-1337        -71.4197         71.7478
+7       Howemouth      58804-1099         24.8918         21.8984
+8       Aliyaview           45169        -14.3990       -120.7677
+9  Bartholomebury      76495-3109         24.6463       -168.8889
+10    Lebsackbury      31428-2261        -38.2386         57.2232
+         company.name                      company.catchPhrase
+1     Romaguera-Crona   Multi-layered client-server neural-net
+2        Deckow-Crist           Proactive didactic contingency
+3  Romaguera-Jacobson        Face to face bifurcated interface
+4       Robel-Corkery Multi-tiered zero tolerance productivity
+5         Keebler LLC     User-centric fault-tolerant solution
+6   Considine-Lockman       Synchronised bottom-line interface
+7         Johns Group       Configurable multimedia task-force
+8     Abernathy Group            Implemented secondary concept
+9       Yost and Sons    Switchable contextually-based project
+10         Hoeger LLC        Centralized empowering task-force
+                             company.bs
+1           harness real-time e-markets
+2      synergize scalable supply-chains
+3       e-enable strategic applications
+4  transition cutting-edge web services
+5      revolutionize end-to-end systems
+6      e-enable innovative applications
+7         generate enterprise e-tailers
+8         e-enable extensible e-tailers
+9      aggregate real-time technologies
+10             target end-to-end models</code></pre>
+<pre class="r"><code># https://zenn.dev/ttskch/articles/309423d26a1aaa
+# https://jp-postal-code-api.ttskch.com/api/v1/6180000.json
+
+url0=&#39;https://jp-postal-code-api.ttskch.com/api/v1/&#39;
+pcode=&#39;6180000&#39;
+url=paste0(url0,pcode,&#39;.json&#39;)
+
+obj=read_json(url)
+str(obj) # list with list</code></pre>
+<pre><code>List of 2
+ $ postalCode: chr &quot;6180000&quot;
+ $ addresses :List of 2
+  ..$ :List of 4
+  .. ..$ prefectureCode: chr &quot;26&quot;
+  .. ..$ ja            :List of 5
+  .. .. ..$ prefecture: chr &quot;京都府&quot;
+  .. .. ..$ address1  : chr &quot;乙訓郡大山崎町&quot;
+  .. .. ..$ address2  : chr &quot;&quot;
+  .. .. ..$ address3  : chr &quot;&quot;
+  .. .. ..$ address4  : chr &quot;&quot;
+  .. ..$ kana          :List of 5
+  .. .. ..$ prefecture: chr &quot;キョウトフ&quot;
+  .. .. ..$ address1  : chr &quot;オトクニグンオオヤマザキチョウ&quot;
+  .. .. ..$ address2  : chr &quot;&quot;
+  .. .. ..$ address3  : chr &quot;&quot;
+  .. .. ..$ address4  : chr &quot;&quot;
+  .. ..$ en            :List of 5
+  .. .. ..$ prefecture: chr &quot;Kyoto&quot;
+  .. .. ..$ address1  : chr &quot;Oyamazaki-cho, Otokuni-gun&quot;
+  .. .. ..$ address2  : chr &quot;&quot;
+  .. .. ..$ address3  : chr &quot;&quot;
+  .. .. ..$ address4  : chr &quot;&quot;
+  ..$ :List of 4
+  .. ..$ prefectureCode: chr &quot;27&quot;
+  .. ..$ ja            :List of 5
+  .. .. ..$ prefecture: chr &quot;大阪府&quot;
+  .. .. ..$ address1  : chr &quot;三島郡島本町&quot;
+  .. .. ..$ address2  : chr &quot;&quot;
+  .. .. ..$ address3  : chr &quot;&quot;
+  .. .. ..$ address4  : chr &quot;&quot;
+  .. ..$ kana          :List of 5
+  .. .. ..$ prefecture: chr &quot;オオサカフ&quot;
+  .. .. ..$ address1  : chr &quot;ミシマグンシマモトチョウ&quot;
+  .. .. ..$ address2  : chr &quot;&quot;
+  .. .. ..$ address3  : chr &quot;&quot;
+  .. .. ..$ address4  : chr &quot;&quot;
+  .. ..$ en            :List of 5
+  .. .. ..$ prefecture: chr &quot;Osaka&quot;
+  .. .. ..$ address1  : chr &quot;Shimamoto-cho, Mishima-gun&quot;
+  .. .. ..$ address2  : chr &quot;&quot;
+  .. .. ..$ address3  : chr &quot;&quot;
+  .. .. ..$ address4  : chr &quot;&quot;</code></pre>
+<pre class="r"><code>obj=fromJSON(url,flatten=T) 
+str(obj) # list with a simple data.frame</code></pre>
+<pre><code>List of 2
+ $ postalCode: chr &quot;6180000&quot;
+ $ addresses :&#39;data.frame&#39;: 2 obs. of  16 variables:
+  ..$ prefectureCode : chr [1:2] &quot;26&quot; &quot;27&quot;
+  ..$ ja.prefecture  : chr [1:2] &quot;京都府&quot; &quot;大阪府&quot;
+  ..$ ja.address1    : chr [1:2] &quot;乙訓郡大山崎町&quot; &quot;三島郡島本町&quot;
+  ..$ ja.address2    : chr [1:2] &quot;&quot; &quot;&quot;
+  ..$ ja.address3    : chr [1:2] &quot;&quot; &quot;&quot;
+  ..$ ja.address4    : chr [1:2] &quot;&quot; &quot;&quot;
+  ..$ kana.prefecture: chr [1:2] &quot;キョウトフ&quot; &quot;オオサカフ&quot;
+  ..$ kana.address1  : chr [1:2] &quot;オトクニグンオオヤマザキチョウ&quot; &quot;ミシマグンシマモトチョウ&quot;
+  ..$ kana.address2  : chr [1:2] &quot;&quot; &quot;&quot;
+  ..$ kana.address3  : chr [1:2] &quot;&quot; &quot;&quot;
+  ..$ kana.address4  : chr [1:2] &quot;&quot; &quot;&quot;
+  ..$ en.prefecture  : chr [1:2] &quot;Kyoto&quot; &quot;Osaka&quot;
+  ..$ en.address1    : chr [1:2] &quot;Oyamazaki-cho, Otokuni-gun&quot; &quot;Shimamoto-cho, Mishima-gun&quot;
+  ..$ en.address2    : chr [1:2] &quot;&quot; &quot;&quot;
+  ..$ en.address3    : chr [1:2] &quot;&quot; &quot;&quot;
+  ..$ en.address4    : chr [1:2] &quot;&quot; &quot;&quot;</code></pre>
+<pre class="r"><code>tibble(obj$postalCode,obj$address)</code></pre>
+<pre><code># A tibble: 2 × 17
+  `obj$postalCode` prefectureCode ja.prefecture ja.address1    ja.address2
+  &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;      
+1 6180000          26             京都府        乙訓郡大山崎町 &quot;&quot;         
+2 6180000          27             大阪府        三島郡島本町   &quot;&quot;         
+# ℹ 12 more variables: ja.address3 &lt;chr&gt;, ja.address4 &lt;chr&gt;,
+#   kana.prefecture &lt;chr&gt;, kana.address1 &lt;chr&gt;, kana.address2 &lt;chr&gt;,
+#   kana.address3 &lt;chr&gt;, kana.address4 &lt;chr&gt;, en.prefecture &lt;chr&gt;,
+#   en.address1 &lt;chr&gt;, en.address2 &lt;chr&gt;, en.address3 &lt;chr&gt;, en.address4 &lt;chr&gt;</code></pre>
+<pre class="r"><code>url0=&#39;https://query2.finance.yahoo.com/v8/finance/chart/&#39;
+code=&#39;4507.T&#39;
+range=&#39;3mo&#39;
+int=&#39;1d&#39;
+url=paste0(url0,code,&#39;?range=&#39;,range,&#39;&amp;interval=&#39;,int)
+# https://query2.finance.yahoo.com/v8/finance/chart/&quot;,$code$,&quot;.T?range=3mo&amp;interval=1d
+
+obj=read_json(url)
+#str(obj)
+glimpse(obj)</code></pre>
+<pre><code>List of 1
+ $ chart:List of 2
+  ..$ result:List of 1
+  .. ..$ :List of 3
+  ..$ error : NULL</code></pre>
+<pre class="r"><code>obj=fromJSON(url,flatten=T)
+str(obj)</code></pre>
+<pre><code>List of 1
+ $ chart:List of 2
+  ..$ result:&#39;data.frame&#39;:  1 obs. of  39 variables:
+  .. ..$ timestamp                                  :List of 1
+  .. .. ..$ : int [1:63] 1723507200 1723593600 1723680000 1723766400 1724025600 1724112000 1724198400 1724284800 1724371200 1724630400 ...
+  .. ..$ meta.currency                              : chr &quot;JPY&quot;
+  .. ..$ meta.symbol                                : chr &quot;4507.T&quot;
+  .. ..$ meta.exchangeName                          : chr &quot;JPX&quot;
+  .. ..$ meta.fullExchangeName                      : chr &quot;Tokyo&quot;
+  .. ..$ meta.instrumentType                        : chr &quot;EQUITY&quot;
+  .. ..$ meta.firstTradeDate                        : int 946944000
+  .. ..$ meta.regularMarketTime                     : int 1731480300
+  .. ..$ meta.hasPrePostMarketData                  : logi FALSE
+  .. ..$ meta.gmtoffset                             : int 32400
+  .. ..$ meta.timezone                              : chr &quot;JST&quot;
+  .. ..$ meta.exchangeTimezoneName                  : chr &quot;Asia/Tokyo&quot;
+  .. ..$ meta.regularMarketPrice                    : num 2118
+  .. ..$ meta.fiftyTwoWeekHigh                      : num 2712
+  .. ..$ meta.fiftyTwoWeekLow                       : num 1945
+  .. ..$ meta.regularMarketDayHigh                  : num 2139
+  .. ..$ meta.regularMarketDayLow                   : num 2102
+  .. ..$ meta.regularMarketVolume                   : int 2072900
+  .. ..$ meta.longName                              : chr &quot;Shionogi &amp; Co., Ltd.&quot;
+  .. ..$ meta.shortName                             : chr &quot;SHIONOGI &amp; CO&quot;
+  .. ..$ meta.chartPreviousClose                    : num 2108
+  .. ..$ meta.priceHint                             : int 2
+  .. ..$ meta.dataGranularity                       : chr &quot;1d&quot;
+  .. ..$ meta.range                                 : chr &quot;3mo&quot;
+  .. ..$ meta.validRanges                           :List of 1
+  .. .. ..$ : chr [1:11] &quot;1d&quot; &quot;5d&quot; &quot;1mo&quot; &quot;3mo&quot; ...
+  .. ..$ meta.currentTradingPeriod.pre.timezone     : chr &quot;JST&quot;
+  .. ..$ meta.currentTradingPeriod.pre.start        : int 1731542400
+  .. ..$ meta.currentTradingPeriod.pre.end          : int 1731542400
+  .. ..$ meta.currentTradingPeriod.pre.gmtoffset    : int 32400
+  .. ..$ meta.currentTradingPeriod.regular.timezone : chr &quot;JST&quot;
+  .. ..$ meta.currentTradingPeriod.regular.start    : int 1731542400
+  .. ..$ meta.currentTradingPeriod.regular.end      : int 1731564000
+  .. ..$ meta.currentTradingPeriod.regular.gmtoffset: int 32400
+  .. ..$ meta.currentTradingPeriod.post.timezone    : chr &quot;JST&quot;
+  .. ..$ meta.currentTradingPeriod.post.start       : int 1731564000
+  .. ..$ meta.currentTradingPeriod.post.end         : int 1731564000
+  .. ..$ meta.currentTradingPeriod.post.gmtoffset   : int 32400
+  .. ..$ indicators.quote                           :List of 1
+  .. .. ..$ :&#39;data.frame&#39;:  1 obs. of  5 variables:
+  .. .. .. ..$ high  :List of 1
+  .. .. .. .. ..$ : num [1:63] 2110 2120 2148 2181 2195 ...
+  .. .. .. ..$ volume:List of 1
+  .. .. .. .. ..$ : int [1:63] 4918200 2990700 2221800 2168700 1768500 2446200 1633200 2741700 2348100 2514900 ...
+  .. .. .. ..$ close :List of 1
+  .. .. .. .. ..$ : num [1:63] 2108 2111 2141 2178 2165 ...
+  .. .. .. ..$ open  :List of 1
+  .. .. .. .. ..$ : num [1:63] 2078 2118 2119 2151 2181 ...
+  .. .. .. ..$ low   :List of 1
+  .. .. .. .. ..$ : num [1:63] 2064 2070 2114 2138 2153 ...
+  .. ..$ indicators.adjclose                        :List of 1
+  .. .. ..$ :&#39;data.frame&#39;:  1 obs. of  1 variable:
+  .. .. .. ..$ adjclose:List of 1
+  .. .. .. .. ..$ : num [1:63] 2025 2028 2056 2092 2079 ...
+  ..$ error : NULL</code></pre>
+<pre class="r"><code>obj=obj$chart$result
+str(obj$indicators.quote)</code></pre>
+<pre><code>List of 1
+ $ :&#39;data.frame&#39;:   1 obs. of  5 variables:
+  ..$ high  :List of 1
+  .. ..$ : num [1:63] 2110 2120 2148 2181 2195 ...
+  ..$ volume:List of 1
+  .. ..$ : int [1:63] 4918200 2990700 2221800 2168700 1768500 2446200 1633200 2741700 2348100 2514900 ...
+  ..$ close :List of 1
+  .. ..$ : num [1:63] 2108 2111 2141 2178 2165 ...
+  ..$ open  :List of 1
+  .. ..$ : num [1:63] 2078 2118 2119 2151 2181 ...
+  ..$ low   :List of 1
+  .. ..$ : num [1:63] 2064 2070 2114 2138 2153 ...</code></pre>
+<pre class="r"><code>tibble(obj$timestamp[[1]],
+       obj$indicators.quote[[1]]$open[[1]],
+       obj$indicators.quote[[1]]$close[[1]],
+       obj$indicators.quote[[1]]$low[[1]],
+       obj$indicators.quote[[1]]$high[[1]],
+       obj$indicators.quote[[1]]$volume[[1]],
+       obj$indicators.adjclose[[1]]$adjclose[[1]])</code></pre>
+<pre><code># A tibble: 63 × 7
+   `obj$timestamp[[1]]` obj$indicators.quote[[1]]$open[…¹ obj$indicators.quote…²
+                  &lt;int&gt;                             &lt;dbl&gt;                  &lt;dbl&gt;
+ 1           1723507200                             2078.                  2108.
+ 2           1723593600                             2118                   2111.
+ 3           1723680000                             2119.                  2141.
+ 4           1723766400                             2151.                  2178 
+ 5           1724025600                             2181.                  2165.
+ 6           1724112000                             2196                   2208 
+ 7           1724198400                             2193.                  2201.
+ 8           1724284800                             2190                   2242 
+ 9           1724371200                             2257                   2217.
+10           1724630400                             2200.                  2192 
+# ℹ 53 more rows
+# ℹ abbreviated names: ¹​`obj$indicators.quote[[1]]$open[[1]]`,
+#   ²​`obj$indicators.quote[[1]]$close[[1]]`
+# ℹ 4 more variables: `obj$indicators.quote[[1]]$low[[1]]` &lt;dbl&gt;,
+#   `obj$indicators.quote[[1]]$high[[1]]` &lt;dbl&gt;,
+#   `obj$indicators.quote[[1]]$volume[[1]]` &lt;int&gt;,
+#   `obj$indicators.adjclose[[1]]$adjclose[[1]]` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>obj=fromJSON(&#39;http://radioactivity.nsr.go.jp/data/ja/real/area_24000/2401_trend.json&#39;,flatten=T)
+str(obj) # list with array has same number of elements</code></pre>
+<pre><code>List of 6
+ $ code : chr &quot;2401&quot;
+ $ day  :List of 2
+  ..$ airF:List of 4
+  .. ..$ min  : num 0.045
+  .. ..$ max  : num 0.047
+  .. ..$ ave  : num 0.046
+  .. ..$ value: num [1:144] 0.045 0.046 0.046 0.046 0.046 0.046 0.046 0.046 0.046 0.046 ...
+  ..$ est :List of 4
+  .. ..$ min  : num 0.065
+  .. ..$ max  : num 0.069
+  .. ..$ ave  : num 0.067
+  .. ..$ value: num [1:144] 0.066 0.067 0.067 0.066 0.067 0.067 0.066 0.066 0.066 0.067 ...
+ $ week :List of 2
+  ..$ airF:List of 4
+  .. ..$ min  : num 0.045
+  .. ..$ max  : num 0.048
+  .. ..$ ave  : num 0.046
+  .. ..$ value: num [1:168] 0.046 0.045 0.045 0.045 0.045 0.045 0.045 0.045 0.045 0.045 ...
+  ..$ est :List of 4
+  .. ..$ min  : num 0.065
+  .. ..$ max  : num 0.07
+  .. ..$ ave  : num 0.067
+  .. ..$ value: num [1:168] 0.066 0.066 0.066 0.065 0.066 0.065 0.065 0.065 0.065 0.065 ...
+ $ month:List of 2
+  ..$ airF:List of 4
+  .. ..$ min  : num 0.045
+  .. ..$ max  : num 0.055
+  .. ..$ ave  : num 0.046
+  .. ..$ value: num [1:180] 0.046 0.048 0.047 0.046 0.045 0.045 0.045 0.046 0.046 0.046 ...
+  ..$ est :List of 4
+  .. ..$ min  : num 0.065
+  .. ..$ max  : num 0.079
+  .. ..$ ave  : num 0.067
+  .. ..$ value: num [1:180] 0.066 0.07 0.068 0.067 0.066 0.066 0.066 0.066 0.066 0.067 ...
+ $ last :List of 1
+  ..$ airF:List of 2
+  .. ..$ time : chr &quot;2024/11/14 04:20&quot;
+  .. ..$ value: num 0.046
+ $ time : chr &quot;2024/11/14 04:20&quot;</code></pre>
+<pre class="r"><code>tibble(obj$day$airF$value,obj$day$est$value)</code></pre>
+<pre><code># A tibble: 144 × 2
+   `obj$day$airF$value` `obj$day$est$value`
+                  &lt;dbl&gt;               &lt;dbl&gt;
+ 1                0.045               0.066
+ 2                0.046               0.067
+ 3                0.046               0.067
+ 4                0.046               0.066
+ 5                0.046               0.067
+ 6                0.046               0.067
+ 7                0.046               0.066
+ 8                0.046               0.066
+ 9                0.046               0.066
+10                0.046               0.067
+# ℹ 134 more rows</code></pre>
+<pre><code>library(httr2)
+
+url=&#39;https://api.example.com/data&#39;
+
+# make request object and excute
+res=request(url) |&gt; 
+  req_perform()
+
+# error handling
+if (resp_status(res)==200) {
+  data=resp_body_json(res)
+  print(data)
+} else {
+  print(paste(&quot;Error:&quot;, resp_status(res)))
+}
+
+
+
+# httr2 can use OAuth2.0 and Bearer token 
+
+    OAuth 2.0 Authentication
+
+OAuth 2.0 is a protocol for performing authentication and authorization without passing the user&#39;s password directly to the API. A typical OAuth 2.0 flow is as follows:
+
+    Client (Application) Registration: Register the application with an API provider (such as Google, Facebook) to obtain a client ID and client secret.
+    Authorization Code Acquisition: When the user grants access to the application, an authorization code is issued.
+    Access Token Acquisition: Use the authorization code and client secret to request and acquire an access token.
+    Access Token Usage: Use the access token to access the API and make requests on behalf of the user.
+
+    Bearer Token Authentication
+
+Bearer token authentication is a simple method for accessing resources using an access token. This token is included in the HTTP request header, allowing the server to verify access permissions. It is often used with access tokens acquired through OAuth 2.0, and is used as follows:
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+    Example of OAuth 2.0 and Bearer Token with httr2
+
+Below is an example of implementing the OAuth 2.0 flow using httr2. Here, we are using the client_credentials grant type, a simplified flow for obtaining a token with only a client ID and secret.
+Preparation
+
+    Installing the httr2 package:
+
+install.packages(&quot;httr2&quot;)
+library(httr2)
+
+Obtaining an Access Token with OAuth 2.0 and Making an API Request
+
+# Set the API endpoint and client information
+auth_url &lt;- &quot;https://api.example.com/oauth2/token&quot;
+client_id &lt;- &quot;YOUR_CLIENT_ID&quot;
+client_secret &lt;- &quot;YOUR_CLIENT_SECRET&quot;
+
+# Create a request to obtain the access token
+token_response &lt;- request(auth_url) %&gt;%
+  req_body_form(
+    grant_type = &quot;client_credentials&quot;,
+    client_id = client_id,
+    client_secret = client_secret
+  ) %&gt;%
+  req_perform()
+
+# Extract the access token from the response
+access_token &lt;- resp_body_json(token_response)$access_token
+
+# Make an API request using the access token
+api_url &lt;- &quot;https://api.example.com/protected_resource&quot;
+response &lt;- request(api_url) %&gt;%
+  req_auth_bearer_token(access_token) %&gt;%
+  req_perform()
+
+# Display the result
+data &lt;- resp_body_json(response)
+print(data)
+
+Explanation
+
+    Obtaining the Access Token:
+        req_body_form is used to set the parameters required for the OAuth 2.0 client credentials flow (grant_type, client_id, client_secret).
+        req_perform executes the request to obtain the access_token.
+
+    Making an API Request Using the Bearer Token:
+        req_auth_bearer_token is used to set the previously obtained access token.
+        req_perform executes the request to access the protected resource.
+
+Notes
+
+    Since access tokens may expire, it is necessary to update the token periodically or use a refresh token.
+    Each API provider may have specific differences in the OAuth 2.0 flow, so be sure to check the documentation.
+
+With this code, you can easily access APIs protected by OAuth 2.0.</code></pre>
 </div>
 
 
