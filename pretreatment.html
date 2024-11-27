@@ -1572,7 +1572,7 @@ border-radius: 0px;
 
 <style type="text/css">
 body{
-font-size: 14pt;
+font-size: 12pt;
 }
 </style>
 <div id="input-data-from-csv" class="section level2">
@@ -1582,16 +1582,16 @@ slice_sample(tb0,n=10)</code></pre>
 <pre><code># A tibble: 10 × 9
       id species   island    bill_length_mm bill_depth_mm flipper_length_mm
    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;
- 1   316 Chinstrap Dream               53.5          19.9               205
- 2   233 Gentoo    Biscoe              49.1          14.5               212
- 3    13 Adelie    Torgersen           41.1          17.6               182
- 4   230 Gentoo    Biscoe              51.1          16.3               220
- 5   120 Adelie    Torgersen           41.1          18.6               189
- 6   279 Chinstrap Dream               51.3          19.2               193
- 7   290 Chinstrap Dream               52            18.1               201
- 8   211 Gentoo    Biscoe              43.2          14.5               208
- 9    38 Adelie    Dream               42.2          18.5               180
-10   109 Adelie    Biscoe              38.1          17                 181
+ 1   329 Chinstrap Dream               45.7          17.3               193
+ 2   284 Chinstrap Dream               51.3          18.2               197
+ 3    71 Adelie    Torgersen           33.5          19                 190
+ 4    83 Adelie    Torgersen           36.7          18.8               187
+ 5    39 Adelie    Dream               37.6          19.3               181
+ 6   267 Gentoo    Biscoe              46.2          14.1               217
+ 7   305 Chinstrap Dream               46.4          17.8               191
+ 8    42 Adelie    Dream               40.8          18.4               195
+ 9   111 Adelie    Biscoe              38.1          16.5               198
+10   302 Chinstrap Dream               52            19                 197
 # ℹ 3 more variables: body_mass_g &lt;dbl&gt;, sex &lt;chr&gt;, year &lt;dbl&gt;</code></pre>
 <pre class="r"><code>read_csv(&#39;penguins.csv&#39;,col_types=cols(.default=&#39;c&#39;)) |&gt;  
   type_convert()</code></pre>
@@ -1889,9 +1889,9 @@ select(tb,is.numeric) |&gt; floor()</code></pre>
 <div id="treat-datedatetime" class="section level2">
 <h2>treat date,datetime</h2>
 <pre class="r"><code>today()</code></pre>
-<pre><code>[1] &quot;2024-11-14&quot;</code></pre>
+<pre><code>[1] &quot;2024-11-27&quot;</code></pre>
 <pre class="r"><code>now()</code></pre>
-<pre><code>[1] &quot;2024-11-14 04:49:19 JST&quot;</code></pre>
+<pre><code>[1] &quot;2024-11-27 21:08:59 JST&quot;</code></pre>
 <pre class="r"><code>tb=tribble(~date,~datetime,
             &#39;20200123&#39;,&#39;20200123 112233&#39;,
             &#39;20210124&#39;,&#39;20210124 122334&#39;,
@@ -2723,52 +2723,52 @@ bind_cols(tb1,tb2)</code></pre>
 tb2=slice_sample(tb2,n=100)
 
 inner_join(tb1,tb2,join_by(id==id))</code></pre>
-<pre><code># A tibble: 28 × 9
-      id species   island sex    year  bill_length_mm bill_depth_mm
-   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
- 1   166 Gentoo    Biscoe male   2007            48.4          14.6
- 2    36 Adelie    Dream  male   2007            39.2          21.1
- 3   102 Adelie    Biscoe male   2009            41            20  
- 4   314 Chinstrap Dream  male   2008            52            20.7
- 5   201 Gentoo    Biscoe female 2008            44.9          13.3
- 6   265 Gentoo    Biscoe female 2009            43.5          15.2
- 7    66 Adelie    Biscoe male   2008            41.6          18  
- 8    27 Adelie    Biscoe male   2007            40.6          18.6
- 9   199 Gentoo    Biscoe female 2008            45.5          13.9
-10    51 Adelie    Biscoe female 2008            39.6          17.7
-# ℹ 18 more rows
+<pre><code># A tibble: 24 × 9
+      id species   island    sex    year  bill_length_mm bill_depth_mm
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
+ 1    67 Adelie    Biscoe    female 2008            35.5          16.2
+ 2   251 Gentoo    Biscoe    female 2009            48.4          14.4
+ 3     5 Adelie    Torgersen female 2007            36.7          19.3
+ 4   214 Gentoo    Biscoe    male   2008            46.2          14.9
+ 5   159 Gentoo    Biscoe    female 2007            45.4          14.6
+ 6   278 Chinstrap Dream     male   2007            50            19.5
+ 7    33 Adelie    Dream     female 2007            39.5          17.8
+ 8    70 Adelie    Torgersen male   2008            41.8          19.4
+ 9   198 Gentoo    Biscoe    female 2008            43.6          13.9
+10   171 Gentoo    Biscoe    female 2007            46.2          14.5
+# ℹ 14 more rows
 # ℹ 2 more variables: flipper_length_mm &lt;dbl&gt;, body_mass_g &lt;dbl&gt;</code></pre>
 <pre class="r"><code>left_join(tb1,tb2,join_by(id==id))</code></pre>
 <pre><code># A tibble: 100 × 9
-      id species   island sex    year  bill_length_mm bill_depth_mm
-   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
- 1   166 Gentoo    Biscoe male   2007            48.4          14.6
- 2    36 Adelie    Dream  male   2007            39.2          21.1
- 3   197 Gentoo    Biscoe male   2008            NA            NA  
- 4   102 Adelie    Biscoe male   2009            41            20  
- 5   307 Chinstrap Dream  female 2008            NA            NA  
- 6    62 Adelie    Biscoe male   2008            NA            NA  
- 7   295 Chinstrap Dream  female 2007            NA            NA  
- 8   314 Chinstrap Dream  male   2008            52            20.7
- 9   328 Chinstrap Dream  male   2009            NA            NA  
-10   301 Chinstrap Dream  female 2007            NA            NA  
+      id species   island    sex    year  bill_length_mm bill_depth_mm
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
+ 1   140 Adelie    Dream     male   2009            NA            NA  
+ 2   173 Gentoo    Biscoe    male   2007            NA            NA  
+ 3    67 Adelie    Biscoe    female 2008            35.5          16.2
+ 4   216 Gentoo    Biscoe    male   2008            NA            NA  
+ 5   124 Adelie    Torgersen male   2009            NA            NA  
+ 6   251 Gentoo    Biscoe    female 2009            48.4          14.4
+ 7     2 Adelie    Torgersen female 2007            NA            NA  
+ 8   342 Chinstrap Dream     male   2009            NA            NA  
+ 9    86 Adelie    Dream     male   2008            NA            NA  
+10   230 Gentoo    Biscoe    male   2008            NA            NA  
 # ℹ 90 more rows
 # ℹ 2 more variables: flipper_length_mm &lt;dbl&gt;, body_mass_g &lt;dbl&gt;</code></pre>
 <pre class="r"><code>full_join(tb1,tb2,join_by(id==id))</code></pre>
-<pre><code># A tibble: 172 × 9
-      id species   island sex    year  bill_length_mm bill_depth_mm
-   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
- 1   166 Gentoo    Biscoe male   2007            48.4          14.6
- 2    36 Adelie    Dream  male   2007            39.2          21.1
- 3   197 Gentoo    Biscoe male   2008            NA            NA  
- 4   102 Adelie    Biscoe male   2009            41            20  
- 5   307 Chinstrap Dream  female 2008            NA            NA  
- 6    62 Adelie    Biscoe male   2008            NA            NA  
- 7   295 Chinstrap Dream  female 2007            NA            NA  
- 8   314 Chinstrap Dream  male   2008            52            20.7
- 9   328 Chinstrap Dream  male   2009            NA            NA  
-10   301 Chinstrap Dream  female 2007            NA            NA  
-# ℹ 162 more rows
+<pre><code># A tibble: 176 × 9
+      id species   island    sex    year  bill_length_mm bill_depth_mm
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;         &lt;dbl&gt;
+ 1   140 Adelie    Dream     male   2009            NA            NA  
+ 2   173 Gentoo    Biscoe    male   2007            NA            NA  
+ 3    67 Adelie    Biscoe    female 2008            35.5          16.2
+ 4   216 Gentoo    Biscoe    male   2008            NA            NA  
+ 5   124 Adelie    Torgersen male   2009            NA            NA  
+ 6   251 Gentoo    Biscoe    female 2009            48.4          14.4
+ 7     2 Adelie    Torgersen female 2007            NA            NA  
+ 8   342 Chinstrap Dream     male   2009            NA            NA  
+ 9    86 Adelie    Dream     male   2008            NA            NA  
+10   230 Gentoo    Biscoe    male   2008            NA            NA  
+# ℹ 166 more rows
 # ℹ 2 more variables: flipper_length_mm &lt;dbl&gt;, body_mass_g &lt;dbl&gt;</code></pre>
 </div>
 <div id="model-matrix-for-multi-regression" class="section level2">
@@ -2778,15 +2778,15 @@ mx=model.matrix(~species+sex+bill_length_mm,tb)
 mx[sample(1:nrow(mx),10),]</code></pre>
 <pre><code>    (Intercept) speciesChinstrap speciesGentoo sexmale bill_length_mm
 42            1                0             0       1           41.1
-253           1                0             1       1           48.1
-259           1                0             1       1           55.1
-191           1                0             1       0           43.6
-318           1                1             0       0           45.7
-15            1                0             0       1           46.0
-291           1                1             0       1           52.0
-160           1                0             1       1           48.4
-292           1                1             0       0           50.5
-2             1                0             0       0           39.5</code></pre>
+115           1                0             0       0           36.2
+328           1                1             0       0           45.7
+247           1                0             1       0           47.2
+2             1                0             0       0           39.5
+239           1                0             1       0           44.5
+145           1                0             0       0           36.0
+281           1                1             0       1           50.5
+187           1                0             1       1           49.6
+63            1                0             0       0           35.9</code></pre>
 </div>
 <div id="use-sqlite" class="section level2">
 <h2>use sqlite</h2>
@@ -2845,33 +2845,33 @@ GET(url) |&gt; content(&#39;text&#39;,encoding=&#39;UTF-8&#39;)</code></pre>
 <pre><code>[1] &quot;&quot;</code></pre>
 <pre class="r"><code>GET(&#39;https://geoapi.heartrails.com/api/json?method=getPrefectures&#39;)</code></pre>
 <pre><code>Response [https://geoapi.heartrails.com/api/json?method=getPrefectures]
-  Date: 2024-11-13 19:49
+  Date: 2024-11-27 12:09
   Status: 200
   Content-Type: application/json; charset=utf-8
   Size: 1.03 kB</code></pre>
 <pre class="r"><code>GET(&#39;https://geoapi.heartrails.com/api/json?method=getCities&amp;prefecture=北海道&#39;)</code></pre>
 <pre><code>Response [https://geoapi.heartrails.com/api/json?method=getCities&amp;prefecture=北海道]
-  Date: 2024-11-13 19:49
+  Date: 2024-11-27 12:09
   Status: 200
   Content-Type: application/json; charset=utf-8
   Size: 23.7 kB</code></pre>
 <pre class="r"><code>GET(&#39;https://geoapi.heartrails.com/api/json?method=getTowns&amp;prefecture=北海道&amp;city=札幌市&#39;)</code></pre>
 <pre><code>Response [https://geoapi.heartrails.com/api/json?method=getTowns&amp;prefecture=北海道&amp;city=札幌市]
-  Date: 2024-11-13 19:49
+  Date: 2024-11-27 12:09
   Status: 200
   Content-Type: application/json; charset=utf-8
   Size: 120 kB</code></pre>
 <pre class="r"><code>arg0=list(method=&#39;getPrefectures&#39;)
 GET(&#39;https://geoapi.heartrails.com/api/json&#39;, query=arg0)</code></pre>
 <pre><code>Response [https://geoapi.heartrails.com/api/json?method=getPrefectures]
-  Date: 2024-11-13 19:49
+  Date: 2024-11-27 12:09
   Status: 200
   Content-Type: application/json; charset=utf-8
   Size: 1.03 kB</code></pre>
 <pre class="r"><code>arg0=list(method=&#39;getCities&#39;,prefecture=&#39;北海道&#39;)
 GET(&#39;https://geoapi.heartrails.com/api/json&#39;, query=arg0)</code></pre>
 <pre><code>Response [https://geoapi.heartrails.com/api/json?method=getCities&amp;prefecture=%E5%8C%97%E6%B5%B7%E9%81%93]
-  Date: 2024-11-13 19:49
+  Date: 2024-11-27 12:09
   Status: 200
   Content-Type: application/json; charset=utf-8
   Size: 23.7 kB</code></pre>
@@ -3453,75 +3453,75 @@ str(obj)</code></pre>
  $ chart:List of 2
   ..$ result:&#39;data.frame&#39;:  1 obs. of  39 variables:
   .. ..$ timestamp                                  :List of 1
-  .. .. ..$ : int [1:63] 1723507200 1723593600 1723680000 1723766400 1724025600 1724112000 1724198400 1724284800 1724371200 1724630400 ...
+  .. .. ..$ : int [1:63] 1724716800 1724803200 1724889600 1724976000 1725235200 1725321600 1725408000 1725494400 1725580800 1725840000 ...
   .. ..$ meta.currency                              : chr &quot;JPY&quot;
   .. ..$ meta.symbol                                : chr &quot;4507.T&quot;
   .. ..$ meta.exchangeName                          : chr &quot;JPX&quot;
   .. ..$ meta.fullExchangeName                      : chr &quot;Tokyo&quot;
   .. ..$ meta.instrumentType                        : chr &quot;EQUITY&quot;
   .. ..$ meta.firstTradeDate                        : int 946944000
-  .. ..$ meta.regularMarketTime                     : int 1731480300
+  .. ..$ meta.regularMarketTime                     : int 1732689900
   .. ..$ meta.hasPrePostMarketData                  : logi FALSE
   .. ..$ meta.gmtoffset                             : int 32400
   .. ..$ meta.timezone                              : chr &quot;JST&quot;
   .. ..$ meta.exchangeTimezoneName                  : chr &quot;Asia/Tokyo&quot;
-  .. ..$ meta.regularMarketPrice                    : num 2118
+  .. ..$ meta.regularMarketPrice                    : num 2126
   .. ..$ meta.fiftyTwoWeekHigh                      : num 2712
   .. ..$ meta.fiftyTwoWeekLow                       : num 1945
-  .. ..$ meta.regularMarketDayHigh                  : num 2139
-  .. ..$ meta.regularMarketDayLow                   : num 2102
-  .. ..$ meta.regularMarketVolume                   : int 2072900
+  .. ..$ meta.regularMarketDayHigh                  : num 2152
+  .. ..$ meta.regularMarketDayLow                   : num 2110
+  .. ..$ meta.regularMarketVolume                   : int 1633700
   .. ..$ meta.longName                              : chr &quot;Shionogi &amp; Co., Ltd.&quot;
   .. ..$ meta.shortName                             : chr &quot;SHIONOGI &amp; CO&quot;
-  .. ..$ meta.chartPreviousClose                    : num 2108
+  .. ..$ meta.chartPreviousClose                    : num 2218
   .. ..$ meta.priceHint                             : int 2
   .. ..$ meta.dataGranularity                       : chr &quot;1d&quot;
   .. ..$ meta.range                                 : chr &quot;3mo&quot;
   .. ..$ meta.validRanges                           :List of 1
   .. .. ..$ : chr [1:11] &quot;1d&quot; &quot;5d&quot; &quot;1mo&quot; &quot;3mo&quot; ...
   .. ..$ meta.currentTradingPeriod.pre.timezone     : chr &quot;JST&quot;
-  .. ..$ meta.currentTradingPeriod.pre.start        : int 1731542400
-  .. ..$ meta.currentTradingPeriod.pre.end          : int 1731542400
+  .. ..$ meta.currentTradingPeriod.pre.start        : int 1732665600
+  .. ..$ meta.currentTradingPeriod.pre.end          : int 1732665600
   .. ..$ meta.currentTradingPeriod.pre.gmtoffset    : int 32400
   .. ..$ meta.currentTradingPeriod.regular.timezone : chr &quot;JST&quot;
-  .. ..$ meta.currentTradingPeriod.regular.start    : int 1731542400
-  .. ..$ meta.currentTradingPeriod.regular.end      : int 1731564000
+  .. ..$ meta.currentTradingPeriod.regular.start    : int 1732665600
+  .. ..$ meta.currentTradingPeriod.regular.end      : int 1732689000
   .. ..$ meta.currentTradingPeriod.regular.gmtoffset: int 32400
   .. ..$ meta.currentTradingPeriod.post.timezone    : chr &quot;JST&quot;
-  .. ..$ meta.currentTradingPeriod.post.start       : int 1731564000
-  .. ..$ meta.currentTradingPeriod.post.end         : int 1731564000
+  .. ..$ meta.currentTradingPeriod.post.start       : int 1732689000
+  .. ..$ meta.currentTradingPeriod.post.end         : int 1732689000
   .. ..$ meta.currentTradingPeriod.post.gmtoffset   : int 32400
   .. ..$ indicators.quote                           :List of 1
   .. .. ..$ :&#39;data.frame&#39;:  1 obs. of  5 variables:
   .. .. .. ..$ high  :List of 1
-  .. .. .. .. ..$ : num [1:63] 2110 2120 2148 2181 2195 ...
-  .. .. .. ..$ volume:List of 1
-  .. .. .. .. ..$ : int [1:63] 4918200 2990700 2221800 2168700 1768500 2446200 1633200 2741700 2348100 2514900 ...
-  .. .. .. ..$ close :List of 1
-  .. .. .. .. ..$ : num [1:63] 2108 2111 2141 2178 2165 ...
-  .. .. .. ..$ open  :List of 1
-  .. .. .. .. ..$ : num [1:63] 2078 2118 2119 2151 2181 ...
+  .. .. .. .. ..$ : num [1:63] 2228 2236 2262 2281 2275 ...
   .. .. .. ..$ low   :List of 1
-  .. .. .. .. ..$ : num [1:63] 2064 2070 2114 2138 2153 ...
+  .. .. .. .. ..$ : num [1:63] 2201 2215 2235 2239 2196 ...
+  .. .. .. ..$ close :List of 1
+  .. .. .. .. ..$ : num [1:63] 2218 2230 2257 2269 2201 ...
+  .. .. .. ..$ volume:List of 1
+  .. .. .. .. ..$ : int [1:63] 1732200 1568700 1854600 5521200 3999900 1967400 3146400 2130300 2028600 2001600 ...
+  .. .. .. ..$ open  :List of 1
+  .. .. .. .. ..$ : num [1:63] 2209 2222 2237 2265 2266 ...
   .. ..$ indicators.adjclose                        :List of 1
   .. .. ..$ :&#39;data.frame&#39;:  1 obs. of  1 variable:
   .. .. .. ..$ adjclose:List of 1
-  .. .. .. .. ..$ : num [1:63] 2025 2028 2056 2092 2079 ...
+  .. .. .. .. ..$ : num [1:63] 2130 2142 2168 2180 2114 ...
   ..$ error : NULL</code></pre>
 <pre class="r"><code>obj=obj$chart$result
 str(obj$indicators.quote)</code></pre>
 <pre><code>List of 1
  $ :&#39;data.frame&#39;:   1 obs. of  5 variables:
   ..$ high  :List of 1
-  .. ..$ : num [1:63] 2110 2120 2148 2181 2195 ...
-  ..$ volume:List of 1
-  .. ..$ : int [1:63] 4918200 2990700 2221800 2168700 1768500 2446200 1633200 2741700 2348100 2514900 ...
-  ..$ close :List of 1
-  .. ..$ : num [1:63] 2108 2111 2141 2178 2165 ...
-  ..$ open  :List of 1
-  .. ..$ : num [1:63] 2078 2118 2119 2151 2181 ...
+  .. ..$ : num [1:63] 2228 2236 2262 2281 2275 ...
   ..$ low   :List of 1
-  .. ..$ : num [1:63] 2064 2070 2114 2138 2153 ...</code></pre>
+  .. ..$ : num [1:63] 2201 2215 2235 2239 2196 ...
+  ..$ close :List of 1
+  .. ..$ : num [1:63] 2218 2230 2257 2269 2201 ...
+  ..$ volume:List of 1
+  .. ..$ : int [1:63] 1732200 1568700 1854600 5521200 3999900 1967400 3146400 2130300 2028600 2001600 ...
+  ..$ open  :List of 1
+  .. ..$ : num [1:63] 2209 2222 2237 2265 2266 ...</code></pre>
 <pre class="r"><code>tibble(obj$timestamp[[1]],
        obj$indicators.quote[[1]]$open[[1]],
        obj$indicators.quote[[1]]$close[[1]],
@@ -3532,16 +3532,16 @@ str(obj$indicators.quote)</code></pre>
 <pre><code># A tibble: 63 × 7
    `obj$timestamp[[1]]` obj$indicators.quote[[1]]$open[…¹ obj$indicators.quote…²
                   &lt;int&gt;                             &lt;dbl&gt;                  &lt;dbl&gt;
- 1           1723507200                             2078.                  2108.
- 2           1723593600                             2118                   2111.
- 3           1723680000                             2119.                  2141.
- 4           1723766400                             2151.                  2178 
- 5           1724025600                             2181.                  2165.
- 6           1724112000                             2196                   2208 
- 7           1724198400                             2193.                  2201.
- 8           1724284800                             2190                   2242 
- 9           1724371200                             2257                   2217.
-10           1724630400                             2200.                  2192 
+ 1           1724716800                             2209.                  2218.
+ 2           1724803200                             2222.                  2230 
+ 3           1724889600                             2237.                  2257.
+ 4           1724976000                             2265.                  2269 
+ 5           1725235200                             2266.                  2201 
+ 6           1725321600                             2190                   2219 
+ 7           1725408000                             2200                   2210 
+ 8           1725494400                             2183.                  2187 
+ 9           1725580800                             2175.                  2183.
+10           1725840000                             2156                   2188 
 # ℹ 53 more rows
 # ℹ abbreviated names: ¹​`obj$indicators.quote[[1]]$open[[1]]`,
 #   ²​`obj$indicators.quote[[1]]$close[[1]]`
@@ -3555,56 +3555,56 @@ str(obj) # list with array has same number of elements</code></pre>
  $ code : chr &quot;2401&quot;
  $ day  :List of 2
   ..$ airF:List of 4
-  .. ..$ min  : num 0.045
-  .. ..$ max  : num 0.047
-  .. ..$ ave  : num 0.046
-  .. ..$ value: num [1:144] 0.045 0.046 0.046 0.046 0.046 0.046 0.046 0.046 0.046 0.046 ...
+  .. ..$ min  : num 0.044
+  .. ..$ max  : num 0.058
+  .. ..$ ave  : num 0.047
+  .. ..$ value: num [1:144] 0.058 0.057 0.057 0.056 0.054 0.053 0.052 0.053 0.053 0.055 ...
   ..$ est :List of 4
-  .. ..$ min  : num 0.065
-  .. ..$ max  : num 0.069
-  .. ..$ ave  : num 0.067
-  .. ..$ value: num [1:144] 0.066 0.067 0.067 0.066 0.067 0.067 0.066 0.066 0.066 0.067 ...
+  .. ..$ min  : num 0.064
+  .. ..$ max  : num 0.083
+  .. ..$ ave  : num 0.068
+  .. ..$ value: num [1:144] 0.083 0.083 0.082 0.08 0.079 0.077 0.076 0.076 0.077 0.079 ...
  $ week :List of 2
   ..$ airF:List of 4
   .. ..$ min  : num 0.045
-  .. ..$ max  : num 0.048
-  .. ..$ ave  : num 0.046
-  .. ..$ value: num [1:168] 0.046 0.045 0.045 0.045 0.045 0.045 0.045 0.045 0.045 0.045 ...
+  .. ..$ max  : num 0.064
+  .. ..$ ave  : num 0.047
+  .. ..$ value: num [1:168] 0.047 0.047 0.047 0.046 0.046 0.046 0.046 0.045 0.045 0.045 ...
   ..$ est :List of 4
   .. ..$ min  : num 0.065
-  .. ..$ max  : num 0.07
-  .. ..$ ave  : num 0.067
-  .. ..$ value: num [1:168] 0.066 0.066 0.066 0.065 0.066 0.065 0.065 0.065 0.065 0.065 ...
+  .. ..$ max  : num 0.093
+  .. ..$ ave  : num 0.068
+  .. ..$ value: num [1:168] 0.069 0.068 0.069 0.067 0.067 0.067 0.066 0.066 0.065 0.065 ...
  $ month:List of 2
   ..$ airF:List of 4
   .. ..$ min  : num 0.045
-  .. ..$ max  : num 0.055
+  .. ..$ max  : num 0.061
   .. ..$ ave  : num 0.046
-  .. ..$ value: num [1:180] 0.046 0.048 0.047 0.046 0.045 0.045 0.045 0.046 0.046 0.046 ...
+  .. ..$ value: num [1:180] 0.046 0.046 0.046 0.048 0.055 0.052 0.05 0.051 0.047 0.045 ...
   ..$ est :List of 4
   .. ..$ min  : num 0.065
-  .. ..$ max  : num 0.079
+  .. ..$ max  : num 0.089
   .. ..$ ave  : num 0.067
-  .. ..$ value: num [1:180] 0.066 0.07 0.068 0.067 0.066 0.066 0.066 0.066 0.066 0.067 ...
+  .. ..$ value: num [1:180] 0.066 0.067 0.067 0.07 0.079 0.076 0.073 0.074 0.069 0.065 ...
  $ last :List of 1
   ..$ airF:List of 2
-  .. ..$ time : chr &quot;2024/11/14 04:20&quot;
-  .. ..$ value: num 0.046
- $ time : chr &quot;2024/11/14 04:20&quot;</code></pre>
+  .. ..$ time : chr &quot;2024/11/27 20:40&quot;
+  .. ..$ value: num 0.047
+ $ time : chr &quot;2024/11/27 20:40&quot;</code></pre>
 <pre class="r"><code>tibble(obj$day$airF$value,obj$day$est$value)</code></pre>
 <pre><code># A tibble: 144 × 2
    `obj$day$airF$value` `obj$day$est$value`
                   &lt;dbl&gt;               &lt;dbl&gt;
- 1                0.045               0.066
- 2                0.046               0.067
- 3                0.046               0.067
- 4                0.046               0.066
- 5                0.046               0.067
- 6                0.046               0.067
- 7                0.046               0.066
- 8                0.046               0.066
- 9                0.046               0.066
-10                0.046               0.067
+ 1                0.058               0.083
+ 2                0.057               0.083
+ 3                0.057               0.082
+ 4                0.056               0.08 
+ 5                0.054               0.079
+ 6                0.053               0.077
+ 7                0.052               0.076
+ 8                0.053               0.076
+ 9                0.053               0.077
+10                0.055               0.079
 # ℹ 134 more rows</code></pre>
 <pre><code>library(httr2)
 
