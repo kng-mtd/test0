@@ -2143,58 +2143,61 @@ distCnt=function(x){
 <pre class="r fold-show"><code>#uniform dist. x(-Inf,Inf)
 x=runif(20,-2,3)
 distCnt(x)</code></pre>
-<pre><code>mean: 0.23 sd: 1.3 skew: 0.43 kurt: 2.3 
+<pre><code>mean: 0.79 sd: 1.6 skew: -0.12 kurt: 1.4 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: -1.9 ,u: 2.8 ] p: 0.33 
-normal : skew(0),kurt(3),[m: 0.23 ,s2: 1.7 ] p: 0.73 </code></pre>
+uniform : skew(0),kurt(1.8),[l: -1.7 ,u: 2.9 ] p: 0.27 
+normal : skew(0),kurt(3),[m: 0.79 ,s2: 2.7 ] p: 0.28 </code></pre>
 <pre class="r fold-show"><code>#normal dist. x(=inf,Inf)
 x=rnorm(20,3,2)
 distCnt(x)</code></pre>
-<pre><code>mean: 2 sd: 1.6 skew: 0.22 kurt: 2.5 
+<pre><code>mean: 3.8 sd: 1.8 skew: -0.14 kurt: 1.9 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: -0.69 ,u: 5.2 ] p: 0.2 
-normal : skew(0),kurt(3),[m: 2 ,s2: 2.6 ] p: 0.39 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 0.43 ,u: 6.6 ] p: 0.87 
+normal : skew(0),kurt(3),[m: 3.8 ,s2: 3.4 ] p: 0.36 
+log normal :[m: 1.2 ,s2: 0.48 ] p: 0.23 
+exponential : skew(2),kurt(9),[p:, 0.27 ] p: 0.088 
+gamma : skew( 1 ),kurt( 4.6 ),[a:, 4.2 p: 1.1 ] p: 0.72 </code></pre>
 <pre class="r fold-show"><code>#log normal dist. x(0,Inf)
 x=rlnorm(20,2,1)
 distCnt(x)</code></pre>
-<pre><code>mean: 13 sd: 13 skew: 1.7 kurt: 4.9 
+<pre><code>mean: 16 sd: 14 skew: 1.8 kurt: 5.9 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 2.4 ,u: 47 ] p: 0.00017 
-normal : skew(0),kurt(3),[m: 13 ,s2: 161 ] p: 0.00012 
-log normal :[m: 2.2 ,s2: 0.72 ] p: 0.68 
-exponential : skew(2),kurt(9),[p:, 0.076 ] p: 0.53 
-gamma : skew( 0.55 ),kurt( 3.5 ),[a:, 1.1 p: 0.082 ] p: 0.65 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 1.2 ,u: 60 ] p: 0.000019 
+normal : skew(0),kurt(3),[m: 16 ,s2: 199 ] p: 0.00014 
+log normal :[m: 2.4 ,s2: 0.81 ] p: 0.79 
+exponential : skew(2),kurt(9),[p:, 0.062 ] p: 0.25 
+gamma : skew( 0.5 ),kurt( 3.4 ),[a:, 1.3 p: 0.081 ] p: 0.59 </code></pre>
 <pre class="r fold-show"><code>#exponentiol dist. x[0,Inf)
 x=rexp(20,0.2)
 distCnt(x)</code></pre>
-<pre><code>mean: 4.4 sd: 4.3 skew: 1.7 kurt: 5.7 
+<pre><code>mean: 4.6 sd: 3.8 skew: 0.71 kurt: 2.3 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 0.66 ,u: 18 ] p: 0.000018 
-normal : skew(0),kurt(3),[m: 4.4 ,s2: 18 ] p: 0.0011 
-log normal :[m: 1.1 ,s2: 0.91 ] p: 0.91 
-exponential : skew(2),kurt(9),[p:, 0.23 ] p: 0.79 
-gamma : skew( 0.95 ),kurt( 4.4 ),[a:, 1.1 p: 0.24 ] p: 0.87 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 0.27 ,u: 13 ] p: 0.062 
+normal : skew(0),kurt(3),[m: 4.6 ,s2: 15 ] p: 0.0038 
+log normal :[m: 1.1 ,s2: 1.2 ] p: 0.87 
+exponential : skew(2),kurt(9),[p:, 0.22 ] p: 0.9 
+gamma : skew( 0.93 ),kurt( 4.3 ),[a:, 1.5 p: 0.32 ] p: 0.92 </code></pre>
 <pre class="r fold-show"><code>#gamma dist. x[0,Inf)
 x=rgamma(20,3,rate=0.2)
 distCnt(x)</code></pre>
-<pre><code>mean: 18 sd: 13 skew: 1.6 kurt: 5.3 
+<pre><code>mean: 13 sd: 6.2 skew: 0.42 kurt: 2 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 4.7 ,u: 56 ] p: 0.00021 
-normal : skew(0),kurt(3),[m: 18 ,s2: 165 ] p: 0.00015 
-log normal :[m: 2.6 ,s2: 0.46 ] p: 0.67 
-exponential : skew(2),kurt(9),[p:, 0.057 ] p: 0.18 
-gamma : skew( 0.48 ),kurt( 3.3 ),[a:, 1.9 p: 0.11 ] p: 0.94 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 4.6 ,u: 24 ] p: 0.43 
+normal : skew(0),kurt(3),[m: 13 ,s2: 38 ] p: 0.0014 
+log normal :[m: 2.5 ,s2: 0.26 ] p: 0.18 
+exponential : skew(2),kurt(9),[p:, 0.076 ] p: 0.047 
+gamma : skew( 0.55 ),kurt( 3.5 ),[a:, 4.5 p: 0.34 ] p: 0.95 </code></pre>
 <pre class="r fold-show"><code>#beta dist. x[0,1]
 x=rbeta(20,2,3)
 distCnt(x)</code></pre>
-<pre><code>mean: 0.28 sd: 0.16 skew: 0.99 kurt: 4.5 
+<pre><code>mean: 0.38 sd: 0.2 skew: 0.17 kurt: 1.8 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 0.041 ,u: 0.74 ] p: 0.0086 
-normal : skew(0),kurt(3),[m: 0.28 ,s2: 0.026 ] p: 0.011 
-log normal :[m: -1.5 ,s2: 0.51 ] p: 0.25 
-exponential : skew(2),kurt(9),[p:, 3.6 ] p: 0.12 
-gamma : skew( 3.8 ),kurt( 25 ),[a:, 2.9 p: 10 ] p: 0.66 
-beta :[a: 1.8 b: 4.7 ] p: 0.79 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 0.089 ,u: 0.7 ] p: 0.59 
+normal : skew(0),kurt(3),[m: 0.38 ,s2: 0.04 ] p: 0.0021 
+log normal :[m: -1.1 ,s2: 0.39 ] p: 0.078 
+exponential : skew(2),kurt(9),[p:, 2.6 ] p: 0.2 
+gamma : skew( 3.2 ),kurt( 19 ),[a:, 3.6 p: 9.5 ] p: 0.53 
+beta :[a: 1.9 b: 3 ] p: 0.83 </code></pre>
 </div>
 <div id="discrete-distribution" class="section level3">
 <h3>discrete distribution</h3>
@@ -2259,38 +2262,38 @@ distDsc=function(x){
 #p: event probability, n: #trial, x: #event occurence
 x=rbinom(20,10,0.3)
 distDsc(x)</code></pre>
-<pre><code>mean: 2.4 sd: 0.96 skew: -0.16 kurt: 2 
+<pre><code>mean: 3 sd: 1.3 skew: 0.52 kurt: 2.7 
 chisq-test p-value
-binomial : [n: 4 ,p: 0.62 ] p: 0.77 
-poisson : skew( 0.64 ),kurt( 3.4 ),[l: 2.4 ] p: 0.18 
-geometry : skew( 2 ),kurt( 6.1 ),[p: 0.29 ] p: 0.000019 </code></pre>
+binomial : [n: 7 ,p: 0.41 ] p: 0.85 
+poisson : skew( 0.58 ),kurt( 3.3 ),[l: 3 ] p: 0.69 
+geometry : skew( 2 ),kurt( 6.1 ),[p: 0.25 ] p: 0.0012 </code></pre>
 <pre class="r fold-show"><code>#poisson dist. x[0,Inf)
 #l: mean event occurence, x: #event occurence
 x=rpois(20,3)
 distDsc(x)</code></pre>
-<pre><code>mean: 2.5 sd: 0.87 skew: -0.092 kurt: 2.4 
+<pre><code>mean: 2.6 sd: 1.5 skew: -0.72 kurt: 2.1 
 chisq-test p-value
-binomial : [n: 4 ,p: 0.7 ] p: 0.74 
-poisson : skew( 0.63 ),kurt( 3.4 ),[l: 2.5 ] p: 0.18 
-geometry : skew( 2 ),kurt( 6.1 ),[p: 0.28 ] p: 0.000019 </code></pre>
+binomial : [n: 15 ,p: 0.17 ] p: 0.58 
+poisson : skew( 0.62 ),kurt( 3.4 ),[l: 2.6 ] p: 0.019 
+geometry : skew( 2 ),kurt( 6.1 ),[p: 0.28 ] p: 0.0000028 </code></pre>
 <pre class="r fold-show"><code>#geometry dist. x[0,Inf)
 #p: event probability, x: #failure to occur first event
 x=rgeom(20,0.3)
 distDsc(x)</code></pre>
-<pre><code>mean: 2 sd: 1.8 skew: 0.78 kurt: 3 
+<pre><code>mean: 1.3 sd: 1.2 skew: 0.77 kurt: 2.8 
 chisq-test p-value
-poisson : skew( 0.7 ),kurt( 3.5 ),[l: 2 ] p: 0.025 
-geometry : skew( 2 ),kurt( 6.2 ),[p: 0.33 ] p: 0.21 
-n-binomial : [r: 3.3 ],[p: 0.62 ] p: 0.35 </code></pre>
+poisson : skew( 0.88 ),kurt( 3.8 ),[l: 1.3 ] p: 0.97 
+geometry : skew( 2.1 ),kurt( 6.3 ),[p: 0.44 ] p: 0.55 
+n-binomial : [r: 15 ],[p: 0.92 ] p: 0.97 </code></pre>
 <pre class="r fold-show"><code>#negeative binomial dist. x[r,Inf)
 #p: event probability, r: #event, x: #failure to occur r times events
 x=rnbinom(20,3,0.5)
 distDsc(x)</code></pre>
-<pre><code>mean: 2.3 sd: 2.1 skew: 0.41 kurt: 1.9 
+<pre><code>mean: 2.9 sd: 2 skew: 0.034 kurt: 2.4 
 chisq-test p-value
-poisson : skew( 0.65 ),kurt( 3.4 ),[l: 2.3 ] p: 0.0065 
-geometry : skew( 2 ),kurt( 6.1 ),[p: 0.3 ] p: 0.012 
-n-binomial : [r: 2.9 ],[p: 0.55 ] p: 0.049 </code></pre>
+poisson : skew( 0.58 ),kurt( 3.3 ),[l: 2.9 ] p: 0.043 
+geometry : skew( 2 ),kurt( 6.1 ),[p: 0.25 ] p: 0.051 
+n-binomial : [r: 7.1 ],[p: 0.71 ] p: 0.21 </code></pre>
 </div>
 </div>
 <div id="make-normal-distribution" class="section level2">
@@ -2306,25 +2309,25 @@ cat(&#39;x0\n&#39;)</code></pre>
 <pre><code>x0</code></pre>
 <pre class="r"><code>x0=rnorm(300,10,1)
 normality(x0)</code></pre>
-<pre><code>skewness:  -0.094 , kurtosis:  2.9 , Shapiro-Wilk test:  0.85 </code></pre>
+<pre><code>skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 </code></pre>
 <pre class="r"><code>cat(&#39;x0^2\n&#39;)</code></pre>
 <pre><code>x0^2</code></pre>
 <pre class="r"><code>xr2=x0^2
 normality(xr2)</code></pre>
-<pre><code>skewness:  0.19 , kurtosis:  3 , Shapiro-Wilk test:  0.52 </code></pre>
+<pre><code>skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 </code></pre>
 <pre class="r"><code>cat(&#39;x0^3\n&#39;)</code></pre>
 <pre><code>x0^3</code></pre>
 <pre class="r"><code>xr3=x0^3
 normality(xr3)</code></pre>
-<pre><code>skewness:  0.47 , kurtosis:  3.2 , Shapiro-Wilk test:  0.0031 </code></pre>
+<pre><code>skewness:  0.7 , kurtosis:  3.8 , Shapiro-Wilk test:  0.000011 </code></pre>
 <pre class="r"><code>cat(&#39;log x0^2\n&#39;)</code></pre>
 <pre><code>log x0^2</code></pre>
 <pre class="r"><code>normality(log(xr2))</code></pre>
-<pre><code>skewness:  -0.39 , kurtosis:  3.2 , Shapiro-Wilk test:  0.021 </code></pre>
+<pre><code>skewness:  -0.34 , kurtosis:  3.6 , Shapiro-Wilk test:  0.044 </code></pre>
 <pre class="r"><code>cat(&#39;log x0^3\n&#39;)</code></pre>
 <pre><code>log x0^3</code></pre>
 <pre class="r"><code>normality(log(xr3))</code></pre>
-<pre><code>skewness:  -0.39 , kurtosis:  3.2 , Shapiro-Wilk test:  0.021 </code></pre>
+<pre><code>skewness:  -0.34 , kurtosis:  3.6 , Shapiro-Wilk test:  0.044 </code></pre>
 <pre class="r"><code>cat(&#39;x=x0^2\n&#39;)</code></pre>
 <pre><code>x=x0^2</code></pre>
 <pre class="r"><code>for(i in c(1,1.5,2,2.5,3,3.5,4)){
@@ -2332,19 +2335,19 @@ normality(xr3)</code></pre>
   normality(xr2^(1/i))
 }</code></pre>
 <pre><code>x^ 1/ 1 
-skewness:  0.19 , kurtosis:  3 , Shapiro-Wilk test:  0.52 
+skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 
 x^ 1/ 1.5 
-skewness:  0.0022 , kurtosis:  2.9 , Shapiro-Wilk test:  0.93 
+skewness:  0.15 , kurtosis:  3.3 , Shapiro-Wilk test:  0.5 
 x^ 1/ 2 
-skewness:  -0.094 , kurtosis:  2.9 , Shapiro-Wilk test:  0.85 
+skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 
 x^ 1/ 2.5 
-skewness:  -0.15 , kurtosis:  3 , Shapiro-Wilk test:  0.68 
+skewness:  -0.043 , kurtosis:  3.3 , Shapiro-Wilk test:  0.67 
 x^ 1/ 3 
-skewness:  -0.19 , kurtosis:  3 , Shapiro-Wilk test:  0.51 
+skewness:  -0.091 , kurtosis:  3.3 , Shapiro-Wilk test:  0.59 
 x^ 1/ 3.5 
-skewness:  -0.22 , kurtosis:  3 , Shapiro-Wilk test:  0.39 
+skewness:  -0.13 , kurtosis:  3.4 , Shapiro-Wilk test:  0.51 
 x^ 1/ 4 
-skewness:  -0.24 , kurtosis:  3 , Shapiro-Wilk test:  0.3 </code></pre>
+skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 </code></pre>
 <pre class="r"><code>cat(&#39;x=x0^3\n&#39;)</code></pre>
 <pre><code>x=x0^3</code></pre>
 <pre class="r"><code>for(i in c(1,1.5,2,2.5,3,3.5,4)){
@@ -2352,19 +2355,19 @@ skewness:  -0.24 , kurtosis:  3 , Shapiro-Wilk test:  0.3 </code></pre>
   normality(xr3^(1/i))
 }</code></pre>
 <pre><code>x^ 1/ 1 
-skewness:  0.47 , kurtosis:  3.2 , Shapiro-Wilk test:  0.0031 
+skewness:  0.7 , kurtosis:  3.8 , Shapiro-Wilk test:  0.000011 
 x^ 1/ 1.5 
-skewness:  0.19 , kurtosis:  3 , Shapiro-Wilk test:  0.52 
+skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 
 x^ 1/ 2 
-skewness:  0.05 , kurtosis:  2.9 , Shapiro-Wilk test:  0.91 
+skewness:  0.2 , kurtosis:  3.3 , Shapiro-Wilk test:  0.33 
 x^ 1/ 2.5 
-skewness:  -0.036 , kurtosis:  2.9 , Shapiro-Wilk test:  0.92 
+skewness:  0.099 , kurtosis:  3.3 , Shapiro-Wilk test:  0.61 
 x^ 1/ 3 
-skewness:  -0.094 , kurtosis:  2.9 , Shapiro-Wilk test:  0.85 
+skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 
 x^ 1/ 3.5 
-skewness:  -0.14 , kurtosis:  2.9 , Shapiro-Wilk test:  0.74 
+skewness:  -0.022 , kurtosis:  3.3 , Shapiro-Wilk test:  0.69 
 x^ 1/ 4 
-skewness:  -0.17 , kurtosis:  3 , Shapiro-Wilk test:  0.62 </code></pre>
+skewness:  -0.06 , kurtosis:  3.3 , Shapiro-Wilk test:  0.65 </code></pre>
 </div>
 <div id="skewed-to-the-left" class="section level3">
 <h3>skewed to the left</h3>
@@ -2372,20 +2375,20 @@ skewness:  -0.17 , kurtosis:  3 , Shapiro-Wilk test:  0.62 </code></pre>
 <pre><code>x0^ 1/2</code></pre>
 <pre class="r"><code>xl2=x0^(1/2)
 normality(xl2)</code></pre>
-<pre><code>skewness:  -0.24 , kurtosis:  3 , Shapiro-Wilk test:  0.3 </code></pre>
+<pre><code>skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 </code></pre>
 <pre class="r"><code>cat(&#39;x0^ 1/3\n&#39;)</code></pre>
 <pre><code>x0^ 1/3</code></pre>
 <pre class="r"><code>xl3=x0^(1/3)
 normality(xl3)</code></pre>
-<pre><code>skewness:  -0.29 , kurtosis:  3.1 , Shapiro-Wilk test:  0.15 </code></pre>
+<pre><code>skewness:  -0.21 , kurtosis:  3.4 , Shapiro-Wilk test:  0.26 </code></pre>
 <pre class="r"><code>cat(&#39;exp x0^ 1/2\n&#39;)</code></pre>
 <pre><code>exp x0^ 1/2</code></pre>
 <pre class="r"><code>normality(exp(xl2))</code></pre>
-<pre><code>skewness:  0.21 , kurtosis:  3 , Shapiro-Wilk test:  0.43 </code></pre>
+<pre><code>skewness:  0.4 , kurtosis:  3.4 , Shapiro-Wilk test:  0.015 </code></pre>
 <pre class="r"><code>cat(&#39;exp x0^ 1/3\n&#39;)</code></pre>
 <pre><code>exp x0^ 1/3</code></pre>
 <pre class="r"><code>normality(exp(xl3))</code></pre>
-<pre><code>skewness:  -0.08 , kurtosis:  2.9 , Shapiro-Wilk test:  0.87 </code></pre>
+<pre><code>skewness:  0.045 , kurtosis:  3.3 , Shapiro-Wilk test:  0.67 </code></pre>
 <pre class="r"><code>cat(&#39;x=x0^ 1/2\n&#39;)</code></pre>
 <pre><code>x=x0^ 1/2</code></pre>
 <pre class="r"><code>for(i in c(1,1.5,2,2.5,3,3.5,4)){
@@ -2393,19 +2396,19 @@ normality(xl3)</code></pre>
   normality(xl2^i)
 }</code></pre>
 <pre><code>x^  1 
-skewness:  -0.24 , kurtosis:  3 , Shapiro-Wilk test:  0.3 
+skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 
 x^  1.5 
-skewness:  -0.17 , kurtosis:  3 , Shapiro-Wilk test:  0.62 
+skewness:  -0.06 , kurtosis:  3.3 , Shapiro-Wilk test:  0.65 
 x^  2 
-skewness:  -0.094 , kurtosis:  2.9 , Shapiro-Wilk test:  0.85 
+skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 
 x^  2.5 
-skewness:  -0.022 , kurtosis:  2.9 , Shapiro-Wilk test:  0.93 
+skewness:  0.12 , kurtosis:  3.3 , Shapiro-Wilk test:  0.57 
 x^  3 
-skewness:  0.05 , kurtosis:  2.9 , Shapiro-Wilk test:  0.91 
+skewness:  0.2 , kurtosis:  3.3 , Shapiro-Wilk test:  0.33 
 x^  3.5 
-skewness:  0.12 , kurtosis:  2.9 , Shapiro-Wilk test:  0.79 
+skewness:  0.29 , kurtosis:  3.3 , Shapiro-Wilk test:  0.12 
 x^  4 
-skewness:  0.19 , kurtosis:  3 , Shapiro-Wilk test:  0.52 </code></pre>
+skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 </code></pre>
 <pre class="r"><code>cat(&#39;x=x0^ 1/3\n&#39;)</code></pre>
 <pre><code>x=x0^ 1/3</code></pre>
 <pre class="r"><code>for(i in c(1,1.5,2,2.5,3,3.5,4)){
@@ -2413,19 +2416,19 @@ skewness:  0.19 , kurtosis:  3 , Shapiro-Wilk test:  0.52 </code></pre>
   normality(xl3^i)
 }</code></pre>
 <pre><code>x^  1 
-skewness:  -0.29 , kurtosis:  3.1 , Shapiro-Wilk test:  0.15 
+skewness:  -0.21 , kurtosis:  3.4 , Shapiro-Wilk test:  0.26 
 x^  1.5 
-skewness:  -0.24 , kurtosis:  3 , Shapiro-Wilk test:  0.3 
+skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 
 x^  2 
-skewness:  -0.19 , kurtosis:  3 , Shapiro-Wilk test:  0.51 
+skewness:  -0.091 , kurtosis:  3.3 , Shapiro-Wilk test:  0.59 
 x^  2.5 
-skewness:  -0.14 , kurtosis:  3 , Shapiro-Wilk test:  0.71 
+skewness:  -0.031 , kurtosis:  3.3 , Shapiro-Wilk test:  0.68 
 x^  3 
-skewness:  -0.094 , kurtosis:  2.9 , Shapiro-Wilk test:  0.85 
+skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 
 x^  3.5 
-skewness:  -0.046 , kurtosis:  2.9 , Shapiro-Wilk test:  0.91 
+skewness:  0.087 , kurtosis:  3.3 , Shapiro-Wilk test:  0.63 
 x^  4 
-skewness:  0.0022 , kurtosis:  2.9 , Shapiro-Wilk test:  0.93 </code></pre>
+skewness:  0.15 , kurtosis:  3.3 , Shapiro-Wilk test:  0.5 </code></pre>
 </div>
 </div>
 <div id="categorical-variable" class="section level2">
@@ -3181,6 +3184,18 @@ The appropriate sample size should be calculated based on meaningful differences
 To determine whether a difference or association exists using p-values derived from test statistics, the data must be obtained with an appropriate sample size. However, when analyzing existing data, p-value testing is unnecessary. Instead, examine whether the effect size and the confidence interval of the difference or correlation exclude zero. Use d-family effect size as a substitute for the t-test and r-family effect size as a substitute for the chi-square test and F-test in ANOVA.
 
 Guidelines for interpreting effect size can be found here: https://kamesan-kamesan.com/effect-size/</code></pre>
+<pre><code>Glass&#39;s Δ
+size of the difference from population, given population mean x0, sd s0</code></pre>
+<p><span class="math display">\[Δ=(\bar{x}-x_0)/s_0\]</span></p>
+<pre><code>Cohen&#39;s d
+size of the difference between non coresponding group A and B</code></pre>
+<p><span class="math display">\[d=(\bar{x_a}-\bar{x_b})/s\]</span> <span class="math display">\[s=\sqrt{((n_a-1)s_a^2+(n_b-1)s_b^2)/(n_a+n_b-2)}\]</span></p>
+<pre><code>Hedge&#39;s g
+correction of Cohen&#39;s d for small sample</code></pre>
+<p><span class="math display">\[g=d*(1-3/(4(n_a+n_b)-9))\]</span></p>
+<pre><code>diff&#39;s δ
+size of the difference between coresponding group A and B</code></pre>
+<p><span class="math display">\[δ=(\#(x_a&gt;x_b)-\#(x_a&lt;x_b))/n_a/n_b\]</span></p>
 <pre class="r"><code># 2 groups of numeric variable 
 boxplot(body_mass_g~sex,tb)</code></pre>
 <p><img src="data:image/png;base64,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" width="672" /></p>
@@ -3203,6 +3218,11 @@ mean in group female   mean in group male
 data:  body_mass_g by sex
 W = 6874, p-value = 0.000000000000002
 alternative hypothesis: true location shift is not equal to 0</code></pre>
+<pre class="r"><code>m0=mean(tb$body_mass_g)
+s0=sd(tb$body_mass_g)
+cat(&#39;Glass Δ &#39;,
+    ((filter(tb,sex==&#39;male&#39;) |&gt; select(body_mass_g) |&gt; unlist() |&gt; mean())-m0)/s0)</code></pre>
+<pre><code>Glass Δ  0.42</code></pre>
 <pre class="r"><code>cliff.delta(body_mass_g~sex,tb)</code></pre>
 <pre><code>
 Cliff&#39;s Delta
@@ -3216,6 +3236,14 @@ lower upper
 Cohen&#39;s d
 
 d estimate: -0.94 (large)
+95 percent confidence interval:
+lower upper 
+-1.16 -0.71 </code></pre>
+<pre class="r"><code>cohen.d(body_mass_g~sex,tb,hedges.correction=T)</code></pre>
+<pre><code>
+Hedges&#39;s g
+
+g estimate: -0.93 (large)
 95 percent confidence interval:
 lower upper 
 -1.16 -0.71 </code></pre>
