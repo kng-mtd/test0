@@ -2143,61 +2143,58 @@ distCnt=function(x){
 <pre class="r fold-show"><code>#uniform dist. x(-Inf,Inf)
 x=runif(20,-2,3)
 distCnt(x)</code></pre>
-<pre><code>mean: 0.79 sd: 1.6 skew: -0.12 kurt: 1.4 
+<pre><code>mean: 0.27 sd: 1.3 skew: 0.21 kurt: 2.4 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: -1.7 ,u: 2.9 ] p: 0.27 
-normal : skew(0),kurt(3),[m: 0.79 ,s2: 2.7 ] p: 0.28 </code></pre>
+uniform : skew(0),kurt(1.8),[l: -1.8 ,u: 2.9 ] p: 0.14 
+normal : skew(0),kurt(3),[m: 0.27 ,s2: 1.8 ] p: 0.46 </code></pre>
 <pre class="r fold-show"><code>#normal dist. x(=inf,Inf)
 x=rnorm(20,3,2)
 distCnt(x)</code></pre>
-<pre><code>mean: 3.8 sd: 1.8 skew: -0.14 kurt: 1.9 
+<pre><code>mean: 2.9 sd: 2 skew: -0.71 kurt: 3 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 0.43 ,u: 6.6 ] p: 0.87 
-normal : skew(0),kurt(3),[m: 3.8 ,s2: 3.4 ] p: 0.36 
-log normal :[m: 1.2 ,s2: 0.48 ] p: 0.23 
-exponential : skew(2),kurt(9),[p:, 0.27 ] p: 0.088 
-gamma : skew( 1 ),kurt( 4.6 ),[a:, 4.2 p: 1.1 ] p: 0.72 </code></pre>
+uniform : skew(0),kurt(1.8),[l: -1.8 ,u: 5.9 ] p: 0.099 
+normal : skew(0),kurt(3),[m: 2.9 ,s2: 4.2 ] p: 0.2 </code></pre>
 <pre class="r fold-show"><code>#log normal dist. x(0,Inf)
 x=rlnorm(20,2,1)
 distCnt(x)</code></pre>
-<pre><code>mean: 16 sd: 14 skew: 1.8 kurt: 5.9 
+<pre><code>mean: 13 sd: 14 skew: 1.7 kurt: 5 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 1.2 ,u: 60 ] p: 0.000019 
-normal : skew(0),kurt(3),[m: 16 ,s2: 199 ] p: 0.00014 
-log normal :[m: 2.4 ,s2: 0.81 ] p: 0.79 
-exponential : skew(2),kurt(9),[p:, 0.062 ] p: 0.25 
-gamma : skew( 0.5 ),kurt( 3.4 ),[a:, 1.3 p: 0.081 ] p: 0.59 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 0.7 ,u: 53 ] p: 0.000018 
+normal : skew(0),kurt(3),[m: 13 ,s2: 207 ] p: 0.0001 
+log normal :[m: 1.9 ,s2: 1.5 ] p: 0.96 
+exponential : skew(2),kurt(9),[p:, 0.08 ] p: 0.96 
+gamma : skew( 0.56 ),kurt( 3.5 ),[a:, 0.76 p: 0.061 ] p: 0.98 </code></pre>
 <pre class="r fold-show"><code>#exponentiol dist. x[0,Inf)
 x=rexp(20,0.2)
 distCnt(x)</code></pre>
-<pre><code>mean: 4.6 sd: 3.8 skew: 0.71 kurt: 2.3 
+<pre><code>mean: 5.7 sd: 6.9 skew: 1.8 kurt: 6.1 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 0.27 ,u: 13 ] p: 0.062 
-normal : skew(0),kurt(3),[m: 4.6 ,s2: 15 ] p: 0.0038 
-log normal :[m: 1.1 ,s2: 1.2 ] p: 0.87 
-exponential : skew(2),kurt(9),[p:, 0.22 ] p: 0.9 
-gamma : skew( 0.93 ),kurt( 4.3 ),[a:, 1.5 p: 0.32 ] p: 0.92 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 0.06 ,u: 27 ] p: 0.0000075 
+normal : skew(0),kurt(3),[m: 5.7 ,s2: 48 ] p: 0.00028 
+log normal :[m: 0.89 ,s2: 2.5 ] p: 0.44 
+exponential : skew(2),kurt(9),[p:, 0.18 ] p: 0.45 
+gamma : skew( 0.84 ),kurt( 4.1 ),[a:, 0.68 p: 0.12 ] p: 0.98 </code></pre>
 <pre class="r fold-show"><code>#gamma dist. x[0,Inf)
 x=rgamma(20,3,rate=0.2)
 distCnt(x)</code></pre>
-<pre><code>mean: 13 sd: 6.2 skew: 0.42 kurt: 2 
+<pre><code>mean: 16 sd: 8.6 skew: 2 kurt: 7.4 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 4.6 ,u: 24 ] p: 0.43 
-normal : skew(0),kurt(3),[m: 13 ,s2: 38 ] p: 0.0014 
-log normal :[m: 2.5 ,s2: 0.26 ] p: 0.18 
-exponential : skew(2),kurt(9),[p:, 0.076 ] p: 0.047 
-gamma : skew( 0.55 ),kurt( 3.5 ),[a:, 4.5 p: 0.34 ] p: 0.95 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 7.3 ,u: 45 ] p: 0.000056 
+normal : skew(0),kurt(3),[m: 16 ,s2: 74 ] p: 0.00028 
+log normal :[m: 2.7 ,s2: 0.2 ] p: 0.09 
+exponential : skew(2),kurt(9),[p:, 0.063 ] p: 0.0044 
+gamma : skew( 0.5 ),kurt( 3.4 ),[a:, 3.4 p: 0.21 ] p: 0.59 </code></pre>
 <pre class="r fold-show"><code>#beta dist. x[0,1]
 x=rbeta(20,2,3)
 distCnt(x)</code></pre>
-<pre><code>mean: 0.38 sd: 0.2 skew: 0.17 kurt: 1.8 
+<pre><code>mean: 0.44 sd: 0.14 skew: -0.37 kurt: 2.3 
 ks-test p-value
-uniform : skew(0),kurt(1.8),[l: 0.089 ,u: 0.7 ] p: 0.59 
-normal : skew(0),kurt(3),[m: 0.38 ,s2: 0.04 ] p: 0.0021 
-log normal :[m: -1.1 ,s2: 0.39 ] p: 0.078 
-exponential : skew(2),kurt(9),[p:, 2.6 ] p: 0.2 
-gamma : skew( 3.2 ),kurt( 19 ),[a:, 3.6 p: 9.5 ] p: 0.53 
-beta :[a: 1.9 b: 3 ] p: 0.83 </code></pre>
+uniform : skew(0),kurt(1.8),[l: 0.15 ,u: 0.65 ] p: 0.33 
+normal : skew(0),kurt(3),[m: 0.44 ,s2: 0.021 ] p: 0.004 
+log normal :[m: -0.88 ,s2: 0.16 ] p: 0.06 
+exponential : skew(2),kurt(9),[p:, 2.3 ] p: 0.0059 
+gamma : skew( 3 ),kurt( 17 ),[a:, 9.3 p: 21 ] p: 0.74 
+beta :[a: 4.8 b: 6 ] p: 0.83 </code></pre>
 </div>
 <div id="discrete-distribution" class="section level3">
 <h3>discrete distribution</h3>
@@ -2262,38 +2259,38 @@ distDsc=function(x){
 #p: event probability, n: #trial, x: #event occurence
 x=rbinom(20,10,0.3)
 distDsc(x)</code></pre>
-<pre><code>mean: 3 sd: 1.3 skew: 0.52 kurt: 2.7 
+<pre><code>mean: 2.6 sd: 1.2 skew: -0.063 kurt: 2.6 
 chisq-test p-value
-binomial : [n: 7 ,p: 0.41 ] p: 0.85 
-poisson : skew( 0.58 ),kurt( 3.3 ),[l: 3 ] p: 0.69 
-geometry : skew( 2 ),kurt( 6.1 ),[p: 0.25 ] p: 0.0012 </code></pre>
+binomial : [n: 6 ,p: 0.42 ] p: 0.97 
+poisson : skew( 0.62 ),kurt( 3.4 ),[l: 2.6 ] p: 0.74 
+geometry : skew( 2 ),kurt( 6.1 ),[p: 0.28 ] p: 0.0015 </code></pre>
 <pre class="r fold-show"><code>#poisson dist. x[0,Inf)
 #l: mean event occurence, x: #event occurence
 x=rpois(20,3)
 distDsc(x)</code></pre>
-<pre><code>mean: 2.6 sd: 1.5 skew: -0.72 kurt: 2.1 
+<pre><code>mean: 3.3 sd: 1.7 skew: 0.16 kurt: 2.5 
 chisq-test p-value
-binomial : [n: 15 ,p: 0.17 ] p: 0.58 
-poisson : skew( 0.62 ),kurt( 3.4 ),[l: 2.6 ] p: 0.019 
-geometry : skew( 2 ),kurt( 6.1 ),[p: 0.28 ] p: 0.0000028 </code></pre>
+binomial : [n: 32 ,p: 0.1 ] p: 1 
+poisson : skew( 0.55 ),kurt( 3.3 ),[l: 3.3 ] p: 0.51 
+geometry : skew( 2 ),kurt( 6.1 ),[p: 0.23 ] p: 0.0015 </code></pre>
 <pre class="r fold-show"><code>#geometry dist. x[0,Inf)
 #p: event probability, x: #failure to occur first event
 x=rgeom(20,0.3)
 distDsc(x)</code></pre>
-<pre><code>mean: 1.3 sd: 1.2 skew: 0.77 kurt: 2.8 
+<pre><code>mean: 2.5 sd: 2.1 skew: 0.48 kurt: 2.2 
 chisq-test p-value
-poisson : skew( 0.88 ),kurt( 3.8 ),[l: 1.3 ] p: 0.97 
-geometry : skew( 2.1 ),kurt( 6.3 ),[p: 0.44 ] p: 0.55 
-n-binomial : [r: 15 ],[p: 0.92 ] p: 0.97 </code></pre>
+poisson : skew( 0.63 ),kurt( 3.4 ),[l: 2.5 ] p: 0.17 
+geometry : skew( 2 ),kurt( 6.1 ),[p: 0.29 ] p: 0.39 
+n-binomial : [r: 3.2 ],[p: 0.56 ] p: 0.69 </code></pre>
 <pre class="r fold-show"><code>#negeative binomial dist. x[r,Inf)
 #p: event probability, r: #event, x: #failure to occur r times events
 x=rnbinom(20,3,0.5)
 distDsc(x)</code></pre>
-<pre><code>mean: 2.9 sd: 2 skew: 0.034 kurt: 2.4 
+<pre><code>mean: 2.5 sd: 1.7 skew: 0.71 kurt: 2.7 
 chisq-test p-value
-poisson : skew( 0.58 ),kurt( 3.3 ),[l: 2.9 ] p: 0.043 
-geometry : skew( 2 ),kurt( 6.1 ),[p: 0.25 ] p: 0.051 
-n-binomial : [r: 7.1 ],[p: 0.71 ] p: 0.21 </code></pre>
+poisson : skew( 0.64 ),kurt( 3.4 ),[l: 2.5 ] p: 0.26 
+geometry : skew( 2 ),kurt( 6.1 ),[p: 0.29 ] p: 0.045 
+n-binomial : [r: 14 ],[p: 0.85 ] p: 0.35 </code></pre>
 </div>
 </div>
 <div id="make-normal-distribution" class="section level2">
@@ -2309,25 +2306,25 @@ cat(&#39;x0\n&#39;)</code></pre>
 <pre><code>x0</code></pre>
 <pre class="r"><code>x0=rnorm(300,10,1)
 normality(x0)</code></pre>
-<pre><code>skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 </code></pre>
+<pre><code>skewness:  0.038 , kurtosis:  3.6 , Shapiro-Wilk test:  0.069 </code></pre>
 <pre class="r"><code>cat(&#39;x0^2\n&#39;)</code></pre>
 <pre><code>x0^2</code></pre>
 <pre class="r"><code>xr2=x0^2
 normality(xr2)</code></pre>
-<pre><code>skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 </code></pre>
+<pre><code>skewness:  0.45 , kurtosis:  3.8 , Shapiro-Wilk test:  0.001 </code></pre>
 <pre class="r"><code>cat(&#39;x0^3\n&#39;)</code></pre>
 <pre><code>x0^3</code></pre>
 <pre class="r"><code>xr3=x0^3
 normality(xr3)</code></pre>
-<pre><code>skewness:  0.7 , kurtosis:  3.8 , Shapiro-Wilk test:  0.000011 </code></pre>
+<pre><code>skewness:  0.85 , kurtosis:  4.4 , Shapiro-Wilk test:  0.00000023 </code></pre>
 <pre class="r"><code>cat(&#39;log x0^2\n&#39;)</code></pre>
 <pre><code>log x0^2</code></pre>
 <pre class="r"><code>normality(log(xr2))</code></pre>
-<pre><code>skewness:  -0.34 , kurtosis:  3.6 , Shapiro-Wilk test:  0.044 </code></pre>
+<pre><code>skewness:  -0.4 , kurtosis:  4 , Shapiro-Wilk test:  0.0014 </code></pre>
 <pre class="r"><code>cat(&#39;log x0^3\n&#39;)</code></pre>
 <pre><code>log x0^3</code></pre>
 <pre class="r"><code>normality(log(xr3))</code></pre>
-<pre><code>skewness:  -0.34 , kurtosis:  3.6 , Shapiro-Wilk test:  0.044 </code></pre>
+<pre><code>skewness:  -0.4 , kurtosis:  4 , Shapiro-Wilk test:  0.0014 </code></pre>
 <pre class="r"><code>cat(&#39;x=x0^2\n&#39;)</code></pre>
 <pre><code>x=x0^2</code></pre>
 <pre class="r"><code>for(i in c(1,1.5,2,2.5,3,3.5,4)){
@@ -2335,19 +2332,19 @@ normality(xr3)</code></pre>
   normality(xr2^(1/i))
 }</code></pre>
 <pre><code>x^ 1/ 1 
-skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 
+skewness:  0.45 , kurtosis:  3.8 , Shapiro-Wilk test:  0.001 
 x^ 1/ 1.5 
-skewness:  0.15 , kurtosis:  3.3 , Shapiro-Wilk test:  0.5 
+skewness:  0.18 , kurtosis:  3.6 , Shapiro-Wilk test:  0.039 
 x^ 1/ 2 
-skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 
+skewness:  0.038 , kurtosis:  3.6 , Shapiro-Wilk test:  0.069 
 x^ 1/ 2.5 
-skewness:  -0.043 , kurtosis:  3.3 , Shapiro-Wilk test:  0.67 
+skewness:  -0.047 , kurtosis:  3.6 , Shapiro-Wilk test:  0.062 
 x^ 1/ 3 
-skewness:  -0.091 , kurtosis:  3.3 , Shapiro-Wilk test:  0.59 
+skewness:  -0.1 , kurtosis:  3.7 , Shapiro-Wilk test:  0.047 
 x^ 1/ 3.5 
-skewness:  -0.13 , kurtosis:  3.4 , Shapiro-Wilk test:  0.51 
+skewness:  -0.15 , kurtosis:  3.7 , Shapiro-Wilk test:  0.036 
 x^ 1/ 4 
-skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 </code></pre>
+skewness:  -0.18 , kurtosis:  3.7 , Shapiro-Wilk test:  0.027 </code></pre>
 <pre class="r"><code>cat(&#39;x=x0^3\n&#39;)</code></pre>
 <pre><code>x=x0^3</code></pre>
 <pre class="r"><code>for(i in c(1,1.5,2,2.5,3,3.5,4)){
@@ -2355,19 +2352,19 @@ skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 </code></pre>
   normality(xr3^(1/i))
 }</code></pre>
 <pre><code>x^ 1/ 1 
-skewness:  0.7 , kurtosis:  3.8 , Shapiro-Wilk test:  0.000011 
+skewness:  0.85 , kurtosis:  4.4 , Shapiro-Wilk test:  0.00000023 
 x^ 1/ 1.5 
-skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 
+skewness:  0.45 , kurtosis:  3.8 , Shapiro-Wilk test:  0.001 
 x^ 1/ 2 
-skewness:  0.2 , kurtosis:  3.3 , Shapiro-Wilk test:  0.33 
+skewness:  0.25 , kurtosis:  3.6 , Shapiro-Wilk test:  0.021 
 x^ 1/ 2.5 
-skewness:  0.099 , kurtosis:  3.3 , Shapiro-Wilk test:  0.61 
+skewness:  0.12 , kurtosis:  3.6 , Shapiro-Wilk test:  0.054 
 x^ 1/ 3 
-skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 
+skewness:  0.038 , kurtosis:  3.6 , Shapiro-Wilk test:  0.069 
 x^ 1/ 3.5 
-skewness:  -0.022 , kurtosis:  3.3 , Shapiro-Wilk test:  0.69 
+skewness:  -0.022 , kurtosis:  3.6 , Shapiro-Wilk test:  0.066 
 x^ 1/ 4 
-skewness:  -0.06 , kurtosis:  3.3 , Shapiro-Wilk test:  0.65 </code></pre>
+skewness:  -0.069 , kurtosis:  3.7 , Shapiro-Wilk test:  0.057 </code></pre>
 </div>
 <div id="skewed-to-the-left" class="section level3">
 <h3>skewed to the left</h3>
@@ -2375,20 +2372,20 @@ skewness:  -0.06 , kurtosis:  3.3 , Shapiro-Wilk test:  0.65 </code></pre>
 <pre><code>x0^ 1/2</code></pre>
 <pre class="r"><code>xl2=x0^(1/2)
 normality(xl2)</code></pre>
-<pre><code>skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 </code></pre>
+<pre><code>skewness:  -0.18 , kurtosis:  3.7 , Shapiro-Wilk test:  0.027 </code></pre>
 <pre class="r"><code>cat(&#39;x0^ 1/3\n&#39;)</code></pre>
 <pre><code>x0^ 1/3</code></pre>
 <pre class="r"><code>xl3=x0^(1/3)
 normality(xl3)</code></pre>
-<pre><code>skewness:  -0.21 , kurtosis:  3.4 , Shapiro-Wilk test:  0.26 </code></pre>
+<pre><code>skewness:  -0.25 , kurtosis:  3.8 , Shapiro-Wilk test:  0.013 </code></pre>
 <pre class="r"><code>cat(&#39;exp x0^ 1/2\n&#39;)</code></pre>
 <pre><code>exp x0^ 1/2</code></pre>
 <pre class="r"><code>normality(exp(xl2))</code></pre>
-<pre><code>skewness:  0.4 , kurtosis:  3.4 , Shapiro-Wilk test:  0.015 </code></pre>
+<pre><code>skewness:  0.49 , kurtosis:  3.9 , Shapiro-Wilk test:  0.00047 </code></pre>
 <pre class="r"><code>cat(&#39;exp x0^ 1/3\n&#39;)</code></pre>
 <pre><code>exp x0^ 1/3</code></pre>
 <pre class="r"><code>normality(exp(xl3))</code></pre>
-<pre><code>skewness:  0.045 , kurtosis:  3.3 , Shapiro-Wilk test:  0.67 </code></pre>
+<pre><code>skewness:  0.058 , kurtosis:  3.6 , Shapiro-Wilk test:  0.062 </code></pre>
 <pre class="r"><code>cat(&#39;x=x0^ 1/2\n&#39;)</code></pre>
 <pre><code>x=x0^ 1/2</code></pre>
 <pre class="r"><code>for(i in c(1,1.5,2,2.5,3,3.5,4)){
@@ -2396,19 +2393,19 @@ normality(xl3)</code></pre>
   normality(xl2^i)
 }</code></pre>
 <pre><code>x^  1 
-skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 
+skewness:  -0.18 , kurtosis:  3.7 , Shapiro-Wilk test:  0.027 
 x^  1.5 
-skewness:  -0.06 , kurtosis:  3.3 , Shapiro-Wilk test:  0.65 
+skewness:  -0.069 , kurtosis:  3.7 , Shapiro-Wilk test:  0.057 
 x^  2 
-skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 
+skewness:  0.038 , kurtosis:  3.6 , Shapiro-Wilk test:  0.069 
 x^  2.5 
-skewness:  0.12 , kurtosis:  3.3 , Shapiro-Wilk test:  0.57 
+skewness:  0.14 , kurtosis:  3.6 , Shapiro-Wilk test:  0.049 
 x^  3 
-skewness:  0.2 , kurtosis:  3.3 , Shapiro-Wilk test:  0.33 
+skewness:  0.25 , kurtosis:  3.6 , Shapiro-Wilk test:  0.021 
 x^  3.5 
-skewness:  0.29 , kurtosis:  3.3 , Shapiro-Wilk test:  0.12 
+skewness:  0.35 , kurtosis:  3.7 , Shapiro-Wilk test:  0.0056 
 x^  4 
-skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 </code></pre>
+skewness:  0.45 , kurtosis:  3.8 , Shapiro-Wilk test:  0.001 </code></pre>
 <pre class="r"><code>cat(&#39;x=x0^ 1/3\n&#39;)</code></pre>
 <pre><code>x=x0^ 1/3</code></pre>
 <pre class="r"><code>for(i in c(1,1.5,2,2.5,3,3.5,4)){
@@ -2416,19 +2413,19 @@ skewness:  0.37 , kurtosis:  3.4 , Shapiro-Wilk test:  0.028 </code></pre>
   normality(xl3^i)
 }</code></pre>
 <pre><code>x^  1 
-skewness:  -0.21 , kurtosis:  3.4 , Shapiro-Wilk test:  0.26 
+skewness:  -0.25 , kurtosis:  3.8 , Shapiro-Wilk test:  0.013 
 x^  1.5 
-skewness:  -0.15 , kurtosis:  3.4 , Shapiro-Wilk test:  0.43 
+skewness:  -0.18 , kurtosis:  3.7 , Shapiro-Wilk test:  0.027 
 x^  2 
-skewness:  -0.091 , kurtosis:  3.3 , Shapiro-Wilk test:  0.59 
+skewness:  -0.1 , kurtosis:  3.7 , Shapiro-Wilk test:  0.047 
 x^  2.5 
-skewness:  -0.031 , kurtosis:  3.3 , Shapiro-Wilk test:  0.68 
+skewness:  -0.033 , kurtosis:  3.6 , Shapiro-Wilk test:  0.064 
 x^  3 
-skewness:  0.029 , kurtosis:  3.3 , Shapiro-Wilk test:  0.7 
+skewness:  0.038 , kurtosis:  3.6 , Shapiro-Wilk test:  0.069 
 x^  3.5 
-skewness:  0.087 , kurtosis:  3.3 , Shapiro-Wilk test:  0.63 
+skewness:  0.11 , kurtosis:  3.6 , Shapiro-Wilk test:  0.058 
 x^  4 
-skewness:  0.15 , kurtosis:  3.3 , Shapiro-Wilk test:  0.5 </code></pre>
+skewness:  0.18 , kurtosis:  3.6 , Shapiro-Wilk test:  0.039 </code></pre>
 </div>
 </div>
 <div id="categorical-variable" class="section level2">
@@ -3220,9 +3217,9 @@ W = 6874, p-value = 0.000000000000002
 alternative hypothesis: true location shift is not equal to 0</code></pre>
 <pre class="r"><code>m0=mean(tb$body_mass_g)
 s0=sd(tb$body_mass_g)
-cat(&#39;Glass Δ &#39;,
+cat(&quot;Glass&#39;s Δ &quot;,
     ((filter(tb,sex==&#39;male&#39;) |&gt; select(body_mass_g) |&gt; unlist() |&gt; mean())-m0)/s0)</code></pre>
-<pre><code>Glass Δ  0.42</code></pre>
+<pre><code>Glass&#39;s Δ  0.42</code></pre>
 <pre class="r"><code>cliff.delta(body_mass_g~sex,tb)</code></pre>
 <pre><code>
 Cliff&#39;s Delta
