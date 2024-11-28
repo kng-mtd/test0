@@ -1,0 +1,480 @@
+---
+title: "Various regression models"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: show
+#date: "`r Sys.Date()`"
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T,warning=F,message=F,comment='')
+
+suppressWarnings(
+  suppressMessages(
+    suppressPackageStartupMessages({
+      library(stats)
+      library(MASS)
+      library(tidyverse)
+      library(magrittr)
+      
+      library(palmerpenguins)
+      
+      library(lme4)
+      library(rqlm) # coeff function
+      library(lavaan)
+      library(semPlot)
+    })
+  )
+)
+options(scipen=100,digits=3)
+```
+
+```{r}
+tb0=penguins
+tb=tibble(y=tb0$body_mass_g,
+          x1=tb0$flipper_length_mm,
+          x2=tb0$bill_length_mm,
+          x3=tb0$bill_depth_mm,
+          c1=factor(tb0$species),
+          c2=factor(tb0$sex)) |> 
+  drop_na()
+```
+
+
+
+
+# Linear models
+```{r}
+fitrst1=function(fit){
+  print(coef(fit))
+  print(confint(fit))
+  predict(fit,tb) |> head() |> print()
+  print(cor(tb$y,predict(fit,tb)))
+}
+```
+\
+$y=b0+b1*x1$
+```{r}
+f='y~x1'
+fit=lm(f,tb)
+fitrst1(fit)
+
+xx=tibble(x1=seq(min(tb$x1),max(tb$x1),length.out=7))
+bind_cols(xx,predict(fit,xx,interval='confidence'))
+bind_cols(xx,predict(fit,xx,interval='prediction'))
+```
+\
+$y=b1*x$
+```{r}
+f='y~0+x1'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+\
+$y=b0+b1*x1+b2*x2$
+```{r}
+f='y~x1+x2'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+
+
+### all explanatory variables
+```{r}
+f='y~.'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+
+
+### exclude some explanatory variables
+```{r}
+f='y~.-c1-c2'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+\
+$y=b0+b1(x1+x2)$
+```{r}
+f='y~I(x1+x2)'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+\
+$y=b0+b1*x1+b2*x1^2$
+```{r}
+f='y~x1+I(x1^2)'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+\
+$y=b0+b1(x1*x2)$
+```{r}
+f='y~x1:x2'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+\
+$y=b0+b1*x1+b2*x2+b12*x1x2$
+```{r}
+f='y~x1*x2'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+\
+$y=b0+b1*x1+b2*x2+b3*x3+b12*x1x2+b13*x1x3+b23*x2x3$
+```{r}
+f='y~(x1+x2+x3)^2'
+fit=lm(f,tb)
+fitrst1(fit)
+```
+
+\
+
+# Random effect of group c[1,l] r_0c, r_1c
+```{r}
+#library(lme4) #lmer function, glmer function
+#library(rqlm)
+
+fitrst2=function(fit){
+  print(fit)
+  print(coeff(fit))
+  print(ranef(fit))
+  predict(fit,tb) |> head() |> print()
+  print(cor(tb$y,predict(fit,tb)))
+}
+
+cat('c1: ',levels(tb$c1),'\n')
+cat('c2: ',levels(tb$c2),'\n')
+```
+
+## random intercept
+$y=b0+r_{0c}$
+```{r}
+f='y~(1|c1)'
+fit=lmer(f,tb)
+fitrst2(fit)
+```
+\
+$y=b0+r_{0c1}+r_{0c2}$
+```{r}
+f='y~(1|c1)+(1|c2)'
+fit=lmer(f,tb)
+fitrst2(fit)
+```
+\
+$y=b0+r_{0c1}+r_{0c2,c1}$
+```{r}
+f='y~(1|c1)+(1|c1:c2)'
+fit=lmer(f,tb)
+fitrst2(fit)
+```
+
+
+
+## random intercept, ANOVA model
+$y=b0+r_{0c1}+b1*x1$
+```{r}
+f='y~(1|c1)+x1'
+fit=lmer(f,tb)
+fitrst2(fit)
+```
+
+
+## random slope
+$y=b0+(b1+r_{1c})x$\
+intercept and slope is uncorrelated by group
+```{r}
+f='y~x1+(x1||c1)'
+fit=lmer(f,tb)
+fitrst2(fit)
+```
+
+
+## random mixed
+$y=b0+r_{0c}+(b1+r_{1c})x$\
+intercept and slope is correlated by group
+```{r}
+f='y~x1+(x1|c1)'
+fit=lmer(f,tb)
+fitrst2(fit)
+
+xx=tibble(x1=seq(min(tb$x1),max(tb$x1),length.out=21),
+          c1=factor(rep(c('Adelie','Gentoo','Chinstrap'),7)))
+predict(fit,xx)
+```
+
+\
+
+# Generalized linear models
+```{r}
+f='y~x1'
+```
+
+## normal regression 
+```{r}
+fit=glm(f,tb,family=gaussian(link='identity'))
+fit
+coef(fit)
+confint(fit)
+predict(fit,tb) |> head()
+print(cor(tb$y,predict(fit,tb)))
+
+xx=tibble(x1=seq(min(tb$x1),max(tb$x1),length.out=7))
+predict(fit,xx)
+```
+
+## normal log regression
+```{r}
+fit=glm(f,tb,family=gaussian(link='log'))
+fit
+coef(fit)
+confint(fit)
+predict(fit,tb) |> head() |> exp()
+print(cor(tb$y,exp(predict(fit,tb))))
+
+
+xx=tibble(x1=seq(min(tb$x1),max(tb$x1),length.out=7))
+predict(fit,xx) |> exp()
+```
+
+## poisson regression
+```{r}
+fit=glm(f,tb,family=poisson(link='log'))
+fit
+coef(fit)
+confint(fit)
+predict(fit,tb) |> head() |> exp()
+print(cor(tb$y,exp(predict(fit,tb))))
+
+xx=tibble(x1=seq(min(tb$x1),max(tb$x1),length.out=7))
+predict(fit,xx) |> exp()
+```
+
+\
+
+# Generalized linear mixed models
+```{r}
+f='y~x1+(x1|c1)'
+```
+
+## normal mixed regression
+```{r}
+fit=glmer(f,tb,family=gaussian('identity'))
+fit
+coeff(fit)
+ranef(fit)
+coef(fit)
+predict(fit,tb) |> head()
+print(cor(tb$y,predict(fit,tb)))
+
+xx=tibble(x1=seq(min(tb$x1),max(tb$x1),length.out=21),
+          c1=factor(rep(c('Adelie','Gentoo','Chinstrap'),7)))
+predict(fit,xx)
+```
+
+## normal log mixed regression
+```{r}
+fit=glmer(f,tb,family=gaussian('log'))
+fit
+coeff(fit)
+ranef(fit)
+coef(fit)
+predict(fit,tb) |> head() |> exp()
+print(cor(tb$y,exp(predict(fit,tb))))
+
+xx=tibble(x1=seq(min(tb$x1),max(tb$x1),length.out=21),
+          c1=factor(rep(c('Adelie','Gentoo','Chinstrap'),7)))
+predict(fit,xx) |> exp()
+```
+
+## possion mixed regression
+```{r}
+fit=glmer(f,tb,family=poisson('log'))
+fit
+coeff(fit)
+ranef(fit)
+coef(fit)
+predict(fit,tb) |> head() |> exp()
+print(cor(tb$y,exp(predict(fit,tb))))
+
+xx=tibble(x1=seq(min(tb$x1),max(tb$x1),length.out=21),
+          c1=factor(rep(c('Adelie','Gentoo','Chinstrap'),7)))
+predict(fit,xx) |> exp()
+```
+
+\
+
+# Strucutured Equation Model, hierarchical model has latent variable
+```{r}
+#library(lavaan)
+#library(semPlot)
+
+fitsem=function(fit){
+  print(fitMeasures(fit, "df"))
+  print(standardizedSolution(fit))
+  semPaths(fit, what='std', residuals=F,
+          edge.label.cex=1, layout='tree') # layout: circle,spring
+}
+
+n=20
+
+tb0=tibble(x=rnorm(n,0,1),y=rnorm(n,x,1)) |>
+  scale()
+mdl='y~x'
+fit=sem(mdl,tb0,std.lv=T)
+fitsem(fit)
+
+
+tb0=tibble(x1=rnorm(n,0,1),x2=rnorm(n,x1,1),y=rnorm(n,x1+x2,1)) |> 
+  scale()
+mdl='y~x1+x2'
+fit=sem(mdl,tb0,std.lv=T)
+fitsem(fit)
+
+
+tb0=tibble(x1=rnorm(n,0,1),x2=rnorm(n,x1,1),y=rnorm(n,x2,1)) |> 
+  scale()
+mdl='
+  x2~x1
+  y~x2'
+fit=sem(mdl,tb0,std.lv=T)
+fitsem(fit)
+
+
+tb0=tibble(x1=rnorm(n,0,1),x2=rnorm(n,x1,1),x3=rnorm(n,x2,1),y=rnorm(n,x3,1)) |> 
+  scale()
+mdl='
+  x2~x1
+  x3~x2
+  y~x3'
+fit=sem(mdl,tb0,std.lv=T)
+fitsem(fit)
+
+
+tb0=tibble(x1=rnorm(n,0,1),x2=rnorm(n,x1,1),x3=rnorm(n,0,1),y=rnorm(n,x2+x3*2,1)) |> 
+  scale()
+mdl='
+  x2~x1
+  y~x2+x3
+  x2~~0*x3'
+fit=sem(mdl,tb0,std.lv=T)
+fitsem(fit)
+
+
+# apply latent variable to model
+# to specify latent factor, do factor analysis before SEM
+
+set.seed(1)
+
+x1=rnorm(n,0,1) #explanatory
+x2=rnorm(n,0,1) #explanatory
+x3=rnorm(n,0,1) #explanatpry
+xl1=rnorm(n,x1+x2,1) #latent
+xl2=rnorm(n,x1+x3,1) #latent
+x4=rnorm(n,xl1+xl2*2,1) #objective
+x5=rnorm(n,xl1*2+xl2,1) #objective
+
+set.seed(Sys.time())
+
+tb0=tibble(x1,x2,x3,x4,x5) |> 
+  scale() |> 
+  as_tibble()
+
+# factor analysis
+# decide a number of factor
+eigen(cor(tb0))$values |> print() |> # see a number of eigen >1
+  plot(type='b') # screw plot
+
+factanal(tb0,factors=2,rotation='promax') # see relation between each variable and latent factor 
+cor(tb0) # see low correlation to reject covariance on model
+
+mdl='
+  l1=~x1+x3 # latent =~ observed explanatory
+  l2=~x2+x3
+  x4~l1 # observed objective ~ latent
+  x5~l1+l2
+  x1~~0*x2 # reject covariance
+  l1~~0*l2'
+fit=sem(mdl,tb0,std.lv=T)
+fitsem(fit)
+```
+
+
+```{r}
+tb1=bind_cols(select(tb,is.numeric) |> scale(), select(tb,!is.numeric))
+tb1=model.matrix(~.,tb1)
+tb1=tb1[,-1]
+head(tb1)
+cor(tb1)
+
+mdl='y~c2male' # SEM can apply binary variable
+fit=sem(mdl,tb1,std.lv=T)
+fitsem(fit)
+
+mdl='y~x1+c1Chinstrap+c1Gentoo'
+fit=sem(mdl,tb1,std.lv=T)
+fitsem(fit)
+
+mdl='y~x1+c1Chinstrap+c1Gentoo+c2male'
+fit=sem(mdl,tb1,std.lv=T)
+fitsem(fit)
+
+mdl='
+  x2~c1Chinstrap+c1Gentoo+c2male
+  x3~c1Chinstrap+c1Gentoo+c2male'
+fit=sem(mdl,tb1,std.lv=T)
+fitsem(fit)
+
+
+eigen(cor(tb1))$values |> print() |> # see a number of eigen >1
+  plot(type='b') # screw plot
+
+
+# 2 factors model
+factanal(tb1,factors=2,rotation='promax') 
+
+mdl='
+  l1=~c1Chinstrap+c1Gentoo+c2male
+  l2=~c1Gentoo+c2male
+  y~l1+l2
+  x1~l1+l2
+  x2~l2
+  x3~l1
+  l1~~l2
+  c1Chinstrap~~0*c2male
+  c1Gentoo~~0*c2male
+  x2~~0*x3'
+fit=sem(mdl,tb1,std.lv=T)
+fitsem(fit)
+
+
+# 3 factors model
+factanal(tb1,factors=3,rotation='promax') 
+
+mdl='
+  l1=~c1Chinstrap+c1Gentoo
+  l2=~c1Chinstrap
+  l3=~c2male
+  y~l1+l3
+  x1~l1
+  x2~l2+l3
+  x3~l1+l3
+  l2~~l3
+  l1~~0*l2
+  l1~~0*l3
+  l2~~0*l3
+  x2~~0*x3'
+fit=sem(mdl,tb1,std.lv=T)
+fitsem(fit)
+```
+

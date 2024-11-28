@@ -1,0 +1,506 @@
+---
+title: "Medical data analysis"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: show 
+#date: "`r Sys.Date()`"
+
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T,warning=F,message=F)
+
+suppressWarnings(
+  suppressMessages(
+    suppressPackageStartupMessages({
+      library(stats)
+      library(MASS)
+      library(tidyverse)
+      library(magrittr)
+      library(gridExtra)
+      
+      library(palmerpenguins)　#サンプルデータ用
+
+    })
+  )
+)
+options(scipen=100,digits=3)
+```
+
+## see each variable normality
+decide whether to choose parametric test or rank based (nonparamatric) test
+```{r}
+tb=penguins |> drop_na()
+glimpse(tb)
+tb$year=as.factor(tb$year)
+
+density(tb$body_mass_g) |> plot()
+qqnorm(tb$body_mass_g);qqline(tb$body_mass_g)
+shapiro.test(tb$body_mass_g)
+ks.test(tb$body_mass_g,'pnorm')
+```
+
+
+## difference of 2 group's mean
+```{r}
+aggregate(body_mass_g~sex,tb,'mean')
+qplot(sex,body_mass_g,data=tb,geom='violin')
+```
+
+### t-test
+```{r}
+t.test(body_mass_g~sex,tb)
+```
+
+### Wilcoxon rank test (Mann–Whitney U test)
+```{r}
+wilcox.test(body_mass_g~sex,tb,exact=F)
+```
+
+
+## any difference of more than 2 group's mean
+```{r}
+aggregate(body_mass_g~species,tb,'mean')
+qplot(species,body_mass_g,data=tb,geom='violin')
+```
+
+#### see variance equality in normal distribution
+```{r}
+bartlett.test(body_mass_g~species,tb)
+```
+
+### ANOVA
+```{r}
+aov(body_mass_g~species,tb) |> summary()
+```
+
+### multiple comparison of more than 2 group's mean after ANOVA
+```{r}
+pairwise.t.test(tb$body_mass_g,tb$species)
+```
+
+
+#### see variance equality in unnormal distribution 
+```{r}
+fligner.test(body_mass_g~species,tb)
+```
+
+### Kruskal test
+```{r}
+kruskal.test(body_mass_g~species,tb)
+```
+
+### multiple comparison of more than 2 group's mean after Kruskal test
+```{r}
+pairwise.wilcox.test(tb$body_mass_g,tb$species)
+```
+
+
+
+## difference of each subject's mean at 2 points
+```{r}
+tb0=sleep
+glimpse(tb0)
+names(tb0)[2]='at'
+tb1=subset(tb0,at==1)
+tb2=subset(tb0,at==2)
+tb=tb0
+levels(tb$at)=c('before','after')
+
+aggregate(extra~at,tb,'mean')
+qplot(at,extra,data=tb,geom='violin')
+```
+
+### paired t-test
+```{r}
+t.test(tb1$extra,tb2$extra,paired=T)
+```
+
+### Wilcoxon signed-rank test
+```{r}
+wilcox.test(tb1$extra,tb2$extra,paired=T,exact=F)
+```
+
+
+## difference of each subject's mean at more than 2 points
+```{r}
+tb3=tb1
+tb3$at='3'
+tb3$extra=tb1$extra+tb2$extra+rnorm(nrow(tb3),0,1)
+tb=rbind(tb1,tb2,tb3)
+levels(tb$at)=c('t1','t2','t3')
+
+aggregate(extra~at,tb,'mean')
+qplot(at,extra,data=tb,geom='violin')
+```
+
+### repeated ANOVA
+```{r}
+aov(extra~at+Error(ID/at),tb) |> summary()
+```
+
+### multiple comparison of more than 2 group's mean after ANOVA
+```{r}
+pairwise.t.test(tb$extra,tb$at,paired=T)
+```
+
+
+### Freidman test
+```{r}
+friedman.test(extra~at|ID,tb)
+```
+
+### multiple comparison of more than 2 group's mean after Friedman test
+```{r}
+pairwise.wilcox.test(tb$extra,tb$at,paired=T,exact=F)
+```
+
+
+
+## cross table analysis
+### ratio difference of 2 groups, chi square test, Fisher exact test
+```{r}
+mx=xtabs(~ap+y,bacteria) |> print()
+prop.test(mx)
+chisq.test(mx)
+fisher.test(mx) # for small sample
+```
+
+
+### any ratio difference of more than 2 groups, chi square test
+```{r}
+tb=penguins |> drop_na()
+xtabs(~species+sex,tb) |> print() |> chisq.test()
+```
+
+#### multiple comparison of more than 2 group's ratio
+```{r}
+xtabs(~species+sex,tb) |> print() |> pairwise.prop.test()
+```
+
+
+### inverse weighted cross table, unbalance #items by group to be balanced
+```{r}
+tb=bacteria
+glimpse(tb)
+library(survey)
+
+xtabs(~ap+y,tb) |> print() |>
+  chisq.test() |> print()
+cat('\n')
+
+nk=table(tb$hilo) # Frequency of each level in the confounding factor
+tb$wt=1/nk[tb$hilo] # Assign inverse frequency as weight
+
+dsn=svydesign(ids=~1,data=tb,weights=~wt)
+iwtbl=svytable(~ap+y,design=dsn) |> addmargins() |> print()
+iwtbl*nrow(tb)/2
+svychisq(~ap+y,design=dsn)
+```
+
+
+### multi cross table, ratio difference of groups in each category table, Mantel Haenszel test
+```{r}
+xtabs(~ap+y,tb) |> print() |> chisq.test()
+cat('\n hi\n')
+xtabs(~ap+y,filter(tb,hilo=='hi')) |> print() |> chisq.test()
+cat('\n lo\n')
+xtabs(~ap+y,filter(tb,hilo=='lo')) |> print() |> chisq.test()
+
+mantelhaen.test(tb$ap,tb$y,tb$hilo)
+```
+
+
+### ratio difference of each subject's at 2 points, McNemar test
+```{r}
+tb0=sleep
+glimpse(tb0)
+names(tb0)[2]='at'
+xtabs(~at+(extra>0),tb0) |> print() |> mcnemar.test()
+```
+
+
+### ratio difference of each subject's at more than 2 points, Cochran Q test
+```{r}
+tb1=subset(tb0,at==1)
+tb2=subset(tb0,at==2)
+tb3=tb1
+tb3$at='3'
+tb3$extra=tb1$extra+tb2$extra+rnorm(nrow(tb3),0,1)
+tb=rbind(tb1,tb2,tb3)
+levels(tb$at)=c('t1','t2','t3')
+glimpse(tb)
+
+library(DescTools)
+xtabs(~at+(extra>0),tb) |> print() |> CochranQTest() 
+```
+
+
+### ratio difference with intervention ordered by strength, Cochran-Armitage trend test
+```{r}
+names(tb)[2]='order'
+levels(tb$order)=c('weak','mid','strong')
+glimpse(tb)
+
+library(DescTools)
+xtabs(~order+(extra>0),tb) |> print() |> CochranArmitageTest() 
+```
+
+
+
+### ROC
+```{r}
+library(pROC)
+glimpse(aSAH)
+aggregate(s100b~outcome,aSAH,'mean')
+qplot(outcome,s100b,data=aSAH,geom='violin')
+
+roc1=roc(outcome~age,aSAH,ci=T) |> print()
+roc2=roc(outcome~s100b,aSAH,ci=T) |> print()
+
+par(mfrow=c(1,2))
+plot(roc1)
+plot(roc2)
+
+grid.arrange(ggroc(roc1,legacy.axes=T)+geom_abline(col='gray'),
+             ggroc(roc2,legacy.axes=T)+geom_abline(col='gray'),
+             nrow=1)
+
+roc.test(roc1,roc2)
+```
+
+
+## variables relation
+```{r}
+tb0=penguins |> drop_na()
+tb0$year=as.factor(tb0$year)
+tb=subset(tb0,species=='Adelie' & sex=='male')
+tbn=select(tb,is.numeric)
+```
+
+### correlation
+```{r}
+cor(tbn)
+cor(tbn,method='kendall')
+
+library(psych)
+corr.test(tbn)
+corr.test(tbn,method='kendall')
+```
+
+### partial correlation
+```{r}
+library(ppcor)
+pcr=pcor(tbn)
+pcr$estimate
+pcr$p.value
+
+pcr=pcor(tbn,method='kendall')
+pcr$estimate
+pcr$p.value
+```
+
+
+## effect of variables, evaluate model
+```{r}
+fit=lm(body_mass_g~flipper_length_mm,tb0)
+anova(fit)
+coef(fit)
+confint(fit)
+```
+
+```{r}
+fit=lm(body_mass_g~flipper_length_mm+species,tb0)
+anova(fit)
+coef(fit)
+confint(fit)
+```
+
+```{r}
+fit=lm(body_mass_g~species+sex,tb0)
+anova(fit)
+coef(fit)
+confint(fit)
+```
+
+```{r}
+fit=lm(body_mass_g~.,tb0)
+anova(fit)
+coef(fit)
+confint(fit)
+```
+
+### see multicolinearlity by VIF
+explanation quantity of a exp.var is explained by other exp.vars  
+```{r}
+fit=lm(flipper_length_mm~.-body_mass_g,tb0) # all variable except objective variable
+vif=1/(1-summary(fit)$r.squared)
+vif # >10 reduce the variable
+```
+
+
+## model copmparison
+### liklihood ratio test
+```{r}
+fit1=lm(body_mass_g~flipper_length_mm,tb0) # simple model
+fit2=lm(body_mass_g~flipper_length_mm+bill_depth_mm,tb0) # more general model
+
+l1=logLik(fit1) # model log liklihood
+l2=logLik(fit2)
+ld=-2*(l1-l2) # models log liklihood ratio, follow chi2(df=1)
+1-pchisq(ld,1) # <0.05 fit2 is better, >0.05 fit1(simple model) is better
+```
+
+### AIC
+```{r}
+fit=lm(body_mass_g~.,tb0)
+#AIC=-2*log(model likihood)+2*#parameter
+AIC(fit)
+step(fit)
+```
+
+
+## prediction
+```{r}
+fit=lm(body_mass_g~flipper_length_mm,tb0)
+l=min(tb0$flipper_length_mm)
+u=max(tb0$flipper_length_mm)
+conf=predict(fit,list(flipper_length_mm=l:u),interval='confidence')
+pred=predict(fit,list(flipper_length_mm=l:u),interval='prediction')
+```
+
+
+## logistic regression
+```{r}
+fit=glm(sex~body_mass_g+bill_depth_mm,tb0,family=binomial('logit'))
+anova(fit)
+coef(fit)
+confint(fit)
+cat('\n odds ratio\n')
+exp(coef(fit)[-1]) # odds ratio
+exp(confint(fit)[-1,])
+```
+
+```{r}
+fit=glm(sex~.,tb0,family=binomial('logit'))
+anova(fit)
+coef(fit)
+confint(fit)
+cat('\n odds ratio\n')
+exp(coef(fit)[-1]) # odds ratio
+exp(confint(fit)[-1,])
+
+cat('\n reduce variable by AIC\n')
+step(fit)
+```
+
+
+
+## IPTW, propensity score matching by IPW
+```{r}
+library(PSweight)
+tb=VA
+glimpse(tb)
+tb$status=as.factor(tb$status)
+qplot(treat,stime,data=tb,geom='violin')
+
+f=treat~age+Karn+diag.time+cell+prior
+ps=SumStat(ps.formula=f,data=tb,weight='IPW')
+
+plot(ps,type='density')
+plot(ps,type='balance')
+
+iptw=PSweight(ps.formula=f,yname='stime',data=tb,weight='IPW')
+summary(iptw,type='DIF')
+```
+
+
+
+## survival time analysis
+Analysis for data has end or censoring of observation 
+
+Kaplan-Meyor estimate
+$KM=\prod _i\left(1-e_i/n_i\right)$  
+$t_i=0,...T$ time has interval  
+$n_i$ number at risk at time $t_i$  
+$e_i$ number of events at time $t_i$  
+$t_i$ at KM=0.5 is time number of no-event is 50% of initial number at risk  
+
+```{r}
+library(survival)
+tb=lung
+glimpse(tb)
+srv=Surv(tb$time,tb$status==2) # time:observation time, status 1:censored, 2:event
+
+km=survfit(srv~1,tb) |> print()
+plot(km,xlab='time',ylab='survival probability')
+
+km=survfit(srv~sex,tb) |> print()
+plot(km,xlab='time',ylab='survival probability',col=c('blue','red'))
+legend('topright',legend = c("Male", "Female"),col = c('blue','red'),lwd=2)
+```
+
+### survivality difference without weight, log rank test
+```{r}
+survdiff(srv~sex,tb)
+```
+
+### survivality difference with # at risk weight, generalized Wilcoxon test
+```{r}
+survdiff(srv~sex,tb,rho=1)
+```
+
+### KM for data has start time and end time
+```{r}
+tb=heart
+glimpse(tb)
+srv=Surv(tb$start,tb$stop,tb$event==1) # time1/2:start/end, event 0:censored, 1:event
+
+km=survfit(srv~1,tb) |> print()
+plot(km,xlab='time',ylab='survival probability')
+
+km=survfit(srv~transplant,tb) |> print()
+plot(km,xlab='time',ylab='survival probability',col=c('blue','red'))
+legend('topright',legend = c("not transplant ", "transplant"),col = c('blue','red'),lwd=2)
+```
+
+
+## cox proportional hazard model
+
+$h\left(x_i,t\right)=h_0\left(t\right)\exp\sum^p_j b_j x_{ij}$  
+$x_i$ covariate vector of subject i  
+$h_0(t)$ baseline hazard function  
+
+```{r}
+tb=lung
+glimpse(tb)
+srv=Surv(tb$time,tb$status==2)
+```
+
+### see propotional hazard by group
+```{r}
+km=survfit(srv~sex,tb) |> print()
+plot(km,fun='cloglog',xlab='time',ylab='survival probability',col=c('blue','red'))
+legend('topright',legend = c("Male", "Female"),col = c('blue','red'),lwd=2) #log-log plot
+
+coxph(srv~sex,tb)
+```
+
+```{r}
+coxph(srv~age,tb)
+coxph(srv~sex+age,tb)
+```
+
+### model has other h0(t) by group  
+```{r}
+coxph(srv~age+strata(sex),tb)
+```

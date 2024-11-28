@@ -1,0 +1,915 @@
+---
+title: "Basic of Explanatory Data Analysis"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: 'show'
+#date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo =T, warning=F, message=F, comment='')
+suppressWarnings(
+  suppressMessages(
+    suppressPackageStartupMessages({
+      library(stats)
+      library(MASS)
+      library(tidyverse)
+      library(magrittr)
+      library(effsize)
+      library(corrplot)
+      library(ppcor)
+      library(gridExtra)
+      library(palmerpenguins)
+    })
+  )
+)
+options(scipen=100,digits=3)
+```
+
+# random variables, values from repeated observation
+$x_{i=1-n}$
+
+- continuous
+    - x is real
+- discreate
+    - x is integer
+        - count x>=0
+        - binary x{0,1}
+
+
+# table data
+$X(x_{i=1-n,j=1-p})$
+
+- cross sectional data
+    - $x_{,j}$ have distribution
+    - $x_{i,j}$ and $x_{i',j}$ are independent
+- panel data
+    - $x_{,j}$ have distribution
+    - $x_{i,j}$ and $x_{i',j}$ are independent
+    - $x_{i,j}$ and $x_{i,j'}$ have relation(paired, class)
+- time series data
+    - $x_{,j}$ have (time)order, auto correlation, trend, seasonality
+
+
+## utility functions
+```{r}
+#skewness of vector
+skew=function(x){
+  m=mean(x,na.rm=T)
+  mean((x-m)**3,na.rm=T)/(mean((x-m)**2,na.rm=T))**1.5
+}
+
+#kurtosis of vector
+kurt=function(x){
+  m=mean(x,na.rm=T)
+  mean((x-m)**4,na.rm=T)/(mean((x-m)**2,na.rm=T))**2
+}
+
+#standardize[0,1] of vector
+std0to1=function(x){
+  (x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))
+}
+
+#summarize variables by arsenal
+smArs=function(tb){
+  arsenal::tableby(~.,tb) |> 
+    summary(text=T) |>
+    kable('simple')
+}
+
+#rows have missing data
+miss=function(tb){
+  tb[!complete.cases(tb),]
+}
+
+#eject outlier of a vector
+outlier=function(x){
+  #boxplot(scale(x))
+  q=fivenum(x)
+    r=q[4]-q[2]
+    l=q[2]-r*1.5
+    u=q[4]+r*1.5
+    x=x[x>l & x<u]
+  #boxplot(x)
+  x
+}
+
+#eject outlier of all numeric variables
+outliers=function(tb){
+  par(mfrow=c(1,2))
+  v=select(tb,is.numeric) |> colnames()
+  #boxplot(scale(tb[v]))
+  
+  q=tb[v] |> sapply(fivenum)
+  for(i in v){
+    r=q[4,i]-q[2,i]
+    l=q[2,i]-r*1.5
+    u=q[4,i]+r*1.5
+    tb=tb[(tb[i]>l & tb[i]<u),]
+  }
+  #boxplot(scale(tb[v]))
+  tb
+}
+
+#see distribution of all numeric variables
+dists=function(tb){
+  options(digits=2)
+  par(mfrow=c(2,2))
+  c=select(tb,is.numeric) |> colnames()
+  tb0=tibble(var=NA,cv=NA,skew=NA,kurt=NA,shapiro=NA)
+  tb1=tb0
+  for(i in c){
+    m=select(tb,i) |> drop_na() |> as.matrix()
+    if(F){
+      hist(m,main=i,
+           xlab=str_c('cv:',format(sd(m)/mean(m)),
+                      ' skew:',format(skew(m)),
+                      ' kurt:',format(kurt(m))))
+    }
+    tb1[1,1]=i
+    tb1[1,2]=format(sd(m)/mean(m))
+    tb1[1,3]=format(skew(m))
+    tb1[1,4]=format(kurt(m))
+    tb1[1,5]=format(shapiro.test(m)$p.value)
+    tb0=bind_rows(tb0,tb1)
+  }
+  tb0[-1,] |> kable('simple')
+}
+
+#see distribution of all numeric variables by all categories
+distsByCat=function(tb){
+  options(digits=2)
+  par(mfrow=c(3,3))
+  v=select(tb,is.numeric) |> colnames()
+  c=select(tb,is.factor) |> colnames()
+  tb0=tibble(n_var=NA,c_var=NA,cv=NA,skew=NA,kurt=NA,shapiro=NA)
+  tb1=tb0
+  for(i in v){
+    for(j in c){
+      f=tb[j] |>
+        unlist() |>
+        levels()
+      for(k in f){
+        m=tb  |> 
+          filter(.data[[j]]==k) |>
+          select(i) |>
+          drop_na() |>
+          as.matrix()
+        if(F){
+          hist(m,main=str_c(i,'\n',j,':',k),
+               xlab=str_c('cv:',format(sd(m)/mean(m)),
+                          ' skew:',format(skew(m)),
+                          ' kurt:',format(kurt(m))))
+        }
+        tb1[1,1]=i
+        tb1[1,2]=str_c(j,':',k)
+        tb1[1,3]=format(sd(m)/mean(m))
+        tb1[1,4]=format(skew(m))
+        tb1[1,5]=format(kurt(m))
+        tb1[1,6]=format(shapiro.test(m)$p.value)
+        tb0=bind_rows(tb0,tb1)    
+        
+      }
+    }
+  }
+  tb0[-1,] |> kable('simple') 
+}
+
+#see correlation easily
+easyCR=function(tb){
+  select(tb,is.numeric) |> 
+    cor(use='complete.obs') |> 
+    #print.table(digits=2) |>
+    kable('simple')
+}
+
+#cramerV
+crv=function(c1,c2){
+  c1=as.matrix(c1)
+  c2=as.matrix(c2)
+  crs=table(c1,c2)
+  chisq=chisq.test(crs)$statistic
+  n=sum(crs)
+  v=sqrt(chisq/(n*(min(nrow(crs),ncol(crs))-1)))
+  names(v)='cramerV'
+  return(v)
+}
+
+#cramerV for table or matrix
+crvm=function(m){
+  chi2=chisq.test(m)$statistic
+  n=sum(m)
+  v=sqrt(chi2/(n*(min(nrow(m),ncol(m))-1)))
+  names(v)='cramerV'
+  return(v)
+}
+
+#see Cramer's V in all couple of categorical valuables
+crvall=function(tb){
+  options(digits=2)
+  par(mfrow=c(2,2))
+  c=select(tb,is.factor) |> colnames()
+  tb0=tibble(var1=c(NA),var2=c(NA),cramerV=c(NA))
+  tb1=tb0
+  for(i in c){
+    for(j in c){
+      if(i!=j){
+        t=tibble(tb[i],tb[j]) |> table()
+        cr=crv(tb[i],tb[j])
+        if(F){
+          mosaicplot(t,main='',
+                     sub=str_c('cramer\'sV:',format(cr)))
+        }
+        tb1[1,1]=i
+        tb1[1,2]=j
+        tb1[1,3]=cr
+        tb0=bind_rows(tb0,tb1)
+      }
+    }
+  }
+  tb0[-1,] |> kable('simple')
+}
+
+#Mantel-Haenszel
+#(c1,c2,c3) independence of c1 and c2 on c3 fixed
+crvmh=function(c1,c2,c3){
+  c1=as.matrix(c1)
+  c2=as.matrix(c2)
+  c3=as.matrix(c3)
+  crs=table(c1,c2,c3)
+  mh=mantelhaen.test(crs)[1]$statistic
+  n=sum(crs)
+  v=sqrt(mh[1]/(n*(min(nrow(crs),ncol(crs))-1)))
+  names(v)='cramerV_MH'
+  return(v)
+}
+
+#summary by c1
+agr1c=function(tb,v,c1){
+  f=as.formula(str_c(v,'~',c1))
+  a=aggregate(f,tb,summary)
+  m=aggregate(f,tb,mean)
+  s=aggregate(f,tb,sd)
+  b=bind_cols(a[[1]],a[[2]],s[[2]],s[[2]]/m[[2]],)
+  c=names(a)
+  colnames(b)[1]=c[1]
+  colnames(b)[8]='sd'
+  colnames(b)[9]='cv'
+  print(c[2])
+  kable(b,'simple')
+}
+
+#summary by c1,c2
+agr2c=function(tb,v,c1,c2){
+  f=as.formula(str_c(v,'~',c1,'+',c2))
+  a=aggregate(f,tb,summary)
+  m=aggregate(f,tb,mean)
+  s=aggregate(f,tb,sd)
+  b=bind_cols(a[[1]],a[[2]],a[[3]],s[[3]],s[[3]]/m[[3]])
+  c=names(a)
+  colnames(b)[1]=c[1]
+  colnames(b)[2]=c[2]
+  colnames(b)[9]='sd'
+  colnames(b)[10]='cv'
+  print(c[3])
+  kable(b,'simple')
+}
+
+#see eta in all numeric vars by all categorical vars
+etaall=function(tb){
+  options(digits=2)
+  par(mfrow=c(2,2))
+  v=select(tb,is.numeric) |> colnames()
+  c=select(tb,is.factor) |> colnames()
+  tb0=tibble(n_var=c(NA),c_var=c(NA),eta=c(NA))
+  tb1=tb0
+  for(i in v){
+    for(j in c){
+      f=as.formula(str_c(i,'~',j))
+      anv=aov(f,tb)
+      # strictly aov can be used in balanced design and 1wayANOVA
+      anv=summary(anv) |> unlist()   
+      if(F){
+        boxplot(f,tb,main=j,ylab=i,
+                xlab=str_c('eta:',
+                           format(anv['Sum Sq1']/(anv['Sum Sq1']+anv['Sum Sq2']))))
+      }
+      
+      #use car::Anova
+      #anv=Anova(lm(f,tb),type=2)
+      #boxplot(f,tb,main=j,ylab=i,
+      #    xlab=str_c('eta:',
+      #               format(anv$'Sum Sq1'[1]/
+      #                        (anv$'Sum Sq1'[1]+anv$'Sum Sq2'[2]))))
+      
+      tb1[1,1]=i
+      tb1[1,2]=j
+      tb1[1,3]=format(anv['Sum Sq1']/(anv['Sum Sq1']+anv['Sum Sq2']))
+      tb0=bind_rows(tb0,tb1)   
+    }
+  }
+  tb0[-1,] |> kable('simple')
+}
+```
+
+
+# pretreatment
+see table data and change variable type appropriately, reject row has missing, reject outlier and make summary table
+```{r}
+tb=penguins
+glimpse(tb)
+
+tb[!complete.cases(tb),]
+
+tb %<>% drop_na()
+
+tb$year=as.factor(tb$year)
+tb |>  
+  select(is.factor) -> tbc
+tb |> select(is.numeric) -> tbn
+
+par(mar=c(3,8,3,3))
+boxplot(scale(tb[colnames(tbn)]),horizontal=T,las=2)
+
+tb=outliers(tb)
+
+smArs(tb)
+```
+
+
+# discription of variable to do EDA
+
+```
+Verification of the coefficient of variation, variables with relatively low or high variance will be treated as constants based on their mean and excluded from the model variables.
+
+Verification of normality for variables to be included in the model, estimate the process by which variable values are generated and confirm the applicability of tests that require normality.
+
+Exclude variables that are nearly uncorrelated with all other variables.
+
+Exclude variables that are fully explained by a combination of other variables.
+
+Convert categorical variables into binary dummy variables by level (for functions that only accept numeric arguments).
+```
+
+## numeric variables
+```{r}
+dists(tb)
+
+summary(tb$body_mass_g)
+
+par(mfrow=c(1,2))
+hist(tb$body_mass_g,main='Histgram',xlab='body_mass_g')
+density(tb$body_mass_g,na.rm=T) |> plot(main='Distribution',xlab='body_mass_g')
+
+grid.arrange(
+  qplot(body_mass_g,data=tb,main='Histgram',binwidth=500,xlab='body_mass_g'),
+  qplot(body_mass_g,data=tb,geom='density',main='Distribution',xlab='body_mass_g'),
+  ncol=2
+)
+```
+
+
+## see distribution family
+### continuous distribution
+```{r}
+#see continuous distribution family by ks-test
+distCnt=function(x){
+  l=min(x)
+  u=max(x)
+  m=mean(x)
+  s2=var(x)
+  cat('mean:',mean(x),
+      'sd:',sd(x),
+      'skew:',skew(x),
+      'kurt:',kurt(x),
+      '\n')
+  cat('ks-test p-value\n')
+  cat('uniform : skew(0),kurt(1.8),[l:',l,',u:',u,'] p:',
+      ks.test(x,'punif',l,u)$p.value,'\n')
+  cat('normal : skew(0),kurt(3),[m:',m,',s2:',s2,'] p:',
+      ks.test(x,'pnorm',m,s2)$p.value,'\n')
+  if(l>0){
+    cat('log normal :[m:',mean(log(x)),',s2:',var(log(x)),'] p:'
+        ,ks.test(x,'plnorm',mean(log(x)),var(log(x)))$p.value,'\n')
+  }
+  if(l>=0){
+    cat('exponential : skew(2),kurt(9),[p:,',1/m,'] p:',
+        ks.test(x,'pexp',1/m)$p.value,'\n') #m=1/l
+    cat('gamma : skew(',2/m^.5,'),kurt(',6/m+3,'),[a:,',m^2/s2,'p:',m/s2,'] p:',
+        ks.test(x,'pgamma',m^2/s2,m/s2)$p.value,'\n') #m=a/l,s2=a/l^2
+  }
+  if(l>=0 && u<=1){
+    a=(m^2-m^3)/s2-m; b=a*(1-m)/m #m=a/(a+b),s2=ab/((a+b)^2*(a+b+1))
+    cat('beta :[a:',a,'b:',b,'] p:',
+        ks.test(x,'pbeta',a,b)$p.value,'\n')
+  }
+}
+```
+
+```{r,class.source="fold-show"}
+#uniform dist. x(-Inf,Inf)
+x=runif(20,-2,3)
+distCnt(x)
+#normal dist. x(=inf,Inf)
+x=rnorm(20,3,2)
+distCnt(x)
+#log normal dist. x(0,Inf)
+x=rlnorm(20,2,1)
+distCnt(x)
+#exponentiol dist. x[0,Inf)
+x=rexp(20,0.2)
+distCnt(x)
+#gamma dist. x[0,Inf)
+x=rgamma(20,3,rate=0.2)
+distCnt(x)
+#beta dist. x[0,1]
+x=rbeta(20,2,3)
+distCnt(x)
+```
+
+
+### discrete distribution
+```{r}
+#see discrete distribution family by chisq-test
+distDsc=function(x){
+  x=outlier(x)
+  l=min(x)
+  if(l<0) return('x has value less than 0')
+  u=max(x)
+  m=mean(x)
+  s2=var(x)
+  cat('mean:',mean(x),
+      'sd:',sd(x),
+      'skew:',skew(x),
+      'kurt:',kurt(x),
+      '\n')
+  f=table(factor(x,levels=0:u))
+
+  cat('chisq-test p-value\n')
+
+  #binomial
+  p0=1-s2/m; n=round(m^2/(m-s2)) #m=np, s2=np(1-p)
+  if(p0>=0 && n>0){
+    for(i in 0:n){
+      xx=paste(i)
+      if(is.na(f[xx])) f[xx]=0
+    }
+    x1=names(f) |> as.numeric()
+    p=dbinom(x1,n,p0)
+    pv=suppressWarnings(chisq.test(x=f,p=p)$p.value)
+    cat('binomial : [n:',n,',p:',p0,'] p:',pv,'\n')
+  }
+  
+  f=table(factor(x,levels=0:u))
+  x1=names(f) |> as.numeric()
+  f[u+2]=0
+  
+  #poisson
+  l=m #m=l, s2=l^2 
+  p=dpois(x1,l)
+  p[u+2]=1-sum(p)
+  pv=suppressWarnings(chisq.test(x=f,p=p)$p.value)
+  cat('poisson : skew(',1/m^.5,'),kurt(',1/m+3,'),[l:',l,'] p:',pv,'\n')  
+
+  #geometry
+  p0=1/(m+1) #m=(1-p)/p, s2=(1-p)/p^2 
+  p=dgeom(x1,p0) 
+  p[u+2]=1-sum(p)
+  pv=suppressWarnings(chisq.test(x=f,p=p)$p.value)
+  cat('geometry : skew(',(2-p0)/(1-p0)^.5,'),kurt(',6+p0^2/(1-p0),'),[p:',p0,'] p:',pv,'\n')
+
+  #negeative binomial
+  p0=m/s2 ;r=m^2/(s2-m) #m=r(1-p)/p, s2=r(1-p)/p^2
+  if(p0>=0 && r>0){
+    p=dnbinom(x1,r,p0) 
+    p[u+2]=1-sum(p)
+    pv=suppressWarnings(chisq.test(x=f,p=p)$p.value)
+    cat('n-binomial : [r:',r,'],[p:',p0,'] p:',pv,'\n')
+  }
+}
+```
+
+```{r,class.source="fold-show"}
+#binomial dist. x[0,n]
+#p: event probability, n: #trial, x: #event occurence
+x=rbinom(20,10,0.3)
+distDsc(x)
+#poisson dist. x[0,Inf)
+#l: mean event occurence, x: #event occurence
+x=rpois(20,3)
+distDsc(x)
+#geometry dist. x[0,Inf)
+#p: event probability, x: #failure to occur first event
+x=rgeom(20,0.3)
+distDsc(x)
+#negeative binomial dist. x[r,Inf)
+#p: event probability, r: #event, x: #failure to occur r times events
+x=rnbinom(20,3,0.5)
+distDsc(x)
+```
+
+
+## make normal distribution
+### skewed to the right
+```{r}
+normality=function(x){
+  #density(x) |> plot(main='')
+  cat('skewness: ',skew(x),', kurtosis: ',kurt(x),', Shapiro-Wilk test: ',shapiro.test(x)$p.value,'\n')
+}
+
+cat('x0\n')
+x0=rnorm(300,10,1)
+normality(x0)
+
+cat('x0^2\n')
+xr2=x0^2
+normality(xr2)
+
+cat('x0^3\n')
+xr3=x0^3
+normality(xr3)
+
+cat('log x0^2\n')
+normality(log(xr2))
+
+cat('log x0^3\n')
+normality(log(xr3))
+
+cat('x=x0^2\n')
+for(i in c(1,1.5,2,2.5,3,3.5,4)){
+  cat('x^ 1/',i,'\n')
+  normality(xr2^(1/i))
+}
+
+cat('x=x0^3\n')
+for(i in c(1,1.5,2,2.5,3,3.5,4)){
+  cat('x^ 1/',i,'\n')
+  normality(xr3^(1/i))
+}
+```
+
+### skewed to the left
+```{r}
+cat('x0^ 1/2\n')
+xl2=x0^(1/2)
+normality(xl2)
+
+cat('x0^ 1/3\n')
+xl3=x0^(1/3)
+normality(xl3)
+
+cat('exp x0^ 1/2\n')
+normality(exp(xl2))
+
+cat('exp x0^ 1/3\n')
+normality(exp(xl3))
+
+cat('x=x0^ 1/2\n')
+for(i in c(1,1.5,2,2.5,3,3.5,4)){
+  cat('x^ ',i,'\n')
+  normality(xl2^i)
+}
+
+cat('x=x0^ 1/3\n')
+for(i in c(1,1.5,2,2.5,3,3.5,4)){
+  cat('x^ ',i,'\n')
+  normality(xl3^i)
+}
+```
+
+
+
+## categorical variable
+```{r}
+#change type to ordered factor
+head(tb$year)
+tb$year=ordered(tb$year,levels=c('2007','2008','2009'))
+head(tb$year)
+tb$year |> as.numeric()
+
+#frequency
+xtabs(~species,tb)
+#table(tb$species)
+xtabs(~species,tb) |> prop.table()
+
+xtabs(~species,tb) |> barplot(xlab='species')
+par(mar=c(3,5,3,3)) #dowm,left,up,right
+xtabs(~species,tb) |> barplot(xlab='species',horiz=T,las=2)
+
+qplot(tb$species,xlab='species')
+qplot(tb$species,xlab='species')+coord_flip()
+```
+
+
+```{r}
+xtabs(~species+sex,tb) #(row+col)
+#table(tb$species,tb$sex) #(row,col)
+
+xtabs(~species+sex+year,tb)
+ftable(species~sex+year,tb) #(cols~rows) or row is more
+
+xtabs(~species,tb) %>% as_tibble()
+xtabs(~species+sex,tb) %>% as_tibble()
+xtabs(~species+sex+year,tb) %>% as_tibble()
+
+xtabs(~species+sex,tb) |> addmargins()
+xtabs(~species+sex,tb) |> margin.table(1) #sum by row
+xtabs(~species+sex,tb) |> margin.table(2) #sum by col
+xtabs(~species+sex,tb) |> margin.table() #sum all exclude NA
+
+xtabs(~species+sex,tb) |> prop.table(1) #proportion by row
+xtabs(~species+sex,tb) |> prop.table(2) #proportion by col
+xtabs(~species+sex,tb) |> prop.table() #proportion in all
+
+par(mfrow=c(2,1))
+xtabs(~species+sex,tb) |> barplot(horiz=T,las=2)
+xtabs(~sex+species,tb) |> barplot(horiz=T,las=2)
+
+xtabs(~species+sex,tb) |> barplot(beside=T,horiz=T,las=2)
+xtabs(~sex+species,tb) |> barplot(beside=T,horiz=T,las=2)
+
+xtabs(~species+sex,tb) |> prop.table(2) |> barplot(horiz=T,las=2)
+xtabs(~sex+species,tb) |> prop.table(2) |> barplot(horiz=T,las=2)
+
+par(mfrow=c(1,1))
+xtabs(~species+sex,tb) |> plot(main='')
+ftable(species~sex+year,tb) |> as.table() |> plot(main='')
+```
+
+
+
+## aggregation
+```{r}
+aggregate(body_mass_g~species,tb,mean)
+aggregate(body_mass_g~species+sex,tb,mean)
+
+agr1c(tb,'body_mass_g','species')
+agr2c(tb,'body_mass_g','species','sex')
+```
+
+
+```{r}
+distsByCat(tb)
+```
+
+```{r}
+boxplot(body_mass_g~sex,tb)
+boxplot(body_mass_g~species,tb)
+```
+
+```{r}
+qplot(body_mass_g,data=tb,facets=~sex,main='Histgram',binwidth=500,xlab='body_mass_g')
+qplot(body_mass_g,data=tb,geom='density',facets=~sex,main='Distribution',xlab='body_mass_g')
+```
+
+```{r}
+qplot('',body_mass_g,data=tb,geom='boxplot',facets=~sex,xlab='')
+qplot('',body_mass_g,data=tb,geom='violin',facets=~sex,xlab='')
+```
+
+```{r}
+qplot(body_mass_g,data=tb,facets=~sex+species,main='Histgram',binwidth=200,xlab='body_mass_g')
+qplot(body_mass_g,data=tb,geom='density',facets=~sex+species,main='Distribution',xlab='body_mass_g')
+```
+
+```{r}
+par(mfrow=c(1,1))
+par(mar=c(3,8,3,3)) #dowm,left,up,right
+boxplot(body_mass_g~species+sex,tb,horizontal=T,las=2,ylab='')
+```
+
+```{r}
+par(mar=c(3,10,3,3)) #dowm,left,up,right
+boxplot(body_mass_g~year+species+sex,tb,horizontal=T,las=2,ylab='')
+```
+
+```{r}
+qplot('',body_mass_g,data=tb,geom='boxplot',facets=~sex+species,xlab='')
+qplot('',body_mass_g,data=tb,geom='violin',facets=~sex+species,xlab='')
+```
+
+```{r}
+qplot(species,body_mass_g,data=tb,facets=~sex,geom='boxplot')
+qplot(species,body_mass_g,data=tb,facets=~sex,geom='violin')
+```
+
+```{r}
+qplot(year,body_mass_g,data=tb,facets=~species+sex,geom='boxplot')
+qplot(year,body_mass_g,data=tb,facets=~species+sex,geom='violin')
+```
+
+
+## test group difference
+```
+In EDA, use effect size rather than p-values for testing.
+
+Test Statistic = Function of Effect Size × Function of Sample Size (Reliability of Effect Size)
+
+Effect Size:
+    d Family: Standardized mean difference between groups for one variable, such as Cliff’s delta or Cohen’s d.
+    r Family: Measure of the strength of association between two variables, such as Cramer’s V, Eta-squared (η²), or correlation coefficient.
+
+p-Value: The probability that the test statistic exceeds a given significance level.
+
+Traditional test statistics depend on sample size:
+    With small sample sizes, even if a calculated effect size is large, the test statistic may not be significant, making it difficult to detect significant differences.
+    With large sample sizes, even when the effect size is close to zero, the test statistic can be large, making it easier to detect significant differences.
+
+The appropriate sample size should be calculated based on meaningful differences, significance level, and the power of the analysis method.
+
+To determine whether a difference or association exists using p-values derived from test statistics, the data must be obtained with an appropriate sample size. However, when analyzing existing data, p-value testing is unnecessary. Instead, examine whether the effect size and the confidence interval of the difference or correlation exclude zero. Use d-family effect size as a substitute for the t-test and r-family effect size as a substitute for the chi-square test and F-test in ANOVA.
+
+Guidelines for interpreting effect size can be found here: https://kamesan-kamesan.com/effect-size/
+```
+```
+Glass's Δ
+size of the difference from population, given population mean x0, sd s0
+```
+$$Δ=(\bar{x}-x_0)/s_0$$
+```
+Cohen's d
+size of the difference between non coresponding group A and B
+```
+$$d=(\bar{x_a}-\bar{x_b})/s$$
+$$s=\sqrt{((n_a-1)s_a^2+(n_b-1)s_b^2)/(n_a+n_b-2)}$$
+```
+Hedge's g
+correction of Cohen's d for small sample
+```
+$$g=d*(1-3/(4(n_a+n_b)-9))$$
+```
+diff's δ
+size of the difference between coresponding group A and B
+```
+$$δ=(\#(x_a>x_b)-\#(x_a<x_b))/n_a/n_b$$
+
+```{r}
+# 2 groups of numeric variable 
+boxplot(body_mass_g~sex,tb)
+
+t.test(body_mass_g~sex,tb)
+wilcox.test(body_mass_g~sex,tb)
+
+m0=mean(tb$body_mass_g)
+s0=sd(tb$body_mass_g)
+cat("Glass's Δ ",
+    ((filter(tb,sex=='male') |> select(body_mass_g) |> unlist() |> mean())-m0)/s0)
+cliff.delta(body_mass_g~sex,tb)
+cohen.d(body_mass_g~sex,tb)
+cohen.d(body_mass_g~sex,tb,hedges.correction=T)
+
+anv=aov(body_mass_g~sex,tb) |>
+  summary() |> unlist()
+cat('eta: ',anv['Sum Sq1']/(anv['Sum Sq1']+anv['Sum Sq2']),'\n')
+```
+
+\
+
+```{r}
+# more than 2 groups of numeric variable 
+boxplot(body_mass_g~species,tb)
+anv=aov(body_mass_g~species,tb) |> print() |> 
+  summary() |> unlist()
+cat('eta: ',anv['Sum Sq1']/(anv['Sum Sq1']+anv['Sum Sq2']),'\n')
+```
+
+\
+
+```{r}
+# 2 groups of categorical variable, difference of rario
+select(tb,species,year) |>
+  mutate(across(everything(),as.character)) |> # factor -> character
+  filter(year %in% c(2007,2009),
+         species %in% c('Chinstrap','Gentoo')) |> 
+  table() |> print() |> 
+  prop.table(1) -> pt # argument 1 for proportion by row
+
+pt
+mosaicplot(pt,main='')
+prop.test(pt)
+```
+
+\
+
+## correlation, association
+```{r}
+cor(tbn,use='complete.obs')
+
+easyCR(tbn)
+
+plot(tbn)
+```
+
+```{r}
+corrplot(cor(tbn,use='complete'),
+         diag=F,type='upper',method='ellipse',order='AOE',cl.pos='n')
+```
+
+```{r}
+etaall(tb)
+
+tbnm=tbn[tb$sex=='male',]
+cor(tbnm,use='complete.obs')
+plot(tbnm)
+```
+
+```{r}
+corrplot(cor(tbnm,use='complete'),
+         diag=F,type='upper',method='ellipse',order='AOE',cl.pos='n')
+```
+
+```{r}
+tbnf=tbn[tb$sex=='female',]
+cor(tbnf,use='complete.obs')
+plot(tbnf)
+```
+
+```{r}
+corrplot(cor(tbnf,use='complete'),
+         diag=F,type='upper',method='ellipse',order='AOE',cl.pos='n')
+```
+
+
+```{r}
+# groups of categorical variable, see independence
+mosaicplot(year~species,tb,main='')
+select(tb,species,year) |>
+  table() |> print() |> 
+  crvm()
+
+#independence test
+xtabs(~species+sex,tb) |> chisq.test()
+xtabs(~species+sex,tb) |> fisher.test()
+
+xtabs(~species+sex,tb) |> crvm()
+crvall(tb)
+
+#Mantel-Haenszel test
+xtabs(~species+sex+year,tb) |> mantelhaen.test()
+#(c1,c2,c3) independence of c1 and c2 on c3 fixed
+```
+
+
+```
+In relationships among 3 variables, it is important to examine interactions, especially negative interactions.
+```
+
+```{r}
+# 3 categorical variables
+mosaicplot(year~species+sex,tb,main='')
+
+# categorical vs categorical vs numeric
+# see eta from ANOVA, see interaction term
+boxplot(body_mass_g~sex+species,tb)
+anv=aov(body_mass_g~sex+species+sex*species,tb) # or body_mass_g~sex*species
+summary(anv)
+
+par(mfrow=c(1,2))
+# categorical vs numeric vs numeric
+# see slope of stratified scatter, see eta from ANCOVA, see interaction term
+plot(body_mass_g~bill_length_mm,tb,pch=as.integer(species))
+plot(body_mass_g~bill_length_mm,tb,col=as.integer(species))
+acv=aov(body_mass_g~bill_length_mm*species,tb) # ANCOVA
+summary(acv)
+
+plot(select(tb,is.numeric),col=as.integer(tb$species))
+
+# 3 numeric variables
+# correlation
+cor(select(tb,body_mass_g,bill_length_mm,flipper_length_mm))
+
+# partial correlation
+pcor(select(tb,body_mass_g,bill_length_mm,flipper_length_mm))$estimate
+```
+
+
+### log linear model
+```{r}
+#log linear model
+tbl=xtabs(~species+sex+year,tb)
+ #frequency f(i*j*k) on table (a*b*c)
+mdl1=loglm(~species,tbl) #log f=m+a
+mdl2=loglm(~species+sex,tbl) #log f=m+a+b
+mdl3=loglm(~species+sex+year,tbl) #log f=m+a+b+c
+mdl4=loglm(~species*sex,tbl) #log #log f=m+a+b+ab
+mdl5=loglm(~species*sex+year,tbl) #log f=m+a+b+ab+c
+mdl6=loglm(~(species+sex)*year,tbl) #log f=m+a+b+c+ac+bc
+mdl7=loglm(~species*sex+species*year+sex*year,tbl) #log f=m+a+b+c+ab+ac+bc
+mdl8=loglm(~species*sex*year,tbl) #log f=m+a+b+c+ab+ac+bc+abc
+
+anova(mdl1,mdl2,mdl3,mdl4,mdl5,mdl6,mdl7,mdl8,test='Chisq')
+
+frq=xtabs(~species+sex+year,tb) |> as_tibble()
+mdl0=glm(n~species+sex+year+
+           species:sex+species:year+sex:year+
+           species:sex:year,frq,family=poisson('log'))
+mdl0
+bstmdl=step(mdl0)
+bstmdl
+
+anova(bstmdl,mdl0,test='Chisq')
+```
+

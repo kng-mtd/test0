@@ -1,0 +1,968 @@
+---
+title: "相関係数と「関連係数」について"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: hide 
+#date: "`r Sys.Date()`"
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T,warning=F,message=F)
+suppressWarnings(
+  suppressMessages(
+    suppressPackageStartupMessages({
+      library(stats)
+      library(MASS)
+      library(tidyverse)
+    })
+  )
+)
+options(scipen=100,digits=3)
+```
+
+<br>
+
+## 目的
+<br>
+多くの変数の観測値からなるデータがあるとき、何らかの数値を用いて、変数間の「関連性」（relevance, association）をできるだけ多くみつけたい。関連性がわかれば、様々な数理モデルをつくる根拠になるし、予測モデルから関連し合う変数を除去して、よりロバストなものにすることもできる。
+
+
+関連性を表す代表的な数値である相関係数と、その代わりとなる各種「関連係数」についてをまとめる。
+<br>
+<br>  
+<br>
+
+## 変数間の関連性を表す効果量
+<br>
+（効果量：異なるデータを比較するために正規化された統計量）  
+<br>
+量的vs量的　　　　　相関係数　共分散より  
+量的vs質的　　　　　相関比（分散説明率）　ANOVAより  
+質的vs質的　　　　　CramerのV　χ2乗より  
+量的vs量的vs量的　　偏相関係数　共分散より  
+量的vs量的vs質的　　相関比（分散説明率）　ANCOVAより  
+量的vs質的vs質的　　相関比（分散説明率）　２WayANOVAより  
+質的vs質的vs質的　　Mantel-Haenszelχ2乗より  
+<br>  
+このうち、2つの量的変数X,Yの「線形性」（lineality）の関連を表す相関係数は、変数間に線形性を仮定する数理モデルである重回帰、構造方程式モデリング、ベイジアンネットワークなどを設計するときの根拠数値となる。
+<br>  
+<br>  
+<br>
+
+## 相関係数（Peasonの積率相関係数）をスッキリさせる
+<br>  
+データ$(x,y)_{i=1...n}$に対し、
+```{r}
+x=0:9
+e=runif(10,-5,5)
+y=2*x+e
+kable(tibble(x,y))
+```
+
+YのXへの単回帰　$y=b_{x0}+b_{x1}x+\varepsilon _{y}$,　$\varepsilon _{y}\sim N\left( 0,\sigma _{y}^{2}\right)$
+
+```{r}
+fit_y=lm(y~x)
+fit_y
+```
+
+XのYへの単回帰　$x=b_{y0}+b_{y1}y+\varepsilon _{x}$,　$\varepsilon _{x}\sim N\left( 0,\sigma _{x}^{2}\right)$
+
+```{r}
+fit_x=lm(x~y)
+fit_x
+```
+
+```{r}
+par(mfrow=c(1,2))
+plot(x,y)
+abline(fit_y,col='blue',lwd=3)
+plot(y,x)
+abline(fit_x,col='red',lwd=3)
+```
+
+
+相関係数はそれらY,Xの2つの回帰直線の傾き$b_{x1},b_{y1}$の幾何平均。
+$$r_{xy}\equiv \sqrt{b_{x1}b_{y1}}　b_{x1},b_{y1} >0　,　 -\sqrt{b_{x1}b_{y1}}　b_{x1},b_{y1} <0$$
+
+
+$b_{x1}$: `r fit_y$coefficients[2]`
+
+
+$b_{y1}$: `r fit_x$coefficients[2]`
+
+
+Geometric mean: `r (fit_y$coefficients[2]*fit_x$coefficients[2])**.5`
+
+
+Correlation: `r cor(x,y)`
+
+
+
+また相関係数の2変数は対称、$r_{xy}=r_{yx}$であり、XとYの因果の向きに依らない量である。  
+<br>
+<br>
+XとYに線形性を仮定したとき、最小二乗法により、$b_{x1}$は$cov(X,Y)/V[X]$、$b_{y1}$は$cov(X,Y)/V[Y]$として推定されることより、相関係数をデータから計算するときの公式は以下となる。
+$$r_{xy}=\dfrac{cov\left( X,Y\right) }{\sqrt{V\left[ X\right] V\left[ Y\right] }}$$
+
+つづけて、
+$$dx=(x_{1}-\overline{x},...x_{n}-\overline{x})\in \mathbb{R} ^{n}　,　dy=(y_{1}-\overline{y},...y_{n}-\overline{y})\in \mathbb{R} ^{n}$$
+を用いて、
+$$cov(X,Y)=dx\cdot dy　,　V[X]=dx\cdot dx=\left| dx\right|^2,　V[Y]=dy\cdot dy=\left| dy\right|^2$$
+ベクトルの内積の公式　$a\cdot b=\left| a\right|\left| b\right| cos\theta$　より
+$$r_{xy}=\dfrac{cov\left( X,Y\right) }{\sqrt{V\left[ X\right] V\left[ Y\right] }}=\dfrac{dx\cdot dy}{\left| dx\right|\left| dy\right|}=cos\theta$$
+以上より、$0\leq \left| r_{xy}\right| \leq 1$である。  すべてのデータ（x,y）が回帰直線上にあるとき、相関係数は1または-1であり、直線から外れるデータが多いほど0に近づく。  
+<br>  
+
+  
+無相関とは、$cov(X,Y)=0$であること、XとYに線形性がないこと、関連性は否定しない。  
+独立とは、$Pr(X=x,Y=y)=Pr(X=x)Pr(Y=y)$であること、XとYに関連性がないこと、独立は無相関に含まれる。  
+<br>
+<br>
+<br>
+
+## 単調性を表す効果量
+<br>
+線形性は変数間の関連性のひとつに過ぎない。他の関連性として、Xの増加によるYの増減が一定方向である「単調性」（monotonicity）も重要な関連性であり、線形性も単調性に含まれる。  
+<br>
+```{r}
+par(mfrow=c(2,3))
+
+x=runif(20,0,10)
+y=x**.5
+plot(x,y,main='y=x^0.5')
+
+x=runif(20,1,10)
+y=x**-1
+plot(x,y,main='y=x^-1')
+
+x=runif(20,-2,2)
+y=exp(x)
+plot(x,y,main='y=exp x')
+
+x=runif(20,1,100)
+y=log(x)
+plot(x,y,main='y=log x')
+
+x=runif(20,-5,5)
+y=1/(1+exp(-x))
+plot(x,y,main='y=1/(1+exp(-x))')
+```
+<br>
+
+### Spearmanの順位相関係数
+データ$(x,y)_{i=1...n}$を順位$(rx,ry)_{i=1...n}$に変換したときの、順位rxとryの相関係数をみる。
+
+$$\rho_{xy}\equiv r_{rx,ry}　0\leq \left| \rho_{xy}\right| \leq 1$$
+<br>
+
+### Kendallの順位相関係数
+２つの観測点のすべての組み合わせ(x1,y1)、(x2,y2)に対し、x1とx2、y1とy2の大小関係の一致性＝単調性をみる。
+
+$$\tau _{xy}\equiv \sum ^{n}_{i}\sum ^{n}_{j>i}sign\left( x_{i}-x_{j}\right)sign\left( y_{i}-y_{j}\right)/n(n-1)*2,　0\leq \left| \tau_{xy}\right| \leq 1$$
+<br>
+
+### ロバスト順位相関係数（非公式）
+順位相関係数は、観測値の差が微小であっても大小関係をつけて計算する、順位に敏感である。2つのx,2つのyの大小関係が逆のとき、それが小さな差であっても順位相関係数を過剰に小さくしてしまう。x,yの数値を適当に丸めて小さな差は0とすることで、順位相関係数の大きさを維持する。
+
+```{r,results='asis'}
+tb=tribble(
+  ~x,~y0,~y1,~y2,~robust_x,~robust_y,
+  1,1,1,1,1,1,
+  2,2,2,2,2,2,
+  3,3,3,3,3,3,
+  3.01,3.01,3.02,2.99,3,3,
+  4,4,4,4,4,4,
+  5,5,5,5,5,5
+)
+
+kable(tb)
+par(mfrow=c(1,3))
+plot(tb$x,tb$y0,main='y0')
+plot(tb$x,tb$y1,main='y1')
+plot(tb$x,tb$y2,main='y2')
+```
+
+correlation vs X
+```{r}
+cor(tb)[1,2:4]
+```
+<br>
+Kendall's correlation vs X
+```{r}
+cor(tb,method='kendall')[1,c(2,3,4,6)]
+```
+<br>
+Kendall's correlation vs robust X
+```{r}
+cor(tb,method='kendall')[5,c(2,3,4,6)]
+```
+<br>
+後述する今回のデータセットのつくりかたでは、関数関係にある2つの観測点において、x,yの大小関係は一律であり、上の処理の意義はないが、現実の観測においては有用と考える。
+<br>
+<br>
+<br>
+
+### 符号関連係数（非公式）
+
+
+各観測点(x,y)に対し、xとその中央値$x_{med}$、yとその中央値$y_{med}$の大小関係の一致性＝単調性をみる。すなわち各観測点をx,yの中央値で中心化した散布図において、第1、第3象限にある観測点の数と、第2、第4象限の観測点の数の差をみたものである。
+$$r_{s}\equiv \sum ^{n}_{i}sign\left( x_{i}-x_{med}\right)sign\left( y_{i}-y_{med}\right)/n　0\leq \left| r_{s}\right| \leq 1$$
+
+```{r}
+par(mfrow=c(1,3))
+x=runif(20,-2,2)
+y=exp(x)-3
+plot(x,y,main='y=(exp x)-3')
+abline(h=0,v=0)
+plot(x-mean(x),y-mean(y),main='y-y_mean=(exp x_mean)-3')
+abline(h=0,v=0)
+plot(x-median(x),y-median(y),main='y-y_med=(exp x_med)-3')
+abline(h=0,v=0)
+```
+
+
+相関係数の計算量が$O(n^2)$に対し、この値の計算量は$O(n)$であり、高速化できる。（ちなみに中央値を求めるのに必要なソートの計算量は最低$O\left( n\log n\right)$だが、近似ソートならば計算量$O(n)$）
+<br>
+<br>
+<br>
+
+## 母関連（非公式）
+<br>
+「母関連」roを以下のように定義する。  
+<br>
+変数X,Y、関数y=f(x)をもつ母集団が、母関連ro:[0,1]をもつとき、比率roのyの値はy=f(x)で定まり、残りのyはf(x)の値域を区間とする一様乱数である。  
+<br>
+母関連roからの標本$(x,y)_{i=1...n}$は、適当な区間のnコの一様乱数xと、それに対するn＊roコのf(x)（完全に関数関係にある仮想観測点）とn＊(1-ro)コの区間 [min(f(x)), max(f(x))] の一様乱数（完全なノイズ）とする。  
+
+```{r}
+n=50
+par(mfrow=c(2,3))
+for(i in seq(0,1,0.2)){
+  x=runif(n,-1,1)
+  y=runif(n,-1,1)
+  y[1:(n*i)]=x
+  plot(x,y,main=str_c('ro: ',i))
+}
+```
+
+この母関連roの標本に対する関連係数の計算値から、もとの母関連roをどれだけ推定できるかにより、関連係数を性能評価する。  
+<br>
+<br>
+<br>
+
+## 単調性以外の関連性
+<br>
+
+### 左右Kendall順位相関係数（非公式）
+たとえば、2次関数は単調性でない。しかし任意のxで左右の区間に分けると、いずれかの区間は単調性になる。
+```{r}
+x=runif(20,-5,5)
+y=x**2
+par(mfrow=c(1,1))
+plot(x,y)
+abline(v=median(x),col='red',lwd=3)
+```
+<br>
+xの中央値$x_{med}$で左右の区間に分け、左右のKendall順位相関係数のいずれかの絶対値が1に近ければ関連性あり。 
+$$\tau_{l}=\tau(x,y)_{i}　x_{i}:[min(x),x_{med}]$$
+$$\tau_{r}=\tau(x,y)_{i}　x_{i}:[x_{med},max(x)]$$
+$$\tau_{lr}\equiv\max\left(\left|\tau_{l}\right|,\left|\tau_{r}\right|\right)$$
+<br>
+<br>
+
+#### さらに一般的な関連性の存在をどのように見つけるか？
+<br>
+
+散布図を見たとき、観測点が単純な曲線でつながりそうならば関連性がありそう。これを定式化するには？  
+たとえばスプライン曲線の曲率の小ささ？  
+<br>
+ヒトと同様、ニューラルネットワークも散布図から見えてくる曲線を見つけるのでは。ならば母関連roでラベルした散布図画像を学習させれば、母関連roを推定できそう。
+<br>
+<br>
+
+でも、もっと軽量で説明しやすい統計量はないか？  
+<br>
+また散布図を見る。xの値が近いとき、yの値も近い。だからXY平面にr＊cのグリッドをつくると、観測点は一部のセルに集まる。
+```{r}
+x0=min(x)
+x1=max(x)
+wx=(x1-x0)/6
+y0=min(y)
+y1=max(y)
+wy=(y1-y0)/6
+plot(x,y)
+abline(v=c(x0+wx,x0+wx*2,x0+wx*3,x0+wx*4,x0+wx*5))
+abline(h=c(y0+wy,y0+wy*2,y0+wy*3,y0+wy*4,y0+wy*5))
+```
+
+各セルの観測点の度数をとると、2次元r＊cの度数分布、いわゆるクロス表をつくることができる。
+
+```{r}
+k=6
+tibble(x=scale(x),y=scale(y)) %>% 
+  filter(x>-2 & x<2 & y>-2 & y<2) %>%  # z value in x(-2,2),y(-2,2)
+  mutate(x=ceiling((x+2)*k/4), y=ceiling((y+2)*k/4)) %>%
+  table()
+```
+
+
+χ2乗値は2つの「質的変数」による度数分布が一様分布からどれだけ外れているかの大きさを表す。ただしχ2乗値はデータ数、自由度（行数、列数）に依存するため、χ2乗値をデータ数、自由度で[0,1]に正規化したCramerのVが外れの大きさの効果量として用いられる。  
+<br>
+2つの「量的変数」の分布が一様分布からどれだけ外れているかを関連性の大きさと考えれば、散布図から適当なグリッドでつくる度数分布に対するCramerのVを「関連係数」として用いることができるのではないか。（非公式）
+<br>
+
+r＊cのグリッド上の各セル(i,j)の度数　$n_{ij}　i=1...r,j=1...c$として、
+$$\chi^2=\sum ^{n}_{i}\sum ^{n}_{j}(n_{ij}-n_{i\cdot }n_{\cdot j}/n)^2/(n_{i\cdot}n_{\cdot j}/n)$$
+$$Cramer's\ V=\sqrt{\chi^{2}/n\times \min \left( r-1,c-1\right) }　0\leq V \leq 1$$
+YがXに依らず一定、XがYに依らず一定、またそれらの組み合わせとなる下のような散布図のとき、一様分布とみなされ、CramerのVは小さくなる。
+
+```{r}
+par(mfrow=c(2,2))
+
+x=runif(10,-10,10)
+plot(x,rep(5,10),ylim=c(0,7),xlab='',ylab='')
+points(x,rep(3,10))
+
+y=runif(10,-10,10)
+plot(rep(5,10),y,xlim=c(0,7),xlab='',ylab='')
+points(rep(3,10),y)
+
+x=runif(10,0,5)
+plot(x,rep(1,10),xlim=c(0,5),ylim=c(0,5),xlab='',ylab='')
+y=runif(10,0,5)
+points(rep(1,10),y)
+```
+
+#### グリッドの設定
+<br>
+
+散布図を何行、何列に分ければいいか？  
+　＞ 細かすぎると度数の差が小さくなり、一様分布に近くなってしまう、6＊6とする。  
+
+x,yの少しの差で観測点が入るセルが変わることがあるので、周りのセルの度数を考慮する？（画像のブラー処理のような）  
+　＞ 各セルへ入る観測点もあれば、出る観測点もあるので考慮不要とする。
+<br>
+<br>
+<br>
+
+## 各種関連係数の性能評価
+<br>
+性能評価用データセットのサンプル数を30コ、各サンプルの観測点数を50コ、CramerのVを計算するグリッドを6*6で設定。
+```{r}
+s=30 # n of sample 
+n=50 # n of obs 
+k=6 # grid k*k
+```
+<br>
+各関連係数の絶対値をみる。なおデータが多い区間における関連をみるため、x,yともに標準偏差±2を外れる観測点は外す。
+```{r}
+# 関連係数の計算関数と、性能評価テーブルとプロットの表示関数。
+
+#sign relevance
+
+rs=function(v1,v2){
+  sum(sign(v1-median(v1))*sign(v2-median(v2)))/length(v1)
+}
+
+#cramerV
+
+crv=function(c1,c2){
+  c1=as.matrix(c1)
+  c2=as.matrix(c2)
+  crs=table(c1,c2)
+  chi2=chisq.test(crs)$statistic
+  n=sum(crs)
+  v=sqrt(chi2/(n*(min(nrow(crs),ncol(crs))-1)))
+  names(v)='cramerV'
+  return(v)
+}
+
+
+#aggregate by 1 category
+
+agr1c=function(tb,v,c1){
+  f=as.formula(str_c(v,'~',c1))
+  a=aggregate(f,tb,summary)
+  m=aggregate(f,tb,mean)
+  s=aggregate(f,tb,sd)
+  b=bind_cols(a[[1]],a[[2]],s[[2]],s[[2]]/m[[2]])
+  c=names(a)
+  colnames(b)[1]=c[1]
+  colnames(b)[8]='sd'
+  colnames(b)[9]='cv'
+  print(c[2])
+  b
+}
+
+
+# caluculation, aggregation, plot of relevance coefficients  
+
+relevance=function(tb,agg=F){ # agg is flag of aggregation table
+  tb$rbx=round(tb$x,2) # robust x
+  tb$rby=round(tb$y,2) # robust y
+  
+  tb1=tibble(ro=NA)
+  for(r in 0:10){
+    for(i in 1:s){ # notice! s is defined in global
+      tb0=tb %>%
+        filter(ro==(r/10),set==i) %>%
+        select(x,y,rbx,rby) %>%
+        filter(x>-2 & x<2 & y>-2 & y<2) # z value in x(-2,2),y(-2,2)
+      
+      tbl=tb0 %>% filter(x<median(x)) # obs in left
+      tbr=tb0 %>% filter(x>median(x)) # obs in right
+      
+      m0=tb0 %>%
+        mutate(x=ceiling((x+2)*k/4), y=ceiling((y+2)*k/4)) %>%
+        as.matrix() # x(-2,2),y(-2,2) -> x[1,k],y[1,k]
+      
+      tb1=bind_rows(
+        tb1,
+        tibble(ro=r/10,
+               cor=abs(cor(tb0$x,tb0$y)),
+               spm=abs(cor(tb0$x,tb0$y,method='spearman')),
+               kdl=abs(cor(tb0$x,tb0$y,method='kendall')),
+  
+               #rbkdl=abs(cor(tb0$rbx,tb0$rby,method='kendall')),
+               
+               rs=abs(rs(tb0$x,tb0$y)),
+               #rbrs=abs(rs(tb0$rbx,tb0$rby)),
+               
+               lkd=abs(cor(tbl$x,tbl$y,method='kendall')),
+               #rblkd=abs(cor(tbl$rbx,tbl$rby,method='kendall')),
+               rkd=abs(cor(tbr$x,tbr$y,method='kendall')),
+               #rbrkd=abs(cor(tbr$rbx,tbr$rby,method='kendall')), 
+               lrkd=max(lkd,rkd),
+               #rblrkd=max(rblkd,rbrkd),
+               
+               crv=crv(m0[,1],m0[,2]))
+        )
+      
+      #scatter to frequency matrix
+      m=table(m0[,1],m0[,2])
+    }
+  }
+  
+  tb1=tb1[-1,]
+  tb1$ro=as.factor(tb1$ro)
+  
+  options(digits=3, scipen=100)
+  
+  if(agg){
+  print(agr1c(tb1,'cor','ro'))
+  print(agr1c(tb1,'spm','ro'))
+  print(agr1c(tb1,'kdl','ro'))
+  #print(agr1c(tb1,'rbkdl','ro'))
+  
+  print(agr1c(tb1,'rs','ro'))
+  #print(agr1c(tb1,'rbrs','ro'))
+  
+  print(agr1c(tb1,'lrkd','ro'))
+  #print(agr1c(tb1,'rblrkd','ro'))
+
+  print(agr1c(tb1,'crv','ro'))
+  }
+  
+  par(mfrow=c(2,3))
+  
+  boxplot(cor~ro,tb1,ylim=c(0,1))
+  boxplot(spm~ro,tb1,ylim=c(0,1))
+  boxplot(kdl~ro,tb1,ylim=c(0,1))
+  #boxplot(rbkdl~ro,tb1,ylim=c(0,1))
+  
+  boxplot(rs~ro,tb1,ylim=c(0,1))
+  #boxplot(rbrs~ro,tb1,ylim=c(0,1))
+
+  boxplot(lrkd~ro,tb1,ylim=c(0,1))
+  #boxplot(rblrkd~ro,tb1,ylim=c(0,1))
+
+  boxplot(crv~ro,tb1,ylim=c(0,1))
+}
+
+```
+<br>
+
+Xの関数Yの関数形y=f(x)を設定し、母関連0から1まで0.1刻み、xとyを正規標準化したサンプルのセット作成。
+<br>
+<br>
+
+### XとYに比例関係があるとき
+
+```{r}
+par(mfrow=c(2,3))
+for(i in seq(0,1,0.2)){
+  x=runif(n,-1,1)
+  y=runif(n,-1,1)
+  y[1:(n*i)]=x
+  plot(x,y,main=str_c('ro: ',i))
+}
+```
+
+```{r}
+tb=tibble(ro=NA)
+for(r in 0:10){
+  for(i in 1:s){
+    
+    x=runif(n,-10,10)
+    b0=runif(1,-10,10)
+    b1=runif(1,-3,3)
+    y=b0+b1*x
+
+    y0=min(y)
+    y1=max(y)
+    if(r==0){
+      y=runif(n,y0,y1)
+    }else{
+      if(r!=10) y=c(y[1:(r*n/10)],runif(n-r*n/10,y0,y1))
+    }
+    tb=bind_rows(tb,tibble(ro=r/10,set=i,
+                           x=scale(x)[,1],y=scale(y)[,1]))
+  }
+}
+tb=tb[-1,]
+
+relevance(tb)
+```
+<br>
+単純な比例関係であれば、いずれの関連係数でも十分にで母関連の大小を判定できる。それであれば少ない計算量の符号関連係数が有用。左右順位相関係数は観測点が少なくなるため変動係数が大きくなっている。
+<br>
+<br>
+<br>
+
+### XとYに反比例関係があるとき
+
+```{r}
+par(mfrow=c(2,3))
+for(i in seq(0,1,0.2)){
+  x=runif(n,0.1,5)
+  y=runif(n,0.2,10)
+  y[1:(n*i)]=1/x
+  plot(x,y,main=str_c('ro: ',i))
+}
+```
+
+```{r}
+tb=tibble(ro=NA)
+for(r in 0:10){
+  for(i in 1:s){
+    
+    x=runif(n,0,10)
+    b0=runif(1,-10,10)
+    b1=runif(1,-3,3)
+    y=b0+b1/x
+
+    y0=min(y)
+    y1=max(y)
+    if(r==0){
+      y=runif(n,y0,y1)
+    }else{
+      if(r!=10) y=c(y[1:(r*n/10)],runif(n-r*n/10,y0,y1))
+    }
+    tb=bind_rows(tb,tibble(ro=r/10,set=i,
+                           x=scale(x)[,1],y=scale(y)[,1]))
+  }
+}
+tb=tb[-1,]
+
+relevance(tb)
+```
+<br>
+単調性の一つとして反比例関係のとき、相関係数は母関連の大小の判定にほぼ無用であり、順位相関係数が有用である。母関連0.7以上の抽出であれば、符号関連係数も有用。
+<br>
+<br>
+反比例関係では観測点がY軸にほぼ平行（Xが一定）およびX軸にほぼ平行（Yが一定）の区間が広く、CramerのVはそれを一様分布とみなして小さくなるため、母関連を抽出しにくい。
+<br>
+<br>
+<br>
+
+### YがXの指数関数の関係にあるとき
+
+```{r}
+par(mfrow=c(2,3))
+for(i in seq(0,1,0.2)){
+  x=runif(n,-2,2)
+  y=runif(n,0,9)
+  y[1:(n*i)]=exp(x)
+  plot(x,y,main=str_c('ro: ',i))
+}
+```
+
+```{r}
+tb=tibble(ro=NA)
+for(r in 0:10){
+  for(i in 1:s){
+    
+    x=runif(n,-2,2)
+    b0=runif(1,-3,3)
+    b1=runif(1,-1,1)
+    y=b0*exp(b1*x)
+
+    y0=min(y)
+    y1=max(y)
+    if(r==0){
+      y=runif(n,y0,y1)
+    }else{
+      if(r!=10) y=c(y[1:(r*n/10)],runif(n-r*n/10,y0,y1))
+    }
+    tb=bind_rows(tb,tibble(ro=r/10,set=i,
+                           x=scale(x)[,1],y=scale(y)[,1]))
+  }
+}
+tb=tb[-1,]
+
+relevance(tb)
+```
+<br>
+単調性の一つとして指数関数の関係のとき、母関連の大小の判定には、相関係数よりも変動係数が小さい順位相関係数、さらに小さいCramerのVが有用。
+<br>
+<br>
+<br>
+
+### YがXの2次関数の関係にあるとき
+
+```{r}
+par(mfrow=c(2,3))
+for(i in seq(0,1,0.2)){
+  x=runif(n,-2,2)
+  y=runif(n,-3,3)
+  y[1:(n*i)]=-x+x**2
+  plot(x,y,main=str_c('ro: ',i),ylim=c(-3,6))
+}
+```
+
+```{r}
+tb=tibble(ro=NA)
+for(r in 0:10){
+  for(i in 1:s){
+    
+    x=runif(n,-10,10)
+    b0=runif(1,-10,10)
+    b1=runif(1,-3,3)
+    b2=runif(1,-1,1)
+    y=b0+b1*x+b2*x**2
+
+    y0=min(y)
+    y1=max(y)
+    if(r==0){
+      y=runif(n,y0,y1)
+    }else{
+      if(r!=10) y=c(y[1:(r*n/10)],runif(n-r*n/10,y0,y1))
+    }
+    tb=bind_rows(tb,tibble(ro=r/10,set=i,
+                           x=scale(x)[,1],y=scale(y)[,1]))
+  }
+}
+tb=tb[-1,]
+
+relevance(tb)
+```
+<br>
+2次関数の関係のとき、相関係数、順位相関係数は母関連の推定に無用であるのに対し、左右順位相関係数は有用、変動係数の小さなCramerのVはさらに有用。
+<br>
+<br>
+<br>
+
+### YとXがいずれかの関数関係にあるとき
+
+現実には変数間の関数形は未知であり、関数形によらず関連を抽出できることが望ましい。上記の関数形の散布図データを同量ずつ合わせたもの（母関連の値一つに対し、4種の各関数にサンプル30コ、計120データ）に対する各関連係数の要約、特に変動係数をみる。
+
+```
+[1] "cor"
+
+   ro       Min. `1st Qu.` Median  Mean `3rd Qu.`  Max.       sd       cv
+   <fct>   <dbl>     <dbl>  <dbl> <dbl>     <dbl> <dbl>    <dbl>    <dbl>
+ 1 0     0.00741    0.0559  0.102 0.113     0.156 0.306 7.19e- 2 6.35e- 1
+ 2 0.1   0.00139    0.0388  0.128 0.137     0.231 0.363 1.07e- 1 7.80e- 1
+ 3 0.2   0.00662    0.133   0.235 0.231     0.311 0.449 1.24e- 1 5.36e- 1
+ 4 0.3   0.0942     0.251   0.320 0.351     0.485 0.584 1.36e- 1 3.88e- 1
+ 5 0.4   0.0640     0.356   0.423 0.411     0.509 0.603 1.20e- 1 2.93e- 1
+ 6 0.5   0.170      0.417   0.499 0.494     0.565 0.729 1.18e- 1 2.38e- 1
+ 7 0.6   0.315      0.527   0.560 0.582     0.647 0.844 1.22e- 1 2.09e- 1
+ 8 0.7   0.455      0.664   0.722 0.711     0.754 0.877 8.16e- 2 1.15e- 1
+ 9 0.8   0.628      0.748   0.779 0.770     0.811 0.907 6.67e- 2 8.66e- 2
+10 0.9   0.725      0.848   0.875 0.878     0.924 0.985 6.19e- 2 7.05e- 2
+11 1     1          1       1     1         1     1     5.83e-17 5.83e-17
+
+
+[1] "spm"
+
+   ro       Min. `1st Qu.` Median  Mean `3rd Qu.`  Max.       sd       cv
+   <fct>   <dbl>     <dbl>  <dbl> <dbl>     <dbl> <dbl>    <dbl>    <dbl>
+ 1 0     0.00456    0.0612 0.0981 0.112     0.156 0.358 7.60e- 2 6.79e- 1
+ 2 0.1   0.00533    0.0394 0.127  0.134     0.229 0.392 1.07e- 1 8.00e- 1
+ 3 0.2   0.0142     0.133  0.232  0.227     0.298 0.469 1.31e- 1 5.79e- 1
+ 4 0.3   0.117      0.241  0.321  0.350     0.483 0.591 1.38e- 1 3.95e- 1
+ 5 0.4   0.0528     0.347  0.416  0.408     0.499 0.609 1.16e- 1 2.83e- 1
+ 6 0.5   0.123      0.416  0.497  0.493     0.562 0.738 1.21e- 1 2.46e- 1
+ 7 0.6   0.309      0.525  0.565  0.586     0.640 0.844 1.23e- 1 2.10e- 1
+ 8 0.7   0.489      0.660  0.716  0.709     0.758 0.875 7.63e- 2 1.08e- 1
+ 9 0.8   0.614      0.721  0.780  0.766     0.814 0.902 6.84e- 2 8.93e- 2
+10 0.9   0.712      0.846  0.881  0.878     0.920 0.982 6.24e- 2 7.11e- 2
+11 1     1          1      1      1         1     1     2.06e-17 2.06e-17
+
+
+[1] "kdl"
+
+   ro        Min. `1st Qu.` Median   Mean `3rd Qu.`  Max.     sd     cv
+   <fct>    <dbl>     <dbl>  <dbl>  <dbl>     <dbl> <dbl>  <dbl>  <dbl>
+ 1 0     0.00571     0.0433 0.0590 0.0782     0.111 0.244 0.0534 0.682 
+ 2 0.1   0.000816    0.0351 0.0849 0.0957     0.147 0.262 0.0737 0.770 
+ 3 0.2   0.0106      0.101  0.163  0.165      0.231 0.353 0.0946 0.573 
+ 4 0.3   0.0939      0.187  0.232  0.267      0.374 0.443 0.102  0.383 
+ 5 0.4   0.0776      0.277  0.329  0.326      0.373 0.492 0.0856 0.262 
+ 6 0.5   0.199       0.367  0.406  0.412      0.462 0.603 0.0868 0.210 
+ 7 0.6   0.289       0.466  0.507  0.512      0.547 0.726 0.0975 0.191 
+ 8 0.7   0.489       0.601  0.646  0.639      0.676 0.780 0.0552 0.0863
+ 9 0.8   0.621       0.682  0.726  0.722      0.754 0.843 0.0559 0.0775
+10 0.9   0.740       0.824  0.860  0.854      0.887 0.941 0.0481 0.0563
+11 1     1           1      1      1          1     1     0      0     
+
+
+[1] "rs"
+
+   ro      Min. `1st Qu.` Median  Mean `3rd Qu.`  Max.      sd      cv
+   <fct>  <dbl>     <dbl>  <dbl> <dbl>     <dbl> <dbl>   <dbl>   <dbl>
+ 1 0     0           0.04  0.12  0.120     0.18  0.28  0.0783  0.654  
+ 2 0.1   0.04        0.04  0.12  0.120     0.12  0.36  0.0911  0.762  
+ 3 0.2   0           0.12  0.2   0.195     0.218 0.44  0.113   0.583  
+ 4 0.3   0.12        0.2   0.28  0.296     0.42  0.571 0.136   0.459  
+ 5 0.4   0.12        0.34  0.36  0.343     0.381 0.52  0.0997  0.291  
+ 6 0.5   0.0833      0.36  0.44  0.436     0.52  0.68  0.142   0.326  
+ 7 0.6   0.36        0.44  0.52  0.534     0.6   0.76  0.111   0.207  
+ 8 0.7   0.333       0.6   0.6   0.624     0.68  0.84  0.0976  0.156  
+ 9 0.8   0.52        0.68  0.718 0.722     0.76  0.84  0.0720  0.0997 
+10 0.9   0.673       0.84  0.84  0.855     0.92  0.92  0.0772  0.0902 
+11 1     0.980       1     1     0.999     1     1     0.00373 0.00373
+
+
+[1] "lrkd"
+
+   ro      Min. `1st Qu.` Median  Mean `3rd Qu.`  Max.     sd     cv
+   <fct>  <dbl>     <dbl>  <dbl> <dbl>     <dbl> <dbl>  <dbl>  <dbl>
+ 1 0     0.0533    0.0817  0.143 0.159     0.208 0.42  0.0939 0.588 
+ 2 0.1   0.04      0.12    0.19  0.186     0.23  0.393 0.0935 0.503 
+ 3 0.2   0.0333    0.122   0.181 0.195     0.267 0.387 0.0966 0.496 
+ 4 0.3   0.133     0.217   0.281 0.297     0.345 0.533 0.112  0.378 
+ 5 0.4   0.107     0.268   0.327 0.314     0.377 0.473 0.0929 0.296 
+ 6 0.5   0.273     0.36    0.45  0.451     0.527 0.693 0.111  0.246 
+ 7 0.6   0.167     0.438   0.539 0.518     0.578 0.793 0.137  0.264 
+ 8 0.7   0.493     0.59    0.647 0.662     0.723 0.887 0.101  0.153 
+ 9 0.8   0.587     0.743   0.797 0.787     0.827 0.96  0.0855 0.109 
+10 0.9   0.767     0.855   0.895 0.893     0.942 1     0.0666 0.0746
+11 1     1         1       1     1         1     1     0      0     
+
+
+[1] "crv"
+
+   ro     Min. `1st Qu.` Median  Mean `3rd Qu.`  Max.     sd     cv
+   <fct> <dbl>     <dbl>  <dbl> <dbl>     <dbl> <dbl>  <dbl>  <dbl>
+ 1 0     0.209     0.285  0.322 0.319     0.345 0.428 0.0474 0.149 
+ 2 0.1   0.242     0.289  0.316 0.321     0.339 0.450 0.0460 0.143 
+ 3 0.2   0.264     0.325  0.349 0.347     0.363 0.436 0.0388 0.112 
+ 4 0.3   0.312     0.365  0.396 0.395     0.436 0.469 0.0503 0.127 
+ 5 0.4   0.314     0.403  0.442 0.436     0.486 0.539 0.0600 0.138 
+ 6 0.5   0.381     0.437  0.493 0.483     0.520 0.586 0.0522 0.108 
+ 7 0.6   0.439     0.519  0.559 0.566     0.615 0.692 0.0662 0.117 
+ 8 0.7   0.547     0.613  0.654 0.647     0.683 0.756 0.0512 0.0792
+ 9 0.8   0.509     0.666  0.722 0.724     0.799 0.837 0.0832 0.115 
+10 0.9   0.588     0.811  0.851 0.830     0.877 0.911 0.0768 0.0926
+11 1     1         1      1     1         1     1     0      0  
+```
+![](all-functions.jpeg)
+CramerのVの変動係数は小さく、関数形によるバラツキが少ないと言える、また母関連の値によらず安定している。ただし母関連が0のときもCramerのVは0になっていない。観測点が多ければ各セルに入る観測点の数が同程度になり、CramerのVも0に近くなるが、観測点が十分にないと各セルに入る個数のバラルキが大きくなり一様分布しないためである。
+
+
+今回は観測点を50コとしたが、観測点を増やしたときのCramerのVの様子は以下の様になった。
+
+![](cramerV.jpeg)
+<br>
+<br>
+<br>
+
+## ニューラルネットワークによる母関連の推定
+<br>
+
+散布図の観測点（50コ）の座標(x,y)ではなく、CramerのVを関連係数としたときと同様に、散布図をグリッド（6行6列）で区切って2次元度数分布をつくり、36コの各セルの度数と母関連、計37列を個々のデータとした。すなわち、6*6ピクセルの1チャネル画像に母関連[0,1]をラベルしたものが個々のデータである。
+
+
+関数形は1次関数、指数関数、-1次関数、2次関数の4種とした。
+
+
+各関数形につき、母関連0から1まで0.1刻みで各100コ、計1100コのデータからなるデータセットをつくった。
+
+
+データセットよりランダムに非復元抽出、1:1に分割し。学習データ、テストデータとした。
+
+
+入力層36ノードへ各セルの度数、出力層1ノードへ母関連、中間1層目を4ノード、2層目を4ノードとするニューラルネットワークより、学習済みモデルをつくった。
+
+<br>
+<br>
+
+### NN学習による母関連の回帰値と予測値の分布
+
+一次関数
+![](nn-linear.jpeg)
+
+指数関数
+![](nn-exponential.jpeg)
+
+
+-1次関数
+![](nn-inverse.jpeg)
+
+2次関数
+![](nn-quadratic.jpeg)
+
+4種の関数すべて
+![](nn-all.jpeg)
+
+母関連を大体は推定できているが、相関係数が抽出しにくい関数形で同様に精度が低くなる。
+
+
+学習するデータ量を増やしても、回帰値の変動係数はこれ以上小さくならず、予測値の変動係数が大きくなるため、本NNの構成における学習は十分と考える。
+
+
+ただし、中間層の構成を代えて学習させることで、予測値の精度をより高くすることができるかもしれない。
+<br>
+<br>
+<br>
+
+## 結論
+
+変数間の関連を数値で表す「関連係数」について、いくつかの私案を含め、まとめた。
+
+
+「相関係数」は、データ分析における数学的論理を維持するために多く用いられるが、データ分析が対象とする様々な事象の変数間の関係を必ずしも表せると限らず、ノンパラメトリックな、またはヒューリスティックな工夫を用いた数値を代用することが望ましいこともある。また大量の変数があるときや、経時的に変数間の関係が変わるときなど、計算がより軽量な数値が望ましいこともある。
+
+
+変数間の関係は事象に対する数理モデリングの基礎であり、それをみつけるための、より一般的、より効率的な方法の追求はデータ分析においての重要事項と考える。一般的な方法を見つけることは難しいが、今回のように複数の方法を組み合わせることで、それに近い方法をつくることができるだろう。
+
+<br>
+<br>
+
+## 追補　観測点が楕円状に分布すると仮定するとき
+
+CramerのVはあらゆる関数形と一様分布との差を表すので、ｘとｙに楕円の関係があれば、値が大きくなるだろう。
+
+別の方法として、楕円の公式を用いてｘとｙに対し非線形最小二乗法を行なうとき、すべての観測点(x,y)が楕円上にあるときの残差Lは０になるので、残差Lの値がどれだけ小さいかで観測点(x,y)がつくる形状がどれだけ楕円に近いかを評価できる。
+
+$$
+\left( \dfrac{x-x_{0}}{a}\right) ^{2}+\left( \dfrac{y-y_{0}}{b}\right) ^{2}=1
+$$
+$$
+L\left( x_{0},y_{0},a,b\right)=\sum ^{n}_{i}\left( \left( \dfrac{x_{i}-x_{0}}{a}\right) ^{2}+\left( \dfrac{y_{i}-y_{0}}{b}\right) ^{2}-1\right) ^{2}
+$$
+一様分布の2次元乱数に対する残差Lの値がどのように分布するかを確認する。n=30の場合は以下となった。
+```{r}
+fn0=function(p,tb){
+  sum(((tb$x-p[1])**2/p[3] + (tb$y-p[2])**2/p[4] -1)**2) #p(x0,y0,a**2,b**2)
+}
+
+n=30
+l=vector()
+for(i in 1:10000){
+  tb0=tibble(x=runif(n,-2,2),y=runif(n,-2,2))
+  rst=optim(c(0,0,1,1),fn=fn0,tb=tb0)
+  l[i]=rst$value
+}
+summary(l)
+hist(l)
+```
+
+多くの場合、Lの値は小さく、一様分布が楕円関数と近いことがわかる。一方、大きな値をとることも十分にあり、楕円関数に反対的な分布が存在することがわかる。
+
+
+　母関連ro=0、すなわち一様分布に対する残差Lの平均をL0とし、楕円関連係数$r_{e}$を定義する。すべての観測点が楕円上に分布すれば1、一様分布ならば0に近く、楕円と反対的な分布ならば負値をとる。なおL0の理論値を求めることは難しいため、多数（10000コ）の一様分布のセットから求めたLの平均をL0に代え、n=30のときは3.4とした。
+$$
+r_{e}\equiv 1-\exp \left( (L-L_{0})/L\right) ,　L_{0}=mean(L;ro=0)
+$$
+
+
+```{r}
+x0=1 #center x
+y0=-1 #center y
+a=3 #range of x /2 
+b=2 #range of y /2
+# if a==b, a,b is radius 
+
+n=30
+
+par(mfrow=c(2,3))
+for(i in seq(0,1,0.2)){
+  x=runif(n,-a,a)+x0
+  y=runif(n,-b,b)+y0
+  y[1:(n*i)]=( (1-(x-x0)**2/a**2) *b**2 )**.5 *sign(runif(n,0,2)-1) +y0
+  plot(x,y,main=str_c('ro: ',i))
+  abline(v=x0,h=y0,col='red')
+}
+```
+
+```{r}
+s=50
+
+tb=tibble(ro=NA)
+for(r in 0:10){
+  for(i in 1:s){
+    x=runif(n,-a,a)+x0
+    y=( (1-(x-x0)**2/a**2) *b**2 )**.5 *sign(runif(n,0,2)-1) +y0
+ 
+    y0=min(y)
+    y1=max(y)
+    if(r==0){
+      y=runif(n,y0,y1)
+    }else{
+      if(r!=10) y=c(y[1:(r*n/10)],runif(n-r*n/10,y0,y1))
+    }
+    tb=bind_rows(tb,tibble(ro=r/10,set=i,
+                           x=scale(x)[,1],y=scale(y)[,1]))
+  }
+}
+tb=tb[-1,]
+
+relevance(tb)
+```
+
+```{r}
+l0=3.4
+
+tb1=tibble(ro=NA)
+for(r in 0:10){
+  for(i in 1:s){ # notice! s is defined in global
+    tb0=tb %>%
+      filter(ro==(r/10),set==i) %>%
+      select(x,y) %>%
+      filter(x>-2 & x<2 & y>-2 & y<2) # z value in x(-2,2),y(-2,2)
+
+    rst=optim(c(0,0,1,1),fn=fn0,tb=tb0)
+    l=rst$value
+    re=1-exp((l-l0)/l)
+
+    tb1=bind_rows(
+      tb1,
+      tibble(ro=r/10, l=l, re=re))
+  }
+}
+
+tb1=tb1[-1,]
+tb1$ro=as.factor(tb1$ro)
+
+
+options(digits=3, scipen=100)
+print(agr1c(tb1,'re','ro'))
+
+par(mfrow=c(1,1))
+boxplot(re~ro,tb1)
+
+```
+
+　楕円関係に対し、母関連が増加すると、相関係数は変動せず、CramerのVは増加傾向、Kendall順位相関係数は0に近づくことがわかった。一方、楕円関連係数は、母関連が増加すると増加し、変動係数も小さくなるが、母関連が0.2以下のとき（一様分布に近いとき）にも大きな値をとることがあり、これはサンプルを代えても同様だった。
+実用的に楕円の関係を見つけるには、まずCramerのVが小さいものを除外した上で、楕円関連係数の大きなものをみることになるだろう。
+
+
+

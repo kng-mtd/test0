@@ -1,0 +1,590 @@
+---
+title: 'データ分析のための行列分解'
+subtitle: '固有値分解、特異値分解、非負値行列因子分解'
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: hide 
+#date: "`r Sys.Date()`"
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T,warning=F,message=F)
+suppressWarnings(
+  suppressMessages(
+    suppressPackageStartupMessages({
+      library(stats)
+      library(MASS)
+      library(tidyverse)
+      
+      library(NMF)
+      library(imager)
+      library(visNetwork)
+    })
+  )
+)
+options(scipen=100,digits=2)
+```
+
+<br>
+
+## はじめに
+
+　世にある多様な情報、データを行列にすることで、線形代数の知見を用いた処理、特徴の抽出、分析ができるようになる。線形代数による手法は数学により定式化され、正当性を担保しているため、ブラックボックスがなく、結果の解釈、変法の意味もわかりやすい。いわゆる構造化されたテーブルデータに限らず、時系列、画像、音声、文書、遺伝子、それらを混合した非構造データも行列にすることで、さまざまな線形代数的な分析が適用されている。また行列計算を繰り返すことが多いため、開発の進むGPUの恩恵も受けやすい。
+
+　昨今のディープニューラルネットワーク（DNN）による分析手法に対し、線形代数的手法は説明のしやすさ、計算の軽さに優位性がある。また多様な情報をDNNモデルへ入力するための前処理であるEmbeddingに有用な行列分解（次元圧縮）を見つけることは重要なテーマとなっている。以上のことから、今日においても線形代数によるデータ分析手法の研究開発は継続されている。
+
+　データ分析に多用される線形代数手法である**３つの行列分解として、固有値分解、特異値分解、非負値行列因子分解について**まとめる。
+
+<br>
+
+## まとめ
+
+![](pic01.jpg){width="100%"} ![](pic02.jpg){width="100%"}
+
+## 固有値分解　EVD
+
+### 一般の固有値分解
+
+　固有値分解EVDは、n次元の正方行列$A$に対し、$Ap_{i=1-n}=e_ip_i$を満たすnコの固有値$e_{i=1-n}$と、その固有ベクトル$p_{i=1-n},　|p_i|=1$を求め、固有値$e_i$を対角成分とする固有値行列$Λ(\lambda_{ii}=e_i,　\lambda_{ij≠i}=0)$と、固有ベクトル$p_i$を列に並べた固有ベクトル行列$P(p_1,p_2,...p_n)$、その逆行列$P^-$を用いて、正方行列$A$を３つの行列に分解するもの。
+$$
+\begin{align}
+Ap_i &=e_ip_i\\
+AP &=P\Lambda\\
+A&=P\Lambda P^-
+\end{align}
+$$
+また$P^-AP=\Lambda$とみると、行列$A$（の基底）を左右から線形変換（拡大縮小、回転、反転）して$Λ$に対角化するとも言える。
+
+　ちなみにn次元の正方行列Aが固有値分解できる数学的な条件は$rank(A)=n$であること、すなわち行列$A$のすべての列（または行）が一次独立であること（一次従属がないこと）。現実のデータが完全な一次従属になることはなく、**ほぼすべての正方行列は固有値分解することができる。**
+
+```{r}
+n=6
+#eigen value decomposition for square matrix
+sqmx=matrix(round(runif(n*n,0,9)),n,n)
+cat('正方行列 A\n')
+sqmx
+ed=eigen(sqmx)
+e=ed$values #eigen values
+l=diag(e) #eigen matrix
+cat('その固有値行列 Λ\n')
+l
+v=ed$vectors #eigen vector matrix
+cat('その固有ベクトル行列 P\n')
+v
+cat('P Λ P-は、もとの行列Aに等しい\n')
+v %*% l %*% solve(v) |> Re() |> round() 
+```
+
+　データ行列そのものが正方行列になる（対象の数と変数の数が同じになる）ことは少なく、また上のように固有値、固有ベクトルは一般には複素数であり、データの特徴を直感的に理解できない。そのため**データ分析において、単純に固有値分解することだけの有用性は（たぶん）あまりない**。たとえば行列$A$がマルコフ遷移の確率行列のとき、遷移k回後の状態を手計算して行列Aのべき乗を求めるときに$A^k=(PΛP^-)^k=PΛ^kP^-$が利用でき、kが大きくなると計算量を減らすことができるのが少し便利なくらい。（数学においては固有値分解は連立微分方程式を解くツールとして使われる）
+
+<br>
+
+### 対称行列の固有値分解
+
+　行列$A$が対称行列$^t\!A=A$のとき、その固有値分解$A=UΛU^-$における固有値行列$Λ$は実数行列であり、固有ベクトル行列$U(u_{ij}),　|u_j|=1$も実数行列であり、さらに$u_iu_j=δ_{ij}$、$U^tU=I$、$U^-=^t\!U$、すなわち直交行列になる。**固有値、固有ベクトルの意味がわかりやすいものになるし**、固有ベクトル行列の逆行列を転置行列で代用できるので計算量を小さくできる（単純な逆行列計算の計算量は$O(n^3)$）。
+
+```{r}
+#eigen value decomposition for simmetric matrix
+smmx=(sqmx+t(sqmx))/2 |> round() #make simmetric matrix
+cat('対称行列 A\n')
+smmx
+ed=eigen(smmx)
+e=ed$values
+l=diag(e)
+cat('その固有値行列 Λ\n')
+l
+u=ed$vectors #eigen vector matrix -> orthogonal matrix
+cat('その固有ベクトル行列 P\n')
+u
+#solve(u)
+#t(u)
+#u %*% t(u) 
+cat('P Λ t(P)は、もとの行列Aに等しい\n')
+u %*% l %*% t(u) 
+```
+
+<br>
+
+### データ行列が対称行列となる例
+
+　たとえば、対象間の類似性を表す距離行列。多次元尺度法MDSは距離行列（を中心化したグラム行列）を固有値分解して、各対象を低次元にマッピング、全対象の近さを低次元に可視化したり、分類を行う。
+　
+
+　たとえば、無向グラフにおけるノード間のエッジの有無や大きさを表す隣接行列。隣接行列を固有値分解することでグラフの分割や連結成分、グラフの拡散や中心性を分析する。
+
+<br>
+
+グラフの行列表現　おまけ１
+
+グラフのノード間の（最小）距離
+
+nコのノード$v_{i=1-n}$から成るグラフにおいて、エッジの有無を１／０とした隣接行列$A:a_{ij}$としたとき、ノードiから1回移動したところにあるノードは、列ベクトル$x(x_i=1,x_{j≠i}=0)$（状態ベクトル）を用いて、列ベクトル$Ax$の0でない成分に対応するノード集合。
+
+ノードiから2回移動したところにあるノードは、列ベクトル$A^2x$の0でない成分に対応するノード集合。同様に、k回移動したところにあるノードは、列ベクトル$A^kx$の0でない成分に対応するノード集合であり、ノードiからノードjまでの距離は、列ベクトル$A^kx$のj成分が0とならない最小のk。
+
+また列ベクトル$b(b_{i=1-n}=1)$に対し、$A^kB$でkを大きくしていくと、多くのノードと直接、間接につながりをもつノードに対応する成分の値が相対的に大きくなる。
+
+<br>
+
+グラフの行列表現　おまけ２
+
+グラフの類似性評価アルゴリズム（非公式、開発中）
+
+同じnコのノードをもつグラフG1、G2に対し、エッジ（ループもあり）の有無を１／０とした隣接行列$A1:a_{1ij}$、$A2:a_{2ij}$をつくる。
+
+各隣接行列の各行をn桁の２進数とみて、縦方向にソートする。続いて、各列をn桁の２進数とみて、横方向にソートする。（この操作をクロスソートと命名）
+
+変形された隣接行列$A1':a_{1'ij}$、$A2':a_{2'ij}$において、対応する成分が同じ値となっている比率$\frac{＃(a_{1'ij}=a_{2'ij})-n}{n^2-n}$はグラフG1、G2の類似性を表す。
+
+```{r}
+#cross sort function
+cross_sort=function(m0){
+  #print(m0)
+  k=nrow(m0)
+  m0=cbind(m0,seq(1,k))
+  a=vector()
+  for(i in 1:k){
+    a[i]=str_c(m0[i,]) %>% paste(collapse='')
+  }
+  #print(a)
+  a=sort(a)
+  r=str_sub(a,k+1,)
+  m1=str_sub(a,1,k) %>% 
+    str_split('') %>%
+    unlist() %>%
+    matrix(k,k) 
+  #print(m1)
+  m1=cbind(m1,seq(1,k))
+  a=vector()
+  for(i in 1:k){
+    a[i]=str_c(m1[i,]) %>% paste(collapse='')
+  }
+  #print(a)
+  a=sort(a)
+  c=str_sub(a,k+1,)
+  m2=str_sub(a,1,k) %>% 
+    str_split('') %>%
+    unlist() %>%
+    as.integer() %>% 
+    matrix(k,k)
+  #print(m2)
+  
+  return (list(m2,r,c))
+}
+
+```
+
+<br>
+
+無向グラフのとき
+
+```{r}
+k=7
+p=0.5
+#sort andirectional graph adjecent matrix and compare them
+m=matrix(0,k,k)
+for(i in 1:(k-1)){
+  for(j in (i+1):k){
+    m[i,j]=rbinom(1,1,p)
+    m[j,i]=m[i,j]
+  }
+}
+m
+visNetwork(nodes=tibble(id=1:k),edges=mat2link(m,F))
+
+eigen(m)$values %>% round(2)
+
+a=cross_sort(m)
+ma=a[[1]]
+ra=a[[2]]
+ca=a[[3]]
+ma
+ra
+ca
+m=matrix(0,k,k)
+for(i in 1:(k-1)){
+  for(j in (i+1):k){
+    m[i,j]=rbinom(1,1,p)
+    m[j,i]=m[i,j]
+  }
+}
+m
+visNetwork(nodes=tibble(id=1:k),edges=mat2link(m,F))
+
+eigen(m)$values %>% round(2)
+
+b=cross_sort(m)
+mb=b[[1]]
+rb=b[[2]]
+cb=b[[3]]
+mb
+rb
+cb
+
+(sum(ma==mb)-k)/(k**2-k)
+```
+
+<br>
+
+### 主成分分析　PCA
+
+　**データ分析において固有値分解が（たぶん）最も有用なのは主成分分析PCAのとき。PCAは多変量分布からデータの分散が大きい、互いに直交する軸（主成分）を抽出するもの。**
+
+　PCAは、mコの変数をもつnコの対象において、各変数$x_{j=1-m}$を中心化（$Σ_{i=1}^nx_{ij}=0$）したデータ行列$X$より、その共分散行列$Σ=^t\!XX/n$または相関行列$R:r_{ij}=(^tXX)_{ij}/\sqrt{(^tXX)_{ii}(^tXX)_{jj}}$を固有値分解し、nコの互いに直交する主成分をつくる。固有値$λ_{i=1-n},　λ_i≧λ_{j>i}$は主成分方向のデータの分散の大きさ、その固有ベクトル$u_{i=1-n}$は主成分方向の基底ベクトルとなる。
+
+　各対象の変数ベクトル$x(x_1,x_2,...x_m)$と、主成分の軸である固有ベクトルの内積、すなわち各対象の主成分軸へ射影の大きさを主成分スコアと言う。分散の大きい主成分をkコ選び、kコの主成分スコアを計算することで、もともとmコの変数をもつ各対象の特徴を、kコの主成分スコアで表すことでき、**k次元の主成分空間への対象のマッピング、対象間の類似性評価、分類**を行うことができる。
+
+また十分な次元の**主成分スコアを用いて、情報量減少の小さいデータ圧縮**をすることができる。例えると、[*相手とある立体についての話をするとき、立体をカバンに入れて持っていかず、その立体の特徴を良く表せる角度からk枚の写真をとり、（カバンにいれてもかさばらない）写真を用いて、相手に説明すること*]{.underline}。
+
+また多重共線性を防ぐ主成分回帰分析もできる。
+
+　主成分負荷量は変数$x_j$と主成分$u_i$の相関係数に相当し、共分散行列を固有値分解したときは$r_{x_ju_i}=\sqrt{λ_i}u_i/\sqrt{V[x_j]}$、相関行列を固有値分解したときは$r_{x_ju_i}=\sqrt{λ_i}u_i$と計算される。各主成分に対する変数の主成分負荷量は変数の特徴を表し、変数のマッピング、変数間の類似性評価、主成分の解釈を行うことができる。
+
+　さらに[相関行列の成分である相関係数（例えば、Kendallの順位相関係数を使う）の定義を代えることで、別の主成分空間による可視化]{.underline}を試すこともできるだろう。
+
+```{r}
+#Principal component analysis and dimension reduction
+n=10
+m=4
+mx=matrix(runif(n*m),n,m)
+cat('データ行列 X\n')
+mx
+
+pr=prcomp(mx,scale=T)
+#summary(pr)
+#plot(pr,main='PCA')
+cat('相関行列の固有値＝主成分の分散 λ\n')
+(pr$sdev)**2 #explained variance
+#pr$sdev #explained variance^.5
+
+cat('相関行列の固有ベクトル行列 U\n')
+pr$rotation #principal component loading
+
+cat('第１、第２主成分スコア\n')
+pc1=pr$x[,1] #1st pricipal component score
+pc2=pr$x[,2] #2nd pricipal component score
+matrix(c(pc1,pc2),ncol=2)
+
+cat('第１、第２主成分による2次元空間への対象のマッピング\n')
+plot(pc1,pc2,type='n')
+text(pc1,pc2,1:nrow(mx))
+```
+
+<br>
+
+## 特異値分解　SVD
+
+　特異値分解SVDは、**対称行列でも正方行列でもない一般的なデータ行列**、また対象と変数から成る構造をとらない画像、音声、テキストのデータに対しても特徴抽出、データ圧縮、復元にに用いることができる。
+
+　次数kのSVDは、mコの変数をもつnコの対象のデータ行列$X\subset \mathbb{R} ^{n\times m}$を、kコの特異値を対角成分とした対角行列である特異値行列$Σ\subset \mathbb{R} ^{k\times k}$と、２つの直交行列である左特異ベクトル行列$U\subset \mathbb{R} ^{n\times k},　|u_j|=1$、右特異ベクトル行列$V\subset \mathbb{R} ^{m\times k},　|v_j|=1$により$X=UΣ^tV$に行列分解する。
+
+$X=UΣ^tV$と仮定すると、
+
+$$
+\begin{align}
+X^tX&=UΣ^tVV^tΣ^tU=UΣ^tΣ^tU\\
+^tXX&=V^tΣ^tUUΣ^tV=V^tΣΣ^tV
+\end{align}
+$$
+
+特異値行列$Σ$は対角行列なので、$Σ^tΣ$と$^tΣΣ$は同値の対角行列であり、特異値である$Σ$の対角成分は$Σ^tΣ(=^tΣΣ)$の対角成分の平方根。また$U$は$X^tX$を固有値分解したときの固有ベクトル行列、$V$は$^tXX$を固有値分解したときの固有ベクトル行列である。
+
+　[PCAは元のデータ行列の加工など計算の手間がかかるが、その結果が表す特徴の解釈はわかりやすいものになる。一方、SVDはデータ行列をそのまま行列分解するので計算はしやすい。ただしその結果より、各対象の特徴が左特異ベクトル行列の各行のk次元ベクトル、各変数の特徴が右特異ベクトル行列の各行のk次元ベクトルが表すものになるが、これらの解釈は直感的にできない。]{.underline}
+
+　
+**PCA、SVDともに、k次元ベクトルの成分のうち、大きな固有値、特異値に対応するものほど重要な特徴を表すものとなる。**k次元ベクトルを用いて対象、変数のマッピング、解釈を行う。また次数kを小さくするほどもとのデータ行列Xをより圧縮（低ランク近似）できる、当然、近似性は低くなる。
+
+```{r}
+n=15
+m=7
+#singular value decomposition
+mx=matrix(rnorm(n*m),n,m)
+cat('データ行列 x\n')
+mx
+
+k=6
+ku=k
+kv=k
+s=svd(mx,ku,kv) #u n*ku, d ku*kv, v m*kv
+#s$d #singular value
+d=diag(s$d[1:k])
+cat('次数6まで特異値分解したときの特異値行列 Σ\n')
+d
+u=s$u #left singular matrix
+cat('次数6まで特異値分解したときの左特異ベクトル行列 U\n')
+u
+v=s$v #right singular matrix
+cat('次数6まで特異値分解したときの右特異ベクトル行列 V\n')
+v
+cat('U Σ t(v)は、もとの行列xに近似する\n')
+u %*% d %*% t(v)
+```
+
+<br>
+
+## 非負値行列因子分解　NMF
+
+　非負値行列因子分解NMFは、もとの行列と、それを分解した２つの行列の全成分に非負の制約条件を与えて行列分解するもの。SVDと同様、画像、音声、遺伝子情報など様々なデータに対する特徴抽出に用いられる。
+
+　次数kのNMFは、mコの変数をもつnコの対象のデータ行列$X\subset \mathbb{R} ^{n\times m}$を、基底行列$W\subset \mathbb{R} ^{n\times k}$と、係数行列$H\subset \mathbb{R} ^{k\times m}$により$X=WH$に行列分解する。
+
+$X$と$WH$の距離（差）を最小化する最適化問題として、更新手続き「MU則」にしたがい繰り返し計算でWとHを収束させる。MU則による最適化は、$X$と$WH$の距離をユークリッド距離（ﾌﾛﾍﾞﾆｳｽﾉﾙﾑ）としても、KLダイバージェンスとしても、同等になることがわかっている。また$W$と$H$の初期値により異なる局所最適解をとる。
+
+$W$、$H$に適当な初期値（非負行列）を与える、また以下の行列計算用いる。
+$$
+C=A\circ\!B　　c_{ij}=a_{ij}*b_{ij}\\
+C=\dfrac{A}{B}　　c_{ij}=a_{ij}/b_{ij}
+$$ Wの更新 $$
+W\leftarrow W\circ\dfrac{X^tH}{WH^tH}
+$$ Hの更新 $$
+H\leftarrow H\circ\dfrac{X^tW}{HW^tW}
+$$
+
+[多くの物理量（画像ならば色の明度、音声ならば音量、周波数とか）は大小、高低などを表す0以上の値であり、正負のないNMFの結果は解釈しやすいことがある]{.underline}。またNMFには固有値や特異値のような概念がなく、**特徴因子に順位、重みがない**。さらに正値を打ち消す負値がないため、寄与の小さな行列成分は0になり**スパース化しやすいため、PCAとは違うかたちで特徴が可視化**される。[画像で言うと、大きなもの、また周りとの差が大きなものを優先して抽出するとされる]{.underline}
+。
+
+一方、非負の制約条件を加えて最適化するため、情報量は低下し、データ圧縮には用いる意義はない。また正負があることで反対語などを解釈しやすくなるテキストデータの分析などにも不向きかもしれない。
+
+```{r}
+#library(NMF)
+a=rmatrix(10,7)
+cat('データ行列 x\n')
+a
+
+#A=WH
+#set.seed(1)
+res=nmf(a,3,.options='t') # nmf rank 3 approximation with trace
+cat('NMF最適化過程\n')
+plot(res)
+
+w0=basis(res) # W matrix
+cat('次数3 基底行列 W\n')
+w0
+h0=coef(res) # H matrix
+cat('次数3 係数行列 H\n')
+h0
+cat('次数3 NMF近似\n')
+fitted(res)
+
+#layout(cbind(1,2))
+#basismap(res) # max element by row in W matrix
+#coefmap(res) # max element by column in H matrix
+
+w=w0
+w[w<0.1]=0
+cat('スパース化基底行列\n')
+w
+h=h0
+h[h<0.1]=0
+cat('スパース化係数行列\n')
+h
+cat('スパース化近似\n')
+w%*%h
+#summary(w%*%h-a)
+
+cat('データ行列とそのスパース化近似の画像表示\n')
+layout(matrix(c(1,2),nrow=1))
+image(a,col=gray.colors(100),axes=F)
+image(w%*%h,col=gray.colors(100),axes=F)
+```
+
+<br>
+
+### NMFの次数検討
+
+```{r}
+res=nmf(a,c(2:5)) # nmf by each rank
+plot(res)
+```
+
+<br>
+
+### NMFの次数による近似のちがいを画像で確認する
+
+```{r}
+a=read_csv('mario.csv',col_names=F) |> as.matrix()
+a=a*10
+cat('データ行列 x\n')
+a
+a=a[nrow(a):1,] |> t()
+
+
+#image(a,col=gray.colors(100), axes=F, main='origin')
+
+cat('データ行列の各次数によるNMF近似の画像表示 x\n')
+layout(matrix(1:4,nrow=2) |> t())
+for(i in 3:10){
+  res=nmf(a,i) # rank i approximation
+  w=basis(res) # W matrix
+  w[w<0.01]=0
+  h=coef(res) # H matrix
+  h[h<0.01]=0
+  
+  image(w%*%h,
+        col=gray.colors(10), axes=F, main=str_c('k: ',i))
+}
+
+```
+
+<br>
+
+### NMFとPCAのちがいを画像で確認する
+
+　**行列計算は2次元グリッドの点、セル（成分）単位の操作でなく、線（行と列、ヨコとタテ）単位の操作のみ**。列ベクトルに行ベクトルを掛け合わせてできる行列は、例えると、[濃淡のある糸を使い、タテ糸を張って、そこへヨコ糸を織り込んでつくるチェック模様の生地。分解した行列から元の行列を復元することは、（単純な）種々のチェック模様の生地を次数の数だけ重ねて、複雑な模様を作ること]{.underline}。
+
+さらに例えると、[PCAは水彩による写実画、まず下絵を描いて、色を足したり、水で薄めたりして、詳細部分を詰めていく。
+NMFは油彩による抽象画、水で薄めることなく色を重ねていく、周りとちがいの大きい部分を強調していく]{.underline}。
+
+NMFは乱数を初期値にすることで、異なる局所最適解となる行列になる。これを元の行列へ復元すると、毎回、大体同じだが、少しちがうものになる。
+
+PCA、SVDは次数が同じならば常に同一の行列に分解され、また同一の行列を復元する。しかし、PCAにおける固有値の小さな固有値ベクトル（主成分）、SVDにおける特異値の小さな左右特異ベクトルは全体への寄与が小さく、その固有値、特異値を変化させて復元させると、大体同じだが全体的に少しちがう行列になる。これにより弱い特徴に左右されず、強い特徴を抽出させるための学習データをつくることができる。
+
+```{r}
+#library(imager)
+img=load.image('image0.jpeg') |> 
+  resize(200,250) |> 
+  grayscale() #[]
+
+mx=as.matrix(img)
+
+layout(matrix(1:1,1,1))
+plot(img,axes=F,main=str_c('origin  dim: ',nrow(mx),',',ncol(mx)))
+
+#mx=mx[,ncol(mx):1]
+#image(mx,col=gray.colors(100),axes=F)
+
+
+pcaPlot=function(pca,k0,k1){
+  nScore=length(pca$x[,k0:k1])
+  nLoad=length(pca$rotation[,k0:k1])
+  pca$x[,k0:k1] %*% t(pca$rotation[,k0:k1]) |> 
+    scale(center=-pca$center,scale=F) |>  
+    as.cimg() |> 
+    plot(axes=F,main=str_c('PCA; ',k0,'-',k1,'\n',
+                           'length: ',nScore,',',nLoad))
+} 
+
+
+pca=prcomp(mx,scale=F)
+
+layout(matrix(1:4,2,2,byrow=T))
+for(i in 1:4) pcaPlot(pca,i,i)
+for(i in 1:4) pcaPlot(pca,1,i)
+for(i in 0:3) pcaPlot(pca,1,5*2**i)
+
+
+
+svdPlot=function(mx,k){
+  svd=svd(mx,k,k)
+  if(k==1){
+    d=diag(1)
+  }else{
+    d=diag(svd$d[1:k])
+  }
+  u=svd$u
+  v=svd$v
+  nLeft=length(u)
+  nRight=length(v)
+
+  u %*% d %*% t(v) |> 
+  as.cimg() |> 
+  plot(axes=F,main=str_c('SVD; ',k,'\n',
+                         'length: ',nLeft,',',nRight))
+} 
+
+layout(matrix(1:4,2,2,byrow=T))
+for(i in 1:4) svdPlot(mx,i)
+for(i in 0:3) svdPlot(mx,5*2**i)
+
+
+
+#library(NMF)
+
+nmfPlot=function(mx,k){
+  res=nmf(mx,k)
+  w=basis(res)
+  h=coef(res)
+  nBasis=length(w)
+  nCoef=length(h)
+  basis(res)%*%coef(res) |> 
+    as.cimg() |> 
+    plot(axes=F,main=str_c('NMF; ',k,'\n',
+                           'length: ',nBasis,',',nCoef))
+}
+
+layout(matrix(1:4,2,2,byrow=T))
+for(i in 1:4) nmfPlot(mx,i)
+for(i in 0:3) nmfPlot(mx,5*2**i)
+
+
+
+mx=matrix(rep(1,10000),100,100)
+
+mx=matrix(runif(10000,0.7,1),100,100)
+
+mx[11:50,11:50]=0.4
+mx[11:40,61:90]=1
+mx[71:90,21:40]=0
+mx[81:90,81:90]=0.4
+mx[56:60,56:60]=0
+mx[66:68,66:68]=0
+mx[72:73,72:73]=0
+mx[77:77,77:77]=0
+
+layout(matrix(1:1,1,1))
+image(mx,axes=F,col=gray.colors(10),
+      main=str_c('origin  dim: ',nrow(mx),',',ncol(mx)))
+
+
+pcaPlot2=function(pca,k0,k1){
+  nScore=length(pca$x[,k0:k1])
+  nLoad=length(pca$rotation[,k0:k1])
+  pca$x[,k0:k1] %*% t(pca$rotation[,k0:k1]) |> 
+    scale(center=-pca$center,scale=F) |>  
+    image(axes=F,col=gray.colors(10),
+          main=str_c('PCA; ',k0,'-',k1,'\n',
+                     'length: ',nScore,',',nLoad))
+}
+
+
+pca=prcomp(mx,scale=F)
+
+layout(matrix(1:6,2,3,byrow=T))
+for(i in 1:6) pcaPlot2(pca,1,i)
+
+
+nmfPlot2=function(mx,k){
+  res=nmf(mx,k)
+  w=basis(res)
+  h=coef(res)
+  nBasis=length(w)
+  nCoef=length(h)
+  basis(res)%*%coef(res) |> 
+    image(axes=F,col=gray.colors(10),
+          main=str_c('NMF; ',k,'\n',
+                     'length: ',nBasis,',',nCoef))
+}
+
+
+for(i in 1:6) nmfPlot2(mx,i)
+for(i in 1:6) nmfPlot2(mx,i)
+for(i in 1:6) nmfPlot2(mx,i)
+
+for(i in c(10,20,30)) pcaPlot2(pca,1,i)
+for(i in c(10,20,30)) nmfPlot2(mx,i)
+
+```
+
+<br>
+
+## おわりに
+
+　データ分析に用いる代表的な行列分解として、固有値分解とそれによる主成分分析、特異値分解、非負値行列因子分解の基本をまとめた、またそれらのちがいを画像で確認した。
+
+　今後、多様なソースからのデータに適用されている主成分分析を用いた各種分析手法の有用性を確認していきたい。

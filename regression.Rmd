@@ -1,0 +1,238 @@
+---
+title: 'Regression'
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: show
+#date: "`r Sys.Date()`"
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T,warning=F,message=F,comment='')
+
+suppressWarnings(
+  suppressMessages(
+    suppressPackageStartupMessages({
+      library(stats)
+      library(MASS)
+      library(tidyverse)
+      library(magrittr)
+      
+      library(palmerpenguins)
+      library(broom)
+      library(effsize)
+    })
+  )
+)
+options(scipen=100,digits=3)
+```
+
+
+```{r}
+tb=penguins
+str(tb)
+tb$year=as_factor(tb$year)
+tb[!complete.cases(tb),]
+tb=drop_na(tb)
+```
+
+
+
+# single regression
+```{r}
+qplot(flipper_length_mm,body_mass_g,data=tb)
+fit=lm(body_mass_g~ flipper_length_mm,tb)
+tidy(fit)
+glance(fit)
+
+par(mfrow=c(2,2))
+plot(fit,which=c(1,2,3,5))
+```
+
+```{r}
+predict.lm(fit,type='response',tb) |> head()
+augment(fit) |> head()
+
+ggplot(penguins,aes(body_mass_g, flipper_length_mm))+
+  geom_point()+
+  geom_smooth(method='lm')
+```
+
+
+
+# multi regression
+```{r}
+fit1=lm(body_mass_g~ flipper_length_mm,tb)
+tidy(fit1)
+glance(fit1)
+
+fit2=lm(body_mass_g~ bill_length_mm+ flipper_length_mm,tb)
+tidy(fit2)
+glance(fit2)
+
+fit3=lm(body_mass_g~ bill_length_mm+ bill_depth_mm+ flipper_length_mm,tb)
+tidy(fit3)
+glance(fit3)
+
+mdls=list(model1=fit1,model2=fit2,model3=fit3)
+map_dfr(mdls,glance,.id='model')
+map_dfr(mdls,tidy,.id='model')
+
+
+
+fit=lm(body_mass_g~ bill_length_mm+ bill_depth_mm+ flipper_length_mm+ species+ island+ sex,tb)
+tidy(fit)
+glance(fit)
+
+exp=lm(bill_length_mm~bill_depth_mm+flipper_length_mm+species+island+sex-body_mass_g,tb)
+rsq=summary(exp)$r.squared
+cat('vif',1/(1-rsq),'\n')
+
+exp=lm(bill_depth_mm~bill_length_mm+flipper_length_mm+species+island+sex-body_mass_g,tb)
+rsq=summary(exp)$r.squared
+cat('vif',1/(1-rsq),'\n')
+
+exp=lm(flipper_length_mm~bill_length_mm+bill_depth_mm+species+island+sex-body_mass_g,tb)
+rsq=summary(exp)$r.squared
+cat('vif',1/(1-rsq),'\n')
+
+
+
+fitBest=step(fit)
+tidy(fitBest)
+glance(fitBest)
+
+par(mfrow=c(2,2))
+plot(fit,which=c(1,2,3,5))
+
+predict.lm(fitBest,type='response',tb) |> head()
+augment(fitBest) |> head()
+```
+
+
+
+# interaction
+```{r}
+fit=lm(body_mass_g~ flipper_length_mm*species*island*sex,tb)
+tidy(fit)
+glance(fit)
+
+fitBest=step(fit)
+tidy(fitBest)
+glance(fitBest)
+
+par(mfrow=c(2,2))
+plot(fitBest,which=c(1,2,3,5))
+
+predict.lm(fitBest,type='response',tb) |> head()
+augment(fitBest) |> head()
+```
+
+
+
+# generalized linear model
+```{r}
+fit=glm(body_mass_g~ flipper_length_mm,tb,
+       family=gaussian(link='identity'))
+tidy(fit)
+glance(fit)
+
+fit=glm(body_mass_g~ flipper_length_mm,tb,
+       family=gaussian(link='log'))
+tidy(fit)
+glance(fit)
+
+fit=glm(body_mass_g~ flipper_length_mm,tb,
+       family=poisson(link='log'))
+tidy(fit)
+glance(fit)
+
+fit=glm(body_mass_g~ flipper_length_mm,tb,
+       family=Gamma(link='log'))
+tidy(fit)
+glance(fit)
+
+
+
+fit=glm(body_mass_g~ bill_length_mm+ bill_depth_mm+ flipper_length_mm+ species+ island +sex,tb,
+       family=gaussian(link='log'))
+tidy(fit)
+glance(fit)
+
+fitBest=step(fit)
+tidy(fitBest)
+glance(fitBest)
+
+predict.glm(fitBest,type='response',tb) |> head()
+augment(fitBest) |> head()
+
+
+fit=glm(body_mass_g~ bill_length_mm+ bill_depth_mm+ flipper_length_mm+ species+ island +sex,tb,
+       family=poisson(link='log'))
+tidy(fit)
+glance(fit)
+
+fitBest=step(fit)
+tidy(fitBest)
+glance(fitBest)
+
+predict.glm(fitBest,type='response',tb) |> head()
+augment(fitBest) |> head()
+```
+
+
+
+# logistic regression
+```{r}
+qplot(body_mass_g,sex,data=tb)+geom_count()
+
+anv=aov(body_mass_g~sex,tb) |>
+  summary() |> unlist()
+cat('eta: ',anv['Sum Sq1']/(anv['Sum Sq1']+anv['Sum Sq2']),'\n')
+
+fit=glm(sex~body_mass_g,tb,
+        family=binomial(link='logit'))
+tidy(fit)
+glance(fit)
+
+predict.glm(fit,type='response',tb) |> head()
+augment(fit) |> head()
+
+
+qplot(flipper_length_mm,sex,data=tb)+geom_count()
+
+anv=aov(flipper_length_mm~sex,tb) |>
+  summary() |> unlist()
+cat('eta: ',anv['Sum Sq1']/(anv['Sum Sq1']+anv['Sum Sq2']),'\n')
+
+fit=glm(sex~flipper_length_mm,tb,
+        family=binomial(link='logit'))
+tidy(fit)
+glance(fit)
+
+predict.glm(fit,type='response',tb) |> head()
+augment(fit) |> head()
+
+
+fit=glm(sex~ bill_length_mm+ bill_depth_mm+ flipper_length_mm+ body_mass_g+ species+ island,tb,
+       family=binomial(link='logit'))
+tidy(fit)
+glance(fit)
+
+fitBest=step(fit)
+tidy(fitBest)
+glance(fitBest)
+
+predict.glm(fitBest,type='response',tb) |> head()
+augment(fitBest) |> head()
+```
+
+

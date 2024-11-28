@@ -1,0 +1,582 @@
+---
+title: "Pretreatment table data"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: show 
+#date: "`r Sys.Date()`"
+
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T,warning=F,message=F,comment='')
+
+
+suppressWarnings(
+  suppressMessages(
+    suppressPackageStartupMessages({
+      library(stats)
+      library(MASS)
+      library(tidyverse)
+      library(magrittr)
+      library(RSQLite)
+      library(nanoparquet)
+      library(httr)
+      library(httr2)
+      library(jsonlite)
+      library(palmerpenguins)　#サンプルデータ用
+    })
+  )
+)
+options(scipen=100,digits=3)
+```
+
+## input data from csv
+```{r}
+tb0=read_csv('penguins.csv')
+slice_sample(tb0,n=10)
+
+read_csv('penguins.csv',col_types=cols(.default='c')) |>  
+  type_convert()
+
+read_csv('penguinsSJ.csv',col_names=T,locale=locale(encoding='shift-jis'))
+```
+
+## output data as csv
+```{r}
+tb=tb0
+write_csv(tb,'penguins.csv')
+
+write.csv(tb,'penguinsSJ.csv',fileEncoding='shift-jis',row.names=F)
+```
+
+## see table
+```{r}
+glimpse(tb0)
+nrow(tb0)
+ncol(tb0)
+
+tb0$year=as.factor(tb0$year)
+```
+
+## treat NA
+```{r}
+tb0[!complete.cases(tb0),]
+filter(tb0,is.na(sex))
+
+replace_na(tb0,list(sex='no'))
+drop_na(tb0)
+```
+
+## see variable statistic
+```{r}
+min(tb0$bill_length_mm,na.rm=T)
+max(tb0$bill_length_mm,na.rm=T)
+range(tb0$bill_length_mm,na.rm=T)
+sum(tb0$bill_length_mm,na.rm=T)
+mean(tb0$bill_length_mm,na.rm=T)
+median(tb0$bill_length_mm,na.rm=T)
+fivenum(tb0$bill_length_mm,na.rm=T)
+
+var(tb0$bill_length_mm,na.rm=T)
+sd(tb0$bill_length_mm,na.rm=T)
+
+unique(tb0$species)
+distinct(tb0,species,island)
+xtabs(~species,tb0)
+xtabs(~species+island,tb0)
+```
+
+
+## convert numeric variables
+```{r}
+tb=drop_na(tb0)
+select(tb,is.numeric) |> floor()
+select(tb,is.numeric) |> ceiling()
+select(tb,is.numeric) |> round(1)
+select(tb,is.numeric) |> log()
+select(tb,is.numeric) |> log10()
+select(tb,is.numeric) |> scale() |> head(10)
+
+select(tb,is.numeric) |> 
+  mutate(across(everything(), ~(.-mean(.))/sd(.)))
+
+select(tb,is.numeric) |> 
+  mutate(across(everything(), ~(.-min(.))/(max(.)-min(.))))
+```
+
+## treat date,datetime
+```{r}
+today()
+now()
+
+tb=tribble(~date,~datetime,
+            '20200123','20200123 112233',
+            '20210124','20210124 122334',
+            '20220125','20220125 132435')
+
+mutate(tb,ymd=ymd(date),ymd_hms=ymd_hms(datetime))
+
+mutate(tb,y=year(ymd(date)),m=month(ymd(date)),d=day(ymd(date)),
+       H=hour(ymd_hms(datetime)),M=minute(ymd_hms(datetime)),S=second(ymd_hms(datetime)))
+```
+
+
+## prepare table, choose column
+```{r}
+select(tb0,species,bill_length_mm)
+select(tb0,is.numeric)
+select(tb0,!is.numeric)
+```
+
+## prepare table, choose row
+```{r}
+filter(tb0,species=='Adelie')
+filter(tb0,species=='Adelie',sex=='male')
+
+filter(tb0,bill_length_mm<35)
+filter(tb0,bill_length_mm>55)
+filter(tb0,between(bill_length_mm,40,50))
+
+filter(tb0,str_detect(species,'del'))
+filter(tb0,str_detect(species,'^Ch'))
+filter(tb0,str_detect(species,'oo$'))
+filter(tb0,str_detect(species,'[A-C]'))
+filter(tb0,str_detect(species,'[A,C,G]'))
+filter(tb0,str_detect(species,'o{2}'))
+```
+
+## prepare table, sort row
+```{r}
+arrange(tb0,bill_length_mm)
+arrange(tb0,desc(bill_length_mm))
+arrange(tb0,bill_length_mm,bill_depth_mm)
+```
+
+## prepare table, change values
+```{r}
+mutate(tb0,year=as.character(year))
+mutate(tb0,year=as.character(year) |> as.numeric())
+
+mutate_all(tb0,as.character)
+
+mutate(tb0,id=row_number())
+mutate(tb0,rank=min_rank(bill_length_mm))
+mutate(tb0,rank=dense_rank(bill_length_mm))
+
+mutate(tb0,sex=if_else(sex=='male','M','F'))
+mutate(tb0,species=case_when(species=='Adelie'~'A',
+                            species=='Chinstrap'~'C',
+                            T~'G'))
+```
+
+
+## make table longer, make table wider
+```{r}
+tb=mutate(tb0,id=row_number()) |> 
+  select(id,everything()) |> print()
+
+select(tb,id,is.numeric) |> 
+  pivot_longer(cols=c(bill_length_mm,
+                      bill_depth_mm,
+                      flipper_length_mm,
+                      body_mass_g),
+               names_to='arg',values_to='value')
+
+tb1=select(tb,id,is.numeric)
+pivot_longer(tb1,cols=colnames(tb1[-1]),names_to='arg',values_to='value')
+
+tb1=select(tb,id,!is.numeric)
+pivot_longer(tb1,cols=colnames(tb1[-1]),names_to='arg',values_to='value')
+
+tb1=mutate_all(tb,as.character)
+tb=pivot_longer(tb1,cols=colnames(tb1[-1]),names_to='arg',values_to='value') |> print()
+
+
+pivot_wider(tb,names_from=arg,values_from=value)
+```
+
+
+## combine columns, split columns
+```{r}
+tb=unite(tb0,col=x,species,island,sep='@') |> print()
+
+separate(tb,col=x,c('species','island'),sep='@')
+```
+
+## summary table
+```{r}
+tb=drop_na(tb0)
+rowwise(tb) |> mutate(x=mean(c(bill_length_mm,bill_depth_mm)))
+
+group_by(tb,species,sex) |>
+  summarise(n=n())
+group_by(tb,species,sex) |>
+  summarise(n=n(),
+            sum=sum(body_mass_g),
+            mean=mean(body_mass_g)) |> 
+  ungroup()
+```
+
+
+## string maipulation
+```{r}
+tb=select(tb0,!is.numeric)
+mutate(tb,len=str_length(tb$species))
+mutate(tb,x=str_to_lower(species))
+mutate(tb,x=str_to_upper(species))
+mutate(tb,x=str_c(species,'@',island))
+
+mutate(tb,x=str_sub(species,1,3))
+mutate(tb,x=str_replace(species,'e','-'))
+mutate(tb,x=str_replace_all(species,'e','-'))
+mutate(tb,x=str_remove(species,'e'))
+mutate(tb,x=str_remove_all(species,'e'))
+
+mutate(tb,x=str_c(' ',species,'  ',island,' '),len1=str_length(x)) |> 
+  mutate(xx=str_trim(x),len2=str_length(xx))
+mutate(tb,x=row_number()) |> 
+  mutate(xx=str_pad(x,3,'left','0'))
+```
+
+
+## combine table vertically
+```{r}
+tb1=filter(tb0,sex=='male')
+tb2=filter(tb0,sex=='female')
+tb3=filter(tb0,is.na(sex))
+bind_rows(tb1,tb2,tb3)
+```
+
+## combine table horizontally
+```{r}
+tb=mutate(tb0,id=row_number()) |> 
+  select(id,everything())
+
+tb1=select(tb,id,!is.numeric) 
+tb2=select(tb,id,is.numeric) 
+
+bind_cols(tb1,tb2)
+
+tb1=slice_sample(tb1,n=100)
+tb2=slice_sample(tb2,n=100)
+
+inner_join(tb1,tb2,join_by(id==id))
+
+left_join(tb1,tb2,join_by(id==id))
+
+full_join(tb1,tb2,join_by(id==id))
+```
+
+
+## model matrix for multi regression
+```{r}
+tb=drop_na(tb0)
+mx=model.matrix(~species+sex+bill_length_mm,tb)
+mx[sample(1:nrow(mx),10),]
+```
+
+
+## use sqlite
+```
+library(RSQLite)
+db='path/output0.sqlite'
+con=dbConnect(SQLite(),db)
+tbl='table0'
+
+dbWriteTable(con,tbl,tb,overwrite=T)
+
+rst=dbGetQuery(con,paste0("SELECT * FROM ",tbl,";"))
+print(rst)
+
+
+dbExecute(con,"
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    age INTEGER;
+)")
+
+dbExecute(con, "
+INSERT INTO users (name, age)
+  VALUES ('name1',10),('name2',20),('name3',30)
+")
+
+rst=dbGetQuery(con, "SELECT * FROM users;")
+print(rst)
+
+dbDisconnect(con)
+```
+
+
+
+## use parquet with nanoparquet library
+```
+library(nanoparquet)
+df=read_parquet('data.parquet')
+
+write_parquet(df,'data.parquet')
+```
+
+
+
+## input from web API
+```{r}
+#library(httr)
+url0='https://api.excelapi.org/wikipedia/summary2?word='
+word='api'
+url=paste0(url0,word,'&lang=en','&mode=simple')
+
+GET(url) |> content('text')
+
+
+URLencode('ヤクルトスワローズ')
+# "%E3%83%A4%E3%82%AF%E3%83%AB%E3%83%88%E3%82%B9%E3%83%AF%E3%83%AD%E3%83%BC%E3%82%BA"
+
+enc=URLencode('ヤクルトスワローズ')
+url=paste0(url0,enc,'&lang=jp','&mode=full')
+
+GET(url) |> content('text',encoding='UTF-8')
+
+
+GET('https://geoapi.heartrails.com/api/json?method=getPrefectures')
+GET('https://geoapi.heartrails.com/api/json?method=getCities&prefecture=北海道')
+GET('https://geoapi.heartrails.com/api/json?method=getTowns&prefecture=北海道&city=札幌市')
+
+arg0=list(method='getPrefectures')
+GET('https://geoapi.heartrails.com/api/json', query=arg0)
+
+arg0=list(method='getCities',prefecture='北海道')
+GET('https://geoapi.heartrails.com/api/json', query=arg0)
+
+
+# error handling
+url='https://geoapi.heartrails.com/api/json?method=getPrefectures'
+res=GET(url)
+
+if (status_code(res)==200) {
+  obj=fromJSON(content(res,'text',encoding='UTF-8')) |> print()
+} else {
+  print(paste("Error:",status_code(res)))
+}
+```
+
+
+
+## processing json
+```{r}
+#library(jsonlite)
+fromJSON('[1,2,3]') # array -> vector
+
+fromJSON('{"x":10,"y":20}') # object -> list of atomic
+fromJSON('{"x":10,"y":20}') |> unlist() # named vector
+
+fromJSON('[[11,12,13],[21,22,23],[31,32,33]]') # array of array -> matrix
+
+fromJSON('[{"x":11,"y":12},{"x":21,"y":22}]') # array of object -> data.frame
+fromJSON('[{"x":11,"y":12},{"x":21,"y":22}]') |> unlist() # index suffix named vector
+
+fromJSON('{"x":[11,12,13],"y":[21,22,23]}') # object of arrays -> list of vectors
+fromJSON('{"x":[11,12,13],"y":[21,22,23]}') |> unlist() # index suffix named vector
+
+fromJSON('{"a":{"x":11,"y":12},"b":{"x":21,"y":22}}') # nested list
+fromJSON('{"a":{"x":11,"y":12},"b":{"x":21,"y":22}}') |> unlist() # prefix named vector
+
+
+
+json='{"glossary": {"title": "example glossary","GlossDiv": {"title": "S","GlossList": {"GlossEntry": {"ID": "SGML","SortAs": "SGML","GlossTerm": "Standard Generalized Markup Language","Acronym": "SGML","Abbrev": "ISO 8879:1986","GlossDef": {"para": "A meta-markup language, used to create markup languages such as DocBook.","GlossSeeAlso": ["GML", "XML"]},"GlossSee": "markup"}}}}}'
+
+prettify(json)
+minify(json)
+
+obj=fromJSON(json,flatten=T)
+str(obj) # list with list, not include array (a key has just one value)
+v=unlist(obj) # vector of each element with json path name 
+tibble(path=names(v),value=v)
+
+
+json='[{"person":"Taro Yamada","pets":{"exists":true,"details":[{"name":"mike","kind":"cat"},{"name":"pochi","kind":"dog"}]}},{"person":"Jiro Suzuki","pets":{"exists":true,"details":[{"name":"koro","kind":"dog"}]}},{"person":"Sabro Tanaka","pets":{"exists":false}}]'
+
+prettify(json)
+
+obj=fromJSON(json,flatten=T)
+str(obj) # data.frame with some list, include array (a key has plural value)
+obj[1,]
+
+tb=as_tibble(obj)
+select(tb,!is.list) |> names() # json path has array
+select(tb,is.list) |> names() # json path has list
+
+tb0=tibble()
+for(i in 1:nrow(tb)){
+tb1=bind_cols(tb[i,]['person'], # for array ['json-path']
+          tb[i,]['pets.exists'], # for array ['json-path']
+          tb[i,]$pets.details) # for list $json-path
+tb0=bind_rows(tb0,tb1)
+}
+tb0
+```
+
+
+## treat JSON response
+```{r}
+fromJSON('https://geoapi.heartrails.com/api/json?method=getPrefectures') # list has a vector
+fromJSON('https://geoapi.heartrails.com/api/json?method=getCities&prefecture=北海道') |> glimpse() #list has a data.frama
+fromJSON('https://geoapi.heartrails.com/api/json?method=getTowns&prefecture=北海道&city=札幌市') |> glimpse() # list has a data.frame
+
+read_json('https://jsonplaceholder.typicode.com/users') |> glimpse() # list
+fromJSON('https://jsonplaceholder.typicode.com/users',flatten = T) # simple data.frame
+
+
+# https://zenn.dev/ttskch/articles/309423d26a1aaa
+# https://jp-postal-code-api.ttskch.com/api/v1/6180000.json
+
+url0='https://jp-postal-code-api.ttskch.com/api/v1/'
+pcode='6180000'
+url=paste0(url0,pcode,'.json')
+
+obj=read_json(url)
+str(obj) # list with list
+
+obj=fromJSON(url,flatten=T) 
+str(obj) # list with a simple data.frame
+
+tibble(obj$postalCode,obj$address)
+
+
+
+url0='https://query2.finance.yahoo.com/v8/finance/chart/'
+code='4507.T'
+range='3mo'
+int='1d'
+url=paste0(url0,code,'?range=',range,'&interval=',int)
+# https://query2.finance.yahoo.com/v8/finance/chart/",$code$,".T?range=3mo&interval=1d
+
+obj=read_json(url)
+#str(obj)
+glimpse(obj)
+
+obj=fromJSON(url,flatten=T)
+str(obj)
+obj=obj$chart$result
+str(obj$indicators.quote)
+tibble(obj$timestamp[[1]],
+       obj$indicators.quote[[1]]$open[[1]],
+       obj$indicators.quote[[1]]$close[[1]],
+       obj$indicators.quote[[1]]$low[[1]],
+       obj$indicators.quote[[1]]$high[[1]],
+       obj$indicators.quote[[1]]$volume[[1]],
+       obj$indicators.adjclose[[1]]$adjclose[[1]])
+
+
+
+obj=fromJSON('http://radioactivity.nsr.go.jp/data/ja/real/area_24000/2401_trend.json',flatten=T)
+str(obj) # list with array has same number of elements
+
+tibble(obj$day$airF$value,obj$day$est$value)
+```
+
+
+
+```
+library(httr2)
+
+url='https://api.example.com/data'
+
+# make request object and excute
+res=request(url) |> 
+  req_perform()
+
+# error handling
+if (resp_status(res)==200) {
+  data=resp_body_json(res)
+  print(data)
+} else {
+  print(paste("Error:", resp_status(res)))
+}
+
+
+
+# httr2 can use OAuth2.0 and Bearer token 
+
+    OAuth 2.0 Authentication
+
+OAuth 2.0 is a protocol for performing authentication and authorization without passing the user's password directly to the API. A typical OAuth 2.0 flow is as follows:
+
+    Client (Application) Registration: Register the application with an API provider (such as Google, Facebook) to obtain a client ID and client secret.
+    Authorization Code Acquisition: When the user grants access to the application, an authorization code is issued.
+    Access Token Acquisition: Use the authorization code and client secret to request and acquire an access token.
+    Access Token Usage: Use the access token to access the API and make requests on behalf of the user.
+
+    Bearer Token Authentication
+
+Bearer token authentication is a simple method for accessing resources using an access token. This token is included in the HTTP request header, allowing the server to verify access permissions. It is often used with access tokens acquired through OAuth 2.0, and is used as follows:
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+    Example of OAuth 2.0 and Bearer Token with httr2
+
+Below is an example of implementing the OAuth 2.0 flow using httr2. Here, we are using the client_credentials grant type, a simplified flow for obtaining a token with only a client ID and secret.
+Preparation
+
+    Installing the httr2 package:
+
+install.packages("httr2")
+library(httr2)
+
+Obtaining an Access Token with OAuth 2.0 and Making an API Request
+
+# Set the API endpoint and client information
+auth_url <- "https://api.example.com/oauth2/token"
+client_id <- "YOUR_CLIENT_ID"
+client_secret <- "YOUR_CLIENT_SECRET"
+
+# Create a request to obtain the access token
+token_response <- request(auth_url) %>%
+  req_body_form(
+    grant_type = "client_credentials",
+    client_id = client_id,
+    client_secret = client_secret
+  ) %>%
+  req_perform()
+
+# Extract the access token from the response
+access_token <- resp_body_json(token_response)$access_token
+
+# Make an API request using the access token
+api_url <- "https://api.example.com/protected_resource"
+response <- request(api_url) %>%
+  req_auth_bearer_token(access_token) %>%
+  req_perform()
+
+# Display the result
+data <- resp_body_json(response)
+print(data)
+
+Explanation
+
+    Obtaining the Access Token:
+        req_body_form is used to set the parameters required for the OAuth 2.0 client credentials flow (grant_type, client_id, client_secret).
+        req_perform executes the request to obtain the access_token.
+
+    Making an API Request Using the Bearer Token:
+        req_auth_bearer_token is used to set the previously obtained access token.
+        req_perform executes the request to access the protected resource.
+
+Notes
+
+    Since access tokens may expire, it is necessary to update the token periodically or use a refresh token.
+    Each API provider may have specific differences in the OAuth 2.0 flow, so be sure to check the documentation.
+
+With this code, you can easily access APIs protected by OAuth 2.0.
+```
+
+
