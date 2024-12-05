@@ -81,6 +81,14 @@ with tmp1 as(
 select * from tmp1 where no!=1;
 ```
 
+### reject duplication
+```{sql}
+select customer_name, postal_cd from customer
+union
+select customer_name, postal_cd from customer
+```
+
+
 
 ## process to null
 ```{r}
@@ -130,7 +138,6 @@ drop table tmp1;
 
 
 ## aggregation
-
 ```{sql}
 with tmp1 as(
   select store_cd, count(1) as n, sum(amount) as sum
@@ -209,7 +216,6 @@ drop table tmp0;
 
 
 ## make dummy var. from category var.
-
 ```{sql}
 select customer_id
   , max(case when gender_cd='0' then 1 else 0 end) as male
@@ -221,7 +227,6 @@ group by customer_id;
 
 
 ## invalid date value(YYYYmmdd) is made to null
-
 ```{sql}
 select '20000123' as str
   , date(substr('20000123',1,4)||'-'||
@@ -246,7 +251,6 @@ from receipt;
 
 
 ## invalid time value(HHMMSS) is made to null
-
 ```{sql}
 select '123456' as str
   , time(substr('123456',1,2)||':'||
@@ -263,7 +267,6 @@ select '234567' as str
 
 
 ## interval of date
-
 ```{sql}
 select customer_id, birth_day, apply
   , julianday(apply)-julianday(birth_day) as days
@@ -278,7 +281,6 @@ from(
 
 
 ## add row has 0 instead of no row in time series
-
 ```{sql}
 select customer_id
   , row_number() over(partition by customer_id order by sales_ymd) as times
@@ -303,7 +305,6 @@ order by ym;
 
 
 ## standardization, normalization
-
 ```{sql}
 with tmp1 as(
   select sales_ymd, sum(quantity) as qty, sum(amount) as amt
@@ -327,7 +328,6 @@ from tmp1,tmp2;
 
 
 ## difference to previous period, rate to previous period
-
 ```{sql}
 with tmp1 as(
   select sales_ymd, sum(quantity) as qty, sum(amount) as amt
@@ -350,7 +350,6 @@ from tmp2;
 
 
 ## cumulative sum, moving average
-
 ```{sql}
 with tmp1 as(
   select sales_ymd, sum(quantity) as qty, sum(amount) as amt
@@ -368,7 +367,6 @@ from tmp1;
 
 
 ## node and edge graph
-
 ```{sql}
 create temp table edges0 as
   with recursive tmp1 as (
@@ -446,7 +444,6 @@ drop table edges0;
 
 
 ## basket analysis, collaborative filtering
-
 ```{sql}
 create temp table basket0 as
   with recursive tmp1 as (
@@ -516,7 +513,6 @@ drop table basket0;
 
 
 ## process of categorical variable
-
 ```{sql}
 select gender_cd, count(1), count(1)*1.0/max(rowid) as proportion
 from customer group by gender_cd;
@@ -590,7 +586,6 @@ drop table cross;
 
 
 ## histgram on Sturges' rule
-
 ```{sql}
 with tmp1 as(
  select ceil(log(count(1)/log(2))+1) as k, min(amount-0) as min, max(amount-0) as max
@@ -675,3 +670,5 @@ select grp, gender_cd, count(1), avg(age) from tmp1 group by grp, gender_cd;
 ```{sql}
 drop table tmp1
 ```
+
+
