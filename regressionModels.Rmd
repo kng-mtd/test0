@@ -140,7 +140,8 @@ fitrst1(fit)
 
 \
 
-# Random effect of group c[1,l] r_0c, r_1c
+# Random effect of group
+group $c[1,l]$ with $r_0c,r_1c$
 ```{r}
 #library(lme4) #lmer function, glmer function
 #library(rqlm)
@@ -152,8 +153,11 @@ fitrst2=function(fit){
   predict(fit,tb) |> head() |> print()
   print(cor(tb$y,predict(fit,tb)))
 }
-
+```
+```{r}
 cat('c1: ',levels(tb$c1),'\n')
+```
+```{r}
 cat('c2: ',levels(tb$c2),'\n')
 ```
 
