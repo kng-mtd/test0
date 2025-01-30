@@ -1,6 +1,11 @@
 ---
 title: "linuxDataProcessing"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: show 
 ---
 
 ```{r setup, include=FALSE}
