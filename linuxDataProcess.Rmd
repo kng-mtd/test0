@@ -1227,7 +1227,7 @@ yq -o=json data.yaml > data.json
 
 ---
 
-# 各行に個別の JSON が含まれているファイルを処理
+## 各行に個別の JSON が含まれているファイルを処理
 `jq` は行ごとに処理を行うことができます。この場合、**JSON の配列のように複数のオブジェクトを処理**する方法と、**各行を個別に処理**する方法があります。
 
 ### **シナリオ1: 各行が独立した JSON オブジェクト**
@@ -1549,3 +1549,339 @@ jq '[.[][] | [.age]] | flatten' data.json
 | `map`     | 各要素に関数を適用して新しい配列を作成     | `map(. * 2)`                         |
 | `flatten` | 配列をフラット化                           | `[[1, 2], [3, 4]] | flatten` → `[1, 2, 3, 4]` |
 
+
+
+# XMLを処理する
+
+`xmlstarlet` は XML を操作するためのコマンドラインツールで、XML の解析、変換、クエリの実行、編集などが可能です。以下に基本的な使い方を紹介します。
+
+---
+
+## 1. XML ファイルを整形 (`format` or `fo`)
+XML を読みやすい形に整形できます。
+
+```sh
+xmlstarlet fo input.xml
+```
+
+インデント 2スペース
+```sh
+xmlstarlet fo -s 2 input.xml
+```
+
+---
+
+## 2. XML をクエリ (`select` or `sel`)
+XPath を使用して XML の特定の部分を取得できます。
+
+```sh
+xmlstarlet sel -t -v "//book/title" input.xml
+```
+上記は `<book>` 要素内の `<title>` の内容を出力します。
+
+出力に改行を入れる場合：
+```sh
+xmlstarlet sel -t -m "//book/title" -v "." -n input.xml
+```
+
+---
+
+## 3. XML を編集 (`edit` or `ed`)
+XML の要素を変更、追加、削除できます。
+
+### 要素の値を変更：
+```sh
+xmlstarlet ed -u "//book/title" -v "New Title" input.xml
+```
+
+### 要素を追加：
+```sh
+xmlstarlet ed -s "//book" -t elem -n "author" -v "John Doe" input.xml
+```
+
+### 要素を削除：
+```sh
+xmlstarlet ed -d "//book/price" input.xml
+```
+
+---
+
+## 4. XML をカウント
+特定の要素の数を数える場合：
+
+```sh
+xmlstarlet sel -t -v "count(//book)" input.xml
+```
+
+---
+
+## 5. XML を CSV に変換
+```sh
+xmlstarlet sel -T -t -m "//book" -v "title" -o "," -v "author" -n input.xml
+```
+これは `<book>` の `title` と `author` をカンマ区切りで出力します。
+
+---
+
+### まとめ
+| コマンド  | 説明 |
+|-----------|------|
+| `fo` | 整形 (フォーマット) |
+| `sel` | XPath クエリで選択 |
+| `tr` | XSLT 変換 |
+| `ed` | 編集 |
+| `val` | 検証 |
+| `count` | 要素数をカウント |
+
+
+
+Wikipedia の XML ダンプファイルは、メディアウィキのデータを保存するための XML 形式のファイルです。ダンプにはさまざまな種類がありますが、基本的な構造は共通しています。
+
+---
+
+## **Wikipedia の XML ダンプの基本構造**
+Wikipedia の XML ダンプ（例：`enwiki-latest-pages-articles.xml.bz2`）の基本的な構造は以下のようになっています。
+
+```xml
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.10/"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.10/ http://www.mediawiki.org/xml/export-0.10.xsd"
+           version="0.10"
+           xml:lang="en">
+    <siteinfo>
+        <sitename>Wikipedia</sitename>
+        <dbname>enwiki</dbname>
+        <base>https://en.wikipedia.org/wiki/Main_Page</base>
+        <generator>MediaWiki 1.41.0-wmf.10</generator>
+        <case>first-letter</case>
+        <namespaces>
+            <namespace key="-2">Media</namespace>
+            <namespace key="-1">Special</namespace>
+            <namespace key="0" />
+            <namespace key="1">Talk</namespace>
+            <!-- 他の名前空間が続く -->
+        </namespaces>
+    </siteinfo>
+
+    <page>
+        <title>Example Page</title>
+        <ns>0</ns>
+        <id>12345</id>
+        <revision>
+            <id>67890</id>
+            <parentid>67889</parentid>
+            <timestamp>2025-02-07T12:34:56Z</timestamp>
+            <contributor>
+                <username>ExampleUser</username>
+                <id>54321</id>
+            </contributor>
+            <comment>Example edit summary</comment>
+            <model>wikitext</model>
+            <format>text/x-wiki</format>
+            <text xml:space="preserve">{{Infobox example}}</text>
+            <sha1>abcdef1234567890</sha1>
+        </revision>
+    </page>
+
+    <page>
+        <!-- 別のページのデータ -->
+    </page>
+
+</mediawiki>
+```
+
+
+以下に、Wikipedia の XML ダンプを模倣した **XML サンプル** を作成しました。このサンプルには **複数のページ** が含まれており、各ページに対して `id`、`title`、`revision`（`text`）の要素が含まれています。
+
+### **XML サンプル**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.10/"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.10/ http://www.mediawiki.org/xml/export-0.10.xsd">
+    <page>
+        <title>Example Page</title>
+        <id>12345</id>
+        <revision>
+            <id>67890</id>
+            <timestamp>2025-02-07T00:00:00Z</timestamp>
+            <text>'''Example''' is a sample page for demonstrating XML structure.</text>
+        </revision>
+    </page>
+    <page>
+        <title>Python (programming language)</title>
+        <id>67890</id>
+        <revision>
+            <id>11223</id>
+            <timestamp>2025-02-07T00:10:00Z</timestamp>
+            <text>'''Python''' is a high-level programming language that is widely used.</text>
+        </revision>
+    </page>
+    <page>
+        <title>History of the world</title>
+        <id>23456</id>
+        <revision>
+            <id>44567</id>
+            <timestamp>2025-02-07T00:20:00Z</timestamp>
+            <text>The history of the world is the history of humanity's development.</text>
+        </revision>
+    </page>
+</mediawiki>
+```
+
+- `mediawiki` というルート要素に、各ページが `<page>` 要素として記載されています。
+- 各 `<page>` 要素内には、`<title>`（ページタイトル）、`<id>`（ページID）、`<revision>`（記事のリビジョン）が含まれています。
+- `<revision>` の中には、`<id>`（リビジョンID）、`<timestamp>`（タイムスタンプ）、`<text>`（記事本文）が含まれています。
+
+
+
+---
+
+## **2. 各要素の詳細**
+| 要素 | 説明 |
+|------|------|
+| `<mediawiki>` | XML データのルート要素。MediaWiki のバージョン情報などを含む |
+| `<siteinfo>` | Wikipedia サイトの基本情報を含む |
+| `<page>` | 各 Wikipedia ページの記事データ |
+| `<title>` | 記事のタイトル |
+| `<ns>` | 名前空間（0 はメイン記事） |
+| `<id>` | ページの一意の ID |
+| `<revision>` | 記事のリビジョン情報 |
+| `<id>` (revision 内) | リビジョンの一意の ID |
+| `<parentid>` | 親リビジョンの ID（初回の編集には存在しない） |
+| `<timestamp>` | 編集のタイムスタンプ（ISO 8601 形式） |
+| `<contributor>` | 編集者情報（登録ユーザーの場合 `<username>` と `<id>`、匿名ユーザーの場合 `<ip>`） |
+| `<comment>` | 編集の要約（空の場合もある） |
+| `<model>` | コンテンツのモデル（通常は `wikitext`） |
+| `<format>` | 形式（通常は `text/x-wiki`） |
+| `<text>` | 実際の記事のウィキテキスト（ページの本文） |
+| `<sha1>` | 編集内容の SHA-1 ハッシュ値 |
+
+---
+
+## **3. XML の例：Wikipedia の記事**
+以下は、Wikipedia の「Python (programming language)」ページの例です。
+
+```xml
+<page>
+    <title>Python (programming language)</title>
+    <ns>0</ns>
+    <id>23862</id>
+    <revision>
+        <id>12004567</id>
+        <parentid>12004321</parentid>
+        <timestamp>2025-02-07T14:00:00Z</timestamp>
+        <contributor>
+            <username>ExampleEditor</username>
+            <id>67890</id>
+        </contributor>
+        <comment>Added information about new Python version</comment>
+        <model>wikitext</model>
+        <format>text/x-wiki</format>
+        <text xml:space="preserve">'''Python''' is a programming language...</text>
+        <sha1>9abcd123ef567890</sha1>
+    </revision>
+</page>
+```
+
+---
+
+## **4. Wikipedia ダンプの種類**
+Wikipedia はさまざまな XML ダンプを提供しています。主なダンプの種類は次のとおりです。
+
+| ファイル名 | 内容 |
+|-----------|------|
+| `pages-articles.xml.bz2` | 記事の本文と履歴の最終リビジョン |
+| `pages-meta-history.xml.bz2` | 記事の全履歴 |
+| `pages-logging.xml.bz2` | ログ情報（削除、保護、ブロック履歴など） |
+| `siteinfo-namespaces.xml` | 名前空間情報 |
+
+Wikipedia のダンプデータは [Wikimedia Dumps](https://dumps.wikimedia.org/) で入手できます。
+
+---
+
+## **5. `xmlstarlet` で Wikipedia の XML を解析する**
+Wikipedia の XML ファイルを `xmlstarlet` で解析する例を紹介します。
+
+### **(1) 記事タイトルを一覧表示**
+```sh
+xmlstarlet sel -t -m "//page/title" -v "." -n enwiki-latest-pages-articles.xml
+```
+→ Wikipedia のすべての記事タイトルを取得。
+
+---
+
+### **(2) 特定の記事の本文を取得**
+```sh
+xmlstarlet sel -t -m "//page[title='Python (programming language)']/revision/text" -v "." -n enwiki-latest-pages-articles.xml
+```
+→ 「Python (programming language)」の記事の本文を取得。
+
+---
+
+### **(3) 記事のリビジョン ID を取得**
+```sh
+xmlstarlet sel -t -m "//page[title='Python (programming language)']/revision/id" -v "." -n enwiki-latest-pages-articles.xml
+```
+→ 最新のリビジョン ID を取得。
+
+---
+
+
+## **`xmlstarlet` を使って逐次的に CSV に追加する方法**
+
+`xmlstarlet` を使って CSV ファイルに1行ずつ追加するためには、以下のコマンドを使用します。
+
+```sh
+xmlstarlet sel -T -t -m "//page" \
+  -v "id" -o "," \
+  -v "title" -o "," \
+  -v "revision/text" -n \
+  enwiki-latest-pages-articles.xml >> wikipedia_pages.csv
+```
+
+- `>> wikipedia_pages.csv` を使うことで、既存の CSV ファイルに追記（追加）されます。
+- これを使えば、ファイル全体を一度に読み込まずに、各ページの情報を1行ずつ逐次的に追加することができます。
+
+
+**結果の確認**
+
+```
+id,title,text
+12345,Example Page,{{Infobox example}}
+67890,Python (programming language),'''Python''' is a programming language...
+23456,History of the world,The history of the world is the history of humanity...
+```
+
+### 1. **名前空間の問題**
+Wikipedia の XML ダンプファイルでは、通常 XML に名前空間（namespace）が含まれています。`xmlstarlet` はデフォルトでは名前空間を無視しますが、名前空間を適切に処理する必要があります。
+
+例えば、Wikipedia の XML ダンプには `mediawiki` 名前空間が含まれており、`<page>` や `<title>` 要素にも名前空間が付いていることがあります。これを無視すると、タグが一致せずに結果が表示されません。
+
+### 2. **名前空間を考慮したコマンドの修正**
+
+`xmlstarlet` で名前空間を扱うには、`-N` オプションを使って名前空間を指定する必要があります。
+
+#### 修正方法：
+
+```sh
+xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.10/" -t -m "//mw:page" -v "mw:id" -o "," -v "mw:title" -o "," -v "mw:revision/mw:text" -n xml0.xml
+```
+
+1. `-T` オプション: タグなしのシンプルな出力を指定しています。
+2. `-N mw="http://www.mediawiki.org/xml/export-0.10/"`: 名前空間 `mw` を指定しており、XML 内の要素に名前空間を考慮しています。
+3. `-t`: タグなしで出力するオプションです。
+4. `-m "//mw:page"`: `page` 要素を指定してその中からデータを抽出するマッチパターンです。
+5. `-v 'mw:id' -o ',' -v 'mw:title' -o ',' -v 'mw:revision/text'`: 各要素 (`id`, `title`, `text`) を抽出して、カンマ区切りで出力するよう指定しています。
+6. `-n`: 各行の後に改行を追加します。
+
+**結果**
+
+このコマンドを実行すると、`xml0.xml` ファイルの中から、各ページの `id`、`title`、`text` をカンマ区切りで抽出した CSV が出力されます。出力例としては次のような形になります：
+
+```
+12345,Example Page,'''Example''' is a sample page for demonstrating XML structure.
+67890,Python (programming language),'''Python''' is a high-level programming language that is widely used.
+23456,History of the world,The history of the world is the history of humanity's development.
+```
