@@ -3103,9 +3103,8 @@ END { print &quot;Total:&quot;, total }</code></pre>
 yq -o=json data.yaml &gt; data.json</code></pre>
 <hr />
 </div>
-</div>
-<div id="各行に個別の-json-が含まれているファイルを処理" class="section level1">
-<h1>各行に個別の JSON が含まれているファイルを処理</h1>
+<div id="各行に個別の-json-が含まれているファイルを処理" class="section level2">
+<h2>各行に個別の JSON が含まれているファイルを処理</h2>
 <p><code>jq</code>
 は行ごとに処理を行うことができます。この場合、<strong>JSON
 の配列のように複数のオブジェクトを処理</strong>する方法と、<strong>各行を個別に処理</strong>する方法があります。</p>
@@ -3122,6 +3121,7 @@ yq -o=json data.yaml &gt; data.json</code></pre>
 を使って <strong><code>-c</code>
 オプション</strong>（コンパクトモード）を指定し、行ごとに個別に処理します。</p>
 <hr />
+</div>
 </div>
 <div id="各行を処理して結果を表示" class="section level2">
 <h2><strong>1. 各行を処理して結果を表示</strong></h2>
@@ -3872,7 +3872,12 @@ language)」ページの例です。</p>
 オプションを使って名前空間を指定する必要があります。</p>
 <div id="修正方法" class="section level4">
 <h4>修正方法：</h4>
-<pre class="sh"><code>xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.10/&quot; -t -m &quot;//mw:page&quot; -v &quot;mw:id&quot; -o &quot;,&quot; -v &quot;mw:title&quot; -o &quot;,&quot; -v &quot;mw:revision/mw:text&quot; -n xml0.xml</code></pre>
+<pre class="sh"><code># see xml file and in case &lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.11/&quot;
+
+# add header
+echo &#39;id,title,text&#39; &gt; enwiki1.csv
+
+xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t -m &quot;//mw:page&quot; -o &quot;\&quot;&quot; -v &quot;mw:id&quot; -o &quot;\&quot;,&quot; -v &quot;mw:title&quot; -o &quot;\&quot;,&quot; -v &quot;normalize-space(mw:revision/mw:text)&quot; -o &quot;\&quot;&quot; -n enwiki1.xml &gt; enwiki1.csv</code></pre>
 <ol style="list-style-type: decimal">
 <li><code>-T</code> オプション:
 タグなしのシンプルな出力を指定しています。</li>
@@ -3886,6 +3891,12 @@ language)」ページの例です。</p>
 各要素 (<code>id</code>, <code>title</code>, <code>text</code>)
 を抽出して、カンマ区切りで出力するよう指定しています。</li>
 <li><code>-n</code>: 各行の後に改行を追加します。</li>
+<li>元のXMLにカンマ（,）が含まれている場合、CSVに出力すると崩れます。
+この場合、sel の -o オプションを使い、各値を ” で囲みます。</li>
+<li>元のXMLに 改行コード（や
+）が含まれている場合、そのままCSVに出力すると崩れます。
+この問題、normalize-space() を使うと、改行や余分なスペースを
+1つのスペース に変換できます。</li>
 </ol>
 <p><strong>結果</strong></p>
 <p>このコマンドを実行すると、<code>xml0.xml</code>

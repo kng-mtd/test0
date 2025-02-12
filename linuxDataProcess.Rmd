@@ -1866,7 +1866,12 @@ Wikipedia の XML ダンプファイルでは、通常 XML に名前空間（nam
 #### 修正方法：
 
 ```sh
-xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.10/" -t -m "//mw:page" -v "mw:id" -o "," -v "mw:title" -o "," -v "mw:revision/mw:text" -n xml0.xml
+# see xml file and in case <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/"
+
+# add header
+echo 'id,title,text' > enwiki1.csv
+
+xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:page" -o "\"" -v "mw:id" -o "\"," -v "mw:title" -o "\"," -v "normalize-space(mw:revision/mw:text)" -o "\"" -n enwiki1.xml > enwiki1.csv
 ```
 
 1. `-T` オプション: タグなしのシンプルな出力を指定しています。
@@ -1875,6 +1880,10 @@ xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.10/" -t -m "//mw:
 4. `-m "//mw:page"`: `page` 要素を指定してその中からデータを抽出するマッチパターンです。
 5. `-v 'mw:id' -o ',' -v 'mw:title' -o ',' -v 'mw:revision/text'`: 各要素 (`id`, `title`, `text`) を抽出して、カンマ区切りで出力するよう指定しています。
 6. `-n`: 各行の後に改行を追加します。
+7. 元のXMLにカンマ（,）が含まれている場合、CSVに出力すると崩れます。
+この場合、sel の -o オプションを使い、各値を " で囲みます。
+8. 元のXMLに 改行コード（\n や \r\n）が含まれている場合、そのままCSVに出力すると崩れます。
+この問題、normalize-space() を使うと、改行や余分なスペースを 1つのスペース に変換できます。
 
 **結果**
 
