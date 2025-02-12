@@ -3884,9 +3884,7 @@ xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t
  -n enwiki1.xml |\
 # reject {{, }}, [[, ]] with sed, specify locale to be fast 
  LC_ALL=c sed -E &#39;s/\{\{[^}]+\}\}//g&#39; |\
- sed &#39;s/\}\}//g&#39; |\
- sed -E &#39;s/\[\[[^}]+\]\]//g&#39; |\
- sed &#39;s/\]\]//g&#39; &gt;&gt; enwiki1.csv
+ sed &#39;s/\}\}//g&#39; &gt;&gt; enwiki1.csv
 
 export LC_ALL=ja_JP.UTF-8</code></pre>
 <ol style="list-style-type: decimal">
