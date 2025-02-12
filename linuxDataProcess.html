@@ -3877,7 +3877,18 @@ language)」ページの例です。</p>
 # add header
 echo &#39;id,title,text&#39; &gt; enwiki1.csv
 
-xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t -m &quot;//mw:page&quot; -o &quot;\&quot;&quot; -v &quot;mw:id&quot; -o &quot;\&quot;,&quot; -v &quot;mw:title&quot; -o &quot;\&quot;,&quot; -v &quot;normalize-space(mw:revision/mw:text)&quot; -o &quot;\&quot;&quot; -n enwiki1.xml &gt; enwiki1.csv</code></pre>
+xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t -m &quot;//mw:page&quot;\
+ -v &quot;mw:id&quot;\
+ -o &quot;,&quot; -v &quot;mw:title&quot;\
+ -o &quot;,\&quot;&quot; -v &quot;normalize-space(mw:revision/mw:text)&quot; -o &quot;\&quot;&quot;\
+ -n enwiki1.xml |\
+# reject {{, }}, [[, ]] with sed, specify locale to be fast 
+ LC_ALL=c sed -E &#39;s/\{\{[^}]+\}\}//g&#39; |\
+ sed &#39;s/\}\}//g&#39; |\
+ sed -E &#39;s/\[\[[^}]+\]\]//g&#39; |\
+ sed &#39;s/\]\]//g&#39; &gt;&gt; enwiki1.csv
+
+export LC_ALL=ja_JP.UTF-8</code></pre>
 <ol style="list-style-type: decimal">
 <li><code>-T</code> オプション:
 タグなしのシンプルな出力を指定しています。</li>
@@ -3899,7 +3910,7 @@ xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t
 1つのスペース に変換できます。</li>
 </ol>
 <p><strong>結果</strong></p>
-<p>このコマンドを実行すると、<code>xml0.xml</code>
+<p>このコマンドを実行すると、<code>---.xml</code>
 ファイルの中から、各ページの
 <code>id</code>、<code>title</code>、<code>text</code>
 をカンマ区切りで抽出した CSV

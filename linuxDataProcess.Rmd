@@ -1871,7 +1871,18 @@ Wikipedia の XML ダンプファイルでは、通常 XML に名前空間（nam
 # add header
 echo 'id,title,text' > enwiki1.csv
 
-xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:page" -o "\"" -v "mw:id" -o "\"," -v "mw:title" -o "\"," -v "normalize-space(mw:revision/mw:text)" -o "\"" -n enwiki1.xml > enwiki1.csv
+xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:page"\
+ -v "mw:id"\
+ -o "," -v "mw:title"\
+ -o ",\"" -v "normalize-space(mw:revision/mw:text)" -o "\""\
+ -n enwiki1.xml |\
+# reject {{, }}, [[, ]] with sed, specify locale to be fast 
+ LC_ALL=c sed -E 's/\{\{[^}]+\}\}//g' |\
+ sed 's/\}\}//g' |\
+ sed -E 's/\[\[[^}]+\]\]//g' |\
+ sed 's/\]\]//g' >> enwiki1.csv
+
+export LC_ALL=ja_JP.UTF-8
 ```
 
 1. `-T` オプション: タグなしのシンプルな出力を指定しています。
@@ -1887,7 +1898,7 @@ xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:
 
 **結果**
 
-このコマンドを実行すると、`xml0.xml` ファイルの中から、各ページの `id`、`title`、`text` をカンマ区切りで抽出した CSV が出力されます。出力例としては次のような形になります：
+このコマンドを実行すると、`---.xml` ファイルの中から、各ページの `id`、`title`、`text` をカンマ区切りで抽出した CSV が出力されます。出力例としては次のような形になります：
 
 ```
 12345,Example Page,'''Example''' is a sample page for demonstrating XML structure.
