@@ -1883,7 +1883,10 @@ xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:
 # reject {{, }}, [[, ]] with sed, specify locale to be fast 
  LC_ALL=c sed -E 's/\{\{[^}]+\}\}//g' |\
  sed 's/\}\}//g' |\
- sed 's/#REDIRECT//' >> enwiki1.csv
+ sed 's/#REDIRECT//' |\
+ sed -E 's/[^0-9A-Za-z,.()"\x27]/ /g' |\
+ sed "s/\x27\x27\+/ /g" |\
+ sed 's/  \+/ /g' >> enwiki1.csv
 
 export LC_ALL=ja_JP.UTF-8
 ```
