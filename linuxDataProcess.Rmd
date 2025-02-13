@@ -1555,6 +1555,10 @@ jq '[.[][] | [.age]] | flatten' data.json
 
 `xmlstarlet` は XML を操作するためのコマンドラインツールで、XML の解析、変換、クエリの実行、編集などが可能です。以下に基本的な使い方を紹介します。
 
+```sh
+sudo apt install xmlstarlet
+```
+
 ---
 
 ## 1. XML ファイルを整形 (`format` or `fo`)
@@ -1878,7 +1882,8 @@ xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:
  -n enwiki1.xml |\
 # reject {{, }}, [[, ]] with sed, specify locale to be fast 
  LC_ALL=c sed -E 's/\{\{[^}]+\}\}//g' |\
- sed 's/\}\}//g' >> enwiki1.csv
+ sed 's/\}\}//g' |\
+ sed 's/#REDIRECT//' >> enwiki1.csv
 
 export LC_ALL=ja_JP.UTF-8
 ```

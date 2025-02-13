@@ -3481,6 +3481,7 @@ Bob</code></pre>
 <p><code>xmlstarlet</code> は XML
 を操作するためのコマンドラインツールで、XML
 の解析、変換、クエリの実行、編集などが可能です。以下に基本的な使い方を紹介します。</p>
+<pre class="sh"><code>sudo apt install xmlstarlet</code></pre>
 <hr />
 <div id="xml-ファイルを整形-format-or-fo" class="section level2">
 <h2>1. XML ファイルを整形 (<code>format</code> or <code>fo</code>)</h2>
@@ -3884,7 +3885,8 @@ xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t
  -n enwiki1.xml |\
 # reject {{, }}, [[, ]] with sed, specify locale to be fast 
  LC_ALL=c sed -E &#39;s/\{\{[^}]+\}\}//g&#39; |\
- sed &#39;s/\}\}//g&#39; &gt;&gt; enwiki1.csv
+ sed &#39;s/\}\}//g&#39; |\
+ sed &#39;s/#REDIRECT//&#39; &gt;&gt; enwiki1.csv
 
 export LC_ALL=ja_JP.UTF-8</code></pre>
 <ol style="list-style-type: decimal">
