@@ -1968,7 +1968,153 @@ grep &#39;failed$&#39; file.txt  # &quot;failed&quot; で終わる行</code></pr
 <h3><strong>空行を削除</strong></h3>
 <pre class="bash"><code>sed &#39;/^$/d&#39; file.txt</code></pre>
 <hr />
+<p><code>sed</code> のデフォルトでは
+<strong>基本正規表現（BRE）</strong> を使用し、<code>-E</code>
+オプションで <strong>拡張正規表現（ERE）</strong> が使えます。</p>
 </div>
+</div>
+<div id="基本的なパターン" class="section level2">
+<h2><strong>1. 基本的なパターン</strong></h2>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="30%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>パターン</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>.</code></td>
+<td>任意の1文字</td>
+<td><code>s/.*/Hello/g</code></td>
+</tr>
+<tr class="even">
+<td><code>^</code></td>
+<td>行の先頭</td>
+<td><code>s/^Hello/Hi/g</code></td>
+</tr>
+<tr class="odd">
+<td><code>$</code></td>
+<td>行の末尾</td>
+<td><code>s/world!$/Linux!/g</code></td>
+</tr>
+<tr class="even">
+<td><code>*</code></td>
+<td>直前の文字を0回以上繰り返す</td>
+<td><code>s/lo*/L/g</code> (<code>loooo</code> → <code>L</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>\+</code></td>
+<td>直前の文字を1回以上繰り返す</td>
+<td><code>s/e\+/E/g</code> (<code>tree</code> → <code>trE</code>)</td>
+</tr>
+<tr class="even">
+<td><code>\?</code></td>
+<td>直前の文字を0回または1回</td>
+<td><code>s/colou\?r/color/g</code> (<code>colour</code> →
+<code>color</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>\{n,m\}</code></td>
+<td>n回以上m回以下の繰り返し（ERE）</td>
+<td><code>s/a\{2,4\}/A/g</code> (<code>aaa</code> → <code>A</code>)</td>
+</tr>
+<tr class="even">
+<td><code>[]</code></td>
+<td>文字クラス（任意の1文字）</td>
+<td><code>s/[aeiou]/X/g</code> (<code>hello</code> →
+<code>hXllX</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>[^]</code></td>
+<td>否定（指定した以外の1文字）</td>
+<td><code>s/[^0-9]/X/g</code> (<code>abc123</code> →
+<code>XXX123</code>)</td>
+</tr>
+<tr class="even">
+<td><code>\( \)</code></td>
+<td>グループ化（キャプチャ）</td>
+<td><code>s/\(Hello\) world/\1 Linux/g</code></td>
+</tr>
+<tr class="odd">
+<td><code>\1, \2 ...</code></td>
+<td>キャプチャした部分を再利用</td>
+<td><code>s/\([0-9]\)\([a-z]\)/\2\1/g</code> (<code>1a</code> →
+<code>a1</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="よく使う応用パターン" class="section level2">
+<h2><strong>2. よく使う応用パターン</strong></h2>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="20%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>パターン</th>
+<th>例</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>数字のみを削除</td>
+<td><code>sed &#39;s/[0-9]//g&#39;</code></td>
+<td><code>abc123</code> → <code>abc</code></td>
+</tr>
+<tr class="even">
+<td>アルファベット以外を削除</td>
+<td><code>sed &#39;s/[^a-zA-Z]//g&#39;</code></td>
+<td><code>abc-123</code> → <code>abc</code></td>
+</tr>
+<tr class="odd">
+<td>連続する空白を1つに</td>
+<td><code>sed &#39;s/  \+/ /g&#39;</code></td>
+<td><code>Hello   world</code> → <code>Hello world</code></td>
+</tr>
+<tr class="even">
+<td><code>&quot;</code> 以外を削除</td>
+<td><code>sed &#39;s/[^&quot;]//g&#39;</code></td>
+<td><code>He said &quot;Hello&quot;</code> → <code>&quot;&quot;</code></td>
+</tr>
+<tr class="odd">
+<td>2つ以上の <code>&#39;</code> を削除</td>
+<td><code>sed &quot;s/&#39;&#39;\+//g&quot;</code></td>
+<td><code>Hello &#39;&#39;world&#39;&#39;&#39;</code> → <code>Hello world</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="sed--e-を使った拡張正規表現ere" class="section level2">
+<h2><strong>3. <code>sed -E</code>
+を使った拡張正規表現（ERE）</strong></h2>
+<p>デフォルトの <code>sed</code> は <strong>BRE（基本正規表現）</strong>
+を使うので、<br />
+<code>+</code>, <code>?</code>, <code>{}</code> などを使うには
+<code>-E</code> オプションが必要です。</p>
+<pre class="bash"><code>echo &quot;123abc456&quot; | sed -E &#39;s/[0-9]+/X/g&#39;</code></pre>
+<p><strong>結果:</strong></p>
+<pre><code>XabcX</code></pre>
+<p><strong>ポイント:</strong> - <code>-E</code> を使うことで
+<code>\+</code> を <code>+</code> と省略できる - <code>{n,m}</code>,
+<code>+</code>, <code>?</code> などが使いやすくなる</p>
+<p>シングルクォート ’（アポストロフィ）のコード 16進数（Hex）:
+10進数（Decimal）: 39 Unicode（UTF-8 / UTF-16）: U+0027</p>
+<p>このコード は、sed や awk
+などのツールでシングルクォートを扱う際に使えます。</p>
+<hr />
 </div>
 <div id="awk-を使う列処理-正規表現" class="section level2">
 <h2><strong>3. <code>awk</code> を使う（列処理 +
@@ -2012,261 +2158,8 @@ grep &#39;failed$&#39; file.txt  # &quot;failed&quot; で終わる行</code></pr
 <hr />
 </div>
 </div>
-<div id="まとめ" class="section level3">
-<h3><strong>まとめ</strong></h3>
-<table>
-<thead>
-<tr class="header">
-<th>コマンド</th>
-<th>使い方</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>grep</code></td>
-<td>正規表現で行を検索</td>
-</tr>
-<tr class="even">
-<td><code>sed</code></td>
-<td>置換や行の削除</td>
-</tr>
-<tr class="odd">
-<td><code>awk</code></td>
-<td>列ごとの処理</td>
-</tr>
-<tr class="even">
-<td><code>perl</code></td>
-<td>高度な正規表現</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr class="header">
-<th>機能</th>
-<th><strong>基礎正規表現（BRE）</strong></th>
-<th><strong>拡張正規表現（ERE）</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>.</code> (任意の1文字)</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>^</code> / <code>$</code> (行頭/行末)</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="odd">
-<td><code>*</code> (0回以上の繰り返し)</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>+</code> (1回以上の繰り返し)</td>
-<td>×</td>
-<td>○</td>
-</tr>
-<tr class="odd">
-<td><code>?</code> (0回または1回)</td>
-<td>×</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>{}</code> (繰り返し回数)</td>
-<td>×</td>
-<td>○</td>
-</tr>
-<tr class="odd">
-<td><code>|</code> (OR)</td>
-<td>×</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>()</code> (グループ化)</td>
-<td><code>\( \)</code></td>
-<td><code>()</code></td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><strong>簡単な検索 → <code>grep</code>（BRE）</strong></li>
-<li><strong>複雑な検索・置換 →
-<code>grep -E</code>（ERE）、<code>sed -E</code></strong></li>
-<li><strong>高度なテキスト処理 → <code>awk</code></strong></li>
-<li><strong>より強力な正規表現 →
-<code>grep -P</code>（Perl互換）</strong></li>
-</ul>
-</div>
-</div>
-<div id="正規表現のメタ文字と違い基礎正規表現-vs-拡張正規表現" class="section level2">
-<h2><strong>正規表現のメタ文字と違い（基礎正規表現 vs
-拡張正規表現）</strong></h2>
-<table>
-<colgroup>
-<col width="39%" />
-<col width="34%" />
-<col width="26%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>正規表現の種類</strong></th>
-<th><strong>使用するコマンド</strong></th>
-<th><strong>オプション</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>基礎正規表現（BRE）</strong></td>
-<td><code>grep</code>、<code>sed</code></td>
-<td>デフォルト</td>
-</tr>
-<tr class="even">
-<td><strong>拡張正規表現（ERE）</strong></td>
-<td><code>grep -E</code>、<code>sed -E</code>、<code>awk</code></td>
-<td><code>-E</code>（grep, sed）</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<div id="メタ文字一覧" class="section level3">
-<h3><strong>1. メタ文字一覧</strong></h3>
-<table>
-<colgroup>
-<col width="18%" />
-<col width="16%" />
-<col width="32%" />
-<col width="32%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>メタ文字</th>
-<th><strong>意味</strong></th>
-<th><strong>基礎正規表現（BRE）</strong></th>
-<th><strong>拡張正規表現（ERE）</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>.</code></td>
-<td>任意の1文字</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>^</code></td>
-<td>行の先頭</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="odd">
-<td><code>$</code></td>
-<td>行の末尾</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>*</code></td>
-<td>直前の文字の0回以上の繰り返し</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="odd">
-<td><code>\+</code></td>
-<td>直前の文字の1回以上の繰り返し</td>
-<td>×</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>\?</code></td>
-<td>直前の文字の0回または1回の出現</td>
-<td>×</td>
-<td>○</td>
-</tr>
-<tr class="odd">
-<td><code>\|</code></td>
-<td>OR（<code>A\|B</code> → “A” または “B”）</td>
-<td>×</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>\(\)</code></td>
-<td>グループ化（キャプチャ）</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="odd">
-<td><code>\{\}</code></td>
-<td>繰り返し回数 <code>{n,m}</code></td>
-<td>×</td>
-<td>○</td>
-</tr>
-<tr class="even">
-<td><code>[]</code></td>
-<td>文字クラス（例: <code>[abc]</code>）</td>
-<td>○</td>
-<td>○</td>
-</tr>
-<tr class="odd">
-<td><code>[^]</code></td>
-<td>否定（例: <code>[^0-9]</code> → 数字以外）</td>
-<td>○</td>
-<td>○</td>
-</tr>
-</tbody>
-</table>
-<hr />
-</div>
-<div id="基礎正規表現bre-basic-regular-expression" class="section level3">
-<h3><strong>2. 基礎正規表現（BRE: Basic Regular
-Expression）</strong></h3>
-<div id="使用するコマンド" class="section level4">
-<h4><strong>使用するコマンド</strong></h4>
-<ul>
-<li><code>grep</code> （<code>grep -E</code> は不要）</li>
-<li><code>sed</code></li>
-<li><code>awk</code>（基本的には ERE を使用）</li>
-</ul>
-</div>
-<div id="例" class="section level4">
-<h4><strong>例</strong></h4>
-<pre class="bash"><code>grep &#39;hello&#39; file.txt  # &quot;hello&quot; を含む行を検索
-grep &#39;^start&#39; file.txt  # &quot;start&quot; で始まる行を検索
-grep &#39;end$&#39; file.txt  # &quot;end&quot; で終わる行を検索
-grep &#39;[0-9]&#39; file.txt  # 数字を含む行を検索</code></pre>
-<p><strong>注意: <code>{}</code> や <code>+</code>, <code>|</code>
-などは <code>\</code> を付ける必要がある</strong></p>
-<pre class="bash"><code>grep &#39;\(hello\)&#39; file.txt  # &quot;hello&quot; をグループ化
-grep &#39;\{3\}&#39; file.txt  # 直前の文字が3回出現</code></pre>
-<hr />
-</div>
-</div>
-<div id="拡張正規表現ere-extended-regular-expression" class="section level3">
-<h3><strong>3. 拡張正規表現（ERE: Extended Regular
-Expression）</strong></h3>
-<div id="使用するコマンド-1" class="section level4">
-<h4><strong>使用するコマンド</strong></h4>
-<ul>
-<li><code>grep -E</code></li>
-<li><code>sed -E</code></li>
-<li><code>awk</code>（デフォルトでERE）</li>
-</ul>
-</div>
-<div id="例-1" class="section level4">
-<h4><strong>例</strong></h4>
-<pre class="bash"><code>grep -E &#39;hello|world&#39; file.txt  # &quot;hello&quot; または &quot;world&quot; を検索
-grep -E &#39;[0-9]{3,5}&#39; file.txt  # 数字が3～5回連続する行を検索
-grep -E &#39;A+BC?&#39; file.txt  # &quot;A&quot; が1回以上、&quot;B&quot; が1回、&quot;C&quot; は0または1回</code></pre>
-<p><strong>ポイント: <code>\</code> を付ける必要がない</strong></p>
-<pre class="bash"><code>grep -E &#39;(hello)&#39; file.txt  # グループ化（BREでは \( \) が必要）
-grep -E &#39;{3}&#39; file.txt  # 直前の文字が3回出現</code></pre>
-<hr />
-</div>
-</div>
 <div id="具体的な正規表現の例" class="section level3">
-<h3><strong>4. 具体的な正規表現の例</strong></h3>
+<h3><strong>具体的な正規表現の例</strong></h3>
 <table>
 <thead>
 <tr class="header">
@@ -2336,20 +2229,20 @@ grep -E &#39;{3}&#39; file.txt  # 直前の文字が3回出現</code></pre>
 <hr />
 </div>
 <div id="grep-の使い分け" class="section level3">
-<h3><strong>5. <code>grep</code> の使い分け</strong></h3>
+<h3><strong><code>grep</code> の使い分け</strong></h3>
 <pre class="bash"><code>grep &#39;pattern&#39; file.txt  # 基礎正規表現（BRE）
 grep -E &#39;pattern&#39; file.txt  # 拡張正規表現（ERE）
 grep -P &#39;pattern&#39; file.txt  # Perl互換正規表現（PCRE）</code></pre>
 <hr />
 </div>
 <div id="sed-の使い分け" class="section level3">
-<h3><strong>6. <code>sed</code> の使い分け</strong></h3>
+<h3><strong><code>sed</code> の使い分け</strong></h3>
 <pre class="bash"><code>sed &#39;s/old/new/g&#39; file.txt  # 基礎正規表現（BRE）
 sed -E &#39;s/old(new)?/replace/g&#39; file.txt  # 拡張正規表現（ERE）</code></pre>
 <hr />
 </div>
 <div id="awk-の使い方デフォルトで-ere-を使用" class="section level3">
-<h3><strong>7. <code>awk</code> の使い方（デフォルトで ERE
+<h3><strong><code>awk</code> の使い方（デフォルトで ERE
 を使用）</strong></h3>
 <pre class="bash"><code>awk &#39;/error/&#39; file.txt  # &quot;error&quot; を含む行を表示
 awk &#39;$2 ~ /^[0-9]+$/&#39; file.txt  # 2列目が数字の行を抽出</code></pre>
@@ -2579,7 +2472,7 @@ orange 1</code></pre>
 <strong>数値降順（n）、逆順（r）</strong> でソート</p>
 <hr />
 </div>
-<div id="まとめ-1" class="section level2">
+<div id="まとめ" class="section level2">
 <h2><strong>まとめ</strong></h2>
 <table>
 <colgroup>
@@ -2879,7 +2772,7 @@ END { print &quot;Total:&quot;, total }</code></pre>
 <pre class="bash"><code>echo &quot;hello world&quot; | awk &#39;{ print toupper($0) }&#39;</code></pre>
 <hr />
 </div>
-<div id="まとめ-2" class="section level2">
+<div id="まとめ-1" class="section level2">
 <h2><strong>まとめ</strong></h2>
 <table>
 <colgroup>
@@ -3404,7 +3297,7 @@ Bob</code></pre>
 <hr />
 </div>
 </div>
-<div id="まとめ-3" class="section level3">
+<div id="まとめ-2" class="section level3">
 <h3><strong>まとめ</strong></h3>
 <table>
 <colgroup>
@@ -3530,7 +3423,7 @@ Bob</code></pre>
 <p>これは <code>&lt;book&gt;</code> の <code>title</code> と
 <code>author</code> をカンマ区切りで出力します。</p>
 <hr />
-<div id="まとめ-4" class="section level3">
+<div id="まとめ-3" class="section level3">
 <h3>まとめ</h3>
 <table>
 <thead>
@@ -3873,7 +3766,7 @@ language)」ページの例です。</p>
 オプションを使って名前空間を指定する必要があります。</p>
 <div id="修正方法" class="section level4">
 <h4>修正方法：</h4>
-<pre class="sh"><code># see xml file and in case &lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.11/&quot;
+<pre class="sh"><code># see xmlns=&quot;---&quot; in xml, in case &lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.11/&quot;
 
 # add header
 echo &#39;id,title,text&#39; &gt; enwiki1.csv
@@ -3885,10 +3778,9 @@ xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t
  -n enwiki1.xml |\
 # reject {{, }}, [[, ]] with sed, specify locale to be fast 
  LC_ALL=c sed -E &#39;s/\{\{[^}]+\}\}//g&#39; |\
- sed &#39;s/\}\}//g&#39; |\
  sed &#39;s/#REDIRECT//&#39; |\
  sed -E &#39;s/[^0-9A-Za-z,.()&quot;\x27]/ /g&#39; |\
- sed &quot;s/\x27\x27\+/ /g&quot; |\
+ sed &#39;s/\x27\x27\+/ /g&#39; |\
  sed &#39;s/  \+/ /g&#39; &gt;&gt; enwiki1.csv
 
 export LC_ALL=ja_JP.UTF-8</code></pre>
