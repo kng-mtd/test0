@@ -1972,9 +1972,8 @@ grep &#39;failed$&#39; file.txt  # &quot;failed&quot; で終わる行</code></pr
 <strong>基本正規表現（BRE）</strong> を使用し、<code>-E</code>
 オプションで <strong>拡張正規表現（ERE）</strong> が使えます。</p>
 </div>
-</div>
-<div id="基本的なパターン" class="section level2">
-<h2><strong>1. 基本的なパターン</strong></h2>
+<div id="基本的なパターン" class="section level3">
+<h3><strong>1. 基本的なパターン</strong></h3>
 <table>
 <colgroup>
 <col width="50%" />
@@ -2052,8 +2051,8 @@ grep &#39;failed$&#39; file.txt  # &quot;failed&quot; で終わる行</code></pr
 </table>
 <hr />
 </div>
-<div id="よく使う応用パターン" class="section level2">
-<h2><strong>2. よく使う応用パターン</strong></h2>
+<div id="よく使う応用パターン" class="section level3">
+<h3><strong>2. よく使う応用パターン</strong></h3>
 <table>
 <colgroup>
 <col width="50%" />
@@ -2097,9 +2096,9 @@ grep &#39;failed$&#39; file.txt  # &quot;failed&quot; で終わる行</code></pr
 </table>
 <hr />
 </div>
-<div id="sed--e-を使った拡張正規表現ere" class="section level2">
-<h2><strong>3. <code>sed -E</code>
-を使った拡張正規表現（ERE）</strong></h2>
+<div id="sed--e-を使った拡張正規表現ere" class="section level3">
+<h3><strong>3. <code>sed -E</code>
+を使った拡張正規表現（ERE）</strong></h3>
 <p>デフォルトの <code>sed</code> は <strong>BRE（基本正規表現）</strong>
 を使うので、<br />
 <code>+</code>, <code>?</code>, <code>{}</code> などを使うには
@@ -2115,6 +2114,7 @@ grep &#39;failed$&#39; file.txt  # &quot;failed&quot; で終わる行</code></pr
 <p>このコード は、sed や awk
 などのツールでシングルクォートを扱う際に使えます。</p>
 <hr />
+</div>
 </div>
 <div id="awk-を使う列処理-正規表現" class="section level2">
 <h2><strong>3. <code>awk</code> を使う（列処理 +
@@ -3778,7 +3778,7 @@ xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t
  -n enwiki1.xml |\
 # reject {{, }}, [[, ]] with sed, specify locale to be fast 
  LC_ALL=c sed -E &#39;s/\{\{[^}]+\}\}//g&#39; |\
- sed &#39;s/#REDIRECT//&#39; |\
+ sed &#39;s/#REDIRECT.\+/&quot;/&#39; |\
  sed -E &#39;s/[^0-9A-Za-z,.()&quot;\x27]/ /g&#39; |\
  sed &#39;s/\x27\x27\+/ /g&#39; |\
  sed &#39;s/  \+/ /g&#39; &gt;&gt; enwiki1.csv
