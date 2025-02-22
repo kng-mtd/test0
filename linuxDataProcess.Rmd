@@ -1845,7 +1845,7 @@ xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:
  -n enwiki1.xml |\
 # reject {{, }}, [[, ]] with sed, specify locale to be fast 
  LC_ALL=c sed -E 's/\{\{[^}]+\}\}//g' |\
- sed 's/#REDIRECT.\+/"/' |\
+ sed 's/#.\+/"/' |\
  sed -E 's/[^0-9A-Za-z,.()"\x27]/ /g' |\
  sed 's/\x27\x27\+/ /g' |\
  sed 's/  \+/ /g' >> enwiki1.csv
