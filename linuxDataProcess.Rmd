@@ -1602,11 +1602,13 @@ xmlstarlet sel -T -t -m "//book" -v "title" -o "," -v "author" -n input.xml
 
 
 
+## wikipediaダンプファイルを処理する
+
 Wikipedia の XML ダンプファイルは、メディアウィキのデータを保存するための XML 形式のファイルです。ダンプにはさまざまな種類がありますが、基本的な構造は共通しています。
 
 ---
 
-## **Wikipedia の XML ダンプの基本構造**
+### **Wikipedia の XML ダンプの基本構造**
 Wikipedia の XML ダンプ（例：`enwiki-latest-pages-articles.xml.bz2`）の基本的な構造は以下のようになっています。
 
 ```xml
@@ -1660,7 +1662,7 @@ Wikipedia の XML ダンプ（例：`enwiki-latest-pages-articles.xml.bz2`）の
 
 以下に、Wikipedia の XML ダンプを模倣した **XML サンプル** を作成しました。このサンプルには **複数のページ** が含まれており、各ページに対して `id`、`title`、`revision`（`text`）の要素が含まれています。
 
-### **XML サンプル**
+#### **XML サンプル**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1705,7 +1707,7 @@ Wikipedia の XML ダンプ（例：`enwiki-latest-pages-articles.xml.bz2`）の
 
 ---
 
-## **2. 各要素の詳細**
+### **2. 各要素の詳細**
 | 要素 | 説明 |
 |------|------|
 | `<mediawiki>` | XML データのルート要素。MediaWiki のバージョン情報などを含む |
@@ -1727,7 +1729,7 @@ Wikipedia の XML ダンプ（例：`enwiki-latest-pages-articles.xml.bz2`）の
 
 ---
 
-## **3. XML の例：Wikipedia の記事**
+### **3. XML の例：Wikipedia の記事**
 以下は、Wikipedia の「Python (programming language)」ページの例です。
 
 ```xml
@@ -1754,7 +1756,7 @@ Wikipedia の XML ダンプ（例：`enwiki-latest-pages-articles.xml.bz2`）の
 
 ---
 
-## **4. Wikipedia ダンプの種類**
+### **4. Wikipedia ダンプの種類**
 Wikipedia はさまざまな XML ダンプを提供しています。主なダンプの種類は次のとおりです。
 
 | ファイル名 | 内容 |
@@ -1768,10 +1770,10 @@ Wikipedia のダンプデータは [Wikimedia Dumps](https://dumps.wikimedia.org
 
 ---
 
-## **5. `xmlstarlet` で Wikipedia の XML を解析する**
+### **5. `xmlstarlet` で Wikipedia の XML を解析する**
 Wikipedia の XML ファイルを `xmlstarlet` で解析する例を紹介します。
 
-### **(1) 記事タイトルを一覧表示**
+#### **(1) 記事タイトルを一覧表示**
 ```sh
 xmlstarlet sel -t -m "//page/title" -v "." -n enwiki-latest-pages-articles.xml
 ```
@@ -1779,7 +1781,7 @@ xmlstarlet sel -t -m "//page/title" -v "." -n enwiki-latest-pages-articles.xml
 
 ---
 
-### **(2) 特定の記事の本文を取得**
+#### **(2) 特定の記事の本文を取得**
 ```sh
 xmlstarlet sel -t -m "//page[title='Python (programming language)']/revision/text" -v "." -n enwiki-latest-pages-articles.xml
 ```
@@ -1787,7 +1789,7 @@ xmlstarlet sel -t -m "//page[title='Python (programming language)']/revision/tex
 
 ---
 
-### **(3) 記事のリビジョン ID を取得**
+#### **(3) 記事のリビジョン ID を取得**
 ```sh
 xmlstarlet sel -t -m "//page[title='Python (programming language)']/revision/id" -v "." -n enwiki-latest-pages-articles.xml
 ```
@@ -1796,7 +1798,7 @@ xmlstarlet sel -t -m "//page[title='Python (programming language)']/revision/id"
 ---
 
 
-## **`xmlstarlet` を使って逐次的に CSV に追加する方法**
+### **`xmlstarlet` を使って逐次的に CSV に追加する方法**
 
 `xmlstarlet` を使って CSV ファイルに1行ずつ追加するためには、以下のコマンドを使用します。
 
@@ -1845,7 +1847,7 @@ xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:
  -n enwiki1.xml |\
 # reject {{, }}, [[, ]] with sed, specify locale to be fast 
  LC_ALL=c sed -E 's/\{\{[^}]+\}\}//g' |\
- sed 's/#.\+/"/' |\
+ sed 's/#REDIRECT.\+/"/' |\
  sed -E 's/[^0-9A-Za-z,.()"\x27]/ /g' |\
  sed 's/\x27\x27\+/ /g' |\
  sed 's/  \+/ /g' >> enwiki1.csv
@@ -1872,4 +1874,71 @@ export LC_ALL=ja_JP.UTF-8
 12345,Example Page,'''Example''' is a sample page for demonstrating XML structure.
 67890,Python (programming language),'''Python''' is a high-level programming language that is widely used.
 23456,History of the world,The history of the world is the history of humanity's development.
+```
+
+
+### wikipedia全体をメモリ節約しながら処理する
+
+```
+wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-multistream1.xml.bz2 -O enwiki.xml.bz2
+
+  > enwiki.xml.bz2
+
+bzip2 -d enwiki.xml.bz2
+  > enwiki.xml
+
+sudo snap install yq
+
+#split large xml by wikipedia page tag
+
+mkdir part
+cd part
+
+awk 'BEGIN {count=0;} 
+     /<page>/ {count++; filename=sprintf("part_%08d.xml", count); print "<mediawiki>" > filename} 
+     {if (count > 0) print $0 >> filename} 
+     /<\/page>/ {print "</mediawiki>" >> filename; close(filename)}' ../enwiki.xml
+
+ls | wc -l
+ls | tail -n 10
+
+find . -name "part*.xml" |\
+xargs -n 1000 yq -p=xml -o=json |\
+jq -c '{id: .mediawiki.page.id, title: .mediawiki.page.title, text: .mediawiki.page.revision.text."+content"}' >> ../enwiki.json
+
+ > enwiki.json
+
+sudo apt install sqlite3
+
+sqlite3 enwiki.db <<EOF
+CREATE TABLE IF NOT EXISTS enwiki (id,title,text);
+EOF
+
+nano json2sqlite.py
+
+	import sqlite3
+	import json
+	
+	# SQLiteデータベースに接続
+	conn = sqlite3.connect("enwiki10.db")
+	cursor = conn.cursor()
+	
+	# JSONLファイルを開いて1行ずつ読み込む
+	with open("enwiki01.json", "r", encoding="utf-8") as file:
+    	for line in file:
+        	data = json.loads(line.strip())  # JSONを辞書に変換
+        	cursor.execute("INSERT INTO enwiki10 (id, title, text) VALUE>
+                       	(int(data["id"]), data["title"], data["text>
+	
+	# コミットして接続を閉じる
+	conn.commit()
+	conn.close()
+
+
+python3 json2sqlite.py
+
+sqlite3 enwiki.db
+
+SELECT id, title, REPLACE(text, char(10), '') FROM enwiki limit 5;
+
 ```

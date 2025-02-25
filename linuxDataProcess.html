@@ -3459,14 +3459,16 @@ Bob</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div id="wikipediaダンプファイルを処理する" class="section level2">
+<h2>wikipediaダンプファイルを処理する</h2>
 <p>Wikipedia の XML
 ダンプファイルは、メディアウィキのデータを保存するための XML
 形式のファイルです。ダンプにはさまざまな種類がありますが、基本的な構造は共通しています。</p>
 <hr />
-</div>
-</div>
-<div id="wikipedia-の-xml-ダンプの基本構造" class="section level2">
-<h2><strong>Wikipedia の XML ダンプの基本構造</strong></h2>
+<div id="wikipedia-の-xml-ダンプの基本構造" class="section level3">
+<h3><strong>Wikipedia の XML ダンプの基本構造</strong></h3>
 <p>Wikipedia の XML
 ダンプ（例：<code>enwiki-latest-pages-articles.xml.bz2</code>）の基本的な構造は以下のようになっています。</p>
 <pre class="xml"><code>&lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.10/&quot;
@@ -3518,8 +3520,8 @@ Bob</code></pre>
 サンプル</strong> を作成しました。このサンプルには
 <strong>複数のページ</strong> が含まれており、各ページに対して
 <code>id</code>、<code>title</code>、<code>revision</code>（<code>text</code>）の要素が含まれています。</p>
-<div id="xml-サンプル" class="section level3">
-<h3><strong>XML サンプル</strong></h3>
+<div id="xml-サンプル" class="section level4">
+<h4><strong>XML サンプル</strong></h4>
 <pre class="xml"><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.10/&quot;
            xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
@@ -3563,8 +3565,8 @@ Bob</code></pre>
 <hr />
 </div>
 </div>
-<div id="各要素の詳細" class="section level2">
-<h2><strong>2. 各要素の詳細</strong></h2>
+<div id="各要素の詳細" class="section level3">
+<h3><strong>2. 各要素の詳細</strong></h3>
 <table>
 <colgroup>
 <col width="50%" />
@@ -3647,8 +3649,8 @@ Bob</code></pre>
 </table>
 <hr />
 </div>
-<div id="xml-の例wikipedia-の記事" class="section level2">
-<h2><strong>3. XML の例：Wikipedia の記事</strong></h2>
+<div id="xml-の例wikipedia-の記事" class="section level3">
+<h3><strong>3. XML の例：Wikipedia の記事</strong></h3>
 <p>以下は、Wikipedia の「Python (programming
 language)」ページの例です。</p>
 <pre class="xml"><code>&lt;page&gt;
@@ -3672,8 +3674,8 @@ language)」ページの例です。</p>
 &lt;/page&gt;</code></pre>
 <hr />
 </div>
-<div id="wikipedia-ダンプの種類" class="section level2">
-<h2><strong>4. Wikipedia ダンプの種類</strong></h2>
+<div id="wikipedia-ダンプの種類" class="section level3">
+<h3><strong>4. Wikipedia ダンプの種類</strong></h3>
 <p>Wikipedia はさまざまな XML
 ダンプを提供しています。主なダンプの種類は次のとおりです。</p>
 <table>
@@ -3706,33 +3708,33 @@ language)」ページの例です。</p>
 で入手できます。</p>
 <hr />
 </div>
-<div id="xmlstarlet-で-wikipedia-の-xml-を解析する" class="section level2">
-<h2><strong>5. <code>xmlstarlet</code> で Wikipedia の XML
-を解析する</strong></h2>
+<div id="xmlstarlet-で-wikipedia-の-xml-を解析する" class="section level3">
+<h3><strong>5. <code>xmlstarlet</code> で Wikipedia の XML
+を解析する</strong></h3>
 <p>Wikipedia の XML ファイルを <code>xmlstarlet</code>
 で解析する例を紹介します。</p>
-<div id="記事タイトルを一覧表示" class="section level3">
-<h3><strong>(1) 記事タイトルを一覧表示</strong></h3>
+<div id="記事タイトルを一覧表示" class="section level4">
+<h4><strong>(1) 記事タイトルを一覧表示</strong></h4>
 <pre class="sh"><code>xmlstarlet sel -t -m &quot;//page/title&quot; -v &quot;.&quot; -n enwiki-latest-pages-articles.xml</code></pre>
 <p>→ Wikipedia のすべての記事タイトルを取得。</p>
 <hr />
 </div>
-<div id="特定の記事の本文を取得" class="section level3">
-<h3><strong>(2) 特定の記事の本文を取得</strong></h3>
+<div id="特定の記事の本文を取得" class="section level4">
+<h4><strong>(2) 特定の記事の本文を取得</strong></h4>
 <pre class="sh"><code>xmlstarlet sel -t -m &quot;//page[title=&#39;Python (programming language)&#39;]/revision/text&quot; -v &quot;.&quot; -n enwiki-latest-pages-articles.xml</code></pre>
 <p>→ 「Python (programming language)」の記事の本文を取得。</p>
 <hr />
 </div>
-<div id="記事のリビジョン-id-を取得" class="section level3">
-<h3><strong>(3) 記事のリビジョン ID を取得</strong></h3>
+<div id="記事のリビジョン-id-を取得" class="section level4">
+<h4><strong>(3) 記事のリビジョン ID を取得</strong></h4>
 <pre class="sh"><code>xmlstarlet sel -t -m &quot;//page[title=&#39;Python (programming language)&#39;]/revision/id&quot; -v &quot;.&quot; -n enwiki-latest-pages-articles.xml</code></pre>
 <p>→ 最新のリビジョン ID を取得。</p>
 <hr />
 </div>
 </div>
-<div id="xmlstarlet-を使って逐次的に-csv-に追加する方法" class="section level2">
-<h2><strong><code>xmlstarlet</code> を使って逐次的に CSV
-に追加する方法</strong></h2>
+<div id="xmlstarlet-を使って逐次的に-csv-に追加する方法" class="section level3">
+<h3><strong><code>xmlstarlet</code> を使って逐次的に CSV
+に追加する方法</strong></h3>
 <p><code>xmlstarlet</code> を使って CSV
 ファイルに1行ずつ追加するためには、以下のコマンドを使用します。</p>
 <pre class="sh"><code>xmlstarlet sel -T -t -m &quot;//page&quot; \
@@ -3750,6 +3752,7 @@ language)」ページの例です。</p>
 12345,Example Page,{{Infobox example}}
 67890,Python (programming language),&#39;&#39;&#39;Python&#39;&#39;&#39; is a programming language...
 23456,History of the world,The history of the world is the history of humanity...</code></pre>
+</div>
 <div id="名前空間の問題" class="section level3">
 <h3>1. <strong>名前空間の問題</strong></h3>
 <p>Wikipedia の XML ダンプファイルでは、通常 XML
@@ -3814,6 +3817,70 @@ export LC_ALL=ja_JP.UTF-8</code></pre>
 67890,Python (programming language),&#39;&#39;&#39;Python&#39;&#39;&#39; is a high-level programming language that is widely used.
 23456,History of the world,The history of the world is the history of humanity&#39;s development.</code></pre>
 </div>
+</div>
+<div id="wikipedia全体をメモリ節約しながら処理する" class="section level3">
+<h3>wikipedia全体をメモリ節約しながら処理する</h3>
+<pre><code>wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-multistream1.xml.bz2 -O enwiki.xml.bz2
+
+  &gt; enwiki.xml.bz2
+
+bzip2 -d enwiki.xml.bz2
+  &gt; enwiki.xml
+
+sudo snap install yq
+
+#split large xml by wikipedia page tag
+
+mkdir part
+cd part
+
+awk &#39;BEGIN {count=0;} 
+     /&lt;page&gt;/ {count++; filename=sprintf(&quot;part_%08d.xml&quot;, count); print &quot;&lt;mediawiki&gt;&quot; &gt; filename} 
+     {if (count &gt; 0) print $0 &gt;&gt; filename} 
+     /&lt;\/page&gt;/ {print &quot;&lt;/mediawiki&gt;&quot; &gt;&gt; filename; close(filename)}&#39; ../enwiki.xml
+
+ls | wc -l
+ls | tail -n 10
+
+find . -name &quot;part*.xml&quot; |\
+xargs -n 1000 yq -p=xml -o=json |\
+jq -c &#39;{id: .mediawiki.page.id, title: .mediawiki.page.title, text: .mediawiki.page.revision.text.&quot;+content&quot;}&#39; &gt;&gt; ../enwiki.json
+
+ &gt; enwiki.json
+
+sudo apt install sqlite3
+
+sqlite3 enwiki.db &lt;&lt;EOF
+CREATE TABLE IF NOT EXISTS enwiki (id,title,text);
+EOF
+
+nano json2sqlite.py
+
+    import sqlite3
+    import json
+    
+    # SQLiteデータベースに接続
+    conn = sqlite3.connect(&quot;enwiki10.db&quot;)
+    cursor = conn.cursor()
+    
+    # JSONLファイルを開いて1行ずつ読み込む
+    with open(&quot;enwiki01.json&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+        for line in file:
+            data = json.loads(line.strip())  # JSONを辞書に変換
+            cursor.execute(&quot;INSERT INTO enwiki10 (id, title, text) VALUE&gt;
+                        (int(data[&quot;id&quot;]), data[&quot;title&quot;], data[&quot;text&gt;
+    
+    # コミットして接続を閉じる
+    conn.commit()
+    conn.close()
+
+
+python3 json2sqlite.py
+
+sqlite3 enwiki.db
+
+SELECT id, title, REPLACE(text, char(10), &#39;&#39;) FROM enwiki limit 5;
+</code></pre>
 </div>
 </div>
 </div>
