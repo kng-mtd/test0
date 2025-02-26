@@ -2070,13 +2070,16 @@ sqlite3 enwiki.db <<EOF
 CREATE TABLE IF NOT EXISTS enwiki (id,title,text);
 EOF
 
+
+by python
+
 nano json2sqlite.py
 
 	import sqlite3
 	import json
 	
 	# SQLiteデータベースに接続
-	conn = sqlite3.connect("enwiki10.db")
+	conn = sqlite3.connect("enwiki01.db")
 	cursor = conn.cursor()
 	
 	# JSONLファイルを開いて1行ずつ読み込む
@@ -2097,4 +2100,79 @@ sqlite3 enwiki.db
 
 SELECT id, title, REPLACE(text, char(10), '') FROM enwiki limit 5;
 
+
+
+by nodejs
+
+nano json2sqlite.py
+
+  const fs = require("fs");
+  const Database = require("better-sqlite3");
+  
+  // データベース接続
+  const db = new Database("enwiki01.db");
+  db.pragma("journal_mode = WAL"); // 書き込み高速化
+  
+  // テーブル作成（存在しない場合）
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS enwiki (
+      id INTEGER PRIMARY KEY,
+      title TEXT NOT NULL,
+      text TEXT NOT NULL
+    );
+  `);
+  
+  // 挿入用のプリペアドステートメント
+  const insert = db.prepare("INSERT INTO enwiki (id, title, text) VALUES (?, ?, ?)");
+  
+  // トランザクションを使った一括挿入
+  const insertMany = db.transaction((records) => {
+    for (const record of records) {
+      insert.run(record.id, record.title, record.text);
+    }
+  });
+  
+  // JSONL（1行ずつのJSON）をストリームで処理
+  const stream = fs.createReadStream("enwiki01.json", { encoding: "utf8" });
+  
+  let buffer = "";
+  let batch = [];
+  const BATCH_SIZE = 1000; // 一度に処理するレコード数
+  
+  stream.on("data", (chunk) => {
+    buffer += chunk;
+    let lines = buffer.split("\n");
+  
+    // 最後の行は不完全な可能性があるので buffer に保持
+    buffer = lines.pop();
+  
+    for (const line of lines) {
+      if (line.trim()) {
+        try {
+          const data = JSON.parse(line);
+          batch.push(data);
+          if (batch.length >= BATCH_SIZE) {
+            insertMany(batch);
+            batch = []; // バッチをリセット
+          }
+        } catch (err) {
+          console.error("JSON Parse Error:", err);
+        }
+      }
+    }
+  });
+  
+  // ファイル読み込み完了時
+  stream.on("end", () => {
+    if (batch.length > 0) {
+      insertMany(batch); // 残ったデータを処理
+    }
+    console.log("✅ データベースへの挿入が完了しました！");
+    db.close();
+  });
+  
+  // エラーハンドリング
+  stream.on("error", (err) => {
+    console.error("File Read Error:", err);
+  });
 ```

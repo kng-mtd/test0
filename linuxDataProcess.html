@@ -3951,13 +3951,16 @@ sqlite3 enwiki.db &lt;&lt;EOF
 CREATE TABLE IF NOT EXISTS enwiki (id,title,text);
 EOF
 
+
+by python
+
 nano json2sqlite.py
 
     import sqlite3
     import json
     
     # SQLiteデータベースに接続
-    conn = sqlite3.connect(&quot;enwiki10.db&quot;)
+    conn = sqlite3.connect(&quot;enwiki01.db&quot;)
     cursor = conn.cursor()
     
     # JSONLファイルを開いて1行ずつ読み込む
@@ -3977,7 +3980,82 @@ python3 json2sqlite.py
 sqlite3 enwiki.db
 
 SELECT id, title, REPLACE(text, char(10), &#39;&#39;) FROM enwiki limit 5;
-</code></pre>
+
+
+
+by nodejs
+
+nano json2sqlite.py
+
+  const fs = require(&quot;fs&quot;);
+  const Database = require(&quot;better-sqlite3&quot;);
+  
+  // データベース接続
+  const db = new Database(&quot;enwiki01.db&quot;);
+  db.pragma(&quot;journal_mode = WAL&quot;); // 書き込み高速化
+  
+  // テーブル作成（存在しない場合）
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS enwiki (
+      id INTEGER PRIMARY KEY,
+      title TEXT NOT NULL,
+      text TEXT NOT NULL
+    );
+  `);
+  
+  // 挿入用のプリペアドステートメント
+  const insert = db.prepare(&quot;INSERT INTO enwiki (id, title, text) VALUES (?, ?, ?)&quot;);
+  
+  // トランザクションを使った一括挿入
+  const insertMany = db.transaction((records) =&gt; {
+    for (const record of records) {
+      insert.run(record.id, record.title, record.text);
+    }
+  });
+  
+  // JSONL（1行ずつのJSON）をストリームで処理
+  const stream = fs.createReadStream(&quot;enwiki01.json&quot;, { encoding: &quot;utf8&quot; });
+  
+  let buffer = &quot;&quot;;
+  let batch = [];
+  const BATCH_SIZE = 1000; // 一度に処理するレコード数
+  
+  stream.on(&quot;data&quot;, (chunk) =&gt; {
+    buffer += chunk;
+    let lines = buffer.split(&quot;\n&quot;);
+  
+    // 最後の行は不完全な可能性があるので buffer に保持
+    buffer = lines.pop();
+  
+    for (const line of lines) {
+      if (line.trim()) {
+        try {
+          const data = JSON.parse(line);
+          batch.push(data);
+          if (batch.length &gt;= BATCH_SIZE) {
+            insertMany(batch);
+            batch = []; // バッチをリセット
+          }
+        } catch (err) {
+          console.error(&quot;JSON Parse Error:&quot;, err);
+        }
+      }
+    }
+  });
+  
+  // ファイル読み込み完了時
+  stream.on(&quot;end&quot;, () =&gt; {
+    if (batch.length &gt; 0) {
+      insertMany(batch); // 残ったデータを処理
+    }
+    console.log(&quot;✅ データベースへの挿入が完了しました！&quot;);
+    db.close();
+  });
+  
+  // エラーハンドリング
+  stream.on(&quot;error&quot;, (err) =&gt; {
+    console.error(&quot;File Read Error:&quot;, err);
+  });</code></pre>
 </div>
 </div>
 </div>
