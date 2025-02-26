@@ -3295,77 +3295,174 @@ Bob</code></pre>
 <p><strong>出力</strong></p>
 <pre class="json"><code>[25, 30, 22]</code></pre>
 <hr />
+<pre><code>jq 機能一覧
+
+1. 基本的な JSON 処理
+
+JSON 全体を整形表示       jq . input.json           インデント付きで見やすく表示
+JSON の特定キーを取得       jq &#39;.key&#39; input.json        key の値を取得
+ネストしたキーを取得      jq &#39;.parent.child&#39; input.json   parent.child の値を取得
+配列の要素を取得            jq &#39;.[0]&#39; input.json        配列の 0 番目の要素を取得
+________________________________________
+
+2. フィルタ・変換
+
+値をテキストとして出力    jq -r &#39;.key&#39; input.json   ダブルクォートを除いた値を出力
+JSON をフラットに表示     jq -c &#39;.&#39; input.json      コンパクトな 1 行 JSON 出力
+データを並び替え          jq &#39;sort&#39; input.json      配列の要素をソート
+特定のキーのみ表示        jq &#39;{key1, key2}&#39; input.json    指定したキーのみ出力
+キーをリネーム            jq &#39;{newKey: .oldKey}&#39; input.json   oldKey を newKey に変更
+________________________________________
+
+3. 条件分岐・フィルタ
+
+条件に一致するデータを抽出    jq &#39;select(.age &gt; 20)&#39; input.json   age が 20 より大きいものを取得
+AND 条件    jq &#39;select(.age &gt; 20 and .city == &quot;Tokyo&quot;)&#39; input.json    age &gt; 20 かつ city が Tokyo
+OR 条件     jq &#39;select(.age &gt; 20 or .city == &quot;Tokyo&quot;)&#39; input.json   age &gt; 20 または city が Tokyo
+________________________________________
+
+4. 配列・オブジェクト操作
+
+配列の長さを取得          jq &#39;length&#39; input.json            配列の要素数を取得
+配列の各要素に適用         jq &#39;map(.age * 2)&#39; input.json   age の値を 2 倍にする
+配列の要素をフィルタ      jq &#39;map(select(.age &gt; 20))&#39; input.json    age &gt; 20 の要素のみ取得
+配列をフラット化            jq &#39;flatten&#39; input.json         ネストした配列を 1 次元化
+配列の要素を , で結合        jq -r &#39;join(&quot;, &quot;)&#39; input.json   配列を , で区切った文字列に変換
+________________________________________
+
+5. 文字列操作
+
+文字列を大文字に変換      jq &#39;ascii_upcase&#39; input.json    すべての文字を大文字に
+文字列を小文字に変換      jq &#39;ascii_downcase&#39; input.json  すべての文字を小文字に
+文字列を置換              jq &#39;gsub(&quot;old&quot;; &quot;new&quot;)&#39; input.json  &quot;old&quot; を &quot;new&quot; に置換
+文字列の特定の部分を削除    jq &#39;gsub(&quot;\\n&quot;; &quot;&quot;)&#39; input.json     改行 (\n) を削除
+________________________________________
+
+6. 計算・集計
+
+数値の合計     jq &#39;add&#39; input.json   配列の数値の合計を求める
+最大値を取得  jq &#39;max&#39; input.json   配列の最大値を取得
+最小値を取得  jq &#39;min&#39; input.json   配列の最小値を取得
+平均値を取得  jq &#39;add / length&#39; input.json    配列の平均値を計算
+________________________________________
+
+7. フォーマット変換
+
+JSON を CSV に変換    `jq -r &#39;[.id, .name]  @csv&#39; input.json`
+JSON を TSV に変換    `jq -r &#39;[.id, .name]  @tsv&#39; input.json`
+JSON を YAML に変換   `jq -r &#39;.&#39; input.json yq -P`
+フィールドを = 形式に `jq -r &#39;to_entries map(&quot;(.key)=(.value)&quot;)
+________________________________________
+
+8. ループ・関数
+
+各要素を処理        jq &#39;map(. * 2)&#39; input.json    配列の各要素を 2 倍にする
+条件分岐 (if 文)    jq &#39;if .age &gt; 18 then &quot;Adult&quot; else &quot;Child&quot; end&#39; input.json
+                    age &gt; 18 なら &quot;Adult&quot; それ以外は &quot;Child&quot;
+________________________________________
+
+9. Unicode 処理
+
+Unicode エスケープを解除    jq -r &#39;.text&#39; input.json    \uXXXX を通常の文字に
+Unicode を削除             jq &#39;gsub(&quot;\\\\u[0-9a-fA-F]{4}&quot;; &quot;&quot;)&#39; input.json   \uXXXX を削除
+________________________________________
+
+10. JSONL (JSON Lines) の処理
+
+JSON Lines を処理       jq -c &#39;.&#39; input.jsonl   各行をコンパクトに処理
+JSON Lines を配列に変換   jq -s &#39;.&#39; input.jsonl   各行を配列に変換
+________________________________________
+
+11. その他便利な機能
+
+キー一覧を取得        jq &#39;keys&#39; input.json    JSON のキー一覧を取得
+JSON の型を取得       jq &#39;type&#39; input.json    string, array, object などを表示
+JSON の深さを取得     jq &#39;depth&#39; input.json   JSON のネストの深さを取得
+エラーハンドリング    jq &#39;try .key catch &quot;error&quot;&#39; input.json    .key がないと &quot;error&quot; を返す
+
+
+@csv 機能では 自動的にカンマを適切に処理 してくれます。
+________________________________________
+
+1. 基本的な CSV 変換
+JSON:
+[
+  {&quot;id&quot;: 1, &quot;name&quot;: &quot;Alice, Bob&quot;, &quot;age&quot;: 25},
+  {&quot;id&quot;: 2, &quot;name&quot;: &quot;Charlie&quot;, &quot;age&quot;: 30}
+]
+
+jq -r &#39;[.[] | [.id, .name, .age]] | @csv&#39; input.json
+
+csv
+1,&quot;Alice, Bob&quot;,25
+2,Charlie,30
+
+csv は カンマを含む文字列を自動でダブルクォート (&quot; &quot;) で囲む ため、CSV フォーマットが崩れない。
+________________________________________
+
+2. JSON に改行 (\n) やダブルクォート (&quot;) がある場合
+JSON:
+[
+  {&quot;id&quot;: 1, &quot;name&quot;: &quot;Alice\nBob&quot;, &quot;comment&quot;: &quot;She said, \&quot;Hello!\&quot;&quot;},
+  {&quot;id&quot;: 2, &quot;name&quot;: &quot;Charlie&quot;, &quot;comment&quot;: &quot;No issues&quot;}
+]
+
+jq -r &#39;[.[] | [.id, .name, .comment]] | @csv&#39; input.json
+
+csv
+1,&quot;Alice
+Bob&quot;,&quot;She said, &quot;&quot;Hello!&quot;&quot;&quot;
+2,Charlie,&quot;No issues&quot;
+
+処理内容:
+1.  \n (改行) はそのまま適用されるため、CSV の改行がズレることがある。
+2.  &quot; (ダブルクォート) を含む場合、自動的に &quot;&quot; にエスケープされる。
+________________________________________
+
+3. JSON 内の改行 (\n) を削除
+JSON の \n (改行) を削除し、CSV を安全にするには gsub(&quot;\\n&quot;; &quot; &quot;) を使う：
+jq -r &#39;[.[] | [.id, (.name | gsub(&quot;\\n&quot;; &quot; &quot;)), (.comment | gsub(&quot;\\n&quot;; &quot; &quot;))]] | @csv&#39; input.json
+
+csv
+1,&quot;Alice Bob&quot;,&quot;She said, &quot;&quot;Hello!&quot;&quot;&quot;
+2,Charlie,&quot;No issues&quot;
+改行 (\n) をスペース ( ) に変換し、フォーマットを崩さない！
+________________________________________
+
+4. JSON に null がある場合
+JSON:
+[
+  {&quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: null},
+  {&quot;id&quot;: 2, &quot;name&quot;: &quot;Bob&quot;, &quot;email&quot;: &quot;bob@example.com&quot;}
+]
+
+jq -r &#39;[.[] | [.id, .name, .email]] | @csv&#39; input.json
+
+csv
+1,Alice,
+2,Bob,bob@example.com
+null は 空白 として扱われる。
+明示的に NULL という文字を入れる場合:
+jq -r &#39;[.[] | [.id, .name, (.email // &quot;NULL&quot;)]] | @csv&#39; input.json
+
+csv
+1,Alice, NULL
+2,Bob,bob@example.com
+.email // &quot;NULL&quot; で null を &quot;NULL&quot; に置き換え。
+________________________________________
+
+5. CSV 出力の列順を指定
+JSON のキー順に関わらず、特定の順番で CSV に出力 したい場合：
+jq -r &#39;[.[] | [.name, .id, .email]] | @csv&#39; input.json
+name, id, email の順で CSV を作成。
+________________________________________
+
+6. tsv (タブ区切り) に変換
+タブ (\t) 区切りの TSV にする場合：
+jq -r &#39;[.[] | [.id, .name, .email]] | @tsv&#39; input.json
+@tsv を使うことで @csv と同様にエスケープ処理を適用しつつ、タブ区切りで出力。
+</code></pre>
 </div>
-</div>
-<div id="まとめ-2" class="section level3">
-<h3><strong>まとめ</strong></h3>
-<table>
-<colgroup>
-<col width="11%" />
-<col width="46%" />
-<col width="41%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>関数</th>
-<th>説明</th>
-<th>使用例</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>add</code></td>
-<td>数値の合計を計算</td>
-<td><code>[1, 2, 3] | add</code> → <code>6</code></td>
-</tr>
-<tr class="even">
-<td><code>length</code></td>
-<td>配列や文字列の長さを取得</td>
-<td><code>[1, 2, 3] | length</code> → <code>3</code></td>
-</tr>
-<tr class="odd">
-<td><code>max</code></td>
-<td>配列の最大値を取得</td>
-<td><code>[1, 2, 3] | max</code> → <code>3</code></td>
-</tr>
-<tr class="even">
-<td><code>min</code></td>
-<td>配列の最小値を取得</td>
-<td><code>[1, 2, 3] | min</code> → <code>1</code></td>
-</tr>
-<tr class="odd">
-<td><code>sum</code></td>
-<td>配列の合計値を計算</td>
-<td><code>[1, 2, 3] | sum</code> → <code>6</code></td>
-</tr>
-<tr class="even">
-<td><code>group_by</code></td>
-<td>配列を指定したキーでグループ化</td>
-<td><code>group_by(.key)</code></td>
-</tr>
-<tr class="odd">
-<td><code>select</code></td>
-<td>条件に一致する要素を抽出</td>
-<td><code>select(.age &gt; 25)</code></td>
-</tr>
-<tr class="even">
-<td><code>unique</code></td>
-<td>重複を取り除いてユニークな要素を取得</td>
-<td><code>[1, 2, 2, 3] | unique</code> → <code>[1, 2, 3]</code></td>
-</tr>
-<tr class="odd">
-<td><code>map</code></td>
-<td>各要素に関数を適用して新しい配列を作成</td>
-<td><code>map(. * 2)</code></td>
-</tr>
-<tr class="even">
-<td><code>flatten</code></td>
-<td>配列をフラット化</td>
-<td><code>[[1, 2], [3, 4]] | flatten</code> →
-<code>[1, 2, 3, 4]</code></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </div>
@@ -3423,7 +3520,7 @@ Bob</code></pre>
 <p>これは <code>&lt;book&gt;</code> の <code>title</code> と
 <code>author</code> をカンマ区切りで出力します。</p>
 <hr />
-<div id="まとめ-3" class="section level3">
+<div id="まとめ-2" class="section level3">
 <h3>まとめ</h3>
 <table>
 <thead>

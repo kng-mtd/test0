@@ -1497,20 +1497,176 @@ jq '[.[][] | [.age]] | flatten' data.json
 
 ---
 
-### **まとめ**
 
-| 関数      | 説明                                       | 使用例                                |
-|-----------|--------------------------------------------|---------------------------------------|
-| `add`     | 数値の合計を計算                           | `[1, 2, 3] | add` → `6`              |
-| `length`  | 配列や文字列の長さを取得                   | `[1, 2, 3] | length` → `3`            |
-| `max`     | 配列の最大値を取得                         | `[1, 2, 3] | max` → `3`               |
-| `min`     | 配列の最小値を取得                         | `[1, 2, 3] | min` → `1`               |
-| `sum`     | 配列の合計値を計算                         | `[1, 2, 3] | sum` → `6`              |
-| `group_by`| 配列を指定したキーでグループ化             | `group_by(.key)`                     |
-| `select`  | 条件に一致する要素を抽出                   | `select(.age > 25)`                  |
-| `unique`  | 重複を取り除いてユニークな要素を取得       | `[1, 2, 2, 3] | unique` → `[1, 2, 3]` |
-| `map`     | 各要素に関数を適用して新しい配列を作成     | `map(. * 2)`                         |
-| `flatten` | 配列をフラット化                           | `[[1, 2], [3, 4]] | flatten` → `[1, 2, 3, 4]` |
+```
+jq 機能一覧
+
+1. 基本的な JSON 処理
+
+JSON 全体を整形表示       jq . input.json           インデント付きで見やすく表示
+JSON の特定キーを取得	    jq '.key' input.json	    key の値を取得
+ネストしたキーを取得	    jq '.parent.child' input.json   parent.child の値を取得
+配列の要素を取得	        jq '.[0]' input.json	    配列の 0 番目の要素を取得
+________________________________________
+
+2. フィルタ・変換
+
+値をテキストとして出力    jq -r '.key' input.json   ダブルクォートを除いた値を出力
+JSON をフラットに表示     jq -c '.' input.json      コンパクトな 1 行 JSON 出力
+データを並び替え          jq 'sort' input.json	    配列の要素をソート
+特定のキーのみ表示        jq '{key1, key2}' input.json    指定したキーのみ出力
+キーをリネーム            jq '{newKey: .oldKey}' input.json   oldKey を newKey に変更
+________________________________________
+
+3. 条件分岐・フィルタ
+
+条件に一致するデータを抽出    jq 'select(.age > 20)' input.json   age が 20 より大きいものを取得
+AND 条件    jq 'select(.age > 20 and .city == "Tokyo")' input.json	age > 20 かつ city が Tokyo
+OR 条件     jq 'select(.age > 20 or .city == "Tokyo")' input.json	  age > 20 または city が Tokyo
+________________________________________
+
+4. 配列・オブジェクト操作
+
+配列の長さを取得          jq 'length' input.json	        配列の要素数を取得
+配列の各要素に適用	      jq 'map(.age * 2)' input.json   age の値を 2 倍にする
+配列の要素をフィルタ	    jq 'map(select(.age > 20))' input.json    age > 20 の要素のみ取得
+配列をフラット化	        jq 'flatten' input.json	        ネストした配列を 1 次元化
+配列の要素を , で結合	    jq -r 'join(", ")' input.json   配列を , で区切った文字列に変換
+________________________________________
+
+5. 文字列操作
+
+文字列を大文字に変換	    jq 'ascii_upcase' input.json    すべての文字を大文字に
+文字列を小文字に変換	    jq 'ascii_downcase' input.json	すべての文字を小文字に
+文字列を置換	            jq 'gsub("old"; "new")' input.json	"old" を "new" に置換
+文字列の特定の部分を削除	jq 'gsub("\\n"; "")' input.json	    改行 (\n) を削除
+________________________________________
+
+6. 計算・集計
+
+数値の合計	  jq 'add' input.json   配列の数値の合計を求める
+最大値を取得	jq 'max' input.json   配列の最大値を取得
+最小値を取得	jq 'min' input.json   配列の最小値を取得
+平均値を取得	jq 'add / length' input.json    配列の平均値を計算
+________________________________________
+
+7. フォーマット変換
+
+JSON を CSV に変換    `jq -r '[.id, .name]	@csv' input.json`
+JSON を TSV に変換    `jq -r '[.id, .name]	@tsv' input.json`
+JSON を YAML に変換   `jq -r '.' input.json	yq -P`
+フィールドを = 形式に `jq -r 'to_entries	map("(.key)=(.value)")
+________________________________________
+
+8. ループ・関数
+
+各要素を処理        jq 'map(. * 2)' input.json    配列の各要素を 2 倍にする
+条件分岐 (if 文)    jq 'if .age > 18 then "Adult" else "Child" end' input.json
+                    age > 18 なら "Adult" それ以外は "Child"
+________________________________________
+
+9. Unicode 処理
+
+Unicode エスケープを解除    jq -r '.text' input.json    \uXXXX を通常の文字に
+Unicode を削除	            jq 'gsub("\\\\u[0-9a-fA-F]{4}"; "")' input.json   \uXXXX を削除
+________________________________________
+
+10. JSONL (JSON Lines) の処理
+
+JSON Lines を処理       jq -c '.' input.jsonl   各行をコンパクトに処理
+JSON Lines を配列に変換	jq -s '.' input.jsonl   各行を配列に変換
+________________________________________
+
+11. その他便利な機能
+
+キー一覧を取得        jq 'keys' input.json    JSON のキー一覧を取得
+JSON の型を取得       jq 'type' input.json    string, array, object などを表示
+JSON の深さを取得     jq 'depth' input.json   JSON のネストの深さを取得
+エラーハンドリング    jq 'try .key catch "error"' input.json    .key がないと "error" を返す
+
+
+@csv 機能では 自動的にカンマを適切に処理 してくれます。
+________________________________________
+
+1. 基本的な CSV 変換
+JSON:
+[
+  {"id": 1, "name": "Alice, Bob", "age": 25},
+  {"id": 2, "name": "Charlie", "age": 30}
+]
+
+jq -r '[.[] | [.id, .name, .age]] | @csv' input.json
+
+csv
+1,"Alice, Bob",25
+2,Charlie,30
+
+csv は カンマを含む文字列を自動でダブルクォート (" ") で囲む ため、CSV フォーマットが崩れない。
+________________________________________
+
+2. JSON に改行 (\n) やダブルクォート (") がある場合
+JSON:
+[
+  {"id": 1, "name": "Alice\nBob", "comment": "She said, \"Hello!\""},
+  {"id": 2, "name": "Charlie", "comment": "No issues"}
+]
+
+jq -r '[.[] | [.id, .name, .comment]] | @csv' input.json
+
+csv
+1,"Alice
+Bob","She said, ""Hello!"""
+2,Charlie,"No issues"
+
+処理内容:
+1.	\n (改行) はそのまま適用されるため、CSV の改行がズレることがある。
+2.	" (ダブルクォート) を含む場合、自動的に "" にエスケープされる。
+________________________________________
+
+3. JSON 内の改行 (\n) を削除
+JSON の \n (改行) を削除し、CSV を安全にするには gsub("\\n"; " ") を使う：
+jq -r '[.[] | [.id, (.name | gsub("\\n"; " ")), (.comment | gsub("\\n"; " "))]] | @csv' input.json
+
+csv
+1,"Alice Bob","She said, ""Hello!"""
+2,Charlie,"No issues"
+改行 (\n) をスペース ( ) に変換し、フォーマットを崩さない！
+________________________________________
+
+4. JSON に null がある場合
+JSON:
+[
+  {"id": 1, "name": "Alice", "email": null},
+  {"id": 2, "name": "Bob", "email": "bob@example.com"}
+]
+
+jq -r '[.[] | [.id, .name, .email]] | @csv' input.json
+
+csv
+1,Alice,
+2,Bob,bob@example.com
+null は 空白 として扱われる。
+明示的に NULL という文字を入れる場合:
+jq -r '[.[] | [.id, .name, (.email // "NULL")]] | @csv' input.json
+
+csv
+1,Alice, NULL
+2,Bob,bob@example.com
+.email // "NULL" で null を "NULL" に置き換え。
+________________________________________
+
+5. CSV 出力の列順を指定
+JSON のキー順に関わらず、特定の順番で CSV に出力 したい場合：
+jq -r '[.[] | [.name, .id, .email]] | @csv' input.json
+name, id, email の順で CSV を作成。
+________________________________________
+
+6. tsv (タブ区切り) に変換
+タブ (\t) 区切りの TSV にする場合：
+jq -r '[.[] | [.id, .name, .email]] | @tsv' input.json
+@tsv を使うことで @csv と同様にエスケープ処理を適用しつつ、タブ区切りで出力。
+
+```
 
 
 
