@@ -200,6 +200,11 @@ ls | tee output.txt
 split -l 1000 largefile.txt smallfile_
 ```
 
+### **7. watch（逐次処理中のファイル監視）**
+```bash
+watch -n 1 ls -lh file.txt
+```
+
 ---
 
 
