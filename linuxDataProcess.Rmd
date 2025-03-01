@@ -2201,7 +2201,7 @@ nano json2sqlite.js
     if (batch.length > 0) {
       insertMany(batch); // 残ったデータを処理
     }
-    console.log("✅ データベースへの挿入が完了しました！");
+    console.log("データベースへの挿入が完了しました！");
     db.close();
   });
   
