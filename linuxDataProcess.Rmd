@@ -2063,7 +2063,7 @@ sudo apt install jq
 
 
 find . -name "part*.xml" |\
-xargs -n 1000 yq -p=xml -o=json |\
+xargs -n 100000 yq -p=xml -o=json |\
 jq -c '{id: .mediawiki.page.id, title: .mediawiki.page.title, text: .mediawiki.page.revision.text."+content"}' >> ../enwiki.json
 
  > enwiki.json
