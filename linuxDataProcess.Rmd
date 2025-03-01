@@ -2043,7 +2043,6 @@ wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-mult
 bzip2 -d enwiki.xml.bz2
   > enwiki.xml
 
-sudo snap install yq
 
 #split large xml by wikipedia page tag
 
@@ -2057,6 +2056,11 @@ awk 'BEGIN {count=0;}
 
 ls | wc -l
 ls | tail -n 10
+
+
+sudo snap install yq
+sudo apt install jq
+
 
 find . -name "part*.xml" |\
 xargs -n 1000 yq -p=xml -o=json |\
@@ -2104,7 +2108,7 @@ SELECT id, title, REPLACE(text, char(10), '') FROM enwiki limit 5;
 
 by nodejs
 
-nano json2sqlite.py
+nano json2sqlite.js
 
   const fs = require("fs");
   const Database = require("better-sqlite3");
