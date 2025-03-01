@@ -155,6 +155,31 @@ echo "file1.txt file2.txt" | xargs cat
 ls *.log | xargs rm
 ```
 
+`xargs` は **長いリストの引数を適切に分割してコマンドに渡す** ためのコマンドです。  
+**`xargs` を使うと、安全に大量のファイルを処理できます。**
+
+#### **`find` でファイルを取得し、`xargs` で処理**
+```sh
+find . -name "part*.xml" | xargs -I {} yq -p=xml -o=json {} >> enwiki100.json
+```
+- `find . -name "part*.xml"` → `part*.xml` に一致するすべてのファイルを取得
+- `xargs -I {}` → `{}` の部分にファイル名を代入し、`yq` を実行
+
+#### **一度に渡す引数の数を調整**
+もし `xargs` で **まとめて処理するファイルの数を制御** したい場合：
+```sh
+find . -name "part*.xml" | xargs -n 10 yq -p=xml -o=json >> enwiki100.json
+```
+`-n 10` → 10ファイルずつ `yq` に渡して処理。
+
+#### **並列処理で高速化**
+`xargs` には `-P`（並列実行オプション）があり、**複数のプロセスで並列処理** できます：
+```sh
+find . -name "part*.xml" | xargs -P 4 -I {} yq -p=xml -o=json {} >> enwiki100.json
+```
+`-P 4` → **4つのプロセスで並列実行** し、処理を高速化。
+
+
 ### **4. find（ファイル検索）**
 特定のファイルを検索
 ```bash
@@ -176,6 +201,7 @@ split -l 1000 largefile.txt smallfile_
 ```
 
 ---
+
 
 ## **応用：複数コマンドの組み合わせ**
 
@@ -2067,34 +2093,6 @@ xargs -n 100000 yq -p=xml -o=json |\
 jq -c '{id: .mediawiki.page.id, title: .mediawiki.page.title, text: .mediawiki.page.revision.text."+content"}' >> ../enwiki.json
 
  > enwiki.json
-
-
-### **`xargs` の基本的な使い方**
-`xargs` は **長いリストの引数を適切に分割してコマンドに渡す** ためのコマンドです。  
-**`xargs` を使うと、安全に大量のファイルを処理できます。**
-
-#### **`find` でファイルを取得し、`xargs` で処理**
-```sh
-find . -name "part*.xml" | xargs -I {} yq -p=xml -o=json {} >> enwiki100.json
-```
-- `find . -name "part*.xml"` → `part*.xml` に一致するすべてのファイルを取得
-- `xargs -I {}` → `{}` の部分にファイル名を代入し、`yq` を実行
-
-#### **一度に渡す引数の数を調整**
-もし `xargs` で **まとめて処理するファイルの数を制御** したい場合：
-```sh
-find . -name "part*.xml" | xargs -n 10 yq -p=xml -o=json >> enwiki100.json
-```
-`-n 10` → 10ファイルずつ `yq` に渡して処理。
-
-#### **並列処理で高速化**
-`xargs` には `-P`（並列実行オプション）があり、**複数のプロセスで並列処理** できます：
-```sh
-find . -name "part*.xml" | xargs -P 4 -I {} yq -p=xml -o=json {} >> enwiki100.json
-```
-`-P 4` → **4つのプロセスで並列実行** し、処理を高速化。
-
-
 
 
 
