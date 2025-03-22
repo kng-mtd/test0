@@ -3886,8 +3886,8 @@ bzip2 -d *.bz2
 
 #extract id, title, text from xml and make csv files
 for xml in *.xml; do
-  csv_name=&quot;${xml%.xml}.csv&quot;  # csv file name from xml file
-  echo &#39;id,title,text&#39; &gt; &#39;$csv&#39;
+  csv=&quot;${xml%.xml}.csv&quot;  # csv file name from xml file
+  echo &#39;id,title,text&#39; &gt; &quot;$csv&quot;
 
   xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t -m &quot;//mw:page&quot; \
     -v &quot;mw:id&quot; \
