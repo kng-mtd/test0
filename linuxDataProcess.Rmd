@@ -2002,8 +2002,8 @@ wget -i bz2list.txt
 bzip2 -d *.bz2
 
 #extract id, title, text from xml and make csv files
-for xml in *.xml; do
-  csv="${xml%.xml}.csv"  # csv file name from xml file
+for xml in *; do
+  csv="${xml/.xml/}.csv" # csv file name from xml file
   echo 'id,title,text' > "$csv"
 
   xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:page" \
