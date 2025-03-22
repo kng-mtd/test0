@@ -3897,7 +3897,7 @@ for xml in *; do
   LC_ALL=C sed -E &#39;
     s/\{\{[^}]+\}\}//g;
     s/#REDIRECT .*/&quot;/;
-    s/[^0-9A-Za-z,.()&quot;\x27]/ /g;
+    s/[^0-9A-Za-z,.()&amp;-&quot;\x27]/ /g;
     s/\x27\x27\+/ /g;
     s/  +/ /g
   &#39; &gt;&gt; &quot;$csv&quot;
@@ -3906,8 +3906,8 @@ done
 export LC_ALL=ja_JP.UTF-8
 
 #marge all csv files
-echo &quot;id,title,text&quot; &gt; enwiki.csv
-tail -n +2 -q *.csv &gt;&gt; enwiki.csv
+echo &quot;id,title,text&quot; &gt; ../enwiki.csv
+tail -n +2 -q *.csv &gt;&gt; ../enwiki.csv
 </code></pre>
 </div>
 <div id="wikipedia全体ファイルをメモリ節約しながらsqliteにする" class="section level3">
