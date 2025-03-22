@@ -1669,39 +1669,6 @@ wc -c file.txt  # バイト数</code></pre>
 <pre class="bash"><code>echo &quot;file1.txt file2.txt&quot; | xargs cat</code></pre>
 <p>ファイル名のリストを渡して削除</p>
 <pre class="bash"><code>ls *.log | xargs rm</code></pre>
-<p><code>xargs</code> は
-<strong>長いリストの引数を適切に分割してコマンドに渡す</strong>
-ためのコマンドです。<br />
-<strong><code>xargs</code>
-を使うと、安全に大量のファイルを処理できます。</strong></p>
-<div id="find-でファイルを取得しxargs-で処理" class="section level4">
-<h4><strong><code>find</code> でファイルを取得し、<code>xargs</code>
-で処理</strong></h4>
-<pre class="sh"><code>find . -name &quot;part*.xml&quot; | xargs -I {} yq -p=xml -o=json {} &gt;&gt; enwiki100.json</code></pre>
-<ul>
-<li><code>find . -name &quot;part*.xml&quot;</code> → <code>part*.xml</code>
-に一致するすべてのファイルを取得</li>
-<li><code>xargs -I {}</code> → <code>{}</code>
-の部分にファイル名を代入し、<code>yq</code> を実行</li>
-</ul>
-</div>
-<div id="一度に渡す引数の数を調整" class="section level4">
-<h4><strong>一度に渡す引数の数を調整</strong></h4>
-<p>もし <code>xargs</code> で
-<strong>まとめて処理するファイルの数を制御</strong> したい場合：</p>
-<pre class="sh"><code>find . -name &quot;part*.xml&quot; | xargs -n 10 yq -p=xml -o=json &gt;&gt; enwiki100.json</code></pre>
-<p><code>-n 10</code> → 10ファイルずつ <code>yq</code>
-に渡して処理。</p>
-</div>
-<div id="並列処理で高速化" class="section level4">
-<h4><strong>並列処理で高速化</strong></h4>
-<p><code>xargs</code> には
-<code>-P</code>（並列実行オプション）があり、<strong>複数のプロセスで並列処理</strong>
-できます：</p>
-<pre class="sh"><code>find . -name &quot;part*.xml&quot; | xargs -P 4 -I {} yq -p=xml -o=json {} &gt;&gt; enwiki100.json</code></pre>
-<p><code>-P 4</code> → <strong>4つのプロセスで並列実行</strong>
-し、処理を高速化。</p>
-</div>
 </div>
 <div id="findファイル検索" class="section level3">
 <h3><strong>4. find（ファイル検索）</strong></h3>
@@ -1717,10 +1684,6 @@ wc -c file.txt  # バイト数</code></pre>
 <div id="splitファイルの分割" class="section level3">
 <h3><strong>6. split（ファイルの分割）</strong></h3>
 <pre class="bash"><code>split -l 1000 largefile.txt smallfile_</code></pre>
-</div>
-<div id="watch逐次処理中のファイル監視" class="section level3">
-<h3><strong>7. watch（逐次処理中のファイル監視）</strong></h3>
-<pre class="bash"><code>watch -n 1 ls -lh file.txt</code></pre>
 <hr />
 </div>
 <div id="応用複数コマンドの組み合わせ" class="section level2">
@@ -3842,53 +3805,8 @@ language)」ページの例です。</p>
 で入手できます。</p>
 <hr />
 </div>
-<div id="xmlstarlet-で-wikipedia-の-xml-を解析する" class="section level3">
-<h3><strong>5. <code>xmlstarlet</code> で Wikipedia の XML
-を解析する</strong></h3>
-<p>Wikipedia の XML ファイルを <code>xmlstarlet</code>
-で解析する例を紹介します。</p>
-<div id="記事タイトルを一覧表示" class="section level4">
-<h4><strong>(1) 記事タイトルを一覧表示</strong></h4>
-<pre class="sh"><code>xmlstarlet sel -t -m &quot;//page/title&quot; -v &quot;.&quot; -n enwiki-latest-pages-articles.xml</code></pre>
-<p>→ Wikipedia のすべての記事タイトルを取得。</p>
-<hr />
-</div>
-<div id="特定の記事の本文を取得" class="section level4">
-<h4><strong>(2) 特定の記事の本文を取得</strong></h4>
-<pre class="sh"><code>xmlstarlet sel -t -m &quot;//page[title=&#39;Python (programming language)&#39;]/revision/text&quot; -v &quot;.&quot; -n enwiki-latest-pages-articles.xml</code></pre>
-<p>→ 「Python (programming language)」の記事の本文を取得。</p>
-<hr />
-</div>
-<div id="記事のリビジョン-id-を取得" class="section level4">
-<h4><strong>(3) 記事のリビジョン ID を取得</strong></h4>
-<pre class="sh"><code>xmlstarlet sel -t -m &quot;//page[title=&#39;Python (programming language)&#39;]/revision/id&quot; -v &quot;.&quot; -n enwiki-latest-pages-articles.xml</code></pre>
-<p>→ 最新のリビジョン ID を取得。</p>
-<hr />
-</div>
-</div>
-<div id="xmlstarlet-を使って逐次的に-csv-に追加する方法" class="section level3">
-<h3><strong><code>xmlstarlet</code> を使って逐次的に CSV
-に追加する方法</strong></h3>
-<p><code>xmlstarlet</code> を使って CSV
-ファイルに1行ずつ追加するためには、以下のコマンドを使用します。</p>
-<pre class="sh"><code>xmlstarlet sel -T -t -m &quot;//page&quot; \
-  -v &quot;id&quot; -o &quot;,&quot; \
-  -v &quot;title&quot; -o &quot;,&quot; \
-  -v &quot;revision/text&quot; -n \
-  enwiki-latest-pages-articles.xml &gt;&gt; wikipedia_pages.csv</code></pre>
-<ul>
-<li><code>&gt;&gt; wikipedia_pages.csv</code> を使うことで、既存の CSV
-ファイルに追記（追加）されます。</li>
-<li>これを使えば、ファイル全体を一度に読み込まずに、各ページの情報を1行ずつ逐次的に追加することができます。</li>
-</ul>
-<p><strong>結果の確認</strong></p>
-<pre><code>id,title,text
-12345,Example Page,{{Infobox example}}
-67890,Python (programming language),&#39;&#39;&#39;Python&#39;&#39;&#39; is a programming language...
-23456,History of the world,The history of the world is the history of humanity...</code></pre>
-</div>
 <div id="名前空間の問題" class="section level3">
-<h3>1. <strong>名前空間の問題</strong></h3>
+<h3><strong>名前空間の問題</strong></h3>
 <p>Wikipedia の XML ダンプファイルでは、通常 XML
 に名前空間（namespace）が含まれています。<code>xmlstarlet</code>
 はデフォルトでは名前空間を無視しますが、名前空間を適切に処理する必要があります。</p>
@@ -3896,14 +3814,9 @@ language)」ページの例です。</p>
 名前空間が含まれており、<code>&lt;page&gt;</code> や
 <code>&lt;title&gt;</code>
 要素にも名前空間が付いていることがあります。これを無視すると、タグが一致せずに結果が表示されません。</p>
-</div>
-<div id="名前空間を考慮したコマンドの修正" class="section level3">
-<h3>2. <strong>名前空間を考慮したコマンドの修正</strong></h3>
 <p><code>xmlstarlet</code> で名前空間を扱うには、<code>-N</code>
 オプションを使って名前空間を指定する必要があります。</p>
-<div id="修正方法" class="section level4">
-<h4>修正方法：</h4>
-<pre class="sh"><code># see xmlns=&quot;---&quot; in xml, in case &lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.11/&quot;
+<pre class="sh"><code># see in xml &lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.11/&quot;, mw is &quot;http://www.mediawiki.org/xml/export-0.11/&quot;
 
 # add header
 echo &#39;id,title,text&#39; &gt; enwiki1.csv
@@ -3941,7 +3854,6 @@ export LC_ALL=ja_JP.UTF-8</code></pre>
 この問題、normalize-space() を使うと、改行や余分なスペースを
 1つのスペース に変換できます。</li>
 </ol>
-<p><strong>結果</strong></p>
 <p>このコマンドを実行すると、<code>---.xml</code>
 ファイルの中から、各ページの
 <code>id</code>、<code>title</code>、<code>text</code>
@@ -3951,9 +3863,12 @@ export LC_ALL=ja_JP.UTF-8</code></pre>
 67890,Python (programming language),&#39;&#39;&#39;Python&#39;&#39;&#39; is a high-level programming language that is widely used.
 23456,History of the world,The history of the world is the history of humanity&#39;s development.</code></pre>
 </div>
+<div id="wikipedia分割ファイルをcsvにする" class="section level3">
+<h3>wikipedia分割ファイルをCSVにする</h3>
+<pre><code></code></pre>
 </div>
-<div id="wikipedia全体をメモリ節約しながら処理する" class="section level3">
-<h3>wikipedia全体をメモリ節約しながら処理する</h3>
+<div id="wikipedia全体ファイルをメモリ節約しながらsqliteにする" class="section level3">
+<h3>wikipedia全体ファイルをメモリ節約しながらSQLiteにする</h3>
 <pre><code>wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-multistream1.xml.bz2 -O enwiki.xml.bz2
 
   &gt; enwiki.xml.bz2
@@ -3961,6 +3876,7 @@ export LC_ALL=ja_JP.UTF-8</code></pre>
 bzip2 -d enwiki.xml.bz2
   &gt; enwiki.xml
 
+sudo snap install yq
 
 #split large xml by wikipedia page tag
 
@@ -3975,18 +3891,11 @@ awk &#39;BEGIN {count=0;}
 ls | wc -l
 ls | tail -n 10
 
-
-sudo snap install yq
-sudo apt install jq
-
-
 find . -name &quot;part*.xml&quot; |\
-xargs -n 100000 yq -p=xml -o=json |\
+xargs -n 1000 yq -p=xml -o=json |\
 jq -c &#39;{id: .mediawiki.page.id, title: .mediawiki.page.title, text: .mediawiki.page.revision.text.&quot;+content&quot;}&#39; &gt;&gt; ../enwiki.json
 
  &gt; enwiki.json
-
-
 
 sudo apt install sqlite3
 
@@ -4028,7 +3937,7 @@ SELECT id, title, REPLACE(text, char(10), &#39;&#39;) FROM enwiki limit 5;
 
 by nodejs
 
-nano json2sqlite.js
+nano json2sqlite.py
 
   const fs = require(&quot;fs&quot;);
   const Database = require(&quot;better-sqlite3&quot;);
@@ -4091,7 +4000,7 @@ nano json2sqlite.js
     if (batch.length &gt; 0) {
       insertMany(batch); // 残ったデータを処理
     }
-    console.log(&quot;データベースへの挿入が完了しました！&quot;);
+    console.log(&quot;✅ データベースへの挿入が完了しました！&quot;);
     db.close();
   });
   

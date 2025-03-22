@@ -155,31 +155,6 @@ echo "file1.txt file2.txt" | xargs cat
 ls *.log | xargs rm
 ```
 
-`xargs` は **長いリストの引数を適切に分割してコマンドに渡す** ためのコマンドです。  
-**`xargs` を使うと、安全に大量のファイルを処理できます。**
-
-#### **`find` でファイルを取得し、`xargs` で処理**
-```sh
-find . -name "part*.xml" | xargs -I {} yq -p=xml -o=json {} >> enwiki100.json
-```
-- `find . -name "part*.xml"` → `part*.xml` に一致するすべてのファイルを取得
-- `xargs -I {}` → `{}` の部分にファイル名を代入し、`yq` を実行
-
-#### **一度に渡す引数の数を調整**
-もし `xargs` で **まとめて処理するファイルの数を制御** したい場合：
-```sh
-find . -name "part*.xml" | xargs -n 10 yq -p=xml -o=json >> enwiki100.json
-```
-`-n 10` → 10ファイルずつ `yq` に渡して処理。
-
-#### **並列処理で高速化**
-`xargs` には `-P`（並列実行オプション）があり、**複数のプロセスで並列処理** できます：
-```sh
-find . -name "part*.xml" | xargs -P 4 -I {} yq -p=xml -o=json {} >> enwiki100.json
-```
-`-P 4` → **4つのプロセスで並列実行** し、処理を高速化。
-
-
 ### **4. find（ファイル検索）**
 特定のファイルを検索
 ```bash
@@ -200,13 +175,7 @@ ls | tee output.txt
 split -l 1000 largefile.txt smallfile_
 ```
 
-### **7. watch（逐次処理中のファイル監視）**
-```bash
-watch -n 1 ls -lh file.txt
-```
-
 ---
-
 
 ## **応用：複数コマンドの組み合わせ**
 
@@ -1957,72 +1926,18 @@ Wikipedia のダンプデータは [Wikimedia Dumps](https://dumps.wikimedia.org
 
 ---
 
-### **5. `xmlstarlet` で Wikipedia の XML を解析する**
-Wikipedia の XML ファイルを `xmlstarlet` で解析する例を紹介します。
 
-#### **(1) 記事タイトルを一覧表示**
-```sh
-xmlstarlet sel -t -m "//page/title" -v "." -n enwiki-latest-pages-articles.xml
-```
-→ Wikipedia のすべての記事タイトルを取得。
-
----
-
-#### **(2) 特定の記事の本文を取得**
-```sh
-xmlstarlet sel -t -m "//page[title='Python (programming language)']/revision/text" -v "." -n enwiki-latest-pages-articles.xml
-```
-→ 「Python (programming language)」の記事の本文を取得。
-
----
-
-#### **(3) 記事のリビジョン ID を取得**
-```sh
-xmlstarlet sel -t -m "//page[title='Python (programming language)']/revision/id" -v "." -n enwiki-latest-pages-articles.xml
-```
-→ 最新のリビジョン ID を取得。
-
----
-
-
-### **`xmlstarlet` を使って逐次的に CSV に追加する方法**
-
-`xmlstarlet` を使って CSV ファイルに1行ずつ追加するためには、以下のコマンドを使用します。
-
-```sh
-xmlstarlet sel -T -t -m "//page" \
-  -v "id" -o "," \
-  -v "title" -o "," \
-  -v "revision/text" -n \
-  enwiki-latest-pages-articles.xml >> wikipedia_pages.csv
-```
-
-- `>> wikipedia_pages.csv` を使うことで、既存の CSV ファイルに追記（追加）されます。
-- これを使えば、ファイル全体を一度に読み込まずに、各ページの情報を1行ずつ逐次的に追加することができます。
-
-
-**結果の確認**
-
-```
-id,title,text
-12345,Example Page,{{Infobox example}}
-67890,Python (programming language),'''Python''' is a programming language...
-23456,History of the world,The history of the world is the history of humanity...
-```
-
-### 1. **名前空間の問題**
+### **名前空間の問題**
 Wikipedia の XML ダンプファイルでは、通常 XML に名前空間（namespace）が含まれています。`xmlstarlet` はデフォルトでは名前空間を無視しますが、名前空間を適切に処理する必要があります。
 
 例えば、Wikipedia の XML ダンプには `mediawiki` 名前空間が含まれており、`<page>` や `<title>` 要素にも名前空間が付いていることがあります。これを無視すると、タグが一致せずに結果が表示されません。
 
-### 2. **名前空間を考慮したコマンドの修正**
 
 `xmlstarlet` で名前空間を扱うには、`-N` オプションを使って名前空間を指定する必要があります。
 
-#### 修正方法：
 
 ```sh
-# see xmlns="---" in xml, in case <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/"
+# see in xml <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/", mw is "http://www.mediawiki.org/xml/export-0.11/"
 
 # add header
 echo 'id,title,text' > enwiki1.csv
@@ -2053,7 +1968,7 @@ export LC_ALL=ja_JP.UTF-8
 8. 元のXMLに 改行コード（\n や \r\n）が含まれている場合、そのままCSVに出力すると崩れます。
 この問題、normalize-space() を使うと、改行や余分なスペースを 1つのスペース に変換できます。
 
-**結果**
+
 
 このコマンドを実行すると、`---.xml` ファイルの中から、各ページの `id`、`title`、`text` をカンマ区切りで抽出した CSV が出力されます。出力例としては次のような形になります：
 
@@ -2064,8 +1979,13 @@ export LC_ALL=ja_JP.UTF-8
 ```
 
 
-### wikipedia全体をメモリ節約しながら処理する
+### wikipedia分割ファイルをCSVにする
+```
 
+```
+
+
+### wikipedia全体ファイルをメモリ節約しながらSQLiteにする
 ```
 wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-multistream1.xml.bz2 -O enwiki.xml.bz2
 
@@ -2074,6 +1994,7 @@ wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-mult
 bzip2 -d enwiki.xml.bz2
   > enwiki.xml
 
+sudo snap install yq
 
 #split large xml by wikipedia page tag
 
@@ -2088,18 +2009,11 @@ awk 'BEGIN {count=0;}
 ls | wc -l
 ls | tail -n 10
 
-
-sudo snap install yq
-sudo apt install jq
-
-
 find . -name "part*.xml" |\
-xargs -n 100000 yq -p=xml -o=json |\
+xargs -n 1000 yq -p=xml -o=json |\
 jq -c '{id: .mediawiki.page.id, title: .mediawiki.page.title, text: .mediawiki.page.revision.text."+content"}' >> ../enwiki.json
 
  > enwiki.json
-
-
 
 sudo apt install sqlite3
 
@@ -2141,7 +2055,7 @@ SELECT id, title, REPLACE(text, char(10), '') FROM enwiki limit 5;
 
 by nodejs
 
-nano json2sqlite.js
+nano json2sqlite.py
 
   const fs = require("fs");
   const Database = require("better-sqlite3");
@@ -2204,7 +2118,7 @@ nano json2sqlite.js
     if (batch.length > 0) {
       insertMany(batch); // 残ったデータを処理
     }
-    console.log("データベースへの挿入が完了しました！");
+    console.log("✅ データベースへの挿入が完了しました！");
     db.close();
   });
   
