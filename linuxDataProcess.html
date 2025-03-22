@@ -3819,19 +3819,20 @@ language)」ページの例です。</p>
 <pre class="sh"><code># see in xml &lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.11/&quot;, mw is &quot;http://www.mediawiki.org/xml/export-0.11/&quot;
 
 # add header
-echo &#39;id,title,text&#39; &gt; enwiki1.csv
+echo &#39;id,title,text&#39; &gt; enwiki01.csv
 
 xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t -m &quot;//mw:page&quot;\
  -v &quot;mw:id&quot;\
  -o &quot;,&quot; -v &quot;mw:title&quot;\
- -o &quot;,\&quot;&quot; -v &quot;normalize-space(mw:revision/mw:text)&quot; -o &quot;\&quot;&quot;\
- -n enwiki1.xml |\
-# reject {{, }}, [[, ]] with sed, specify locale to be fast 
- LC_ALL=c sed -E &#39;s/\{\{[^}]+\}\}//g&#39; |\
- sed &#39;s/#REDIRECT.\+/&quot;/&#39; |\
- sed -E &#39;s/[^0-9A-Za-z,.()&quot;\x27]/ /g&#39; |\
- sed &#39;s/\x27\x27\+/ /g&#39; |\
- sed &#39;s/  \+/ /g&#39; &gt;&gt; enwiki1.csv
+ -o &quot;,\&quot;&quot; -v &quot;translate(normalize-space(mw:revision/mw:text), &#39;\n&#39;, &#39; &#39;)&quot; -o &quot;\&quot;&quot;\
+ -n enwiki01.xml |\
+ LC_ALL=c sed -E &#39;
+  s/\{\{[^}]+\}\}//g;
+  s/#REDIRECT .*/&quot;/;
+  s/[^0-9A-Za-z,.()&quot;\x27]/ /g;
+  s/\x27\x27\+/ /g;
+  s/  +/ /g
+ &#39; &gt;&gt; enwiki01.csv
 
 export LC_ALL=ja_JP.UTF-8</code></pre>
 <ol style="list-style-type: decimal">
@@ -3865,11 +3866,53 @@ export LC_ALL=ja_JP.UTF-8</code></pre>
 </div>
 <div id="wikipedia分割ファイルをcsvにする" class="section level3">
 <h3>wikipedia分割ファイルをCSVにする</h3>
-<pre><code></code></pre>
+<pre class="sh"><code>#page html
+wget -q https://dumps.wikimedia.org/enwiki/latest/
+
+#bz2 file link list
+wget -q -O - https://dumps.wikimedia.org/enwiki/latest/ | grep -oE &#39;href=&quot;[^&quot;]+\.bz2&quot;&#39; | sed -E &#39;s/href=&quot;([^&quot;]+)&quot;/https:\/\/dumps.wikimedia.org\/enwiki\/latest\/\1/&#39;
+
+
+#get article bz2 file link list
+mkdir part
+cd part
+wget -q -O - https://dumps.wikimedia.org/enwiki/latest/ | grep -oE &#39;href=&quot;enwiki-latest-pages-articles[0-9]{1,2}[^&quot;]*\.bz2&quot;&#39; | sed -E &#39;s/href=&quot;([^&quot;]+)&quot;/https:\/\/dumps.wikimedia.org\/enwiki\/latest\/\1/&#39; &gt; bz2list.txt
+
+#download all bz2 file from the list
+wget -i bz2list.txt
+
+#unzip all bz2 file to xml file
+bzip2 -d *.bz2
+
+#extract id, title, text from xml and make csv files
+for xml in *.xml; do
+  csv_name=&quot;${xml%.xml}.csv&quot;  # csv file name from xml file
+  echo &#39;id,title,text&#39; &gt; &#39;$csv&#39;
+
+  xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t -m &quot;//mw:page&quot; \
+    -v &quot;mw:id&quot; \
+    -o &quot;,&quot; -v &quot;mw:title&quot; \
+    -o &quot;,\&quot;&quot; -v &quot;translate(normalize-space(mw:revision/mw:text), &#39;\n&#39;, &#39; &#39;)&quot; -o &quot;\&quot;&quot; \
+    -n &quot;$xml&quot; | \
+  LC_ALL=C sed -E &#39;
+    s/\{\{[^}]+\}\}//g;
+    s/#REDIRECT .*/&quot;/;
+    s/[^0-9A-Za-z,.()&quot;\x27]/ /g;
+    s/\x27\x27\+/ /g;
+    s/  +/ /g
+  &#39; &gt;&gt; &quot;$csv&quot;
+done
+
+export LC_ALL=ja_JP.UTF-8
+
+#marge all csv files
+echo &quot;id,title,text&quot; &gt; enwiki.csv
+tail -n +2 -q *.csv &gt;&gt; enwiki.csv
+</code></pre>
 </div>
 <div id="wikipedia全体ファイルをメモリ節約しながらsqliteにする" class="section level3">
 <h3>wikipedia全体ファイルをメモリ節約しながらSQLiteにする</h3>
-<pre><code>wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-multistream1.xml.bz2 -O enwiki.xml.bz2
+<pre class="sh"><code>wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-multistream1.xml.bz2 -O enwiki.xml.bz2
 
   &gt; enwiki.xml.bz2
 
@@ -3901,13 +3944,9 @@ sudo apt install sqlite3
 
 sqlite3 enwiki.db &lt;&lt;EOF
 CREATE TABLE IF NOT EXISTS enwiki (id,title,text);
-EOF
-
-
-by python
-
-nano json2sqlite.py
-
+EOF</code></pre>
+<p>json2sqlite.py</p>
+<pre class="python"><code>
     import sqlite3
     import json
     
@@ -3931,14 +3970,9 @@ python3 json2sqlite.py
 
 sqlite3 enwiki.db
 
-SELECT id, title, REPLACE(text, char(10), &#39;&#39;) FROM enwiki limit 5;
-
-
-
-by nodejs
-
-nano json2sqlite.py
-
+SELECT id, title, REPLACE(text, char(10), &#39;&#39;) FROM enwiki limit 5;</code></pre>
+<p>json2sqlite.js (node.js)</p>
+<pre class="javascript"><code>
   const fs = require(&quot;fs&quot;);
   const Database = require(&quot;better-sqlite3&quot;);
   

@@ -1940,19 +1940,20 @@ Wikipedia の XML ダンプファイルでは、通常 XML に名前空間（nam
 # see in xml <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/", mw is "http://www.mediawiki.org/xml/export-0.11/"
 
 # add header
-echo 'id,title,text' > enwiki1.csv
+echo 'id,title,text' > enwiki01.csv
 
 xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:page"\
  -v "mw:id"\
  -o "," -v "mw:title"\
- -o ",\"" -v "normalize-space(mw:revision/mw:text)" -o "\""\
- -n enwiki1.xml |\
-# reject {{, }}, [[, ]] with sed, specify locale to be fast 
- LC_ALL=c sed -E 's/\{\{[^}]+\}\}//g' |\
- sed 's/#REDIRECT.\+/"/' |\
- sed -E 's/[^0-9A-Za-z,.()"\x27]/ /g' |\
- sed 's/\x27\x27\+/ /g' |\
- sed 's/  \+/ /g' >> enwiki1.csv
+ -o ",\"" -v "translate(normalize-space(mw:revision/mw:text), '\n', ' ')" -o "\""\
+ -n enwiki01.xml |\
+ LC_ALL=c sed -E '
+  s/\{\{[^}]+\}\}//g;
+  s/#REDIRECT .*/"/;
+  s/[^0-9A-Za-z,.()"\x27]/ /g;
+  s/\x27\x27\+/ /g;
+  s/  +/ /g
+ ' >> enwiki01.csv
 
 export LC_ALL=ja_JP.UTF-8
 ```
@@ -1979,14 +1980,57 @@ export LC_ALL=ja_JP.UTF-8
 ```
 
 
+
 ### wikipedia分割ファイルをCSVにする
-```
+```sh
+#page html
+wget -q https://dumps.wikimedia.org/enwiki/latest/
+
+#bz2 file link list
+wget -q -O - https://dumps.wikimedia.org/enwiki/latest/ | grep -oE 'href="[^"]+\.bz2"' | sed -E 's/href="([^"]+)"/https:\/\/dumps.wikimedia.org\/enwiki\/latest\/\1/'
+
+
+#get article bz2 file link list
+mkdir part
+cd part
+wget -q -O - https://dumps.wikimedia.org/enwiki/latest/ | grep -oE 'href="enwiki-latest-pages-articles[0-9]{1,2}[^"]*\.bz2"' | sed -E 's/href="([^"]+)"/https:\/\/dumps.wikimedia.org\/enwiki\/latest\/\1/' > bz2list.txt
+
+#download all bz2 file from the list
+wget -i bz2list.txt
+
+#unzip all bz2 file to xml file
+bzip2 -d *.bz2
+
+#extract id, title, text from xml and make csv files
+for xml in *.xml; do
+  csv_name="${xml%.xml}.csv"  # csv file name from xml file
+  echo 'id,title,text' > '$csv'
+
+  xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:page" \
+    -v "mw:id" \
+    -o "," -v "mw:title" \
+    -o ",\"" -v "translate(normalize-space(mw:revision/mw:text), '\n', ' ')" -o "\"" \
+    -n "$xml" | \
+  LC_ALL=C sed -E '
+    s/\{\{[^}]+\}\}//g;
+    s/#REDIRECT .*/"/;
+    s/[^0-9A-Za-z,.()"\x27]/ /g;
+    s/\x27\x27\+/ /g;
+    s/  +/ /g
+  ' >> "$csv"
+done
+
+export LC_ALL=ja_JP.UTF-8
+
+#marge all csv files
+echo "id,title,text" > enwiki.csv
+tail -n +2 -q *.csv >> enwiki.csv
 
 ```
 
 
 ### wikipedia全体ファイルをメモリ節約しながらSQLiteにする
-```
+```sh
 wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-multistream1.xml.bz2 -O enwiki.xml.bz2
 
   > enwiki.xml.bz2
@@ -2020,11 +2064,10 @@ sudo apt install sqlite3
 sqlite3 enwiki.db <<EOF
 CREATE TABLE IF NOT EXISTS enwiki (id,title,text);
 EOF
+```
 
-
-by python
-
-nano json2sqlite.py
+json2sqlite.py
+```python
 
 	import sqlite3
 	import json
@@ -2050,12 +2093,10 @@ python3 json2sqlite.py
 sqlite3 enwiki.db
 
 SELECT id, title, REPLACE(text, char(10), '') FROM enwiki limit 5;
+```
 
-
-
-by nodejs
-
-nano json2sqlite.py
+json2sqlite.js (node.js)
+```javascript
 
   const fs = require("fs");
   const Database = require("better-sqlite3");
