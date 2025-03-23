@@ -3897,7 +3897,7 @@ for xml in *; do
   LC_ALL=C sed -E &#39;
     s/\{\{[^}]+\}\}//g;
     s/#REDIRECT .*/&quot;/;
-    s/[^0-9A-Za-z,.()&amp;-&quot;\x27]/ /g;
+    s/[^0-9A-Za-z,.()&amp;&quot;\x27-]/ /g;
     s/\x27\x27\+/ /g;
     s/  +/ /g
   &#39; &gt;&gt; &quot;$csv&quot;
