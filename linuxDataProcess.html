@@ -3892,18 +3892,22 @@ for xml in *; do
   xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t -m &quot;//mw:page&quot; \
     -v &quot;mw:id&quot; \
     -o &quot;,&quot; -v &quot;mw:title&quot; \
-    -o &quot;,\&quot;&quot; -v &quot;translate(normalize-space(mw:revision/mw:text), &#39;\n&#39;, &#39; &#39;)&quot; -o &quot;\&quot;&quot; \
+    -o &quot;,&quot; -v &quot;concat(&#39;\&quot;&#39;, translate(normalize-space(mw:revision/mw:text), &#39;\&quot;&#39;, &#39;&#39;), &#39;\&quot;&#39;)&quot; \
     -n &quot;$xml&quot; | \
-  LC_ALL=C sed -E &#39;
+  sed -E &#39;
+    s/&lt;style[^&gt;]*&gt;.*&lt;\/style&gt;//g;
+    s/&lt;[^&gt;]+&gt;//g;
     s/\{\{[^}]+\}\}//g;
-    s/#REDIRECT .*/&quot;/;
-    s/[^0-9A-Za-z,.()&amp;&quot;\x27-]/ /g;
-    s/\x27\x27\+/ /g;
+    /#REDIRECT/d;
+    /,&quot; *&quot;/d;
+    s/[^0-9A-Za-z,.()&amp;%?&quot;\x27-]/ /g;
+    s/\x27\x27+/ /g;
     s/  +/ /g
-  &#39; &gt;&gt; &quot;$csv&quot;
+  &#39; | \
+    tr &#39;A-Z&#39; &#39;a-z&#39; &gt;&gt; &quot;$csv&quot;
 done
 
-export LC_ALL=ja_JP.UTF-8
+export LC_ALL=&quot;$OLD_LC_ALL&quot;
 
 #marge all csv files
 echo &quot;id,title,text&quot; &gt; ../enwiki.csv

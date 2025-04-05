@@ -2009,18 +2009,22 @@ for xml in *; do
   xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:page" \
     -v "mw:id" \
     -o "," -v "mw:title" \
-    -o ",\"" -v "translate(normalize-space(mw:revision/mw:text), '\n', ' ')" -o "\"" \
+    -o "," -v "concat('\"', translate(normalize-space(mw:revision/mw:text), '\"', ''), '\"')" \
     -n "$xml" | \
-  LC_ALL=C sed -E '
+  sed -E '
+    s/<style[^>]*>.*<\/style>//g;
+    s/<[^>]+>//g;
     s/\{\{[^}]+\}\}//g;
-    s/#REDIRECT .*/"/;
-    s/[^0-9A-Za-z,.()&"\x27-]/ /g;
-    s/\x27\x27\+/ /g;
+    /#REDIRECT/d;
+    /," *"/d;
+    s/[^0-9A-Za-z,.()&%?"\x27-]/ /g;
+    s/\x27\x27+/ /g;
     s/  +/ /g
-  ' >> "$csv"
+  ' | \
+    tr 'A-Z' 'a-z' >> "$csv"
 done
 
-export LC_ALL=ja_JP.UTF-8
+export LC_ALL="$OLD_LC_ALL"
 
 #marge all csv files
 echo "id,title,text" > ../enwiki.csv
