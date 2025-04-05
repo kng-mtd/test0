@@ -2100,7 +2100,7 @@ SELECT id, title, REPLACE(text, char(10), '') FROM enwiki limit 5;
 ```
 
 json2sqlite.js (node.js)
-```javascript
+```Javascript
 
   const fs = require("fs");
   const Database = require("better-sqlite3");
