@@ -387,7 +387,7 @@ sort -t ',' -k2.1,2.7 file.csv  # 2列目の1文字目から7文字目でソー�
 ```bash
 awk -F ',' '{print $2, $0}' file.csv | sort -k1,1n | cut -d ' ' -f2-
 ```
-**説明**
+
 - `awk -F ',' '{print $2, $0}'` → 2列目を先頭にして全行出力
 - `sort -k1,1n` → 先頭（2列目の値）で数値ソート
 - `cut -d ' ' -f2-` → ソートのために追加した2列目の値を削除
@@ -399,7 +399,7 @@ awk -F ',' '{print $2, $0}' file.csv | sort -k1,1n | cut -d ' ' -f2-
 ```bash
 { head -n 1 file.csv; tail -n +2 file.csv | sort -t ',' -k2,2n; } > sorted.csv
 ```
-**説明**
+
 - `head -n 1 file.csv` → 1行目（ヘッダー）をそのまま保持
 - `tail -n +2 file.csv | sort -t ',' -k2,2n` → 2行目以降を2列目でソート
 - `{ ... } > sorted.csv` → 結果を `sorted.csv` に保存
@@ -538,7 +538,8 @@ echo "123abc456" | sed -E 's/[0-9]+/X/g'
 ```
 XabcX
 ```
-**ポイント:**
+
+
 - `-E` を使うことで `\+` を `+` と省略できる
 - `{n,m}`, `+`, `?` などが使いやすくなる
 
@@ -655,7 +656,7 @@ awk '$2 ~ /^[0-9]+$/' file.txt  # 2列目が数字の行を抽出
 
 ---
 
-## **2. ベンチマーク比較（大まかな目安）**
+## **2. ベンチマーク比較**
 ```bash
 time grep 'pattern' large_file.txt
 time grep -E 'pattern' large_file.txt
@@ -664,9 +665,9 @@ time sed 's/pattern/replacement/g' large_file.txt
 time awk '{gsub(/pattern/, "replacement"); print}' large_file.txt
 ```
 
-**実行速度の目安**（ファイルサイズが1GB程度のとき）  
+#### **実行速度の目安**（ファイルサイズが1GB程度のとき）  
 | コマンド | 実行時間 |
-|---------|----------|
+|------------------|----------|
 | `grep 'pattern'` | **0.5秒** |
 | `grep -E 'pattern'` | **0.6秒** |
 | `grep -P 'pattern'` | **3.2秒** |
@@ -1927,7 +1928,7 @@ Wikipedia のダンプデータは [Wikimedia Dumps](https://dumps.wikimedia.org
 ---
 
 
-### **名前空間の問題**
+
 Wikipedia の XML ダンプファイルでは、通常 XML に名前空間（namespace）が含まれています。`xmlstarlet` はデフォルトでは名前空間を無視しますが、名前空間を適切に処理する必要があります。
 
 例えば、Wikipedia の XML ダンプには `mediawiki` 名前空間が含まれており、`<page>` や `<title>` 要素にも名前空間が付いていることがあります。これを無視すると、タグが一致せずに結果が表示されません。
@@ -2009,22 +2010,18 @@ for xml in *; do
   xmlstarlet sel -T -N mw="http://www.mediawiki.org/xml/export-0.11/" -t -m "//mw:page" \
     -v "mw:id" \
     -o "," -v "mw:title" \
-    -o "," -v "concat('\"', translate(normalize-space(mw:revision/mw:text), '\"', ''), '\"')" \
+    -o ",\"" -v "translate(normalize-space(mw:revision/mw:text), '\n', ' ')" -o "\"" \
     -n "$xml" | \
-  sed -E '
-    s/<style[^>]*>.*<\/style>//g;
-    s/<[^>]+>//g;
+  LC_ALL=C sed -E '
     s/\{\{[^}]+\}\}//g;
-    /#REDIRECT/d;
-    /," *"/d;
-    s/[^0-9A-Za-z,.()&%?"\x27-]/ /g;
-    s/\x27\x27+/ /g;
+    s/#REDIRECT .*/"/;
+    s/[^0-9A-Za-z,.()&"\x27-]/ /g;
+    s/\x27\x27\+/ /g;
     s/  +/ /g
-  ' | \
-    tr 'A-Z' 'a-z' >> "$csv"
+  ' >> "$csv"
 done
 
-export LC_ALL="$OLD_LC_ALL"
+export LC_ALL=ja_JP.UTF-8
 
 #marge all csv files
 echo "id,title,text" > ../enwiki.csv
@@ -2100,7 +2097,7 @@ SELECT id, title, REPLACE(text, char(10), '') FROM enwiki limit 5;
 ```
 
 json2sqlite.js (node.js)
-```Javascript
+```javascript
 
   const fs = require("fs");
   const Database = require("better-sqlite3");
@@ -2163,7 +2160,7 @@ json2sqlite.js (node.js)
     if (batch.length > 0) {
       insertMany(batch); // 残ったデータを処理
     }
-    console.log("✅ データベースへの挿入が完了しました！");
+    console.log("データベースへの挿入完了");
     db.close();
   });
   

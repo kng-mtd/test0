@@ -1871,10 +1871,13 @@ sort -t $&#39;\t&#39; -k3,3n file.tsv  # 3列目を数値として昇順ソー�
 <div id="csvの2列目でソート" class="section level3">
 <h3><strong>CSVの2列目でソート</strong></h3>
 <pre class="bash"><code>awk -F &#39;,&#39; &#39;{print $2, $0}&#39; file.csv | sort -k1,1n | cut -d &#39; &#39; -f2-</code></pre>
-<p><strong>説明</strong> - <code>awk -F &#39;,&#39; &#39;{print $2, $0}&#39;</code> →
-2列目を先頭にして全行出力 - <code>sort -k1,1n</code> →
-先頭（2列目の値）で数値ソート - <code>cut -d &#39; &#39; -f2-</code> →
-ソートのために追加した2列目の値を削除</p>
+<ul>
+<li><code>awk -F &#39;,&#39; &#39;{print $2, $0}&#39;</code> →
+2列目を先頭にして全行出力</li>
+<li><code>sort -k1,1n</code> → 先頭（2列目の値）で数値ソート</li>
+<li><code>cut -d &#39; &#39; -f2-</code> →
+ソートのために追加した2列目の値を削除</li>
+</ul>
 <hr />
 </div>
 </div>
@@ -1883,11 +1886,14 @@ sort -t $&#39;\t&#39; -k3,3n file.tsv  # 3列目を数値として昇順ソー�
 でヘッダーを保持したままソート</strong></h2>
 <p>ファイルの最初の行（ヘッダー）を保持してソートするには:</p>
 <pre class="bash"><code>{ head -n 1 file.csv; tail -n +2 file.csv | sort -t &#39;,&#39; -k2,2n; } &gt; sorted.csv</code></pre>
-<p><strong>説明</strong> - <code>head -n 1 file.csv</code> →
-1行目（ヘッダー）をそのまま保持 -
-<code>tail -n +2 file.csv | sort -t &#39;,&#39; -k2,2n</code> →
-2行目以降を2列目でソート - <code>{ ... } &gt; sorted.csv</code> → 結果を
-<code>sorted.csv</code> に保存</p>
+<ul>
+<li><code>head -n 1 file.csv</code> →
+1行目（ヘッダー）をそのまま保持</li>
+<li><code>tail -n +2 file.csv | sort -t &#39;,&#39; -k2,2n</code> →
+2行目以降を2列目でソート</li>
+<li><code>{ ... } &gt; sorted.csv</code> → 結果を
+<code>sorted.csv</code> に保存</li>
+</ul>
 <hr />
 </div>
 <div id="sort-で日付をソート" class="section level2">
@@ -2106,9 +2112,12 @@ grep &#39;failed$&#39; file.txt  # &quot;failed&quot; で終わる行</code></pr
 <pre class="bash"><code>echo &quot;123abc456&quot; | sed -E &#39;s/[0-9]+/X/g&#39;</code></pre>
 <p><strong>結果:</strong></p>
 <pre><code>XabcX</code></pre>
-<p><strong>ポイント:</strong> - <code>-E</code> を使うことで
-<code>\+</code> を <code>+</code> と省略できる - <code>{n,m}</code>,
-<code>+</code>, <code>?</code> などが使いやすくなる</p>
+<ul>
+<li><code>-E</code> を使うことで <code>\+</code> を <code>+</code>
+と省略できる</li>
+<li><code>{n,m}</code>, <code>+</code>, <code>?</code>
+などが使いやすくなる</li>
+</ul>
 <p>シングルクォート ’（アポストロフィ）のコード 16進数（Hex）:
 10進数（Decimal）: 39 Unicode（UTF-8 / UTF-16）: U+0027</p>
 <p>このコード は、sed や awk
@@ -2317,22 +2326,47 @@ awk &#39;$2 ~ /^[0-9]+$/&#39; file.txt  # 2列目が数字の行を抽出</code>
 </table>
 <hr />
 </div>
-<div id="ベンチマーク比較大まかな目安" class="section level2">
-<h2><strong>2. ベンチマーク比較（大まかな目安）</strong></h2>
+<div id="ベンチマーク比較" class="section level2">
+<h2><strong>2. ベンチマーク比較</strong></h2>
 <pre class="bash"><code>time grep &#39;pattern&#39; large_file.txt
 time grep -E &#39;pattern&#39; large_file.txt
 time grep -P &#39;pattern&#39; large_file.txt
 time sed &#39;s/pattern/replacement/g&#39; large_file.txt
 time awk &#39;{gsub(/pattern/, &quot;replacement&quot;); print}&#39; large_file.txt</code></pre>
-<p><strong>実行速度の目安</strong>（ファイルサイズが1GB程度のとき）<br />
-| コマンド | 実行時間 | |———|———-| | <code>grep &#39;pattern&#39;</code> |
-<strong>0.5秒</strong> | | <code>grep -E &#39;pattern&#39;</code> |
-<strong>0.6秒</strong> | | <code>grep -P &#39;pattern&#39;</code> |
-<strong>3.2秒</strong> | | <code>sed &#39;s/pattern/replacement/g&#39;</code> |
-<strong>1.0秒</strong> | |
-<code>awk &#39;{gsub(/pattern/, &quot;replacement&quot;); print}&#39;</code> |
-<strong>1.5秒</strong> |</p>
+<div id="実行速度の目安ファイルサイズが1gb程度のとき" class="section level4">
+<h4><strong>実行速度の目安</strong>（ファイルサイズが1GB程度のとき）</h4>
+<table>
+<thead>
+<tr class="header">
+<th>コマンド</th>
+<th>実行時間</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>grep &#39;pattern&#39;</code></td>
+<td><strong>0.5秒</strong></td>
+</tr>
+<tr class="even">
+<td><code>grep -E &#39;pattern&#39;</code></td>
+<td><strong>0.6秒</strong></td>
+</tr>
+<tr class="odd">
+<td><code>grep -P &#39;pattern&#39;</code></td>
+<td><strong>3.2秒</strong></td>
+</tr>
+<tr class="even">
+<td><code>sed &#39;s/pattern/replacement/g&#39;</code></td>
+<td><strong>1.0秒</strong></td>
+</tr>
+<tr class="odd">
+<td><code>awk &#39;{gsub(/pattern/, &quot;replacement&quot;); print}&#39;</code></td>
+<td><strong>1.5秒</strong></td>
+</tr>
+</tbody>
+</table>
 <hr />
+</div>
 </div>
 <div id="実行速度の最適化方法" class="section level2">
 <h2><strong>3. 実行速度の最適化方法</strong></h2>
@@ -3804,9 +3838,6 @@ language)」ページの例です。</p>
 <p>Wikipedia のダンプデータは <a href="https://dumps.wikimedia.org/">Wikimedia Dumps</a>
 で入手できます。</p>
 <hr />
-</div>
-<div id="名前空間の問題" class="section level3">
-<h3><strong>名前空間の問題</strong></h3>
 <p>Wikipedia の XML ダンプファイルでは、通常 XML
 に名前空間（namespace）が含まれています。<code>xmlstarlet</code>
 はデフォルトでは名前空間を無視しますが、名前空間を適切に処理する必要があります。</p>
@@ -3892,22 +3923,18 @@ for xml in *; do
   xmlstarlet sel -T -N mw=&quot;http://www.mediawiki.org/xml/export-0.11/&quot; -t -m &quot;//mw:page&quot; \
     -v &quot;mw:id&quot; \
     -o &quot;,&quot; -v &quot;mw:title&quot; \
-    -o &quot;,&quot; -v &quot;concat(&#39;\&quot;&#39;, translate(normalize-space(mw:revision/mw:text), &#39;\&quot;&#39;, &#39;&#39;), &#39;\&quot;&#39;)&quot; \
+    -o &quot;,\&quot;&quot; -v &quot;translate(normalize-space(mw:revision/mw:text), &#39;\n&#39;, &#39; &#39;)&quot; -o &quot;\&quot;&quot; \
     -n &quot;$xml&quot; | \
-  sed -E &#39;
-    s/&lt;style[^&gt;]*&gt;.*&lt;\/style&gt;//g;
-    s/&lt;[^&gt;]+&gt;//g;
+  LC_ALL=C sed -E &#39;
     s/\{\{[^}]+\}\}//g;
-    /#REDIRECT/d;
-    /,&quot; *&quot;/d;
-    s/[^0-9A-Za-z,.()&amp;%?&quot;\x27-]/ /g;
-    s/\x27\x27+/ /g;
+    s/#REDIRECT .*/&quot;/;
+    s/[^0-9A-Za-z,.()&amp;&quot;\x27-]/ /g;
+    s/\x27\x27\+/ /g;
     s/  +/ /g
-  &#39; | \
-    tr &#39;A-Z&#39; &#39;a-z&#39; &gt;&gt; &quot;$csv&quot;
+  &#39; &gt;&gt; &quot;$csv&quot;
 done
 
-export LC_ALL=&quot;$OLD_LC_ALL&quot;
+export LC_ALL=ja_JP.UTF-8
 
 #marge all csv files
 echo &quot;id,title,text&quot; &gt; ../enwiki.csv
@@ -4038,7 +4065,7 @@ SELECT id, title, REPLACE(text, char(10), &#39;&#39;) FROM enwiki limit 5;</code
     if (batch.length &gt; 0) {
       insertMany(batch); // 残ったデータを処理
     }
-    console.log(&quot;✅ データベースへの挿入が完了しました！&quot;);
+    console.log(&quot;データベースへの挿入完了&quot;);
     db.close();
   });
   
