@@ -1,0 +1,126 @@
+```{r r_setup, include = FALSE}
+## initial settings
+knitr::opts_chunk$set(
+  comment = NA,
+  echo = TRUE,
+  error = TRUE,
+  cache = FALSE,
+  message = FALSE,
+
+  dpi = 96,
+  warning = FALSE
+)
+```
+
+## Radiant dimensionality reduction mapping, clustering 
+
+### factor analysis applicability
+finding how many factors to explain enough from eigenvalues cumulative
+
+![](pre-factor-summary-screenshot1.png)
+![](pre-factor-plot-screenshot1.png)
+![](pre-factor-summary-screenshot2.png)
+![](pre-factor-plot-screenshot2.png)
+
+
+### factor analysis
+
+#### principal component analysis (factor analysis without rotation)
+
+![](factor-summary-screenshot1.png)
+![](data-manage-screenshotB1.png)
+![](factor-plot-screenshot1.png)
+![](factor-plot-screenshot2.png)
+
+![](factor-summary-screenshot2.png)
+![](data-manage-screenshotB2.png)
+![](factor-plot-screenshot3.png)
+![](factor-plot-screenshot4.png)
+
+![](factor-summary-screenshot3.png)
+![](factor-plot-screenshot5.png)
+![](factor-plot-screenshot6.png)
+
+#### factor analysis with varimax rotation
+
+![](factor-summary-screenshot4.png)
+![](factor-plot-screenshot7.png)
+![](factor-plot-screenshot8.png)
+
+![](factor-summary-screenshot5.png)
+![](factor-plot-screenshot9.png)
+
+
+
+### mapping from distance between 2 items
+Multidimensional Scaling: MDS
+
+![](data-manage-screenshotB3.png)
+![](dissimilarity-summary-screenshot1.png)
+![](dissimilarity-plot-screenshot1.png)
+
+
+### mapping from item's attributes vector
+
+![](data-manage-screenshotB4.png)
+![](attributes-summary-screenshot1.png)
+![](data-manage-screenshotB5.png)
+![](attributes-plot-screenshot1.png)
+
+
+
+### hierarchical clustering 
+
+![](data-manage-screenshotB6.png)
+![](hierarchical-screenshot1.png)
+![](data-manage-screenshotB7.png)
+
+
+### K-means clustering 
+
+![](k-clustering-summary-screenshot1.png)
+![](data-manage-screenshotB8.png)
+![](k-clustering-plot-screenshot1.png)
+
+
+
+### quantitative explained by multi ordninal variables 
+conjoint analysis
+
+![](data-manage-screenshotB9.png)
+![](conjoint-summary-screenshot1.png)
+![](conjoint-predict-screenshot1.png)
+![](data-manage-screenshotC1.png)
+![](conjoint-plot-screenshot1.png)
+
+
+
+### collaborative filtering recommendation model
+
+<pre>
+prepare dataset for collaborative filtering
+dataset has each user's rating for item
+train data has complete rating for all items in each user
+test data does not have rating for some item in each user
+
+collaborative filtering caluculate a user's unknown ratings from the user's known rating for other items
+</pre>
+
+```
+tb0=attitude
+names(tb0)=c('a0','a1','a2','a3','a4','a5','a6')
+tb0$a4[26:30]=NA
+tb0$a5[26:30]=NA
+tb0$a6[26:30]=NA
+tb0$train=c(rep(1,25),rep(0,5))
+tb0=cbind(user=paste0('u',1:30),tb0)
+tb=as_tibble(tb0)
+tb=pivot_longer(tb, cols = c(-user,-train),
+                names_to = 'item', values_to = 'rating')
+```
+
+![](data-manage-screenshotC2.png)
+![](data-view-screenshot2.png)
+![](collaborative-filtering-summary-screenshot1.png)
+![](collaborative-filtering-summary-screenshot2.png)
+![](data-manage-screenshotC3.png)

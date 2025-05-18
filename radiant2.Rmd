@@ -1,0 +1,140 @@
+```{r r_setup, include = FALSE}
+## initial settings
+knitr::opts_chunk$set(
+  comment = NA,
+  echo = TRUE,
+  error = TRUE,
+  cache = FALSE,
+  message = FALSE,
+
+  dpi = 96,
+  warning = FALSE
+)
+```
+
+## Radiant estimation models
+
+### linear regression for quantitative
+
+![](linear-regression-ols-summary-screenshot1.png)
+standardize explanatories
+![](linear-regression-ols-summary-screenshot2.png)
+![](linear-regression-ols-predict-screenshot1.png)
+![](data-manage-screenshot5.png)
+![](linear-regression-ols-plot-screenshot1.png)
+![](linear-regression-ols-plot-screenshot2.png)
+add quadratic and cross effect
+![](linear-regression-ols-summary-screenshot3.png)
+
+
+### logistic regression for binary
+
+![](logistic-regression-glm-summary-screenshot1.png)
+![](logistic-regression-glm-predict-screenshot1.png)
+![](data-manage-screenshot6.png)
+![](logistic-regression-glm-plot-screenshot1.png)
+![](logistic-regression-glm-plot-screenshot2.png)
+
+
+### multinominal logistic regression for qualitative
+
+![](multinomial-logistic-regression-mnl-summary-screenshot1.png)
+![](multinomial-logistic-regression-mnl-predict-screenshot1.png)
+![](data-manage-screenshot7.png)
+![](multinomial-logistic-regression-mnl-plot-screenshot1.png)
+![](multinomial-logistic-regression-mnl-plot-screenshot2.png)
+
+
+### naive bayes for qualitative
+```
+caluculate probability P(Y;X), Y:level, X:observed
+when observed is qualitative, P(X;Y) is proportion of X in Y
+when observed is quantitative, P(X;Y) is normal distributin with mean and variance of X in Y
+```
+![](naive-bayes-summary-screenshot1.png)
+![](naive-bayes-predict-screenshot1.png)
+![](data-manage-screenshot8.png)
+![](naive-bayes-plot-screenshot1.png)
+
+
+### neural network classification for binary
+
+![](neural-network-summary-screenshot1.png)
+![](neural-network-plot-screenshot1.png)
+![](neural-network-predict-screenshot1.png)
+![](neural-network-plot-screenshot2.png)
+
+![](neural-network-summary-screenshot2.png)
+![](neural-network-plot-screenshot3.png)
+![](neural-network-predict-screenshot2.png)
+![](neural-network-plot-screenshot4.png)
+
+
+### neural network regression for quantitative
+
+![](neural-network-summary-screenshot3.png)
+![](neural-network-predict-screenshot3.png)
+![](data-manage-screenshot9.png)
+![](neural-network-plot-screenshot5.png)
+![](neural-network-plot-screenshot7.png)
+
+![](neural-network-summary-screenshot4.png)
+![](neural-network-predict-screenshot4.png)
+![](neural-network-plot-screenshot6.png)
+![](neural-network-plot-screenshot8.png)
+
+
+### classification tree for binary
+
+![](classification-and-regression-trees-summary-screenshot1.png)
+![](classification-and-regression-trees-predict-screenshot1.png)
+![](classification-and-regression-trees-plot-screenshot1.png)
+
+![](classification-and-regression-trees-summary-screenshot3.png)
+![](classification-and-regression-trees-plot-screenshot3.png)
+
+
+### regression tree for quantitative
+
+![](classification-and-regression-trees-summary-screenshot2.png)
+![](classification-and-regression-trees-predict-screenshot2.png)
+![](classification-and-regression-trees-plot-screenshot2.png)
+![](classification-and-regression-trees-plot-screenshot5.png)
+
+![](classification-and-regression-trees-summary-screenshot4.png)
+![](classification-and-regression-trees-plot-screenshot4.png)
+![](classification-and-regression-trees-plot-screenshot6.png)
+
+
+### random forest classification 
+
+![](random-forest-summary-screenshot1.png)
+![](random-forest-predict-screenshot1.png)
+![](data-manage-screenshotA1.png)
+![](random-forest-plot-screenshot1.png)
+
+
+### random forest regression 
+
+![](random-forest-summary-screenshot2.png)
+![](random-forest-predict-screenshot2.png)
+![](data-manage-screenshotA2.png)
+![](random-forest-plot-screenshot2.png)
+![](random-forest-plot-screenshot3.png)
+
+
+### gradient boosted tress for binary
+
+![](gradient-boosted-trees-summary-screenshot1.png)
+![](gradient-boosted-trees-predict-screenshot1.png)
+![](data-manage-screenshotA3.png)
+![](gradient-boosted-trees-plot-screenshot1.png)
+
+
+### gradient boosted tress for quatitative variable
+
+![](gradient-boosted-trees-summary-screenshot2.png)
+![](gradient-boosted-trees-predict-screenshot2.png)
+![](data-manage-screenshotA4.png)
+![](gradient-boosted-trees-plot-screenshot2.png)
+![](gradient-boosted-trees-plot-screenshot3.png)

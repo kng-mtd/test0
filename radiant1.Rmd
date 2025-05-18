@@ -1,0 +1,173 @@
+```{r r_setup, include = FALSE}
+## initial settings
+knitr::opts_chunk$set(
+  comment = NA,
+  echo = TRUE,
+  error = TRUE,
+  cache = FALSE,
+  message = FALSE,
+
+  dpi = 96,
+  warning = FALSE
+)
+```
+
+## Radiant variables and aggregation
+
+on Rstudio
+```
+setwd(paste0(getwd(),'/radiant')
+
+penguins=penguins
+
+AirPassengers=tibble(t=1:length(AirPassengers), y=c(AirPassengers))
+
+library(radiant)
+radiant()
+```
+
+
+### see original dataset
+![](data-manage-screenshot1.png)
+column name, type, values
+![](data-manage-screenshot2.png)
+ aggregation quantitatives and qualitatives 
+![](data-manage-screenshot3.png)
+
+
+### fix variable type and add dummy factor variable 
+
+![](data-transform-screenshot1.png)
+![](data-transform-screenshot2.png)
+
+
+### see prepared dataset
+
+![](data-manage-screenshot4.png)
+
+![](data-view-screenshot1.png)
+
+
+### 1 qualitative
+count rows in level
+![](data-pivot-screenshot1.png)
+
+
+### 1 quantitative
+aggregation
+![](data-explore-screenshot1.png)
+distribution with histgram
+![](data-visualize-screenshot01.png)
+density curve
+![](data-visualize-screenshot02.png)
+median, range with boxplot
+![](data-visualize-screenshot03.png)
+
+
+### time series
+line chart
+![](data-visualize-screenshot04.png)
+
+
+### 2 qualitatives
+cross table and bar chart with pivot
+![](data-pivot-screenshot2.png)
+bar chart in cross table with pivot
+![](data-pivot-screenshot3.png)
+heatmap in cross table with pivot
+![](data-pivot-screenshot4.png)
+
+
+### 2 quantitatives
+each aggreation
+![](data-explore-screenshot2.png)
+scatter plot
+![](data-visualize-screenshot05.png)
+
+
+### 1 qualitative and 1 quantitative
+specified stat and plot by each level
+![](data-pivot-screenshot5.png)
+aggregations by each level
+![](data-explore-screenshot3.png)
+separate chart by each level
+![](data-visualize-screenshot06.png)
+combine chart with each level color
+![](data-visualize-screenshot07.png)
+median, range in each level
+![](data-visualize-screenshot08.png)
+
+
+### 2 qualitatives and 1 quantitative
+specified stat cross table and bar chart with pivot
+![](data-pivot-screenshot6.png)
+aggregations by level combination
+![](data-explore-screenshot4.png)
+specified stat bar chart by level combination
+![](data-visualize-screenshot09.png)
+median, range by each qualitative level with each plot
+![](data-visualize-screenshot10.png)
+median, range by each qualitative level with one plot
+![](data-visualize-screenshot11.png)
+
+
+### 1 qualitative and 2 quantitatives
+each agrregations by each level
+![](data-explore-screenshot5.png)
+scatter plot with each level color
+![](data-visualize-screenshot12.png)
+median, range by each quantitative
+![](data-visualize-screenshot13.png)
+
+
+### standardize quantitative
+![](data-transform-screenshot3.png)
+
+
+## Radiant basic tests
+
+### compare quatitative to a constant test
+
+![](single-mean-summary-screenshot1.png)
+black: observed, red: null hypothesis, dot: %confidence
+![](single-mean-plot-screenshot1.png)
+
+
+### compare quantitative variable among groups test 
+
+![](compare-means-summary-screenshot1.png)
+![](compare-means-plot-screenshot1.png)
+
+
+### compare qualitative proportion to a constant test
+
+![](single-proportion-summary-screenshot1.png)
+![](single-proportion-summary-screenshot2.png)
+![](single-proportion-plot-screenshot1.png)
+
+
+### compare qualitative proportion among groups test 
+
+![](compare-proportions-summary-screenshot1.png)
+![](compare-proportions-plot-screenshot1.png)
+
+
+### goodness of fit test for 1 qualitative distribution
+
+![](goodness-of-fit-summary-screenshot1.png)
+![](goodness-of-fit-plot-screenshot1.png)
+
+![](goodness-of-fit-summary-screenshot2.png)
+![](goodness-of-fit-plot-screenshot2.png)
+
+
+### independecy test for 2 qualitative cross table 
+
+![](cross-tabs-summary-screenshot1.png)
+![](cross-tabs-plot-screenshot1.png)
+
+
+### correlations and their siginificance test
+
+![](correlation-summary-screenshot1.png)
+![](correlation-plot-screenshot1.png)
