@@ -11,8 +11,15 @@ knitr::opts_chunk$set(
   warning = FALSE
 )
 ```
-
-## Radiant estimation models
+---
+title: "Radiant estimation models"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: 'show'
+---
 
 ### linear regression for quantitative
 
