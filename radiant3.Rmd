@@ -1,18 +1,5 @@
-```{r r_setup, include = FALSE}
-## initial settings
-knitr::opts_chunk$set(
-  comment = NA,
-  echo = TRUE,
-  error = TRUE,
-  cache = FALSE,
-  message = FALSE,
-
-  dpi = 96,
-  warning = FALSE
-)
-```
 ---
-title: "Radiant dimensionality reduction mapping, clustering"
+title: "Radiant 3"
 output:
   html_document:
     toc: true
@@ -20,6 +7,12 @@ output:
     toc_float: true
     code_folding: 'show'
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo =T, warning=F, message=F, comment='')
+```
+
+## Radiant dimensionality reduction mapping, clustering
 
 ### factor analysis applicability
 finding how many factors to explain enough from eigenvalues cumulative

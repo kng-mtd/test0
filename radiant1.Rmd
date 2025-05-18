@@ -1,18 +1,5 @@
-```{r r_setup, include = FALSE}
-## initial settings
-knitr::opts_chunk$set(
-  comment = NA,
-  echo = TRUE,
-  error = TRUE,
-  cache = FALSE,
-  message = FALSE,
-
-  dpi = 96,
-  warning = FALSE
-)
-```
 ---
-title: "Radiant variables and aggregation"
+title: "Radiant 1"
 output:
   html_document:
     toc: true
@@ -21,6 +8,11 @@ output:
     code_folding: 'show'
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo =T, warning=F, message=F, comment='')
+```
+
+## Radiant variables and aggregation
 on Rstudio
 ```
 setwd(paste0(getwd(),'/radiant')
@@ -38,7 +30,7 @@ radiant()
 ![](data-manage-screenshot1.png)
 column name, type, values
 ![](data-manage-screenshot2.png)
- aggregation quantitatives and qualitatives 
+aggregation quantitatives and qualitatives 
 ![](data-manage-screenshot3.png)
 
 
