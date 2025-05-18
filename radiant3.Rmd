@@ -11,8 +11,15 @@ knitr::opts_chunk$set(
   warning = FALSE
 )
 ```
-
-## Radiant dimensionality reduction mapping, clustering 
+---
+title: "Radiant dimensionality reduction mapping, clustering"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: 'show'
+---
 
 ### factor analysis applicability
 finding how many factors to explain enough from eigenvalues cumulative
