@@ -204,7 +204,7 @@ command1 | command2 | command3..
 } | command3
 ```
 
-#### stdin, stdout, stderror
+#### stdin, stdout, stderr
 
 from file, nothing
 
@@ -230,9 +230,10 @@ process error message
 ```
 --- > /dev/null # show only error
 --- 2> /dev/null # show only result
---- > /dev/null 2>&1 # shon notning
+--- > /dev/null 2>&1 # show nothing
 --- 2> file, --- 2>> file # save error message
---- > file 2>&1 # save all output
+--- > file1 2> file2 # save each output to other file
+--- > file 2>&1 # save all output to a same file
 
 ```
 
