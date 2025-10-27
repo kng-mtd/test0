@@ -24,6 +24,11 @@
 
 ---
 
+- open terminal
+  gnome-terminal
+
+---
+
 - bash internal commands
   compgen -b
   compgen -b | sort -u
@@ -85,6 +90,8 @@
 | `libstdc++.so.6`                 | C++標準ライブラリ                           |
 | `libpython3.x.so`                | Python 埋め込みランタイム                   |
 
+---
+
 ## script rules
 
 ### run script
@@ -101,9 +108,21 @@ bash script.sh
 chmod +x script.sh
 ./script.sh
 
+debug mode
+
+bash -x script.sh
+
+```
+set -x
+---
+---
+...
+set +x
+```
+
 ---
 
-#### auto run
+### auto run
 
 | コマンド     | 説明                           |
 | ------------ | ------------------------------ |
@@ -131,60 +150,24 @@ grep CRON /var/log/syslog
 
 ---
 
-### basic
-
-#### path
+### path
 
 - directory
   dir1/dir2.../
 - file
   dir1/dir2.../file
 
-#### sequence
+---
 
-- {0..9}
-  0 1 2...9
-- {00...10}
-  00 01..10
-- {9..0}
-  9 8...0
-- {0..10..2}
-  0 2...10
-- {a..z}
-  a b...z
-- {0..2}\_{0..2}
-  0_0 0_1 0_2 1_0 1_1 1_2 2_0 2_1 2_2
-- {a..c}\_{0..2}
-  a_0 a_1 a_2 b_0 b_1 b_2 c_0 c_1 c_2
-
-#### env variable
-
-```
-printenv
-
-$HOME
-$USER
-$HOSTNAME
-$ PATH
-echo $PATH | sed 's/:/\n/g'
-
-export var=value
-    or
-add 'var=value' to .bashrc
-source ~/.bashrc
-
-PATH="$PATH:new path"
-```
-
-#### comment out
+### comment out with
 
 `# comment`
 
-#### break line
+### break line with ;
 
 `command1 ; command2 ;...`
 
-#### continue line
+### continue line with \
 
 ```
 command ---\
@@ -192,7 +175,7 @@ command ---\
 ---
 ```
 
-#### pipe
+### pipe with |
 
 ```
 command1 | command2 | command3..
@@ -204,7 +187,9 @@ command1 | command2 | command3..
 } | command3
 ```
 
-#### stdin, stdout, stderr
+---
+
+### stdin, stdout, stderr
 
 from file, nothing
 
@@ -234,7 +219,61 @@ process error message
 --- 2> file, --- 2>> file # save error message
 --- > file1 2> file2 # save each output to other file
 --- > file 2>&1 # save all output to a same file
+```
 
+add string to command
+
+```
+command <<< str
+
+command <<EOF
+line1
+line2
+...
+EOF
+```
+
+---
+
+### sequence
+
+- {0..9}
+  0 1 2...9
+- {00...10}
+  00 01..10
+- {9..0}
+  9 8...0
+- {0..10..2}
+  0 2...10
+- {a..z}
+  a b...z
+- {0..2}\_{0..2}
+  0_0 0_1 0_2 1_0 1_1 1_2 2_0 2_1 2_2
+- {a..c}\_{0..2}
+  a_0 a_1 a_2 b_0 b_1 b_2 c_0 c_1 c_2
+
+---
+
+### env variable
+
+```
+printenv
+
+$HOME
+$USER
+$HOSTNAME
+$ PATH
+echo $PATH | sed 's/:/\n/g'
+
+export var=value
+    or
+add 'var=value' to .bashrc
+source ~/.bashrc
+
+PATH="$PATH:new path"
+
+$RANDOM
+$RANDOM$RANDOM
 ```
 
 ---
@@ -242,63 +281,121 @@ process error message
 ### variable
 
 ```
-var=num
-var='str'
-var=`comand result`
-echo $var
-  or
-echo "$var"
+var=string
+var='string has space'
+var=$(command)
+
+$var
+$((var)) # as integer
 ```
+
+---
+
+### parameter expansion
+
+| 処理                             | パラメータ展開     | 同等コマンド                                       |
+| :------------------------------- | :----------------- | :------------------------------------------------- |
+| 文字数                           | `${#var}`          | `echo -n "$var" \| wc -c`                          |
+| i 文字目から末尾まで             | `${var:i}`         | `echo "$var" \| cut -c$((i+1))-`                   |
+| 後ろから i 文字目から末尾まで    | `${var: -i}`       | `echo "$var" \| rev \| cut -c1-$i \| rev`          |
+| i 文字目から k 文字取得          | `${var:i:k}`       | `echo "$var" \| cut -c$((i+1))-$((i+k))`           |
+| 後ろから i 文字目から k 文字取得 | `${var: -i:k}`     | `echo "$var" \| rev \| cut -c$i-$((i+k-1)) \| rev` |
+| 小文字化                         | `${var,,}`         | `echo "$var" \| tr '[:upper:]' '[:lower:]'`        |
+| 大文字化                         | `${var^^}`         | `echo "$var" \| tr '[:lower:]' '[:upper:]'`        |
+| 置換                             | `${var/str0/str1}` | `echo "$var" \| sed 's/str0/str1/'`                |
+| デフォルト値                     | `${var:-default}`  | `[ -n "$var" ] && echo "$var" \|\| echo "default"` |
+
+| 構文              | 意味                   | 例                                       |
+| :---------------- | :--------------------- | :--------------------------------------- |
+| `${var#pattern}`  | 前方の最短マッチを削除 | `${var#*/}` → 最初の `/` まで削除        |
+| `${var##pattern}` | 前方の最長マッチを削除 | `${var##*/}` → 最後の `/` まで削除       |
+| `${var%pattern}`  | 後方の最短マッチを削除 | `${var%.*}` → 最初の `.` から後ろを削除  |
+| `${var%%pattern}` | 後方の最長マッチを削除 | `${var%%.*}` → 最後の `.` から後ろを削除 |
+
+---
 
 ### argument
 
 ```
 script.sh arg1 arg2 ...
-$1 #arg1
-$2 #arg2 ...
+$0 : scirpt file
+$1 : arg1
+$2 : arg2 ...
+$@ : arg1 arg2 ...
+$# : n of args
 ```
 
 command1 | xargs command2
 
-- -n1
+- -n num
 - I{}
-- P4
+- P num
+- -0
+- -r
 
 ---
 
 ### array
 
 ```
-arr=(0 1 2 3...)
-${arr[0]} #one element
-${arr[@]} #all elements
+arr=(str0 str1 str2...)
+${arr[0]} : one element
+${arr[@]} : all elements
+
+${#arr[@]}} : array size
+${!arr[@]}} : all indexes
+
+i=0,1,2...
+${a[$i]}
+
+${arr[@]:i:k} : slice forward
+${arr[@]: -i:k} : slice back
+
+arr+=(str) : add element
+arr[i]=str : update elemtnt
+unset arr[0] : delete element
+
+arr1=("${arr0[@]}") : copy arr
 ```
+
+---
 
 ### associated array
 
 ```
+
 declare -A obj
 obj[key]=value
 ${obj[key]}
+
 ```
 
 ### arithmetic operation
 
 ```
+
 a=int1
+$((a+num)) $((a-num)) $((a\*num)) $((a/num)) $((a%num))
+$((a**num))
+$((a++)) $((a--))
+$((a+=num)) $((a-=num)) $((a*=num)) $((a/=num)) $((a%=num))
+
 b=int2
-$((a+b)) $((a-b)) $((a*b)) $((a/b)) $((a%b))
+$((a+b)) $((a-b)) $((a\*b)) $((a/b)) $((a%b))
+$((a+=b)) $((a-=b)) $((a*=b)) $((a/=b)) $((a%=b))
 
 a=real1
 b=real2
-echo "$a+$b" | bc
-echo "$a-$b" | bc
-echo "$a*$b" | bc
-echo "scale=2; $a/$b" | bc
-result=$(echo "scale=2; $a/$b" | bc)
+echo $a+$b | bc
+echo $a-$b | bc
+echo $a*$b | bc
+result=$(echo $a*$b | bc)
+echo "scale=2;$a/$b" | bc
+result=$(echo "scale=2;$a/$b" | bc)
 
-perl -e "print $a/$b,qq{\n}"
-result=$(perl -e "print $a/$b,qq{\n}")
+perl -e "print $a/$b"
+c=$(perl -e "print $a/$b")
+echo $c
 ```
 
 calculation with bc -l
@@ -327,6 +424,10 @@ calculation with perl -e
 | `int(x)`     | 小数点以下切り捨て |
 | `rand(x)`    | 0〜x 未満の乱数    |
 | `srand(x)`   | 乱数シード設定     |
+
+---
+
+### other perl functions
 
 | 関数                         | 説明                   |
 | ---------------------------- | ---------------------- |
@@ -512,9 +613,11 @@ rsync dir0 dir1/
 regularly backup
 
 ```
+
 crontab -e
 
-0 1 * * * rsync -az dir0/ dir1/
+0 1 \* \* \* rsync -az dir0/ dir1/
+
 ```
 
 ---
@@ -578,7 +681,9 @@ tr chr1 chr2 < file.txt
 delete new line at not end
 
 ```
+
 tr -d '\\n' < test.sh
+
 ```
 
 ---
@@ -623,8 +728,10 @@ grep regexp file
 delete empty line
 
 ```
+
 grep -v '^$' file.txt
 grep -v '^[[:space:]]*$' file.txt
+
 ```
 
 #### regular expression
@@ -665,36 +772,46 @@ ex.
 - delim : space, 3 columns
 
 ```
-  sed -nE 's/^([^ ]+) +([^ ]+) +([^ ]+)/\1,\2,\3/p' file.txt > file.csv
+
+sed -nE 's/^([^ ]+) +([^ ]+) +([^ ]+)/\1,\2,\3/p' file.txt > file.csv
+
 ```
 
 - delim : space, tab, 3 columns
 
 ```
+
 sed -nE 's/^([^[:space:]]+)[[:space:]]+([^[:space:]]+)[[:space:]]+([^[:space:]]+)/\1,\2,\3/p' file.txt > file.csv
+
 ```
 
 - extract only number, 3 columns
 
 ```
-sed -nE 's/.*?([0-9]+).*?([0-9]+).*?([0-9]+).*/\1,\2,\3/p' file.txt > file.csv
+
+sed -nE 's/._?([0-9]+)._?([0-9]+)._?([0-9]+)._/\1,\2,\3/p' file.txt > file.csv
+
 ```
 
 - if string has " escape with ""
 - if string has space, tab, new line, comma surround all with "
 
 ```
+
 sed 's/"/""/g; s/^/"/; s/$/"/' file.txt > file.csv
+
 ```
 
 - delim : space, some columns
 
 ```
+
 perl -pe 's/\s+/,/g' file.txt > file.csv
 
 awk '{$1=$1; gsub(/ +/, ","); print}' file.txt > file.csv
 
 sed -E ':a; s/^([^ ]+) +([^ ]+)/\1,\2/; ta' file.txt > file.csv
+
 ```
 
 ---
@@ -822,7 +939,9 @@ date
 - +%y, +%m, +%d, +%H, +%M, +%S
 
 ```
+
 date '+%y/%m/%d'
+
 ```
 
 ---
@@ -878,8 +997,10 @@ ftp
 prepare FTP server
 
 ```
+
 sudo apt install vsftpd
 sudo nano /etc/vsftpd.conf
+
 ```
 
 | 設定                    | 説明                               | 推奨値 |
@@ -891,15 +1012,18 @@ sudo nano /etc/vsftpd.conf
 | `chroot_local_user=YES` | ユーザーをホームディレクトリに制限 | YES    |
 
 ```
+
 sudo adduser ftpuser
 
 sudo systemctl restart vsftpd
 sudo systemctl enable vsftpd
+
 ```
 
 access to FTP server
 
 ```
+
 ftp xxx.xxx.xxx.xxx
 
 ftp> ls
@@ -907,6 +1031,7 @@ ftp> cd dir
 ftp> get file
 ftp> put file
 ftp> bye
+
 ```
 
 - -i
@@ -916,8 +1041,10 @@ ftp> bye
 prepare SFTP server
 
 ```
+
 sudo apt install vsftpd
 sudo nano /etc/vsftpd.conf
+
 ```
 
 listen=YES
@@ -936,21 +1063,25 @@ rsa_private_key_file=/etc/ssl/private/vsftpd.key
 ssl_ciphers=HIGH
 
 ```
+
 sudo mkdir -p /etc/ssl/private
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout /etc/ssl/private/vsftpd.key \
-  -out /etc/ssl/certs/vsftpd.pem
+ -keyout /etc/ssl/private/vsftpd.key \
+ -out /etc/ssl/certs/vsftpd.pem
 
 sudo adduser ftpuser
 
 sudo systemctl restart vsftpd
 sudo systemctl enable vsftpd
+
 ```
 
 access to SFTP server
 
 ```
+
 lftp -u ftpuser,password -e "set ftp:ssl-force true; set ssl:verify-certificate no" ftps://192.168.1.10
+
 ```
 
 ---
@@ -960,10 +1091,12 @@ ssh user@hostname / IP
 - -p port
 
 ```
+
 ssh-keygen -t rsa -b 2048
 ssh-copy-id user0@xxx.xxx.xxx.xxx
 
 ssh user0@xxx.xxx.xxx.xxx
+
 ```
 
 ---
@@ -973,5 +1106,214 @@ scp -r dir user@hostname/IP:path/dir/
 scp user@hostname/IP:path/file ./
 
 - -P
+
+---
+
+## control structure
+
+### read var/array
+
+- -p 'message'
+- -sp 'password'
+- -a
+- -r
+
+read -r var1 var2... <<< "${arr0[@]}"
+
+read -r var1 var2... <<< "$(fn0)"
+
+---
+
+### conditions
+
+```
+[ $a = str ] && comand
+[ $a != str ] && comand
+! [ $a = str ] && comand
+[ ! $a = str ] && comand
+
+[ $a = str1 -o $a = str2 ] && command
+[ $a = str1 ] || [ $a = str2 ] && command
+[ $a = str1 -a $b = str2 ] && command
+[ $a = str1 ] && [ $b = str2 ] && command
+
+[ $a = str ] && comand1 || commnad2
+
+[ $a = str1 ] && command1 || \
+{
+[ $a = str2 ] && command2 || \
+command3
+}
+
+[ $a -eq int ]
+[ $a -eq $b ], [ $a -ne $b ]
+[ $a -gt $b ], [ $a -ge $b ]
+[ $a -lt $b ], [ $a -le $b ]
+
+[ -n var ]
+[ -z var ]
+[ -e file ]
+[ -f file ]
+[ -d dir/ ]
+```
+
+---
+
+### case
+
+```
+case $a in
+  regexp1)
+    command1;;
+  regexp2)
+    command2;;
+  regexp3)
+    command3;;
+  ...
+  *)
+    command0;;
+esac
+```
+
+---
+
+### for
+
+```
+for i in 0 1 2..;do
+  -- $i --
+done
+
+for i in {0..9..3};do
+  -- $i --
+done
+
+for i in ${arr[@]};do
+  -- $i --
+done
+
+for i in "$@";do
+  -- $i --
+done
+
+for f in file1 file2...;do
+ -- $f --
+done
+
+for i in $(ls);do
+  -- $i --
+done
+
+for ---;do
+  ---
+  [condition] && continue
+  [condition] && break
+  [condition] && break 2
+  [condition] && exit0/1
+done
+```
+
+---
+
+### while
+
+```
+while [condition];do
+  ---
+done
+
+while true;do
+ ---
+ [condition] && break
+done
+
+while read -p 'message' a;do
+  [ $a = 0 ] && break || \
+  -- $a --
+done
+
+while read -r ln;do
+  -- $line --
+done < file.txt
+
+   or (to be less I/O)
+
+mapfile -t lines < file.txt
+for ln in ${lines[@]};do
+  -- $ln --
+done
+```
+
+batch input from file
+
+```
+batch=1000
+exec 3< file.txt
+
+while true; do
+    mapfile -t -n "$batch" lines <&3
+    (( ${#lines[@]} == 0 )) && break
+
+    for ln in "${lines[@]}"; do
+      -- $ln --
+    done
+    unset lines
+done
+exec 3<&-
+```
+
+---
+
+### select
+
+```
+select i in opt1 opt2...;do
+  case $i in
+    opt1)
+      ---;;
+    opt2)
+      ---;;
+    ...
+    *)
+      ---;;
+  esac
+done
+
+select i in opt1 opt2...;do
+  case $REPLY in
+    1)
+      ---;;
+    2)
+      ---;;
+    ...
+    *)
+      ---;;
+  esac
+done
+```
+
+---
+
+### shell function
+
+```
+fn0(){
+  ---
+  echo str
+  return 0/not 0
+}
+
+fn0
+a=$(fn0)
+```
+
+```
+fn0(){
+  -- $1, $2, $3...--
+  return 0/not 0
+}
+
+fn0 str1 str2 str3...
+```
 
 ---
