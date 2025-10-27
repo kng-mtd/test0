@@ -1139,11 +1139,9 @@ read -r var1 var2... <<< "$(fn0)"
 
 [ $a = str ] && comand1 || commnad2
 
-[ $a = str1 ] && command1 || \
-{
-[ $a = str2 ] && command2 || \
-command3
-}
+[ $a = str1 ] && { command1; } \
+|| [ $a = str2 ] && { command2; } \
+|| { command3; }
 
 [ $a -eq int ]
 [ $a -eq $b ], [ $a -ne $b ]
@@ -1152,9 +1150,10 @@ command3
 
 [ -n var ]
 [ -z var ]
-[ -e file ]
 [ -f file ]
 [ -d dir/ ]
+[ -e file ]
+[ -s file ]
 ```
 
 ---
