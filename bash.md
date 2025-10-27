@@ -1299,7 +1299,8 @@ done
 ```
 fn0(){
   ---
-  echo str
+  local var=str
+  -- $var --
   return 0/not 0
 }
 
@@ -1309,7 +1310,8 @@ a=$(fn0)
 
 ```
 fn0(){
-  -- $1, $2, $3...--
+  local var=str
+  -- $var, $1, $2, $3...--
   return 0/not 0
 }
 
