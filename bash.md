@@ -2,6 +2,11 @@
 
 ## notes
 
+- run editor
+  ctrl+x+e
+
+---
+
 - super user
   sudo command
   sudo user0
@@ -264,6 +269,15 @@ $USER
 $HOSTNAME
 $ PATH
 echo $PATH | sed 's/:/\n/g'
+
+
+var=str
+export var
+bash script.sh
+
+script.sh
+echo $var
+
 
 export var=value
     or
@@ -963,6 +977,10 @@ whoami
 
 ---
 
+who
+
+---
+
 ping
 
 - -c
@@ -1106,6 +1124,30 @@ scp -r dir user@hostname/IP:path/dir/
 scp user@hostname/IP:path/file ./
 
 - -P
+
+---
+
+## audio
+
+aplay file.wav
+
+---
+
+mpg123 file.mp3
+
+---
+
+ffmpeg
+
+ffmpeg -i file.wav file.mp3
+
+---
+
+espeak-ng -v ja 'text' --stdout > file.wav
+
+---
+
+open-jtalk
 
 ---
 
