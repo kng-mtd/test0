@@ -168,6 +168,10 @@ grep CRON /var/log/syslog
 
 `# comment`
 
+### escape with \
+
+`"\$var" is $var`
+
 ### break line with ;
 
 `command1 ; command2 ;...`
@@ -300,6 +304,7 @@ var='string has space'
 var=$(command)
 
 $var
+"$var in string" # interpolation / expansion
 $((var)) # as integer
 ```
 
@@ -1153,49 +1158,83 @@ open-jtalk
 
 ## control structure
 
-### read var/array
+### read
+
+```
+read var1 var2...
+  input
+    str1 str2...
+
+read var1
+read var2
+...
+  input
+    str1
+    str2
+    ...
 
 - -p 'message'
 - -sp 'password'
 - -a
 - -r
 
+read -a arr
+  input
+    el0 el1 el2...
+
 read -r var1 var2... <<< "${arr0[@]}"
 
 read -r var1 var2... <<< "$(fn0)"
+```
 
 ---
 
 ### conditions
 
 ```
-[ $a = str ] && comand
-[ $a != str ] && comand
-! [ $a = str ] && comand
-[ ! $a = str ] && comand
+command1 && command2
+command1 && command2 || command3
 
-[ $a = str1 -o $a = str2 ] && command
-[ $a = str1 ] || [ $a = str2 ] && command
-[ $a = str1 -a $b = str2 ] && command
-[ $a = str1 ] && [ $b = str2 ] && command
+[[ $a == str ]] && command
+[[ $a != str ]] && command
+! [[ $a == str ]] && command
+[[ ! $a == str ]] && command
 
-[ $a = str ] && comand1 || commnad2
+[[ "$a" == "str has space" ]] && command
 
-[ $a = str1 ] && { command1; } \
-|| [ $a = str2 ] && { command2; } \
-|| { command3; }
+[[ $a = pattern ]] && command
 
-[ $a -eq int ]
-[ $a -eq $b ], [ $a -ne $b ]
-[ $a -gt $b ], [ $a -ge $b ]
-[ $a -lt $b ], [ $a -le $b ]
+[[ $a == str1 || $a == str2 ]] && command
+[[ $a == str1 ]] || [[ $a == str2 ]] && command
+[[ $a == str1 && $b == str2 ]] && command
+[[ $a == str1 ]] && [[ $b == str2 ]] && command
 
-[ -n var ]
-[ -z var ]
-[ -f file ]
-[ -d dir/ ]
-[ -e file ]
-[ -s file ]
+[[ $a == str ]] && command1 || command2
+
+[[ $a == str ]] && { command11; command12; } \
+|| { command21; command22; }
+
+[[ $a == str1 ]] && command1 \
+|| { [[ $a == str2 ]] && command2 || command3; }
+
+
+[[ $a > str ]], [[ $a >= str ]]
+[[ $a < str ]], [[ $a <= str ]]
+
+(( a == int ))
+(( a == b )), (( a != b ))
+(( a > b )), (( a >= b ))
+(( a < b )), (( a <= b ))
+
+[[ -n var ]]
+[[ -z var ]]
+[[ -f file ]]
+[[ -d dir/ ]]
+[[ -e file ]]
+[[ -s file ]]
+[[ -r file ]]
+[[ -w file ]]
+[[ -x file ]]
 ```
 
 ---
@@ -1247,10 +1286,10 @@ done
 
 for ---;do
   ---
-  [condition] && continue
-  [condition] && break
-  [condition] && break 2
-  [condition] && exit0/1
+  [[condition]] && continue
+  [[condition]] && break
+  [[condition]] && break 2
+  [[condition]] && exit0/1
 done
 ```
 
@@ -1259,17 +1298,17 @@ done
 ### while
 
 ```
-while [condition];do
+while [[condition]];do
   ---
 done
 
 while true;do
  ---
- [condition] && break
+ [[condition]] && break
 done
 
 while read -p 'message' a;do
-  [ $a = 0 ] && break || \
+  [[ $a = 0 ]] && break || \
   -- $a --
 done
 
