@@ -168,10 +168,6 @@ grep CRON /var/log/syslog
 
 `# comment`
 
-### escape with \
-
-`"\$var" is $var`
-
 ### break line with ;
 
 `command1 ; command2 ;...`
@@ -473,18 +469,37 @@ calculation with perl -e
 
 ---
 
-## file process
+## print message
 
 echo str1 str2...
 
 - -n
-- -e \n \t \\$ \\" \\'
+- -e
+
+escape sequence
+| シーケンス | 意味 |
+| ------- | ---------------- |
+| `\n` | 改行（newline） |
+| `\t` | タブ（tab） |
+| `\\` | `\` を出力 |
+| `\'` | `'` を出力 |
+| `\"` | `"` を出力 |
+| `\a` | 端末のベル音 またはフラッシュ |
+| `\b` | 1 文字戻る 書き効果あり） |
+| `\c` | 出力をここで終了 |
+| `\r` | 行頭へ戻る 上書き出力などに使う |
+| `\v` | 垂直タブ 縦方向のスペース |
+| `\f` | 改ページ |
+| `\$var` | 変数展開しない |
+| `\0NNN` | 8 進数コード（ASCII） |
 
 ---
 
 clear
 
 ---
+
+## file process
 
 touch file1 file2...
 
