@@ -1157,11 +1157,16 @@ column file
 
 ---
 
-grep regex file
+grep regex file1 file2...
 
 - -n
+- -c
 - -i
 - -v
+- -w
+- -h regex file1 file2...
+- -e regex1 -e regex2... file
+- -R regex dir/
 - -o
 - -E
 
