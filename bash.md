@@ -320,12 +320,12 @@ $((var)) # as integer
 | 置換                             | `${var/str0/str1}` | `echo "$var" \| sed 's/str0/str1/'`                |
 | デフォルト値                     | `${var:-default}`  | `[ -n "$var" ] && echo "$var" \|\| echo "default"` |
 
-| 構文              | 意味                   | 例                                       |
-| :---------------- | :--------------------- | :--------------------------------------- |
-| `${var#pattern}`  | 前方の最短マッチを削除 | `${var#*/}` → 最初の `/` まで削除        |
-| `${var##pattern}` | 前方の最長マッチを削除 | `${var##*/}` → 最後の `/` まで削除       |
-| `${var%pattern}`  | 後方の最短マッチを削除 | `${var%.*}` → 最初の `.` から後ろを削除  |
-| `${var%%pattern}` | 後方の最長マッチを削除 | `${var%%.*}` → 最後の `.` から後ろを削除 |
+| 構文           | 意味                   | 例                                       |
+| :------------- | :--------------------- | :--------------------------------------- |
+| `${var#glob}`  | 前方の最短マッチを削除 | `${var#*/}` → 最初の `/` まで削除        |
+| `${var##glob}` | 前方の最長マッチを削除 | `${var##*/}` → 最後の `/` まで削除       |
+| `${var%glob}`  | 後方の最短マッチを削除 | `${var%.*}` → 最初の `.` から後ろを削除  |
+| `${var%%glob}` | 後方の最長マッチを削除 | `${var%%.*}` → 最後の `.` から後ろを削除 |
 
 ---
 
@@ -378,17 +378,14 @@ arr1=("${arr0[@]}") : copy arr
 ### associated array
 
 ```
-
 declare -A obj
 obj[key]=value
 ${obj[key]}
-
 ```
 
 ### arithmetic operation
 
 ```
-
 a=int1
 $((a+num)) $((a-num)) $((a\*num)) $((a/num)) $((a%num))
 $((a**num))
@@ -544,6 +541,372 @@ clear
 
 ---
 
+## control structure
+
+### read
+
+```
+read var1 var2...
+  input
+    str1 str2...
+
+read var1
+read var2
+...
+  input
+    str1
+    str2
+    ...
+
+- -p 'message'
+- -sp 'password'
+- -a
+- -r
+
+read -a arr
+  input
+    el0 el1 el2...
+
+read -r var1 var2... <<< "${arr0[@]}"
+
+read -r var1 var2... <<< "$(fn0)"
+```
+
+---
+
+### conditions
+
+```
+command1 && command2
+command1 && command2 || command3
+
+[[ $a == str ]] && command
+[[ $a != str ]] && command
+! [[ $a == str ]] && command
+[[ ! $a == str ]] && command
+
+[[ "$a" == "str has space" ]] && command
+
+[[ $a == glob ]] && command
+[[ $a =~ regex ]] && command
+
+[[ $a == glob / =~ regex ]] && echo $a #filter
+
+[[ $a =~ regex ]] && echo ${BASH_REMATCH[0]} # capture all
+[[ $a =~ regex ]] && echo ${BASH_REMATCH[1]} # capture first
+[[ $a =~ regex ]] && echo ${BASH_REMATCH[2]} # capture second
+
+[[ $a == str1 || $a == str2 ]] && command
+[[ $a == str1 ]] || [[ $a == str2 ]] && command
+[[ $a == str1 && $b == str2 ]] && command
+[[ $a == str1 ]] && [[ $b == str2 ]] && command
+
+[[ $a == str ]] && command1 || command2
+
+[[ $a == str ]] && { command11; command12; } \
+|| { command21; command22; }
+
+[[ $a == str1 ]] && command1 \
+|| { [[ $a == str2 ]] && command2 || command3; }
+
+
+[[ $a > str ]], [[ $a >= str ]]
+[[ $a < str ]], [[ $a <= str ]]
+
+(( a == int ))
+(( a == b )), (( a != b ))
+(( a > b )), (( a >= b ))
+(( a < b )), (( a <= b ))
+
+[[ -n var ]]
+[[ -z var ]]
+[[ -f file ]]
+[[ -d dir/ ]]
+[[ -e file ]]
+[[ -s file ]]
+[[ -r file ]]
+[[ -w file ]]
+[[ -x file ]]
+```
+
+---
+
+### case
+
+```
+case $a in
+  regex1)
+    command1;;
+  regex2)
+    command2;;
+  regex3)
+    command3;;
+  ...
+  *)
+    command0;;
+esac
+```
+
+---
+
+### for
+
+```
+for i in 0 1 2..;do
+  -- $i --
+done
+
+for i in {0..9..3};do
+  -- $i --
+done
+
+for i in ${arr[@]};do
+  -- $i --
+done
+
+for i in "$@";do
+  -- $i --
+done
+
+for f in file1 file2...;do
+ -- $f --
+done
+
+for i in $(ls);do
+  -- $i --
+done
+
+for ---;do
+  ---
+  [[condition]] && continue
+  [[condition]] && break
+  [[condition]] && break 2
+  [[condition]] && exit0/1
+done
+```
+
+---
+
+### while
+
+```
+while [[condition]];do
+  ---
+done
+
+while true;do
+ ---
+ [[condition]] && break
+done
+
+while read -p 'message' a;do
+  [[ $a = 0 ]] && break || \
+  -- $a --
+done
+
+while read -r ln;do
+  -- $line --
+done < file.txt
+
+   or (to be less I/O)
+
+mapfile -t lines < file.txt
+for ln in ${lines[@]};do
+  -- $ln --
+done
+```
+
+#### batch output/input process
+
+batch output
+
+```
+input_file="input.txt"
+output_file="output.txt"
+> "$output_file"
+
+batch_size=1000
+batch=()
+count=0
+
+while IFS= read -r ln; do
+  [[ -z "$ln" ]] && continue
+  ln1= -- process to $ln --
+  batch+=("$ln1")
+  ((count++))
+
+  (( count == batch_size )) && {
+    printf "%s\n" "${batch[@]}" >> "$output_file"
+    batch=()
+    count=0
+  }
+done < "$input_file"
+
+(( count > 0 )) && printf "%s\n" "${batch[@]}" >> "$output_file"
+```
+
+use file descriptor
+
+```
+input_file="input.txt"
+output_file="output.txt"
+
+batch_size=1000
+batch=()
+count=0
+
+exec 3> "$output_file"
+
+while IFS= read -r ln; do
+  [[ -z "$ln" ]] && continue
+
+  batch+=("$(command <<< "$ln")")
+  ((count++))
+
+  ((count == batch_size)) && {
+    printf "%s\n" "${batch[@]}" >&3
+    batch=()
+    count=0
+  }
+done < "$input_file"
+
+((count > 0)) && printf "%s\n" "${batch[@]}" >&3
+
+exec 3>&-
+```
+
+watching memory usage
+
+```
+input_file="input.txt"
+output_file="output.txt"
+
+max_mem=10485760  # 10MB
+batch=()
+batch_bytes=0
+
+exec 3> "$output_file"
+
+while IFS= read -r ln; do
+  [[ -z "$line" ]] && continue
+
+  ln1= -- process to $ln --
+  batch+=("$ln1")
+
+  line_bytes=$(printf "%s\n" "$ln1" | wc -c)
+  (( batch_bytes += line_bytes ))
+
+  (( batch_bytes >= max_mem )) && {
+    printf "%s\n" "${batch[@]}" >&3
+    batch=()
+    batch_bytes=0
+  }
+done < "$input_file"
+
+(( batch_bytes > 0 )) && printf "%s\n" "${batch[@]}" >&3
+
+exec 3>&-
+```
+
+batch input with mapfile
+
+```
+input_file="input.txt"
+output_file="output.txt"
+
+max_mem=10485760   # 10MB
+chunk_lines=10000
+batch=()
+batch_bytes=0
+
+exec 3> "$output_file"
+exec 4< "$input_file"
+
+while true; do
+  mapfile -t -n "$chunk_lines" lines <&4
+  (( ${#lines[@]} == 0 )) && break
+
+  for ln in "${lines[@]}"; do
+    [[ -z "$ln" ]] && continue
+
+    ln1=-- process to $ln --
+    batch+=("$ln1")
+
+    line_bytes=$(printf "%s\n" "$ln1" | wc -c)
+    (( batch_bytes += line_bytes ))
+
+    (( batch_bytes >= max_mem )) && {
+      printf "%s\n" "${batch[@]}" >&3
+      batch=()
+      batch_bytes=0
+    }
+  done
+done
+
+(( batch_bytes > 0 )) && printf "%s\n" "${batch[@]}" >&3
+
+exec 3>&-
+exec 4<&-
+```
+
+---
+
+### select
+
+```
+select i in opt1 opt2...;do
+  case $i in
+    opt1)
+      ---;;
+    opt2)
+      ---;;
+    ...
+    *)
+      ---;;
+  esac
+done
+
+select i in opt1 opt2...;do
+  case $REPLY in
+    1)
+      ---;;
+    2)
+      ---;;
+    ...
+    *)
+      ---;;
+  esac
+done
+```
+
+---
+
+### shell function
+
+```
+fn0(){
+  ---
+  local var=str
+  -- $var --
+  return 0/not 0
+}
+
+fn0
+a=$(fn0)
+```
+
+```
+fn0(){
+  local var=str
+  -- $var, $1, $2, $3...--
+  return 0/not 0
+}
+
+fn0 str1 str2 str3...
+```
+
+---
+
 ## file process
 
 touch file1 file2...
@@ -576,11 +939,12 @@ ls
 - -t
 - -R
 
-glob (wildcard for filename)
+glob (wildcard)
 
 - ? : one character
 - \* : some characters
 - [chr1 chr2...] : any one character
+- [!chr1 chr2...] : other character
 - {str1 str2...} : any one string
 - {0..9} : 0-9 sequence
 
@@ -634,7 +998,7 @@ diff file1 file2
 
 ---
 
-locate pattern1 pattern2...
+locate glob1 glob2...
 
 (sudo apt install mlocate)
 updatedb
@@ -646,12 +1010,12 @@ updatedb
 
 ---
 
-find path pattern(string+glob)
+find path glob
 
-- -name pattern
-- -iname pattern
-- -name pattern1 -o -name pattern2
-- -name pattern1 -a -name pattern2
+- -name glob
+- -iname glob
+- -name glob1 -o -name glob2
+- -name glob1 -a -name glob2
 - -type f/d/l
 - -user username
 - -size +100M/+1G/...
@@ -692,11 +1056,9 @@ rsync dir0 dir1/
 regularly backup
 
 ```
-
 crontab -e
 
 0 1 \* \* \* rsync -az dir0/ dir1/
-
 ```
 
 ---
@@ -761,9 +1123,7 @@ tr chr1 chr2 < file.txt
 delete new line at not end
 
 ```
-
 tr -d '\\n' < test.sh
-
 ```
 
 ---
@@ -797,7 +1157,7 @@ column file
 
 ---
 
-grep regexp file
+grep regex file
 
 - -n
 - -i
@@ -808,10 +1168,8 @@ grep regexp file
 delete empty line
 
 ```
-
 grep -v '^$' file.txt
 grep -v '^[[:space:]]*$' file.txt
-
 ```
 
 #### regular expression
@@ -821,13 +1179,13 @@ grep -v '^[[:space:]]*$' file.txt
 - ^str : start
 - str$ : end
 
-#### extended regexp
+#### extended regex
 
-- (regexp) : group
-- (regexp)? : 0 or 1
-- (regexp)\+ : repeat
-- (regexp){m} / {m,n} / {m,} : repeat >=m, <=n
-- (regexp1 | regexp2 |...) : or
+- (regex) : group
+- (regex)? : 0 or 1
+- (regex)\+ : repeat
+- (regex){m} / {m,n} / {m,} : repeat >=m, <=n
+- (regex1 | regex2 |...) : or
 
 ---
 
@@ -836,10 +1194,10 @@ sed 'script' file
 - 'line d'
 - 'line1,line2 d'
 - 'line,$ d'
-- '/regexp/d'
-- -n '/regexp/p'
-- 's/regexp/str/', 's/regexp/str/g'
-- 's/--(regexp)--/--\1--/'
+- '/regex/d'
+- -n '/regex/p'
+- 's/regex/str/', 's/regex/str/g'
+- 's/--(regex)--/--\1--/'
 - 's/--(re1)--(re2)--/--\1--\2--/'
 - -i
 - -E
@@ -852,46 +1210,36 @@ ex.
 - delim : space, 3 columns
 
 ```
-
 sed -nE 's/^([^ ]+) +([^ ]+) +([^ ]+)/\1,\2,\3/p' file.txt > file.csv
-
 ```
 
 - delim : space, tab, 3 columns
 
 ```
-
 sed -nE 's/^([^[:space:]]+)[[:space:]]+([^[:space:]]+)[[:space:]]+([^[:space:]]+)/\1,\2,\3/p' file.txt > file.csv
-
 ```
 
 - extract only number, 3 columns
 
 ```
-
 sed -nE 's/._?([0-9]+)._?([0-9]+)._?([0-9]+)._/\1,\2,\3/p' file.txt > file.csv
-
 ```
 
 - if string has " escape with ""
 - if string has space, tab, new line, comma surround all with "
 
 ```
-
 sed 's/"/""/g; s/^/"/; s/$/"/' file.txt > file.csv
-
 ```
 
 - delim : space, some columns
 
 ```
-
 perl -pe 's/\s+/,/g' file.txt > file.csv
 
 awk '{$1=$1; gsub(/ +/, ","); print}' file.txt > file.csv
 
 sed -E ':a; s/^([^ ]+) +([^ ]+)/\1,\2/; ta' file.txt > file.csv
-
 ```
 
 ---
@@ -1019,9 +1367,7 @@ date
 - +%y, +%m, +%d, +%H, +%M, +%S
 
 ```
-
 date '+%y/%m/%d'
-
 ```
 
 ---
@@ -1081,10 +1427,8 @@ ftp
 prepare FTP server
 
 ```
-
 sudo apt install vsftpd
 sudo nano /etc/vsftpd.conf
-
 ```
 
 | 設定                    | 説明                               | 推奨値 |
@@ -1096,18 +1440,15 @@ sudo nano /etc/vsftpd.conf
 | `chroot_local_user=YES` | ユーザーをホームディレクトリに制限 | YES    |
 
 ```
-
 sudo adduser ftpuser
 
 sudo systemctl restart vsftpd
 sudo systemctl enable vsftpd
-
 ```
 
 access to FTP server
 
 ```
-
 ftp xxx.xxx.xxx.xxx
 
 ftp> ls
@@ -1115,7 +1456,6 @@ ftp> cd dir
 ftp> get file
 ftp> put file
 ftp> bye
-
 ```
 
 - -i
@@ -1125,10 +1465,8 @@ ftp> bye
 prepare SFTP server
 
 ```
-
 sudo apt install vsftpd
 sudo nano /etc/vsftpd.conf
-
 ```
 
 listen=YES
@@ -1147,7 +1485,6 @@ rsa_private_key_file=/etc/ssl/private/vsftpd.key
 ssl_ciphers=HIGH
 
 ```
-
 sudo mkdir -p /etc/ssl/private
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
  -keyout /etc/ssl/private/vsftpd.key \
@@ -1157,15 +1494,12 @@ sudo adduser ftpuser
 
 sudo systemctl restart vsftpd
 sudo systemctl enable vsftpd
-
 ```
 
 access to SFTP server
 
 ```
-
 lftp -u ftpuser,password -e "set ftp:ssl-force true; set ssl:verify-certificate no" ftps://192.168.1.10
-
 ```
 
 ---
@@ -1175,12 +1509,10 @@ ssh user@hostname / IP
 - -p port
 
 ```
-
 ssh-keygen -t rsa -b 2048
 ssh-copy-id user0@xxx.xxx.xxx.xxx
 
 ssh user0@xxx.xxx.xxx.xxx
-
 ```
 
 ---
@@ -1214,249 +1546,5 @@ espeak-ng -v ja 'text' --stdout > file.wav
 ---
 
 open-jtalk
-
----
-
-## control structure
-
-### read
-
-```
-read var1 var2...
-  input
-    str1 str2...
-
-read var1
-read var2
-...
-  input
-    str1
-    str2
-    ...
-
-- -p 'message'
-- -sp 'password'
-- -a
-- -r
-
-read -a arr
-  input
-    el0 el1 el2...
-
-read -r var1 var2... <<< "${arr0[@]}"
-
-read -r var1 var2... <<< "$(fn0)"
-```
-
----
-
-### conditions
-
-```
-command1 && command2
-command1 && command2 || command3
-
-[[ $a == str ]] && command
-[[ $a != str ]] && command
-! [[ $a == str ]] && command
-[[ ! $a == str ]] && command
-
-[[ "$a" == "str has space" ]] && command
-
-[[ $a = pattern ]] && command
-
-[[ $a == str1 || $a == str2 ]] && command
-[[ $a == str1 ]] || [[ $a == str2 ]] && command
-[[ $a == str1 && $b == str2 ]] && command
-[[ $a == str1 ]] && [[ $b == str2 ]] && command
-
-[[ $a == str ]] && command1 || command2
-
-[[ $a == str ]] && { command11; command12; } \
-|| { command21; command22; }
-
-[[ $a == str1 ]] && command1 \
-|| { [[ $a == str2 ]] && command2 || command3; }
-
-
-[[ $a > str ]], [[ $a >= str ]]
-[[ $a < str ]], [[ $a <= str ]]
-
-(( a == int ))
-(( a == b )), (( a != b ))
-(( a > b )), (( a >= b ))
-(( a < b )), (( a <= b ))
-
-[[ -n var ]]
-[[ -z var ]]
-[[ -f file ]]
-[[ -d dir/ ]]
-[[ -e file ]]
-[[ -s file ]]
-[[ -r file ]]
-[[ -w file ]]
-[[ -x file ]]
-```
-
----
-
-### case
-
-```
-case $a in
-  regexp1)
-    command1;;
-  regexp2)
-    command2;;
-  regexp3)
-    command3;;
-  ...
-  *)
-    command0;;
-esac
-```
-
----
-
-### for
-
-```
-for i in 0 1 2..;do
-  -- $i --
-done
-
-for i in {0..9..3};do
-  -- $i --
-done
-
-for i in ${arr[@]};do
-  -- $i --
-done
-
-for i in "$@";do
-  -- $i --
-done
-
-for f in file1 file2...;do
- -- $f --
-done
-
-for i in $(ls);do
-  -- $i --
-done
-
-for ---;do
-  ---
-  [[condition]] && continue
-  [[condition]] && break
-  [[condition]] && break 2
-  [[condition]] && exit0/1
-done
-```
-
----
-
-### while
-
-```
-while [[condition]];do
-  ---
-done
-
-while true;do
- ---
- [[condition]] && break
-done
-
-while read -p 'message' a;do
-  [[ $a = 0 ]] && break || \
-  -- $a --
-done
-
-while read -r ln;do
-  -- $line --
-done < file.txt
-
-   or (to be less I/O)
-
-mapfile -t lines < file.txt
-for ln in ${lines[@]};do
-  -- $ln --
-done
-```
-
-batch input from file
-
-```
-batch=1000
-exec 3< file.txt
-
-while true; do
-    mapfile -t -n "$batch" lines <&3
-    (( ${#lines[@]} == 0 )) && break
-
-    for ln in "${lines[@]}"; do
-      -- $ln --
-    done
-    unset lines
-done
-exec 3<&-
-```
-
----
-
-### select
-
-```
-select i in opt1 opt2...;do
-  case $i in
-    opt1)
-      ---;;
-    opt2)
-      ---;;
-    ...
-    *)
-      ---;;
-  esac
-done
-
-select i in opt1 opt2...;do
-  case $REPLY in
-    1)
-      ---;;
-    2)
-      ---;;
-    ...
-    *)
-      ---;;
-  esac
-done
-```
-
----
-
-### shell function
-
-```
-fn0(){
-  ---
-  local var=str
-  -- $var --
-  return 0/not 0
-}
-
-fn0
-a=$(fn0)
-```
-
-```
-fn0(){
-  local var=str
-  -- $var, $1, $2, $3...--
-  return 0/not 0
-}
-
-fn0 str1 str2 str3...
-```
 
 ---
