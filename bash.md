@@ -1081,10 +1081,11 @@ crontab -e
 
 ## text process
 
-wc
+wc < file
 
 - -l
 - -w
+- -c
 
 ---
 
