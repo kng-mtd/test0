@@ -357,18 +357,18 @@ arr=(str0 str1 str2...)
 ${arr[0]} : one element
 ${arr[@]} : all elements
 
-${#arr[@]}} : array size
-${!arr[@]}} : all indexes
+${#arr[@]} : array size
+${!arr[@]} : all indexes
 
 i=0,1,2...
-${a[$i]}
+${arr[$i]}
 
 ${arr[@]:i:k} : slice forward
 ${arr[@]: -i:k} : slice back
 
 arr+=(str) : add element
 arr[i]=str : update elemtnt
-unset arr[0] : delete element
+unset arr[i] : delete element
 
 arr1=("${arr0[@]}") : copy arr
 ```
@@ -387,14 +387,16 @@ ${obj[key]}
 
 ```
 a=int1
+((a++)) ((a--))
+((a+=num)) ((a-=num)) ((a*=num)) ((a/=num)) ((a%=num))
+
 $((a+num)) $((a-num)) $((a\*num)) $((a/num)) $((a%num))
 $((a**num))
-$((a++)) $((a--))
-$((a+=num)) $((a-=num)) $((a*=num)) $((a/=num)) $((a%=num))
 
 b=int2
+((a+=b)) ((a-=b)) ((a*=b)) ((a/=b)) ((a%=b))
+
 $((a+b)) $((a-b)) $((a\*b)) $((a/b)) $((a%b))
-$((a+=b)) $((a-=b)) $((a*=b)) $((a/=b)) $((a%=b))
 
 a=real1
 b=real2
@@ -696,6 +698,7 @@ done
 
 while true;do
  ---
+ [[condition]] && continue
  [[condition]] && break
 done
 
@@ -854,18 +857,22 @@ exec 4<&-
 ### select
 
 ```
-select i in opt1 opt2...;do
+PS3='message'
+select i in str1 str2...;do
   case $i in
-    opt1)
+    str1)
       ---;;
-    opt2)
+    str2)
       ---;;
     ...
     *)
       ---;;
   esac
 done
+```
 
+```
+PS3='message'
 select i in opt1 opt2...;do
   case $REPLY in
     1)
@@ -876,6 +883,15 @@ select i in opt1 opt2...;do
     *)
       ---;;
   esac
+done
+```
+
+```
+opts=(str1 str2...)
+PS3='message'
+select i in ${opts[@]};do
+  [[ $i == str ]] && break
+  -- $i --
 done
 ```
 
