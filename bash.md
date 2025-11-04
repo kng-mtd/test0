@@ -1361,14 +1361,14 @@ script
 ```
 -n line p #ex. 3p
 -n line1,line2 p' #ex. 2,4p
--n line,$ p #ex. 5,$p
+-n 'line,$' p #ex. 5,$p
 -n line~step p #ex. 1~3p
 -n /regex/p
 -n /regex1/,/regex2/p
 
 line d #ex. 3d
 line1,line2 d #ex. 2,4d
-line,$ d' #ex. 5,$d
+'line,$ d' #ex. 5,$d
 /regex/d
 line,/regex/d
 /regex/q
