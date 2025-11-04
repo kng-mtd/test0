@@ -34,10 +34,94 @@
 
 ---
 
-- bash internal commands
+- bash builtin commands
   compgen -b
-  compgen -b | sort -u
   help
+
+| コマンド                                  | 説明                                 |
+| ----------------------------------------- | ------------------------------------ |
+| `:`                                       | 何もしない（常に成功）。             |
+| `.` / `source`                            | スクリプトを現在のシェルで実行。     |
+| `break`                                   | ループを抜ける。                     |
+| `continue`                                | 次のループへ進む。                   |
+| `eval`                                    | 文字列をコマンドとして評価・実行。   |
+| `exec`                                    | 現シェルを別のコマンドに置き換える。 |
+| `exit`                                    | シェルを終了する。                   |
+| `return`                                  | 関数から値を返す。                   |
+| `if` / `then` / `else` / `elif` / `fi`    | 条件分岐構文。                       |
+| `for` / `while` / `until` / `do` / `done` | ループ構文。                         |
+| `case` / `esac`                           | パターンマッチ分岐。                 |
+| `trap`                                    | シグナル受信時の処理を設定。         |
+| `wait`                                    | 子プロセス終了を待機。               |
+
+| コマンド                 | 説明                                 |
+| ------------------------ | ------------------------------------ |
+| `echo`                   | テキストを出力。                     |
+| `printf`                 | 書式付き出力（echo より安全）。      |
+| `read`                   | 標準入力から行を読み込む。           |
+| `mapfile` / `readarray`  | 標準入力を配列に読み込む。           |
+| `pwd`                    | 現在のディレクトリを表示。           |
+| `cd`                     | カレントディレクトリを変更。         |
+| `pushd`                  | ディレクトリスタックに追加して移動。 |
+| `popd`                   | スタックを戻る。                     |
+| `dirs`                   | ディレクトリスタックを表示。         |
+| `test` / `[ ]` / `[[ ]]` | 条件式評価。                         |
+| `ulimit`                 | リソース制限の設定・表示。           |
+| `times`                  | CPU 時間を表示。                     |
+| `true` / `false`         | 常に成功または失敗を返す。           |
+
+| コマンド              | 説明                                |
+| --------------------- | ----------------------------------- |
+| `declare` / `typeset` | 変数の型・属性を設定。              |
+| `local`               | 関数内のローカル変数を定義。        |
+| `readonly`            | 変数を読み取り専用にする。          |
+| `unset`               | 変数または関数を削除。              |
+| `let`                 | 算術式を評価。                      |
+| `set`                 | シェルオプションや変数を設定。      |
+| `export`              | 環境変数を設定または一覧表示。      |
+| `shopt`               | Bash 固有のシェルオプションを設定。 |
+| `getopts`             | スクリプト内の引数を解析。          |
+
+| コマンド  | 説明                                             |
+| --------- | ------------------------------------------------ |
+| `help`    | builtin コマンドのヘルプ表示。                   |
+| `type`    | コマンドの種類（builtin / file / alias）を表示。 |
+| `builtin` | builtin を強制実行（同名外部コマンドを無視）。   |
+| `command` | alias や関数を無視して実行。                     |
+| `caller`  | 現在の関数呼び出しスタック情報を出力。           |
+| `history` | コマンド履歴を表示・操作。                       |
+| `fc`      | 履歴から再実行または編集。                       |
+| `hash`    | コマンドパスのキャッシュを操作。                 |
+| `enable`  | builtin の有効化・無効化を設定。                 |
+
+| コマンド  | 説明                                     |
+| --------- | ---------------------------------------- |
+| `bg`      | 停止したジョブをバックグラウンドで再開。 |
+| `fg`      | ジョブをフォアグラウンドで再開。         |
+| `jobs`    | 現在のジョブ一覧を表示。                 |
+| `disown`  | ジョブをシェル管理から切り離す。         |
+| `kill`    | プロセスにシグナルを送信。               |
+| `suspend` | シェルを一時停止。                       |
+| `logout`  | ログインシェルを終了。                   |
+
+| コマンド   | 説明                                             |
+| ---------- | ------------------------------------------------ |
+| `alias`    | コマンドの別名を定義。                           |
+| `unalias`  | alias を削除。                                   |
+| `compgen`  | 補完候補を生成。                                 |
+| `complete` | 補完動作を定義。                                 |
+| `compopt`  | 補完オプションを設定。                           |
+| `umask`    | ファイル作成時のデフォルトパーミッションを設定。 |
+
+---
+
+bash external commands
+
+echo $PATH
+ls /bin /dir/bin
+
+find $(echo $PATH | tr ':' ' ') -maxdepth 1 -type f -executable 2>/dev/null
+find $(echo $PATH | tr ':' ' ') -maxdepth 1 -type f -executable 2>/dev/null -exec basename {} \;
 
 ---
 
@@ -72,28 +156,37 @@
 
 ---
 
-- common library (.so)
-  sudo find /lib /usr/lib -type f -name '_.so_' 2>/dev/null | sort | less
+- shared object (.so)
+  ldd /bin/bash
 
----
+| ライブラリ名             | 役割                                                                                |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| **linux-vdso.so.1**      | カーネルが提供する仮想的なシステムコールアクセラレータ                              |
+| **libtinfo.so.6**        | ターミナル情報ライブラリ（ncurses の一部）。Bash のコマンドライン編集機能などで使用 |
+| **libdl.so.2**           | `dlopen()` などの関数を提供。動的に.so をロードできる                               |
+| **libc.so.6**            | GNU C ライブラリ（glibc）。標準 I/O、文字列、ファイル操作など Bash 内部もこれを利用 |
+| **ld-linux-x86-64.so.2** | ELF 実行ファイルをロード・リンクするためのランタイムリンカ                          |
 
-- apt managed librarys (lib---)
+sudo find /lib /x86*64-linux-gnu/ -type f -name '*.so*' 2>/dev/null | sort | less
+sudo find /lib /usr/lib -type f -name '*.so\_' 2>/dev/null | sort | less
+
+| カテゴリ                  |                                                 |
+| ------------------------- | ----------------------------------------------- |
+| 標準 C ライブラリ         | `libc.so.6`, `libm.so.6`                        |
+| 数学関数ライブラリ        | `libm.so.6`                                     |
+| スレッド（POSIX Threads） | `libpthread.so.0`                               |
+| 動的リンク機能            | `libdl.so.2`                                    |
+| 圧縮                      | `libz.so.1`, `libbz2.so.1`                      |
+| ネットワーク              | `libresolv.so.2`, `libnsl.so.1`, `libcurl.so.4` |
+| OpenSSL 関連              | `libssl.so.3` / `libcrypto.so.3`                |
+| 端末操作                  | `libtinfo.so`, `libncurses.so`                  |
+| セキュリティ              | `libcrypto.so`, `libssl.so`                     |
+| SQLite データベース       | `libsqlite3.so.0`                               |
+| C++標準ライブラリ         | `libstdc++.so.6`                                |
+| Python 埋め込みランタイム | `libpython3.x.so`                               |
+
+- apt managed libraries (lib---)
   apt list --installed | grep '^lib'
-
----
-
-| ライブラリ                       | 用途                                        |
-| -------------------------------- | ------------------------------------------- |
-| `libc.so.6`                      | 標準 C ライブラリ（ほぼ全てのアプリが使用） |
-| `libm.so.6`                      | 数学関数ライブラリ                          |
-| `libpthread.so.0`                | スレッド（POSIX Threads）                   |
-| `libdl.so.2`                     | 動的リンク機能                              |
-| `libssl.so.3` / `libcrypto.so.3` | OpenSSL 関連                                |
-| `libsqlite3.so.0`                | SQLite データベース                         |
-| `libz.so.1`                      | zlib 圧縮ライブラリ                         |
-| `libcurl.so.4`                   | HTTP 通信                                   |
-| `libstdc++.so.6`                 | C++標準ライブラリ                           |
-| `libpython3.x.so`                | Python 埋め込みランタイム                   |
 
 ---
 
@@ -468,7 +561,7 @@ calculation with perl -e
 
 ---
 
-## output text
+## output
 
 echo str1 str2...
 
@@ -545,7 +638,7 @@ clear
 
 ## control structure
 
-### read
+### input
 
 ```
 read var1 var2...
@@ -560,11 +653,6 @@ read var2
     str2
     ...
 
-- -p 'message'
-- -sp 'password'
-- -a
-- -r
-
 read -a arr
   input
     el0 el1 el2...
@@ -573,6 +661,33 @@ read -r var1 var2... <<< "${arr0[@]}"
 
 read -r var1 var2... <<< "$(fn0)"
 ```
+
+- -p 'message'
+- -sp 'password'
+- -a
+- -r
+
+---
+
+```
+mapfile/readarray arr
+  input
+    str1
+    str2
+    ...
+    ctrl+d
+
+echo ${arr[@]}
+
+mapfile arr < file.txt
+
+mapfile arr < <(command)
+```
+
+- -t
+- -d delim
+- -n num
+- -s num
 
 ---
 
@@ -633,8 +748,6 @@ command1 && command2 || command3
 
 ---
 
-### case
-
 ```
 case $a in
   regex1)
@@ -651,7 +764,7 @@ esac
 
 ---
 
-### for
+### loop
 
 ```
 for i in 0 1 2..;do
@@ -688,8 +801,6 @@ done
 ```
 
 ---
-
-### while
 
 ```
 while [[condition]];do
@@ -1224,6 +1335,12 @@ sed 'script' file
 - -i
 - -E
 
+---
+
+awk 'script' file
+
+---
+
 #### make csv from text
 
 sed -nE 's/--(re1)--(re2)--(re3)--/\1,\2,\3/p' file.txt > file.csv
@@ -1570,3 +1687,49 @@ espeak-ng -v ja 'text' --stdout > file.wav
 open-jtalk
 
 ---
+
+## tmux multiplexer
+
+|          |                |             |                |
+| -------- | -------------- | ----------- | -------------- |
+| ctrl+`b` | プレフィックス |             |                |
+|          | **基本**       |             | **session**    |
+| `?`      | キー一覧       | `s`         | 一覧選択       |
+| `:`      | コマンド       | `d`         | デタッチ       |
+|          |                | `&`         | 名前変更       |
+|          |                |             |                |
+|          | **window**     |             | **pane**       |
+| `c`      | 新規作成       | `%`         | 左右分割       |
+| `w`      | 選択           | `"`         | 上下分割       |
+| `0`-`9`  | 指定番号へ移動 | `q`         | 番号表示       |
+| `&`      | 破棄           | `→`         | 方向へ移動     |
+| `n`      | 次へ           | ctrl+`→`    | サイズ変更     |
+| `p`      | 前へ           | `!`         | ウィンドウ化   |
+| `l`      | 以前のへ       | `x`         | 破棄           |
+| `'`      | 入力番号へ     | `o`         | 順に移動       |
+| `.`      | 番号変更       | `;`         | 以前のへ移動   |
+| `,`      | 名前変更       | `z`         | 最大化         |
+| `f`      | 検索           | space       | レイアウト変更 |
+|          | **コピー**     | alt-`1`-`5` | レイアウト変更 |
+| `[`      | モード開始     | `{`         | 前方向に入替   |
+| space    | 開始位置決定   | `}`         | 後方向に入替   |
+| enter    | 終了位置決定   | ctrl+`o`    | 全体入れ替え   |
+| `]`      | 貼り付け       | `t`         | 時計表示       |
+|          |                |             |                |
+|          | **plugin**     |             | **resurrect**  |
+| `I`      | インストール   | ctrl+`s`    | tmux 設定保存  |
+| `U`      | アップデート   | ctrl+`r`    | tmux 設定復活  |
+
+|                             |                           |
+| --------------------------- | ------------------------- |
+| **tmux コマンド**           |                           |
+| `tmux`                      | 新規 session 開始         |
+| `tmux new -s 名前`          | 名前を付けて session 開始 |
+| `tmux ls`                   | session 一覧              |
+| `tmux lsc`                  | 接続クライアント一覧      |
+| `tmux a`                    | session 再開              |
+| `tmux kill-session`         | セッションを終了          |
+| `tmux kill-session -t 名前` | セッションを指定して終了  |
+| `tmux kill-server`          | tmux 全体を終了           |
+| `tmux source ~/.tmux.conf`  | .tmux.conf の再読込       |
+| `tmux -V`                   | バージョン確認            |
