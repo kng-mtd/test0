@@ -2,7 +2,7 @@
 
 ## notes
 
-- run editor
+- run default editor
   ctrl+x+e
 
 ---
@@ -159,13 +159,13 @@ find $(echo $PATH | tr ':' ' ') -maxdepth 1 -type f -executable 2>/dev/null -exe
 - shared object (.so)
   ldd /bin/bash
 
-| ライブラリ名             | 役割                                                                                |
-| ------------------------ | ----------------------------------------------------------------------------------- |
-| **linux-vdso.so.1**      | カーネルが提供する仮想的なシステムコールアクセラレータ                              |
-| **libtinfo.so.6**        | ターミナル情報ライブラリ（ncurses の一部）。Bash のコマンドライン編集機能などで使用 |
-| **libdl.so.2**           | `dlopen()` などの関数を提供。動的に.so をロードできる                               |
-| **libc.so.6**            | GNU C ライブラリ（glibc）。標準 I/O、文字列、ファイル操作など Bash 内部もこれを利用 |
-| **ld-linux-x86-64.so.2** | ELF 実行ファイルをロード・リンクするためのランタイムリンカ                          |
+| ライブラリ名         | 役割                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------- |
+| linux-vdso.so.1      | カーネルが提供する仮想的なシステムコールアクセラレータ                              |
+| libtinfo.so.6        | ターミナル情報ライブラリ（ncurses の一部）。Bash のコマンドライン編集機能などで使用 |
+| libdl.so.2           | `dlopen()` などの関数を提供。動的に.so をロードできる                               |
+| libc.so.6            | GNU C ライブラリ（glibc）。標準 I/O、文字列、ファイル操作など Bash 内部もこれを利用 |
+| ld-linux-x86-64.so.2 | ELF 実行ファイルをロード・リンクするためのランタイムリンカ                          |
 
 sudo find /lib /x86*64-linux-gnu/ -type f -name '*.so*' 2>/dev/null | sort | less
 sudo find /lib /usr/lib -type f -name '*.so\_' 2>/dev/null | sort | less
@@ -686,8 +686,8 @@ mapfile arr < <(command)
 
 - -t
 - -d delim
-- -n num
-- -s num
+- -n line
+- -s line
 
 ---
 
@@ -726,12 +726,15 @@ command1 && command2 || command3
 [[ $a == str1 ]] && command1 \
 || { [[ $a == str2 ]] && command2 || command3; }
 
-
 [[ $a > str ]], [[ $a >= str ]]
 [[ $a < str ]], [[ $a <= str ]]
 
 (( a == int ))
 (( a == b )), (( a != b ))
+(( a == int1 && b == int2))
+(( a == int1 )) && (( b == int2))
+(( a == int1 || b == int2))
+(( a == int1 )) || (( b == int2))
 (( a > b )), (( a >= b ))
 (( a < b )), (( a <= b ))
 
@@ -1192,6 +1195,30 @@ crontab -e
 
 ## text process
 
+locale
+
+```
+export LC_ALL=en_US.UTF-8
+export LC_ALL=ja_JP.UTF-8
+
+LC_ALL=en_US.UTF-8 command
+```
+
+- -a
+
+| カテゴリ      | 意味                                   |
+| ------------- | -------------------------------------- |
+| `LC_CTYPE`    | 文字コード・文字分類（日本語処理の要） |
+| `LC_COLLATE`  | 並び順（sort など）                    |
+| `LC_TIME`     | 日付・時刻フォーマット                 |
+| `LC_NUMERIC`  | 数値表記（小数点など）                 |
+| `LC_MONETARY` | 通貨表記                               |
+| `LC_MESSAGES` | メッセージ言語                         |
+| `LANG`        | 全体のデフォルト                       |
+| `LC_ALL`      | 最上位の上書き設定（全部を統一）       |
+
+---
+
 wc < file
 
 - -l
@@ -1202,13 +1229,13 @@ wc < file
 
 head file1 file2...
 
-- -n num
+- -n line
 
 ---
 
 tail file1 file2...
 
-- -n num
+- -n line
 - -f
 
 ---
@@ -1223,7 +1250,7 @@ sort file
 
 ---
 
-cut file
+cut file (not for multi byte character)
 
 - -c num
 - -c num-
@@ -1234,7 +1261,7 @@ cut file
 
 ---
 
-tr chr1 chr2 < file.txt
+tr chr1 chr2 < file.txt (not for multi byte character)
 
 - a-z A-Z
 - A-Z a-z
@@ -1253,6 +1280,10 @@ delete new line at not end
 ```
 tr -d '\\n' < test.sh
 ```
+
+---
+
+rev file (not for multi byte character)
 
 ---
 
@@ -1322,18 +1353,50 @@ grep -v '^[[:space:]]*$' file.txt
 
 ---
 
-sed 'script' file
+sed script file1 file2...
+sed -e 'script1' -e 'script2'... file1 file2...
 
-- 'line d'
-- 'line1,line2 d'
-- 'line,$ d'
-- '/regex/d'
-- -n '/regex/p'
-- 's/regex/str/', 's/regex/str/g'
-- 's/--(regex)--/--\1--/'
-- 's/--(re1)--(re2)--/--\1--\2--/'
+script
+
+```
+-n line p #ex. 3p
+-n line1,line2 p' #ex. 2,4p
+-n line,$ p #ex. 5,$p
+-n line~step p #ex. 1~3p
+-n /regex/p
+-n /regex1/,/regex2/p
+
+line d #ex. 3d
+line1,line2 d #ex. 2,4d
+line,$ d' #ex. 5,$d
+/regex/d
+line,/regex/d
+/regex/q
+
+s/regex/str/, s/regex/str/g
+line s/regex/str/ #ex. 5s/regex/str/
+s/--(regex)--/--\1--/
+s/--(re1)--(re2)--/--\1--\2--/
+
+'/regex/i\text'
+'/regex/a\text'
+'/regex/c\text'
+
+glob=---
+str=---
+sed "s/$glob/$str/g" file
+
+sed 's/　/ /g'
+
+s/<[^>]*>//g file.html/xml #only for simple html/xml
+
+perl -CSDA -0777 -pe 's/<.*?>//sg' file.html/xml
+```
+
+- -e
 - -i
 - -E
+- -s
 
 ---
 
