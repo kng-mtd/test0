@@ -1198,6 +1198,8 @@ crontab -e
 locale
 
 ```
+$LANG
+
 export LC_ALL=en_US.UTF-8
 export LC_ALL=ja_JP.UTF-8
 
@@ -1360,21 +1362,35 @@ script
 
 ```
 -n line p #ex. 3p
+-n "$var p"
+-n "$var,+num p" #ex. "$var,+3p"
 -n line1,line2 p' #ex. 2,4p
--n 'line,$' p #ex. 5,$p
+-n 'line,$p' #ex. '5,$p'
+-n line1 p;line2 p' #ex. 2p;4p
 -n line~step p #ex. 1~3p
 -n /regex/p
+-n '/regex/!p' # == /regex/d
+-n line,/regex/p #ex. 3,/regex/p
+-n /regex/,line p #ex. /regex/,5p
+-n /regex/,+num p #ex. /regex/,+3p
 -n /regex1/,/regex2/p
 
 line d #ex. 3d
-line1,line2 d #ex. 2,4d
-'line,$ d' #ex. 5,$d
+'line,$d' #ex. '5,$d'
+"$var d"
 /regex/d
-line,/regex/d
 /regex/q
 
-s/regex/str/, s/regex/str/g
+s/regex/str/
+s/regex/str/g
+s/regex//g
+s/regex/str/num
+"$var s/regex/str/"
 line s/regex/str/ #ex. 5s/regex/str/
+line1,line2 s/regex/str/ #ex. 2,4s/regex/str/
+
+-n s/regex/str/p
+
 s/--(regex)--/--\1--/
 s/--(re1)--(re2)--/--\1--\2--/
 
