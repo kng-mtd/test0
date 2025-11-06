@@ -1257,14 +1257,15 @@ tr chr1 chr2 < file.txt (not for multi byte character)
 
 - a-z A-Z
 - A-Z a-z
-- $'\t' ' '
-- $'\t' ,
-- , $'\t'
+- '\t' ' '
+- '\t' ,
+- , '\t'
 
 - tr -d 0-9
 - tr -cd 0-9
 - tr -s ' '
 - tr -s '\t'
+- tr -s ' \t'
 - tr -s '\n'
 
 delete new line at not end
@@ -1272,7 +1273,8 @@ delete new line at not end
 
 use POSIX class
 `tr '[:lower:]' '[:upper:]' < file.txt`
-delete except number,alphabet
+
+delete except number,alphabet,new line
 `tr -cd '[:alnum:]\n' < file.txt`
 
 | POSIX クラス | 意味                                 | マッチする文字                                                   |     |
