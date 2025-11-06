@@ -242,9 +242,7 @@ crontab -e
 
 cron の出力は /var/log/syslog に記録されます。
 
-```
-grep CRON /var/log/syslog
-```
+`grep CRON /var/log/syslog`
 
 ---
 
@@ -1040,6 +1038,7 @@ fn0 str1 str2 str3...
 ## file process
 
 touch file1 file2...
+touch glob
 
 ---
 
@@ -1061,6 +1060,7 @@ pwd
 ---
 
 ls
+ls glob
 
 - -l
 - -a
@@ -1068,15 +1068,6 @@ ls
 - -S
 - -t
 - -R
-
-glob (wildcard)
-
-- ? : one character
-- \* : some characters
-- [chr1 chr2...] : any one character
-- [!chr1 chr2...] : other character
-- {str1 str2...} : any one string
-- {0..9} : 0-9 sequence
 
 ---
 
@@ -1252,14 +1243,13 @@ sort file
 
 ---
 
-cut file (not for multi byte character)
+column file
 
-- -c num
-- -c num-
-- -c -num
-- -c num1-num2
-- -d delim -f num
-- -d delim -f num1-num2
+- -t
+
+---
+
+rev file (not for multi byte character)
 
 ---
 
@@ -1278,14 +1268,53 @@ tr chr1 chr2 < file.txt (not for multi byte character)
 - tr -s '\n'
 
 delete new line at not end
+`tr -d '\\n' < file.txt`
 
-```
-tr -d '\\n' < test.sh
-```
+use POSIX class
+`tr '[:lower:]' '[:upper:]' < file.txt`
+delete except number,alphabet
+`tr -cd '[:alnum:]\n' < file.txt`
+
+| POSIX クラス | 意味                                 | マッチする文字                                                   |     |
+| ------------ | ------------------------------------ | ---------------------------------------------------------------- | --- |
+| `[:alnum:]`  | 英数字                               | A–Z, a–z, 0–9                                                    |     |
+| `[:alpha:]`  | 英字のみ                             | A–Z, a–z                                                         |     |
+| `[:digit:]`  | 数字                                 | 0–9                                                              |     |
+| `[:lower:]`  | 小文字                               | a–z                                                              |     |
+| `[:upper:]`  | 大文字                               | A–Z                                                              |     |
+| `[:space:]`  | 空白全般（スペース, タブ, 改行など） | `' '`, `\t`, `\n`, …                                             |     |
+| `[:blank:]`  | 空白とタブのみ                       | `' '`, `\t`                                                      |     |
+| `[:punct:]`  | 句読点や記号                         | `! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ { \| } ~` |
+| `[:graph:]`  | 印字可能文字（空白以外）             | 英数字・記号                                                     |     |
+| `[:print:]`  | 印字可能文字（空白を含む）           | すべての可視文字＋スペース                                       |     |
+| `[:cntrl:]`  | 制御文字                             | `\n`, `\t`, `\r`, `\0`, …                                        |     |
+| `[:xdigit:]` | 16 進数字                            | 0–9, A–F, a–f                                                    |     |
 
 ---
 
-rev file (not for multi byte character)
+cut file (not for multi byte character)
+
+```
+- -c num #ex. -c3
+- -c"$var" #ex. -c"$a"
+- -c num- #ex. -c5-
+- -c -num #ex. -c-5
+- -c num1-num2 #ex. -c2-6
+- -c num1,num2... #ex. -c2,6
+- -c 'num1-num2,num3-num4...' #ex. -c'2-4,6-8'
+- --complement
+
+- -d delim -f num #ex. -d' ' -f3
+- -d"$var1" -f"$var2" #ex. -d"$a" -f"$b"
+- -d delim -f 'num1-num2,num3-num4...'
+```
+
+if delim is not just a single space
+
+```
+tr -s ' ' < file | cut -d' ' -f num
+tr -s '[:blank:]' < file | cut -d' ' -f num
+```
 
 ---
 
@@ -1312,12 +1341,6 @@ join file1 file2
 
 ---
 
-column file
-
-- -t
-
----
-
 grep regex file1 file2...
 
 - -n
@@ -1338,9 +1361,18 @@ grep -v '^$' file.txt
 grep -v '^[[:space:]]*$' file.txt
 ```
 
-#### regular expression
+#### glob (wildcard)
 
-- . [abc] [^abc] : one charcter
+- ? : one character
+- \* : some characters
+- [chr1 chr2...] : any one character
+- [!chr1 chr2...] : other character
+- {str1 str2...} : any one string
+- {0..9} : 0-9 sequence
+
+#### regular expression (regex)
+
+- . [abc] [^abc] : any one charcter
 - \* : repeat character
 - ^str : start
 - str$ : end
@@ -1362,8 +1394,8 @@ script
 
 ```
 -n line p #ex. 3p
--n "$var p"
--n "$var,+num p" #ex. "$var,+3p"
+-n "$var"p #ex. "$a"p
+-n "$var,+num p" #ex. "$a,+3p"
 -n line1,line2 p' #ex. 2,4p
 -n 'line,$p' #ex. '5,$p'
 -n line1 p;line2 p' #ex. 2p;4p
@@ -1376,8 +1408,9 @@ script
 -n /regex1/,/regex2/p
 
 line d #ex. 3d
-'line,$d' #ex. '5,$d'
-"$var d"
+"$var"d #ex. "$a"d
+line,"$var"d #ex. 5,"$a"d
+"$var",line d #ex. "$a",10d
 /regex/d
 /regex/q
 
@@ -1584,9 +1617,7 @@ date
 - +%F, +%D, +%T
 - +%y, +%m, +%d, +%H, +%M, +%S
 
-```
-date '+%y/%m/%d'
-```
+`date '+%y/%m/%d'`
 
 ---
 
