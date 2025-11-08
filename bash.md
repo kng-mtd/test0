@@ -1164,6 +1164,17 @@ tar -xzvf file.tar.gz
 
 ---
 
+split -dl num file ./dir/part\_
+
+- -l
+- -d
+- -a num
+- -b num
+
+`cat part_* > merge`
+
+---
+
 rsync dir0/ dir1/
 rsync dir0 dir1/
 
