@@ -689,6 +689,49 @@ mapfile arr < <(command)
 
 ---
 
+#### select
+
+```
+PS3='message'
+select i in str1 str2...;do
+  case $i in
+    str1)
+      ---;;
+    str2)
+      ---;;
+    ...
+    *)
+      ---;;
+  esac
+done
+```
+
+```
+PS3='message'
+select i in opt1 opt2...;do
+  case $REPLY in
+    1)
+      ---;;
+    2)
+      ---;;
+    ...
+    *)
+      ---;;
+  esac
+done
+```
+
+```
+opts=(str1 str2...)
+PS3='message'
+select i in ${opts[@]};do
+  [[ $i == str ]] && break
+  -- $i --
+done
+```
+
+---
+
 ### conditions
 
 ```
@@ -962,49 +1005,6 @@ done
 
 exec 3>&-
 exec 4<&-
-```
-
----
-
-### select
-
-```
-PS3='message'
-select i in str1 str2...;do
-  case $i in
-    str1)
-      ---;;
-    str2)
-      ---;;
-    ...
-    *)
-      ---;;
-  esac
-done
-```
-
-```
-PS3='message'
-select i in opt1 opt2...;do
-  case $REPLY in
-    1)
-      ---;;
-    2)
-      ---;;
-    ...
-    *)
-      ---;;
-  esac
-done
-```
-
-```
-opts=(str1 str2...)
-PS3='message'
-select i in ${opts[@]};do
-  [[ $i == str ]] && break
-  -- $i --
-done
 ```
 
 ---
