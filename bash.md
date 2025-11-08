@@ -1787,6 +1787,33 @@ scp user@hostname/IP:path/file ./
 
 ---
 
+## binary file
+
+hexdump file
+
+- -C
+
+---
+
+base64 file.bin > file.b64
+base64 -d file.b64 > file.bin
+
+---
+
+xxd file.bin
+
+xxd -p file.bin > file.hex
+xxd -pr file.hex > file.bin
+
+```
+hex=$(xxd -p file0.bin | tr -d '\n')
+echo "$hex"
+
+echo -n "$hex" | xxd -pr > file1.bin
+```
+
+---
+
 ## audio
 
 aplay file.wav
