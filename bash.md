@@ -1425,6 +1425,11 @@ grep -v '^[[:space:]]*$' file.txt
 sed script file1 file2...
 sed -e 'script1' -e 'script2'... file1 file2...
 
+- -e
+- -i
+- -E
+- -s
+
 script
 
 ```
@@ -1436,7 +1441,7 @@ script
 -n line1 p;line2 p' #ex. 2p;4p
 -n line~step p #ex. 1~3p
 -n /regex/p
--n '/regex/!p' # == /regex/d
+-n '/regex/!p' # is equal /regex/d
 -n line,/regex/p #ex. 3,/regex/p
 -n /regex/,line p #ex. /regex/,5p
 -n /regex/,+num p #ex. /regex/,+3p
@@ -1477,11 +1482,6 @@ s/<[^>]*>//g file.html/xml #only for simple html/xml
 perl -CSDA -0777 -pe 's/<.*?>//sg' file.html/xml
 ```
 
-- -e
-- -i
-- -E
-- -s
-
 ---
 
 awk 'script' file
@@ -1489,6 +1489,54 @@ awk 'script' file
 - -F
 - -f
 - -v
+
+script
+
+```
+{print $num1,num2,...}
+{print $num1 num2 ...}
+{print $num1 "str1" num2 "str2"...}
+$num1==str {print $num2,num3...}
+!$num1==str {print $num2,num3...}
+$num1==str1 && $num2==str2 {print $num3,num4...}
+$num1==str1 || $num2==str2 {print $num3,num4...}
+$num1+$num2==str {print $num3,num4...}
+
+/regex/{print $num1,num2,...}
+$num1 ~/regex/ {print $num2,$num3...}
+$num1 !~/regex/ {print $num2,$num3...}
+
+{print $NF}
+NF<int {print $num1,num2,...}
+
+NR==line {print $num1,num2,...}
+NR==line1, NR==line2 {print $num1,num2,...}
+
+FS="str0",OFS="str1" {print $num1,$num2...}
+
+BEGIN{script1} END{script2} script3
+#ex. BEGIN{print "start"} END{print "finish"} {print $num1,num2}
+
+```
+
+functions
+
+- length($num)
+- tolower($num), toupper($num)
+- substr($num,index1,index2)
+- index($num,str)
+- split($num,arr,delim)
+- sub(str0,str1,$num)
+- gsub(str0,str1,$num)
+
+- int($num)
+- sqrt($num)
+- exp($num)
+- log($num)
+- sin($num)
+- cos($num)
+- atan2($num1,$num2)
+- rand()
 
 ---
 
