@@ -206,6 +206,10 @@ bash script.sh
 chmod +x script.sh
 ./script.sh
 
+check syntax
+
+bash -n script.sh
+
 debug mode
 
 bash -x script.sh
@@ -431,13 +435,29 @@ $@ : arg1 arg2 ...
 $# : n of args
 ```
 
-command1 | xargs command2
+---
 
+command1 | xargs command2
+command | xargs
+
+- -t
+- -I{} command {}
 - -n num
-- I{}
-- P num
+- -P num
 - -0
 - -r
+
+```
+ls | xargs -n5
+
+ls | xargs ls
+
+ls | xargs -I{} echo `pwd`/{}
+
+ls | cut -d. -f1 | xargs -I{} mv {}.ext0 {}.ext1
+
+seq 20 | xargs -n1 -P4 bash -c 'echo $0; sleep 1'
+```
 
 ---
 
@@ -1039,6 +1059,7 @@ fn0 str1 str2 str3...
 
 touch file1 file2...
 touch glob
+touch file{seq} #ex. file{00..99}.txt
 
 ---
 
@@ -1271,6 +1292,7 @@ tr chr1 chr2 < file.txt (not for multi byte character)
 - '\t' ' '
 - '\t' ,
 - , '\t'
+- chr01chr02... chr11chr2...
 
 - tr -d 0-9
 - tr -cd 0-9
