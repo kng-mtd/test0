@@ -1486,6 +1486,10 @@ perl -CSDA -0777 -pe 's/<.*?>//sg' file.html/xml
 
 awk 'script' file
 
+- -F
+- -f
+- -v
+
 ---
 
 #### make csv from text
@@ -1579,6 +1583,20 @@ free
 
 ---
 
+hostname
+
+- -I
+
+---
+
+whoami
+
+---
+
+who
+
+---
+
 ps
 
 - -f
@@ -1656,26 +1674,11 @@ date
 
 ---
 
-top
-htop
+top, htop
 
 ---
 
 ## network
-
-hostname
-
-- -I
-
----
-
-whoami
-
----
-
-who
-
----
 
 ping
 
