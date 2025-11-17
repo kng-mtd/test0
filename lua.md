@@ -43,7 +43,7 @@ one liner
 lua -e '--script--'
 luagit -e '--script--'
 
-echo "1 2 3" | lua -e 'local s=0; for n in io.read("\*a"):gmatch("%d+") do s=s+tonumber(n) end; print(s)'
+echo '1 2 3' | lua -e 'local s=0; for n in io.read("\*a"):gmatch("%d+") do s=s+tonumber(n) end; print(s)'
 
 script.lua
 
