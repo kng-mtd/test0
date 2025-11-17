@@ -4,7 +4,7 @@ lua -v
 sudo apt install luajit
 luajit -v
 
-perfomance
+performance
 
 ```
 time { s=0; for ((i=0;i<1000000;i++)); do (($RANDOM%2==0)) && ((s+=$RANDOM%100)); done; echo -e "\n bash $s"; }
