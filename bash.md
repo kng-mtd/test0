@@ -1868,6 +1868,101 @@ scp user@hostname/IP:path/file ./
 
 ---
 
+## semi structured data
+
+jq json-path file.json
+
+```
+{"key1":num1, "key2":num2... }
+{"key1":"str1", "key2":"str2"... }
+
+jq .
+jq -c .
+
+{"key1": {"key11":"val11", "key12":"val12"...}}
+
+jq .key1
+jq .key1.key11
+jq -r .key1.key11
+jq -r '.key1.key11, .key1.key12,...'
+jq 'key1 | keys'
+jq '.key1 | length'
+
+jq '.key1 +={"key1x":"val1x"}'
+jq 'del(.key1x)'
+
+["val1", "val2"... ]
+
+jq .[]
+jq -r .[]
+jq .[num] #num 0-
+jq .[num1:num2]
+jq .[-num]
+
+{"key0":[{"key1":"val11"}, {"key1":"val12"}... ]}
+
+jq .key0[]
+jq .key0[].key1
+jq '.key0[] | length'
+
+[{"key1":"val11", "key2":"val21"}, {"key1":"val12", "key2":"val22"},... ]
+
+jq '.[] | .key1, .key2'
+
+{"key0":[{"key1":"val11", "key2":"val21"}, {"key1":"val12", "key2":"val22"},... ]}
+
+jq '.[] | .[] |.key1, .key2'
+
+jq '.key0[] | .keyx="valx"'
+jq '.key0[] | select(.key1 == "str")'
+jq '.key0[] | select(.key1 > num)'
+
+jq '.key0 | add'
+jq '.key0 | map(.+1)'
+jq -r '.key0 | [.key1, .key2] | @csv'
+
+```
+
+---
+
+xmllint
+
+sudo apt install libxml2
+
+```
+xmllint --valid --noout file.xml
+xmllint --schema schema.xsd --noout file.xml
+xmllint --recover file.xml
+
+xmllint --format file0.xml > file1.xml
+
+xmllint --xpath '//key1/key2/text()' file.xml
+
+xmllint --xpath '//key1/key2' file.xml | xmllint --format -
+
+xmllint --xpath '/root/item[1]' file.xml | xmllint --format -
+
+
+# with name space
+
+xmllint --xpath 'declare namespace ns="http://example.com"; //ns:item' file.xml
+
+xmllint --xpath '//\*[local-name()="item"]' file.xml
+```
+
+| オプション          | 説明                       |
+| ------------------- | -------------------------- |
+| `--format`          | 整形（pretty print）       |
+| `--noout`           | 本体の出力なし（検証だけ） |
+| `--valid`           | DTD による検証             |
+| `--schema`          | XSD による検証             |
+| `--xpath`           | XPath 評価                 |
+| `--recover`         | 壊れた XML を補正          |
+| `--encode UTF-8`    | 出力エンコーディング指定   |
+| `--output file.xml` | ファイルに出力             |
+
+---
+
 ## binary file
 
 hexdump file
