@@ -1,13 +1,13 @@
-# python3 COOcov.py AT_coo.parquet A_coo.parquet cov_coo.parquet -n 2000 --chunk 5000000 --chunk_B 1000000
+# python3 COOcov.py AT_coo.parquet A_coo.parquet cov_coo.parquet -n 2000 --chunk 1000000 --chunk_B 1000000
 
 import polars as pl
 import pyarrow.parquet as pq
 import os
 import argparse
 
-def matmul_coo_parquet_cov(A_path, B_T_path, C_path, N_rows, chunk_A=5_000_000, chunk_B=1_000_000):
+def matmul_coo_parquet_cov(A_path, B_path, C_path, N_rows, chunk_A=1_000_000, chunk_B=1_000_000):
     """
-    Compute C = A x B / (N_rows-1) with both A and B_T chunked.
+    Compute C = A x B / (N_rows-1) with both A and B chunked.
     This is suitable for covariance / correlation computation.
     Writes C to Parquet incrementally.
     """
@@ -19,9 +19,9 @@ def matmul_coo_parquet_cov(A_path, B_T_path, C_path, N_rows, chunk_A=5_000_000, 
     # Metadata
     meta_A = pq.read_metadata(A_path)
     maxA = meta_A.num_rows
-    meta_B = pq.read_metadata(B_T_path)
+    meta_B = pq.read_metadata(B_path)
     maxB = meta_B.num_rows
-    print(f"A: {maxA} nonzero rows, B_T: {maxB} nonzero rows")
+    print(f"A: {maxA} nonzero rows, B: {maxB} nonzero rows")
 
     first_chunk = True
     offset_A = 0
@@ -42,9 +42,9 @@ def matmul_coo_parquet_cov(A_path, B_T_path, C_path, N_rows, chunk_A=5_000_000, 
         offset_B = 0
 
         while offset_B < maxB:
-            print(f"  Processing B_T chunk: {offset_B} -> {min(offset_B+chunk_B, maxB)}")
+            print(f"  Processing B chunk: {offset_B} -> {min(offset_B+chunk_B, maxB)}")
             B_chunk = (
-                pl.scan_parquet(B_T_path)
+                pl.scan_parquet(B_path)
                 .slice(offset_B, chunk_B)
                 .select(["row", "col", "val"])
                 .collect()
@@ -92,11 +92,11 @@ def matmul_coo_parquet_cov(A_path, B_T_path, C_path, N_rows, chunk_A=5_000_000, 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("A", help="COO Parquet A")
-    ap.add_argument("B_T", help="COO Parquet B transposed")
+    ap.add_argument("B", help="COO Parquet B transposed")
     ap.add_argument("C", help="Output COO Parquet C")
     ap.add_argument("-n", type=int, required=True, help="Total number of rows for scaling")
     ap.add_argument("--chunk", type=int, default=5_000_000, help="Rows per chunk for A")
-    ap.add_argument("--chunk_B", type=int, default=1_000_000, help="Rows per chunk for B_T")
+    ap.add_argument("--chunk_B", type=int, default=1_000_000, help="Rows per chunk for B")
     args = ap.parse_args()
 
-    matmul_coo_parquet_cov(args.A, args.B_T, args.C, N_rows=args.n, chunk_A=args.chunk, chunk_B=args.chunk_B)
+    matmul_coo_parquet_cov(args.A, args.B, args.C, N_rows=args.n, chunk_A=args.chunk, chunk_B=args.chunk_B)
