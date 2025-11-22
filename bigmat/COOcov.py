@@ -7,7 +7,7 @@ import argparse
 
 def matmul_coo_parquet_cov(A_path, B_path, C_path, N_rows, chunk_A=1_000_000, chunk_B=1_000_000):
     """
-    Compute C = A x B / (N_rows-1) with both A and B chunked.
+    Compute C = tA x A / (N_rows-1) with both tA and A chunked.
     This is suitable for covariance / correlation computation.
     Writes C to Parquet incrementally.
     """
