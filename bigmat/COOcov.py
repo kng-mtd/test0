@@ -7,7 +7,7 @@ import argparse
 
 def matmul_coo_parquet_cov(A_path, B_T_path, C_path, N_rows, chunk_A=5_000_000, chunk_B=1_000_000):
     """
-    Compute C = A x B / N_rows with both A and B_T chunked.
+    Compute C = A x B / (N_rows-1) with both A and B_T chunked.
     This is suitable for covariance / correlation computation.
     Writes C to Parquet incrementally.
     """
@@ -56,9 +56,9 @@ def matmul_coo_parquet_cov(A_path, B_T_path, C_path, N_rows, chunk_A=5_000_000, 
             # Multiply and scale by N_rows for covariance
             joined = (
                 A_chunk.join(B_chunk, left_on="col", right_on="row", how="inner")
-                .with_columns((pl.col("val") * pl.col("val_right") / N_rows).alias("mul"))
+                .with_columns((pl.col("val") * pl.col("val_right")).alias("mul"))
                 .group_by(["row", "col_right"])
-                .agg(pl.sum("mul").alias("val"))
+                .agg((pl.sum("mul")/(N_rows-1)).alias("val"))
                 .rename({"col_right": "col"})
             )
 
@@ -83,7 +83,7 @@ def matmul_coo_parquet_cov(A_path, B_T_path, C_path, N_rows, chunk_A=5_000_000, 
 
         offset_A += chunk_A
 
-    print(f"Done. Wrote C: {C_path} (scaled by 1/{N_rows})")
+    print(f"Done. Wrote C: {C_path}")
 
 
 # ----------------------------
