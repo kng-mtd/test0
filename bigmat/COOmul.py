@@ -1,13 +1,13 @@
-# python3 COOmul.py A_coo.parquet B_T_coo.parquet C_coo.parquet --chunk 5000000 --chunk_B 1000000
+# python3 COOmul.py A_coo.parquet B_coo.parquet C_coo.parquet --chunk 5000000 --chunk_B 1000000
 
 import polars as pl
 import pyarrow.parquet as pq
 import os
 import argparse
 
-def matmul_coo_parquet_full_chunked(A_path, B_T_path, C_path, chunk_A=5_000_000, chunk_B=1_000_000):
+def matmul_coo_parquet_full_chunked(A_path, B_path, C_path, chunk_A=5_000_000, chunk_B=1_000_000):
     """
-    Compute C = A x B with both A and B_T chunked to limit memory usage.
+    Compute C = A x B with both A and B chunked to limit memory usage.
     Writes C to Parquet incrementally.
     """
 
@@ -20,10 +20,10 @@ def matmul_coo_parquet_full_chunked(A_path, B_T_path, C_path, chunk_A=5_000_000,
     maxA = meta_A.num_rows
     print(f"A has {maxA} nonzero entries (COO rows)")
 
-    # Number of rows in B_T
-    meta_B = pq.read_metadata(B_T_path)
+    # Number of rows in B
+    meta_B = pq.read_metadata(B_path)
     maxB = meta_B.num_rows
-    print(f"B_T has {maxB} nonzero entries (COO rows)")
+    print(f"B has {maxB} nonzero entries (COO rows)")
 
     first_chunk = True
 
@@ -45,9 +45,9 @@ def matmul_coo_parquet_full_chunked(A_path, B_T_path, C_path, chunk_A=5_000_000,
 
         offset_B = 0
         while offset_B < maxB:
-            print(f"  Processing B_T chunk: rows {offset_B} -> {min(offset_B+chunk_B, maxB)}")
+            print(f"  Processing B chunk: rows {offset_B} -> {min(offset_B+chunk_B, maxB)}")
             B_chunk = (
-                pl.scan_parquet(B_T_path)
+                pl.scan_parquet(B_path)
                 .slice(offset_B, chunk_B)
                 .select(["row", "col", "val"])
                 .collect()
@@ -96,10 +96,10 @@ def matmul_coo_parquet_full_chunked(A_path, B_T_path, C_path, chunk_A=5_000_000,
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("A", help="COO Parquet A")
-    ap.add_argument("B_T", help="COO Parquet B transposed")
+    ap.add_argument("B", help="COO Parquet B transposed")
     ap.add_argument("C", help="Output COO Parquet C")
     ap.add_argument("--chunk", type=int, default=5_000_000, help="Rows per chunk for A")
-    ap.add_argument("--chunk_B", type=int, default=1_000_000, help="Rows per chunk for B_T")
+    ap.add_argument("--chunk_B", type=int, default=1_000_000, help="Rows per chunk for B")
     args = ap.parse_args()
 
-    matmul_coo_parquet_full_chunked(args.A, args.B_T, args.C, chunk_A=args.chunk, chunk_B=args.chunk_B)
+    matmul_coo_parquet_full_chunked(args.A, args.B, args.C, chunk_A=args.chunk, chunk_B=args.chunk_B)
