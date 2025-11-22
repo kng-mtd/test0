@@ -95,7 +95,7 @@ if __name__ == "__main__":
     ap.add_argument("B", help="COO Parquet B transposed")
     ap.add_argument("C", help="Output COO Parquet C")
     ap.add_argument("-n", type=int, required=True, help="Total number of rows for scaling")
-    ap.add_argument("--chunk", type=int, default=5_000_000, help="Rows per chunk for A")
+    ap.add_argument("--chunk", type=int, default=1_000_000, help="Rows per chunk for A")
     ap.add_argument("--chunk_B", type=int, default=1_000_000, help="Rows per chunk for B")
     args = ap.parse_args()
 
