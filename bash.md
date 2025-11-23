@@ -7,23 +7,6 @@
 
 ---
 
-- super user
-  sudo command
-  sudo user0
-  sudo -i
-  exit
-  sudo shutdown -h now
-
----
-
-- sudo group
-  getent group sudo
-  sudo adduser user0
-  sudo usermod -aG sudo user0
-  sudo deluser user0
-
----
-
 - backup .bashrc
   cp .bashrc .bashrc.org
 
@@ -31,6 +14,71 @@
 
 - open terminal
   gnome-terminal
+
+---
+
+### user, group management
+
+who/whoami
+
+id user0
+
+groups user0
+
+cat /etc/passwd
+grep -E '/bash|/sh' /etc/passwd
+grep bash /etc/passwd
+
+cat /etc/group
+
+sudo cat /etc/shadow
+
+---
+
+useradd -m user0
+
+- -s /bin/bash
+- -g group
+- -d dir/
+- -r sysuser
+
+userdel user0
+
+- -r
+- -f
+
+passwd
+sudo passwd user0
+
+su user0
+exit
+
+sudo usermod -l user1 user0
+sudo usermod -L user0
+sudo usermod -U user0
+
+---
+
+sudo groupadd group0
+sudo groupdel group0
+
+sudo gpasswd -a user0 group0
+sudo gpasswd -d user0 group0
+
+---
+
+- super user
+  sudo command
+  sudo user0
+  sudo -i
+  exit
+  sudo shutdown -h now
+
+- sudo group
+  getent group sudo
+  sudo adduser user0
+  sudo usermod -aG sudo user0
+  sudo deluser user0
 
 ---
 
@@ -1655,14 +1703,6 @@ hostname
 
 ---
 
-whoami
-
----
-
-who
-
----
-
 ps
 
 - -f
@@ -1877,6 +1917,15 @@ scp -r dir user@hostname/IP:path/dir/
 scp user@hostname/IP:path/file ./
 
 - -P
+
+---
+
+/etc/ssh/sshd_config
+
+```
+AllowUsers user1 user2...
+Allow Groups group1 group2...
+```
 
 ---
 
