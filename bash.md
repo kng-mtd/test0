@@ -315,16 +315,20 @@ EOF
 
 ---
 
-### auto run
+### scheduled jobs
+
+sudo systemctl status cron
+sudo systemctl start/stop cron
+sudo sytemctl enable
 
 | コマンド     | 説明                           |
 | ------------ | ------------------------------ |
 | `crontab -e` | 現在のユーザーのジョブを編集   |
 | `crontab -l` | 登録されているジョブ一覧を表示 |
-| `crontab -r` | 現在のジョブを削除             |
+| `crontab -r` | 現在のジョブを全削除           |
 
 crontab -e
-分 時 日 月 曜日 コマンド
+分 時 日 月 曜日 コマンド、script.sh
 
 | 設定           | 意味           | cron 書式      |
 | -------------- | -------------- | -------------- |
@@ -335,8 +339,16 @@ crontab -e
 | 毎週日曜 0 時  | 週次実行       | `0 0 * * 0`    |
 | 毎月 1 日 0 時 | 月次実行       | `0 0 1 * *`    |
 
-cron の出力は /var/log/syslog に記録されます。
+| 書式       | 意味                   | 相当する通常書式 |
+| ---------- | ---------------------- | ---------------- |
+| `@reboot`  | 起動時に 1 回          | —                |
+| `@yearly`  | 毎年 1 回（1/1 0:00）  | `0 0 1 1 *`      |
+| `@monthly` | 毎月 1 回（1 日 0:00） | `0 0 1 * *`      |
+| `@weekly`  | 毎週 1 回（日曜 0:00） | `0 0 * * 0`      |
+| `@daily`   | 毎日 0:00              | `0 0 * * *`      |
+| `@hourly`  | 毎時 0 分              | `0 * * * *`      |
 
+cron の出力は /var/log/syslog に記録されます。
 `grep CRON /var/log/syslog`
 
 ---
