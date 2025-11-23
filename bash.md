@@ -1692,6 +1692,7 @@ lsblk
 
 free
 
+- -m
 - -h
 - -t
 
