@@ -556,8 +556,8 @@ arr1=("${arr0[@]}") : copy arr
 
 ```
 declare -A obj
-obj[key]=value
-${obj[key]}
+obj[tag]=value
+${obj[tag]}
 ```
 
 ### arithmetic operation
@@ -1692,7 +1692,6 @@ lsblk
 
 free
 
-- -m
 - -h
 - -t
 
@@ -1987,30 +1986,9 @@ jq -r '.key0 | [.key1, .key2] | @csv'
 
 ---
 
-xmllint
+xmllint --option file.xml
 
 sudo apt install libxml2
-
-```
-xmllint --valid --noout file.xml
-xmllint --schema schema.xsd --noout file.xml
-xmllint --recover file.xml
-
-xmllint --format file0.xml > file1.xml
-
-xmllint --xpath '//key1/key2/text()' file.xml
-
-xmllint --xpath '//key1/key2' file.xml | xmllint --format -
-
-xmllint --xpath '/root/item[1]' file.xml | xmllint --format -
-
-
-# with name space
-
-xmllint --xpath 'declare namespace ns="http://example.com"; //ns:item' file.xml
-
-xmllint --xpath '//\*[local-name()="item"]' file.xml
-```
 
 | オプション          | 説明                       |
 | ------------------- | -------------------------- |
@@ -2022,6 +2000,129 @@ xmllint --xpath '//\*[local-name()="item"]' file.xml
 | `--recover`         | 壊れた XML を補正          |
 | `--encode UTF-8`    | 出力エンコーディング指定   |
 | `--output file.xml` | ファイルに出力             |
+
+```
+xmllint --valid --noout file.xml
+xmllint --schema schema.xsd --noout file.xml
+xmllint --recover file.xml
+
+xmllint --format file0.xml > file1.xml
+xmllint --format file0.xml -o file1.xml
+
+xmllint --xpath '(xpath)' file.xml
+xmllint --xpath '(xpath)'/text() file.xml
+xmllint --xpath 'string(xpath)' file.xml
+xmllint --xpath '(xpath)'/@attr file.xml
+```
+
+with name space
+
+```
+xmllint --xpath 'declare namespace ns="http://example.com"; //ns:item' file.xml
+
+xmllint --xpath '//\*[local-name()="item"]' file.xml
+```
+
+use alias
+.bashrc
+alias xpath=xmllint --xpath
+source ~/.bashrc
+
+xpath
+| 構文 | 意味 |
+| ------- | --------------- |
+| `/` | ルートから絶対パス |
+| `//` | どこにあっても該当ノードを取得 |
+| `.` | 現在のノード |
+| `..` | 親ノード |
+| `*` | 任意の要素名 |
+| `@attr` | 属性 |
+
+| 表現        | 説明           |
+| ----------- | -------------- |
+| `node()`    | 任意のノード   |
+| `text()`    | テキストノード |
+| `comment()` | コメント       |
+
+| 関数                       | 説明                               |
+| -------------------------- | ---------------------------------- |
+| `last()`                   | ノードセットの最後の位置           |
+| `position()`               | 現在のノードの位置（1 始まり）     |
+| `count(node-set)`          | ノードセットの個数                 |
+| `id(string)`               | ID を持つノードを返す              |
+| `local-name(node-set?)`    | ローカル名（名前空間なしの要素名） |
+| `namespace-uri(node-set?)` | 名前空間 URI                       |
+| `name(node-set?)`          | 完全な名前（prefix あり）          |
+
+| 関数                           | 説明                       |
+| ------------------------------ | -------------------------- |
+| `string(object)`               | 文字列に変換               |
+| `concat(s1, s2, ...)`          | 文字列連結                 |
+| `starts-with(s1, s2)`          | 前方一致                   |
+| `contains(s1, s2)`             | 部分一致                   |
+| `substring(s, start, length?)` | 部分文字列                 |
+| `substring-before(s, delim)`   | 区切り文字より前           |
+| `substring-after(s, delim)`    | 区切り文字より後           |
+| `string-length(string?)`       | 長さ                       |
+| `normalize-space(string?)`     | 余分な空白除去             |
+| `translate(s, from, to)`       | 文字置換（正規表現は不可） |
+
+| 関数              | 説明     |
+| ----------------- | -------- |
+| `number(object?)` | 数値変換 |
+| `sum(node-set)`   | 合計     |
+| `floor(number)`   | 切り捨て |
+| `ceiling(number)` | 切り上げ |
+| `round(number)`   | 四捨五入 |
+
+| 関数              | 説明         |
+| ----------------- | ------------ |
+| `boolean(object)` | 真理値変換   |
+| `not(boolean)`    | 論理否定     |
+| `true()`          | true を返す  |
+| `false()`         | false を返す |
+
+```
+xpath '(xpath)' file.xml
+xpath '(xpath)/text()' file.xml
+xpath '(xpath)/@arg' file.xml
+
+xpath '/root/tag1/tag2' file.xml
+xpath '/root/tag1/tag2/text()' file.xml
+
+xpath '//tag1/tag2/text()' file.xml
+
+xpath '//tag1/tag2' file.xml | xmllint --format -
+
+xpath '/root/item[1]' file.xml | xmllint --format -
+```
+
+conditions
+
+```
+xpath '/---/tag[@attr] file.xml
+xpath '/---/tag[not @attr] file.xml
+xpath '/---/tag[@attr1 and/or @attr2] file.xml
+xpath '/---/tag[@attr=val] file.xml
+
+xpath '/---/tag[contains(@attr, val)]
+xpath '/---/tag[start-with(@attr, val)]
+
+xpath '/---/tag1[parent::tag0] # tag1 node under tag0 node
+xpath '/---/tag1[ancestor::tag0] # tag1 node in tag0 node
+
+xpath '/---/tag[num1]/following-sibling::tag[num2]
+xpath '/---/tag[num1]/preceding-sibling::tag[num2]
+
+```
+
+to json
+
+```
+sudo apt install jq
+pip install yq
+xq < file.xml
+```
 
 ---
 
