@@ -733,10 +733,491 @@ print(f"Polars processing time: {end-start:.2f} sec")
 
 ---
 
-### 期待される結果
+はい、**Arrow を使って SQLite から DuckDB にデータ移行**することは可能です。方法としては以下のステップが一般的です。
 
-* 小規模データ（数千行）では差は小さい
-* 中規模〜大規模データ（数百万行以上）では **Polars が圧倒的に高速**
+---
+
+## 1. 概要
+
+1. **SQLite からデータを Arrow Table に変換**
+
+   * Python なら `sqlite3` + `pyarrow` で可能
+2. **Arrow Table を DuckDB にインポート**
+
+   * DuckDB は Arrow Table を直接読み込める
+   * そのまま SQL でテーブル作成可能
+
+メリット：
+
+* 中間ファイル（CSV や Parquet）を作らずにメモリ上で高速移行可能
+* Arrow の列指向フォーマットで効率的
+
+---
+
+## 2. Python サンプルコード
+
+```python
+import sqlite3
+import duckdb
+import pyarrow as pa
+import pyarrow.table as pat
+
+# ------------------------
+# 1. SQLite からデータ取得
+# ------------------------
+sqlite_file = 'source.db'
+conn = sqlite3.connect(sqlite_file)
+cursor = conn.cursor()
+
+# 例: 'my_table' のデータを取得
+cursor.execute("SELECT * FROM my_table")
+columns = [desc[0] for desc in cursor.description]
+rows = cursor.fetchall()
+conn.close()
+
+# Arrow Table に変換
+arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+
+# ------------------------
+# 2. DuckDB にインポート
+# ------------------------
+duckdb_file = 'target.duckdb'
+con = duckdb.connect(duckdb_file)
+
+# Arrow Table を DuckDB のテーブルとして登録
+con.register('tmp_table', arrow_table)
+
+# DuckDB 内に永続テーブルを作成
+con.execute("CREATE TABLE my_table AS SELECT * FROM tmp_table")
+
+# 確認
+res = con.execute("SELECT COUNT(*) FROM my_table").fetchall()
+print(res)
+con.close()
+```
+
+---
+
+では、**巨大な SQLite データベースを DuckDB に効率的に移行する方法** をまとめ、Python サンプルも作ります。
+
+ポイントは **一括で読み込まず、ブロック単位で処理してメモリ効率を確保する** ことです。
+
+---
+
+## 1. 移行戦略
+
+1. SQLite から **chunk 単位でデータを取得**
+
+   * Python の `sqlite3` で `LIMIT` と `OFFSET` または `iterdump()` のようなカーソルを使う
+2. Arrow Table に変換（ブロック単位）
+
+   * DuckDB は Arrow Table をゼロコピーで読み込める
+3. DuckDB に **一時テーブルとして登録し、永続テーブルに書き込み**
+4. すべてのブロックを繰り返す
+
+---
+
+## 2. Python サンプルコード
+
+```python
+import sqlite3
+import duckdb
+import pyarrow as pa
+
+sqlite_file = 'huge_source.db'
+duckdb_file = 'target.duckdb'
+table_name = 'my_table'
+chunk_size = 1_000_000  # 1回に処理する行数
+
+# ------------------------
+# SQLite 接続
+# ------------------------
+conn_sqlite = sqlite3.connect(sqlite_file)
+cur = conn_sqlite.cursor()
+
+# 行数を取得
+cur.execute(f"SELECT COUNT(*) FROM {table_name}")
+total_rows = cur.fetchone()[0]
+print(f"Total rows: {total_rows}")
+
+# ------------------------
+# DuckDB 接続
+# ------------------------
+con_duck = duckdb.connect(duckdb_file)
+
+# DuckDB に空テーブル作成（最初の chunk でスキーマ作成用）
+# ここでは最初の chunk を取得
+cur.execute(f"SELECT * FROM {table_name} LIMIT {chunk_size} OFFSET 0")
+columns = [desc[0] for desc in cur.description]
+rows = cur.fetchall()
+
+# Arrow Table に変換
+arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+
+# DuckDB に一時登録して永続テーブル作成
+con_duck.register('tmp_table', arrow_table)
+con_duck.execute(f"CREATE TABLE {table_name} AS SELECT * FROM tmp_table")
+print(f"Inserted first {len(rows)} rows")
+
+# ------------------------
+# 残りのデータをブロック単位で挿入
+# ------------------------
+for offset in range(chunk_size, total_rows, chunk_size):
+    cur.execute(f"SELECT * FROM {table_name} LIMIT {chunk_size} OFFSET {offset}")
+    rows = cur.fetchall()
+    if not rows:
+        break
+    arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+    con_duck.register('tmp_table', arrow_table)
+    con_duck.execute(f"INSERT INTO {table_name} SELECT * FROM tmp_table")
+    print(f"Inserted rows {offset} -> {offset+len(rows)}")
+
+# ------------------------
+# 完了
+# ------------------------
+cur.close()
+conn_sqlite.close()
+con_duck.close()
+print("Migration completed.")
+```
+
+---
+
+## 3. ポイント
+
+1. **chunk_size** でメモリ使用量を制御
+
+   * 100万行単位など、メモリ状況に応じて調整可能
+2. **Arrow Table を使う**
+
+   * DuckDB は Arrow Table をゼロコピーで読み込むので高速
+3. **永続テーブルに INSERT**
+
+   * 一括挿入で処理時間短縮
+4. **巨大データでも安全**
+
+   * SQLite から一度に全部読み込まないためメモリ不足のリスクが低い
+
+---
+
+では、**SQLite の複数テーブルを DuckDB にブロック単位で移行するサンプル** を作ります。
+
+---
+
+```python
+import sqlite3
+import duckdb
+import pyarrow as pa
+
+sqlite_file = 'huge_source.db'
+duckdb_file = 'target.duckdb'
+chunk_size = 1_000_000  # 1回に処理する行数
+
+# ------------------------
+# SQLite 接続
+# ------------------------
+conn_sqlite = sqlite3.connect(sqlite_file)
+cur = conn_sqlite.cursor()
+
+# SQLite 内の全テーブルを取得
+cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+tables = [row[0] for row in cur.fetchall()]
+print("Tables to migrate:", tables)
+
+# ------------------------
+# DuckDB 接続
+# ------------------------
+con_duck = duckdb.connect(duckdb_file)
+
+# ------------------------
+# 各テーブルを移行
+# ------------------------
+for table_name in tables:
+    print(f"Migrating table: {table_name}")
+
+    # 行数取得
+    cur.execute(f"SELECT COUNT(*) FROM {table_name}")
+    total_rows = cur.fetchone()[0]
+    print(f"  Total rows: {total_rows}")
+
+    # 最初の chunk
+    cur.execute(f"SELECT * FROM {table_name} LIMIT {chunk_size} OFFSET 0")
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    if not rows:
+        continue
+
+    arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+    con_duck.register('tmp_table', arrow_table)
+    con_duck.execute(f"CREATE TABLE {table_name} AS SELECT * FROM tmp_table")
+    print(f"  Inserted first {len(rows)} rows")
+
+    # 残りのデータを chunk 単位で挿入
+    for offset in range(chunk_size, total_rows, chunk_size):
+        cur.execute(f"SELECT * FROM {table_name} LIMIT {chunk_size} OFFSET {offset}")
+        rows = cur.fetchall()
+        if not rows:
+            break
+        arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+        con_duck.register('tmp_table', arrow_table)
+        con_duck.execute(f"INSERT INTO {table_name} SELECT * FROM tmp_table")
+        print(f"  Inserted rows {offset} -> {offset+len(rows)}")
+
+print("Migration completed for all tables.")
+
+# ------------------------
+# クローズ
+# ------------------------
+cur.close()
+conn_sqlite.close()
+con_duck.close()
+```
+
+---
+
+### ポイント
+
+1. **複数テーブル対応**
+
+   * `sqlite_master` からテーブル名を取得して順次処理
+2. **ブロック単位**
+
+   * `chunk_size` ごとにデータを Arrow Table に変換して DuckDB に挿入
+   * 巨大テーブルでもメモリ消費を抑えられる
+3. **Arrow Table 利用**
+
+   * DuckDB は Arrow Table をゼロコピーで読み込むので高速
+4. **永続テーブル作成**
+
+   * 各テーブルを DuckDB 内に永続化して、そのまま分析可能
+
+---
+
+では、**複数テーブルを並列処理で同時に DuckDB に移行する高速版** を作ります。Python の `concurrent.futures` を使って、テーブル単位で並列化します。
+
+---
+
+```python
+import sqlite3
+import duckdb
+import pyarrow as pa
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+sqlite_file = 'huge_source.db'
+duckdb_file = 'target.duckdb'
+chunk_size = 1_000_000  # 1回に処理する行数
+max_workers = 4  # 並列数（CPUコア数に応じて調整）
+
+# ------------------------
+# SQLite から全テーブル名を取得
+# ------------------------
+conn_sqlite = sqlite3.connect(sqlite_file)
+cur = conn_sqlite.cursor()
+cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+tables = [row[0] for row in cur.fetchall()]
+cur.close()
+conn_sqlite.close()
+
+print("Tables to migrate:", tables)
+
+# ------------------------
+# 移行関数（1テーブル分）
+# ------------------------
+def migrate_table(table_name):
+    conn_sqlite = sqlite3.connect(sqlite_file)
+    cur = conn_sqlite.cursor()
+    con_duck = duckdb.connect(duckdb_file)
+
+    # 行数取得
+    cur.execute(f"SELECT COUNT(*) FROM {table_name}")
+    total_rows = cur.fetchone()[0]
+
+    # 最初の chunk
+    cur.execute(f"SELECT * FROM {table_name} LIMIT {chunk_size} OFFSET 0")
+    columns = [desc[0] for desc in cur.description]
+    rows = cur.fetchall()
+    if not rows:
+        cur.close()
+        conn_sqlite.close()
+        con_duck.close()
+        return f"{table_name}: no rows"
+
+    arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+    con_duck.register('tmp_table', arrow_table)
+    con_duck.execute(f"CREATE TABLE IF NOT EXISTS {table_name} AS SELECT * FROM tmp_table")
+
+    # 残りのデータを chunk 単位で挿入
+    for offset in range(chunk_size, total_rows, chunk_size):
+        cur.execute(f"SELECT * FROM {table_name} LIMIT {chunk_size} OFFSET {offset}")
+        rows = cur.fetchall()
+        if not rows:
+            break
+        arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+        con_duck.register('tmp_table', arrow_table)
+        con_duck.execute(f"INSERT INTO {table_name} SELECT * FROM tmp_table")
+
+    cur.close()
+    conn_sqlite.close()
+    con_duck.close()
+    return f"{table_name}: migrated {total_rows} rows"
+
+# ------------------------
+# ThreadPoolExecutor で並列実行
+# ------------------------
+with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    futures = {executor.submit(migrate_table, tbl): tbl for tbl in tables}
+    for future in as_completed(futures):
+        print(future.result())
+
+print("All tables migrated in parallel.")
+```
+
+---
+
+### ポイント
+
+1. **テーブル単位で並列処理**
+
+   * 複数テーブルを同時に処理することで、I/O待ちやCPU処理を効率化
+2. **chunk_size でメモリ消費を制御**
+
+   * 巨大テーブルでも安全に処理可能
+3. **Arrow Table を利用**
+
+   * DuckDB にゼロコピーで高速挿入
+4. **ThreadPoolExecutor**
+
+   * I/O中心処理ではスレッドで十分
+   * CPU集約処理なら `ProcessPoolExecutor` に変更可能
+
+---
+
+では、**PostgreSQL の複数テーブルをブロック単位＆並列で DuckDB に移行する高速版** を作ります。
+
+Python の `psycopg2` と `concurrent.futures.ThreadPoolExecutor` を使います。
+
+---
+
+```python
+import psycopg2
+import duckdb
+import pyarrow as pa
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+# ------------------------
+# 設定
+# ------------------------
+pg_config = {
+    'host': 'localhost',
+    'port': 5432,
+    'dbname': 'source_db',
+    'user': 'username',
+    'password': 'password'
+}
+duckdb_file = 'target.duckdb'
+chunk_size = 500_000
+max_workers = 4  # 並列数
+
+# ------------------------
+# PostgreSQL からテーブル名取得
+# ------------------------
+pg_conn = psycopg2.connect(**pg_config)
+pg_cur = pg_conn.cursor()
+pg_cur.execute("""
+    SELECT table_name 
+    FROM information_schema.tables 
+    WHERE table_schema='public' AND table_type='BASE TABLE';
+""")
+tables = [row[0] for row in pg_cur.fetchall()]
+pg_cur.close()
+pg_conn.close()
+
+print("Tables to migrate:", tables)
+
+# ------------------------
+# 移行関数（1テーブル分）
+# ------------------------
+def migrate_table(table_name):
+    pg_conn = psycopg2.connect(**pg_config)
+    pg_cur = pg_conn.cursor()
+    con_duck = duckdb.connect(duckdb_file)
+
+    # 行数取得
+    pg_cur.execute(f"SELECT COUNT(*) FROM {table_name}")
+    total_rows = pg_cur.fetchone()[0]
+
+    # 最初の chunk
+    pg_cur.execute(f"SELECT * FROM {table_name} OFFSET 0 LIMIT {chunk_size}")
+    rows = pg_cur.fetchall()
+    if not rows:
+        pg_cur.close()
+        pg_conn.close()
+        con_duck.close()
+        return f"{table_name}: no rows"
+
+    columns = [desc[0] for desc in pg_cur.description]
+    arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+    con_duck.register('tmp_table', arrow_table)
+    con_duck.execute(f"CREATE TABLE IF NOT EXISTS {table_name} AS SELECT * FROM tmp_table")
+    print(f"{table_name}: inserted first {len(rows)} rows")
+
+    # 残りを chunk 単位で挿入
+    for offset in range(chunk_size, total_rows, chunk_size):
+        pg_cur.execute(f"SELECT * FROM {table_name} OFFSET {offset} LIMIT {chunk_size}")
+        rows = pg_cur.fetchall()
+        if not rows:
+            break
+        arrow_table = pa.Table.from_pylist([dict(zip(columns, row)) for row in rows])
+        con_duck.register('tmp_table', arrow_table)
+        con_duck.execute(f"INSERT INTO {table_name} SELECT * FROM tmp_table")
+        print(f"{table_name}: inserted rows {offset} -> {offset+len(rows)}")
+
+    pg_cur.close()
+    pg_conn.close()
+    con_duck.close()
+    return f"{table_name}: migrated {total_rows} rows"
+
+# ------------------------
+# ThreadPoolExecutor で並列移行
+# ------------------------
+with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    futures = {executor.submit(migrate_table, tbl): tbl for tbl in tables}
+    for future in as_completed(futures):
+        print(future.result())
+
+print("All tables migrated in parallel.")
+```
+
+---
+
+### ポイント
+
+1. **テーブル単位で並列処理**
+
+   * I/O 待ちや CPU 処理を効率化
+2. **chunk_size でメモリ制御**
+
+   * 500,000 行単位など、メモリに合わせて調整可能
+3. **Arrow Table 経由で DuckDB にゼロコピー挿入**
+
+   * 高速で安全
+4. **永続テーブル作成**
+
+   * そのまま DuckDB で分析可能
+5. **ThreadPoolExecutor**
+
+   * I/O中心なのでスレッド並列で十分
+   * CPU集約処理なら `ProcessPoolExecutor` に変更可能
+
+---
+
+
+
+
+
+
+
+
 
 
 
