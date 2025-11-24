@@ -319,9 +319,10 @@ command1 | command2 | command3..
 
 ### stdin, stdout, stderr
 
-from file, nothing
+from command, file, nothing
 
 ```
+--- < command
 --- < file
 --- < /dev/null
 ```
@@ -338,13 +339,22 @@ add output to exist file
 --- >> file
 ```
 
-process error message
+file descriptor
+
+- 0 stdin: keyboard, read only
+- 1 stdout: terminal, write only
+- 2 stderr: terminal, write only
+- 3- other file
+
+process result and error output
 
 ```
---- > /dev/null # show only error
 --- 2> /dev/null # show only result
+--- > /dev/null # show only error
 --- > /dev/null 2>&1 # show nothing
---- 2> file, --- 2>> file # save error message
+
+--- > file, --- >> file # save result
+--- 2> file, --- 2>> file # save error
 --- > file1 2> file2 # save each output to other file
 --- > file 2>&1 # save all output to a same file
 ```
