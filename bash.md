@@ -499,9 +499,7 @@ $HOSTNAME
 $PATH
 echo $PATH | sed 's/:/\n/g'
 
-
-var=str
-export var
+export var=str
 bash script.sh
 
 script.sh
@@ -518,6 +516,18 @@ PATH="$PATH:new path"
 $RANDOM #integer 0 to 2**15-1
 $RANDOM$RANDOM
 ```
+
+---
+
+date
+
+- -I
+- -R
+- -u
+- +%F, +%D, +%T
+- +%y, +%m, +%d, +%H, +%M, +%S
+
+`date '+%y/%m/%d'`
 
 ---
 
@@ -1203,6 +1213,7 @@ ls glob
 
 - -l
 - -a
+- -i
 - -h
 - -S
 - -t
@@ -1730,11 +1741,13 @@ du
 
 ---
 
+lshw
+
+lspci
+
 lscpu
 
 - -e
-
----
 
 lsblk
 
@@ -1746,12 +1759,6 @@ free
 
 - -h
 - -t
-
----
-
-hostname
-
-- -I
 
 ---
 
@@ -1831,23 +1838,24 @@ watch -n sec command
 
 ---
 
-date
-
-- -I
-- -R
-- -u
-- +%F, +%D, +%T
-- +%y, +%m, +%d, +%H, +%M, +%S
-
-`date '+%y/%m/%d'`
-
----
-
 top, htop
 
 ---
 
+systemctl status service(back groud job)
+systemctl start/stop/restart service
+systemctl enable service
+
+---
+
 ## network
+
+hostname
+
+- -i
+- -I
+
+---
 
 ping url
 
