@@ -430,77 +430,6 @@ cron の出力は /var/log/syslog に記録されます。
 
 ---
 
-### env variable
-
-```
-printenv
-
-$HOME
-$USER
-$HOSTNAME
-$ PATH
-echo $PATH | sed 's/:/\n/g'
-
-
-var=str
-export var
-bash script.sh
-
-script.sh
-echo $var
-
-
-export var=value
-    or
-add 'var=value' to .bashrc
-source ~/.bashrc
-
-PATH="$PATH:new path"
-
-$RANDOM
-$RANDOM$RANDOM
-```
-
----
-
-### variable
-
-```
-var=string
-var='string has space'
-var=$(command)
-var=`command`
-
-$var
-"$var in string" # interpolation / expansion
-$((var)) # as integer
-```
-
----
-
-### parameter expansion
-
-| 処理                             | パラメータ展開     | 同等コマンド                                       |
-| :------------------------------- | :----------------- | :------------------------------------------------- |
-| 文字数                           | `${#var}`          | `echo -n "$var" \| wc -c`                          |
-| i 文字目から末尾まで             | `${var:i}`         | `echo "$var" \| cut -c$((i+1))-`                   |
-| 後ろから i 文字目から末尾まで    | `${var: -i}`       | `echo "$var" \| rev \| cut -c1-$i \| rev`          |
-| i 文字目から k 文字取得          | `${var:i:k}`       | `echo "$var" \| cut -c$((i+1))-$((i+k))`           |
-| 後ろから i 文字目から k 文字取得 | `${var: -i:k}`     | `echo "$var" \| rev \| cut -c$i-$((i+k-1)) \| rev` |
-| 小文字化                         | `${var,,}`         | `echo "$var" \| tr '[:upper:]' '[:lower:]'`        |
-| 大文字化                         | `${var^^}`         | `echo "$var" \| tr '[:lower:]' '[:upper:]'`        |
-| 置換                             | `${var/str0/str1}` | `echo "$var" \| sed 's/str0/str1/'`                |
-| デフォルト値                     | `${var:-default}`  | `[ -n "$var" ] && echo "$var" \|\| echo "default"` |
-
-| 構文           | 意味                   | 例                                       |
-| :------------- | :--------------------- | :--------------------------------------- |
-| `${var#glob}`  | 前方の最短マッチを削除 | `${var#*/}` → 最初の `/` まで削除        |
-| `${var##glob}` | 前方の最長マッチを削除 | `${var##*/}` → 最後の `/` まで削除       |
-| `${var%glob}`  | 後方の最短マッチを削除 | `${var%.*}` → 最初の `.` から後ろを削除  |
-| `${var%%glob}` | 後方の最長マッチを削除 | `${var%%.*}` → 最後の `.` から後ろを削除 |
-
----
-
 ### argument
 
 ```
@@ -538,12 +467,85 @@ seq 20 | xargs -n1 -P4 bash -c 'echo $0; sleep 1'
 
 ---
 
+### env variable
+
+```
+printenv
+
+$HOME
+$USER
+$HOSTNAME
+$ PATH
+echo $PATH | sed 's/:/\n/g'
+
+
+var=str
+export var
+bash script.sh
+
+script.sh
+echo $var
+
+
+export var=value
+    or
+add 'var=value' to .bashrc
+source ~/.bashrc
+
+PATH="$PATH:new path"
+
+$RANDOM
+$RANDOM$RANDOM
+```
+
+---
+
+### variable
+
+```
+var=str
+var='string has space'
+var=$(command)
+var=`command`
+
+readonly var=str # it can't to be chaged or deleted in the session
+
+$var
+"$var in string" # interpolation / expansion in double quote
+$((var)) # as integer
+```
+
+---
+
+### string operation
+
+| 文字列処理                       | パラメータ展開     | 同等コマンド                                       |
+| :------------------------------- | :----------------- | :------------------------------------------------- |
+| 文字数                           | `${#var}`          | `echo -n "$var" \| wc -c`                          |
+| i 文字目から末尾まで             | `${var:i}`         | `echo "$var" \| cut -c$((i+1))-`                   |
+| 後ろから i 文字目から末尾まで    | `${var: -i}`       | `echo "$var" \| rev \| cut -c1-$i \| rev`          |
+| i 文字目から k 文字取得          | `${var:i:k}`       | `echo "$var" \| cut -c$((i+1))-$((i+k))`           |
+| 後ろから i 文字目から k 文字取得 | `${var: -i:k}`     | `echo "$var" \| rev \| cut -c$i-$((i+k-1)) \| rev` |
+| 小文字化                         | `${var,,}`         | `echo "$var" \| tr '[:upper:]' '[:lower:]'`        |
+| 大文字化                         | `${var^^}`         | `echo "$var" \| tr '[:lower:]' '[:upper:]'`        |
+| 置換                             | `${var/str0/str1}` | `echo "$var" \| sed 's/str0/str1/'`                |
+| デフォルト値                     | `${var:-default}`  | `[ -n "$var" ] && echo "$var" \|\| echo "default"` |
+
+| 構文           | 意味                   | 例                                       |
+| :------------- | :--------------------- | :--------------------------------------- |
+| `${var#glob}`  | 前方の最短マッチを削除 | `${var#*/}` → 最初の `/` まで削除        |
+| `${var##glob}` | 前方の最長マッチを削除 | `${var##*/}` → 最後の `/` まで削除       |
+| `${var%glob}`  | 後方の最短マッチを削除 | `${var%.*}` → 最初の `.` から後ろを削除  |
+| `${var%%glob}` | 後方の最長マッチを削除 | `${var%%.*}` → 最後の `.` から後ろを削除 |
+
+---
+
 ### array
 
 ```
 arr=(str0 str1 str2...)
 ${arr[0]} : one element
-${arr[@]} : all elements
+${arr[@]}, ${arr[*]} : all elements
 
 ${#arr[@]} : array size
 ${!arr[@]} : all indexes
@@ -567,9 +569,12 @@ arr1=("${arr0[@]}") : copy arr
 
 ```
 declare -A obj
-obj[tag]=value
-${obj[tag]}
+obj=( [key1]=val1 [key2]=val2...)
+obj[key]=val
+${obj[key]}
 ```
+
+---
 
 ### arithmetic operation
 
@@ -585,6 +590,10 @@ b=int2
 ((a+=b)) ((a-=b)) ((a*=b)) ((a/=b)) ((a%=b))
 
 $((a+b)) $((a-b)) $((a\*b)) $((a/b)) $((a%b))
+
+let c=$a+$b
+echo $c
+
 
 a=real1
 b=real2
@@ -656,7 +665,9 @@ calculation with perl -e
 
 ---
 
-## output
+## control structure
+
+### output
 
 echo str1 str2...
 
@@ -730,8 +741,6 @@ done > result.txt
 clear
 
 ---
-
-## control structure
 
 ### input
 
@@ -829,7 +838,7 @@ done
 
 ---
 
-### conditions
+### conditional statement
 
 ```
 command1 && command2
@@ -892,14 +901,17 @@ command1 && command2 || command3
 ```
 case $a in
   regex1)
-    command1;;
+    command11
+    command12...;;
   regex2)
-    command2;;
+    command21
+    command22...;;
   regex3)
-    command3;;
+    command31
+    command32...;;
   ...
   *)
-    command0;;
+    command0
 esac
 ```
 
