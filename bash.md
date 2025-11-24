@@ -2009,10 +2009,7 @@ xmllint --recover file.xml
 xmllint --format file0.xml > file1.xml
 xmllint --format file0.xml -o file1.xml
 
-xmllint --xpath '(xpath)' file.xml
-xmllint --xpath '(xpath)'/text() file.xml
-xmllint --xpath 'string(xpath)' file.xml
-xmllint --xpath '(xpath)'/@attr file.xml
+xmllint --xpath 'xpath' file.xml
 ```
 
 with name space
@@ -2044,33 +2041,29 @@ xpath
 | `text()`    | テキストノード |
 | `comment()` | コメント       |
 
-| 関数                       | 説明                               |
-| -------------------------- | ---------------------------------- |
-| `last()`                   | ノードセットの最後の位置           |
-| `position()`               | 現在のノードの位置（1 始まり）     |
-| `count(node-set)`          | ノードセットの個数                 |
-| `id(string)`               | ID を持つノードを返す              |
-| `local-name(node-set?)`    | ローカル名（名前空間なしの要素名） |
-| `namespace-uri(node-set?)` | 名前空間 URI                       |
-| `name(node-set?)`          | 完全な名前（prefix あり）          |
+| 関数         | 説明                           |
+| ------------ | ------------------------------ |
+| `last()`     | ノードセットの最後の位置       |
+| `position()` | 現在のノードの位置（1 始まり） |
 
-| 関数                           | 説明                       |
-| ------------------------------ | -------------------------- |
-| `string(object)`               | 文字列に変換               |
-| `concat(s1, s2, ...)`          | 文字列連結                 |
-| `starts-with(s1, s2)`          | 前方一致                   |
-| `contains(s1, s2)`             | 部分一致                   |
-| `substring(s, start, length?)` | 部分文字列                 |
-| `substring-before(s, delim)`   | 区切り文字より前           |
-| `substring-after(s, delim)`    | 区切り文字より後           |
-| `string-length(string?)`       | 長さ                       |
-| `normalize-space(string?)`     | 余分な空白除去             |
-| `translate(s, from, to)`       | 文字置換（正規表現は不可） |
+| 関数                          | 説明                       |
+| ----------------------------- | -------------------------- |
+| `count(xpath)`                | ノードセットの個数         |
+| `string(object)`              | 文字列に変換               |
+| `concat(s1, s2, ...)`         | 文字列連結                 |
+| `starts-with(s1, s2)`         | 前方一致                   |
+| `contains(s1, s2)`            | 部分一致                   |
+| `substring(s, start, length)` | 部分文字列                 |
+| `substring-before(s, delim)`  | 区切り文字より前           |
+| `substring-after(s, delim)`   | 区切り文字より後           |
+| `string-length(string)`       | 長さ                       |
+| `normalize-space(string)`     | 余分な空白除去             |
+| `translate(s, from, to)`      | 文字置換（正規表現は不可） |
 
 | 関数              | 説明     |
 | ----------------- | -------- |
-| `number(object?)` | 数値変換 |
-| `sum(node-set)`   | 合計     |
+| `number(object)`  | 数値変換 |
+| `sum(nodeset)`    | 合計     |
 | `floor(number)`   | 切り捨て |
 | `ceiling(number)` | 切り上げ |
 | `round(number)`   | 四捨五入 |
@@ -2083,27 +2076,33 @@ xpath
 | `false()`         | false を返す |
 
 ```
-xpath '(xpath)' file.xml
-xpath '(xpath)/text()' file.xml
-xpath '(xpath)/@arg' file.xml
+xpath 'xpath' file.xml
+xpath 'xpath[condition]' file.xml
+xpath 'xpath/@attr' file.xml
 
 xpath '/root/tag1/tag2' file.xml
-xpath '/root/tag1/tag2/text()' file.xml
+xpath '/root/tag1/tag2[condition]' file.xml
+xpath '/root/tag1[condition]/tag2' file.xml
 
+xpath '/root/tag1/tag2/text()' file.xml
 xpath '//tag1/tag2/text()' file.xml
 
 xpath '//tag1/tag2' file.xml | xmllint --format -
 
-xpath '/root/item[1]' file.xml | xmllint --format -
+xpath '/root/tag[1]' file.xml | xmllint --format -
 ```
 
 conditions
 
 ```
-xpath '/---/tag[@attr] file.xml
-xpath '/---/tag[not @attr] file.xml
-xpath '/---/tag[@attr1 and/or @attr2] file.xml
-xpath '/---/tag[@attr=val] file.xml
+xpath '/---/tag[@attr]
+xpath '/---/tag[not @attr]
+xpath '/---/tag[@attr1 and/or @attr2]
+xpath '/---/tag[@attr=val]
+
+xpath '/---/tag[last()]
+xpath '/---/tag[position()=num]
+xpath '/---/tag[position()<last()]
 
 xpath '/---/tag[contains(@attr, val)]
 xpath '/---/tag[start-with(@attr, val)]
@@ -2113,7 +2112,16 @@ xpath '/---/tag1[ancestor::tag0] # tag1 node in tag0 node
 
 xpath '/---/tag[num1]/following-sibling::tag[num2]
 xpath '/---/tag[num1]/preceding-sibling::tag[num2]
+```
 
+```
+xpath 'xpath/text()'
+xpath 'string(xpath)'
+xpath 'string(xpath[condition])'
+xpath 'count(xpath)'
+xpath 'count(xpath[condition])'
+xpath 'string-length(xpath)'
+xpath 'normalize-space(xpath])'
 ```
 
 to json
