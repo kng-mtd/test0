@@ -469,6 +469,7 @@ $RANDOM$RANDOM
 var=string
 var='string has space'
 var=$(command)
+var=`command`
 
 $var
 "$var in string" # interpolation / expansion
