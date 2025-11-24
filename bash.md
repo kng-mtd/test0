@@ -375,6 +375,26 @@ EOF
 
 ### scheduled jobs
 
+systemctl status atd
+sudo systemctl enable atd
+
+at now +num minutes/hours
+at HH:MM
+at HH:MM yyyy-mm-dd
+
+at> command1
+at> command2
+...
+at> ctrl+d
+
+at -l
+atrm job
+
+at の出力は /var/log/syslog に記録されます。
+`grep atd /var/log/syslog`
+
+---
+
 sudo systemctl status cron
 sudo systemctl start/stop cron
 sudo sytemctl enable
@@ -474,8 +494,9 @@ printenv
 
 $HOME
 $USER
+$UID
 $HOSTNAME
-$ PATH
+$PATH
 echo $PATH | sed 's/:/\n/g'
 
 
@@ -494,7 +515,7 @@ source ~/.bashrc
 
 PATH="$PATH:new path"
 
-$RANDOM
+$RANDOM #integer 0 to 2**15-1
 $RANDOM$RANDOM
 ```
 
@@ -1146,6 +1167,14 @@ fn0 str1 str2 str3...
 
 ## file process
 
+basename dir/file.xxx
+
+dirname dir/file.xxx
+
+realpath script.sh
+
+---
+
 touch file1 file2...
 touch glob
 touch file{seq} #ex. file{00..99}.txt
@@ -1760,16 +1789,25 @@ wait PID
 
 ---
 
-| Action                             | Command                          |
-| ---------------------------------- | -------------------------------- |
-| Start job in background            | `command &`                      |
-| List background jobs               | `jobs`                           |
-| Resume stopped job in background   | `bg %job_number`                 |
-| Bring background job to foreground | `fg %job_number`                 |
-| Get last backgroud job PID         | `pid=$!`                         |
-| Wait for a certain jobs to finish  | `wait PID`                       |
-| Wait for jobs to finish            | `wait`                           |
-| Kill background job                | `kill %job_number` or `kill PID` |
+nohup command/script.sh &
+nohup command/script.sh > file.txt 2>&1 &
+
+---
+
+| Action                                               | Command                          |
+| ---------------------------------------------------- | -------------------------------- |
+| Start job in background                              | `command &`                      |
+| Run job immune to hangup (without background)        | `nohup command`                  |
+| Start job in background and survive logout           | `nohup command &`                |
+| Start job with custom output file and survive logout | `nohup command > out.log 2>&1 &` |
+| List background jobs                                 | `jobs`                           |
+| Resume stopped job in background                     | `bg %job_number`                 |
+| Bring background job to foreground                   | `fg %job_number`                 |
+| Get last background job PID                          | `pid=$!`                         |
+| Wait for a certain job to finish                     | `wait PID`                       |
+| Wait for all jobs to finish                          | `wait`                           |
+| Kill background job                                  | `kill %job_number` or `kill PID` |
+| Start normal job then detach it from the shell       | `disown %job_number`             |
 
 ---
 
@@ -1811,7 +1849,7 @@ top, htop
 
 ## network
 
-ping
+ping url
 
 - -c
 - -i
