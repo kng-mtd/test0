@@ -2015,6 +2015,11 @@ jq .key1
 jq .key1.key11
 jq -r .key1.key11
 jq -r '.key1.key11, .key1.key12,...'
+jq -r '.key1 | .key11, .key12,...'
+jq -r '.key1 | .key11+" ".key12+" "...'
+jq -r '.key1 | "\(.key11) \(.key12)..."'
+jq -r '.key1 | [.key11, .key12,...]'
+jq -r '.key1 | {key11: .key11, key12: .key12,...}'
 jq 'key1 | keys'
 jq '.key1 | length'
 
@@ -2039,18 +2044,19 @@ jq '.key0[] | length'
 
 jq '.[] | .key1, .key2'
 
-{"key0":[{"key1":"val11", "key2":"val21"}, {"key1":"val12", "key2":"val22"},... ]}
+{"key0":[{"key1":"val11", "key2":"val21",...},
+    {"key1":"val12", "key2":"val22",...},... ]}
 
 jq '.[] | .[] |.key1, .key2'
 
 jq '.key0[] | .keyx="valx"'
 jq '.key0[] | select(.key1 == "str")'
 jq '.key0[] | select(.key1 > num)'
+jq '.key0[] | select(.key1 | index("str1"))'
 
-jq '.key0 | add'
-jq '.key0 | map(.+1)'
+jq '.key0[].key1 | add'
+jq '.key0[].key1 | map(.+1)'
 jq -r '.key0 | [.key1, .key2] | @csv'
-
 ```
 
 ---
