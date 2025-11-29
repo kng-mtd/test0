@@ -264,6 +264,8 @@ check syntax
 
 bash -n script.sh
 
+watcn -n num command
+
 debug mode
 
 bash -x script.sh
@@ -1839,6 +1841,8 @@ watch -n sec command
 ---
 
 top, htop
+
+sudo iotop
 
 ---
 
