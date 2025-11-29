@@ -1840,6 +1840,20 @@ watch -n sec command
 
 ---
 
+pv file0 > file1
+
+command1 | pv > /dev/null
+command1 | pv | command2
+
+- -p
+- -s
+- -t
+- -e
+- -r
+- -b
+
+---
+
 top, htop
 
 sudo iotop
