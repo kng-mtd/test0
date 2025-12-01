@@ -197,6 +197,8 @@ Table
 
 https://arrow.apache.org/docs/python/index.html
 
+https://arrow.apache.org/cookbook/py/
+
 ```python
 import pyarrow as pa
 
@@ -239,14 +241,14 @@ birthdays_dataset.files
 
 # data type
 
-#Fixed-length primitive types:
-#ex. int16(), float32(), bool_() True/False, binary(num), timestamp('ms')
+Fixed-length primitive types:
+   ex. int16(), float32(), bool_() True/False, binary(num), timestamp('ms')
 
-#Variable-length primitive types:
-#ex. string(), binary()
+Variable-length primitive types:
+   ex. string(), binary()
 
-#Nested types:
-#ex. list, struct
+Nested types:
+   ex. list, struct
 
 import pyarrow as pa
 
@@ -371,17 +373,95 @@ t=pa.table([
 
 t.group_by('key').aggregate([('key', 'count'),('val1', 'mean'),('val2', 'stddev') ])
 
-# aggregation functions
-# all, any, count, distinct,
-# max, min, mean, approximate_median, mode,
-# variance, stddev, kurtosis, skew
+aggregation functions
+   all, any, count, distinct,
+   max, min, mean, approximate_median, mode,
+   variance, stddev, kurtosis, skew
 
 
-https://arrow.apache.org/docs/python/ipc.html
+# join
 
-https://arrow.apache.org/docs/python/filesystems.html
+table3=table1.join(table2, keys='id', join_type='inner')
 
-https://arrow.apache.org/docs/python/numpy.html
+By default join_type is left outer
+join types:
+    left semi, right semi, left anti, right anti, inner, left outer, right outer, full outer
+
+
+# filter
+
+table1=table0.filter((pc.field('f0')>5 & pc.field('f1')<5 | pc.field('f2')==5))
+table1=table0.filter(~(pc.field('f0')))
+
+
+
+# file I/O
+
+local file
+
+from pyarrow import fs
+local = fs.LocalFileSystem()
+
+with local.open_output_stream('/tmp/data0.dat') as stream:
+   stream.write('data0')
+
+with local.open_input_stream('/tmp/data0.dat') as stream:
+   print(stream.read_all())
+
+
+S3
+
+import pyarrow.parquet as pq
+table=pq.read_table("s3://bucket/data0.parquet")
+
+from pyarrow import fs
+s3=fs.S3FileSystem(region='ap-northeast-1')
+f=s3.open_input_stream('bucket/data0.dat')
+   print(f.readall()
+
+
+
+# with numpy
+
+import numpy as np
+import pyarrow as pa
+
+numpy to arrow
+
+v = np.arange(5, dtype='int16')
+arr = pa.array(v)
+
+arrow to numpy
+
+arr = pa.array([1, 2, 3], type=pa.int16())
+v = arr.to_numpy()
+
+
+# with pandas
+
+import pyarrow as pa
+import pandas as pd
+
+pandas to arrow
+
+df = pd.DataFrame({"a": [1, 2, 3]})
+table = pa.Table.from_pandas(df)
+schema = pa.Schema.from_pandas(df)
+
+arrow to pandas
+
+df = table.to_pandas()
+
+df = table.to_pandas(split_blocks=True, self_destruct=True)
+del table
+
+
+
+
+
+
+
+
 
 https://arrow.apache.org/docs/python/csv.html
 
