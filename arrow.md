@@ -377,8 +377,20 @@ t.group_by('key').aggregate([('key', 'count'),('val1', 'mean'),('val2', 'stddev'
 # variance, stddev, kurtosis, skew
 
 
+https://arrow.apache.org/docs/python/ipc.html
 
-# join
+https://arrow.apache.org/docs/python/filesystems.html
+
+https://arrow.apache.org/docs/python/numpy.html
+
+https://arrow.apache.org/docs/python/csv.html
+
+https://arrow.apache.org/docs/python/feather.html
+
+https://arrow.apache.org/docs/python/json.html
+
+https://arrow.apache.org/docs/python/parquet.html
+
 
 
 ```
@@ -656,6 +668,7 @@ print(f"Feather read time: {end-start:.2f} sec")
 arrow2.py
 
 ```python
+# pip install polars[rtcompat]
 import pyarrow as pa
 import polars as pl
 import time
