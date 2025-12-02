@@ -395,32 +395,6 @@ table1=table0.filter(~(pc.field('f0')))
 
 
 
-# file I/O
-
-local file
-
-from pyarrow import fs
-local = fs.LocalFileSystem()
-
-with local.open_output_stream('/tmp/data0.dat') as stream:
-   stream.write('data0')
-
-with local.open_input_stream('/tmp/data0.dat') as stream:
-   print(stream.read_all())
-
-
-S3
-
-import pyarrow.parquet as pq
-table=pq.read_table("s3://bucket/data0.parquet")
-
-from pyarrow import fs
-s3=fs.S3FileSystem(region='ap-northeast-1')
-f=s3.open_input_stream('bucket/data0.dat')
-   print(f.readall()
-
-
-
 # with numpy
 
 import numpy as np
@@ -457,22 +431,144 @@ del table
 
 
 
+# I/O for binary file
+
+local file
+
+from pyarrow import fs
+local = fs.LocalFileSystem()
+
+with local.open_output_stream('/tmp/data0.dat') as stream:
+   stream.write('data0')
+
+with local.open_input_stream('/tmp/data0.dat') as stream:
+   print(stream.read_all())
 
 
+S3
+
+import pyarrow.parquet as pq
+table=pq.read_table("s3://bucket/data0.parquet")
+
+from pyarrow import fs
+s3=fs.S3FileSystem(region='ap-northeast-1')
+f=s3.open_input_stream('bucket/data0.dat')
+   print(f.readall()
 
 
+# read/write csv
+
+automatic processes
+   decopression from such as .gz
+   column type conversion
+      null, int64, float64, date32,
+      time32[s], timestamp[s], timestamp[ns], duration
+      string, binary
+   null detection from such as NaN or #N/A
+
+from pyarrow import csv
+import pyarrow as pa
+
+table = csv.read_csv(data0.csv)
+table
+len(table)
+df = table.to_pandas()
+df.head()
+
+options = csv.WriteOptions(include_header=False)
+csv.write_csv(table, 'data1.csv', options)
+
+with pa.CompressedOutputStream('data1.csv.gz', 'gzip') as out:
+   csv.write_csv(table, out)
+
+with csv.CSVWriter("data1.csv", table.schema) as writer:
+    writer.write_table(table)
 
 
-https://arrow.apache.org/docs/python/csv.html
+# read/write feather
 
-https://arrow.apache.org/docs/python/feather.html
+import pyarrow.feather as feather
 
-https://arrow.apache.org/docs/python/json.html
+arrow = feather.read_table('data0.feather')
+df = feather.read_feather('data0.feather')
 
-https://arrow.apache.org/docs/python/parquet.html
+feather.write_feather(arrow, 'data1.feather')
+feather.write_feather(df, 'data1.feather')
+
+with open('data0.feather', 'rb') as f:
+    df = feather.read_table(f)
+
+with open('data1.feather', 'wb') as f:
+    feather.write_feather(arrow, f)
 
 
+writing default is lz4 compression
 
+feather.write_feather(df, file_path, compression='lz4')
+feather.write_feather(df, file_path, compression='zstd')
+feather.write_feather(df, file_path, compression='uncompressed')
+
+
+# read json
+
+automatic type conversion from json
+   null, bool_, int64, float64, timestamp[s],
+   list, struct
+
+from pyarrow import json
+table = json.read_json('data0.json')
+table
+df=table.to_pandas()
+head(df)
+
+
+# read/write parquet
+
+import pyarrow.parquet as pq
+
+table = pq.read_table('data0.parquet')
+table.to_pandas()
+
+table = pq.read_table('data0.parquet', columns=['one', 'three'])
+
+pq.write_table(table, 'data1.parquet')
+
+table = pq.read_table('s3://bucket/data0.parquet')
+
+from pyarrow import fs
+s3 = fs.S3FileSystem(region='ap-northeast-1')
+table = pq.read_table('bucket/data0.parquet', filesystem=s3)
+
+
+## memory mapping
+
+pq_array = pa.parquet.read_table("data0.parquet", memory_map=True)
+print("RSS: {}MB".format(pa.total_allocated_bytes() >> 20))
+
+pq_array = pa.parquet.read_table("data0.parquet", memory_map=False)
+print("RSS: {}MB".format(pa.total_allocated_bytes() >> 20))
+
+
+## finer reading/writing for parquet
+
+pf = pq.ParquetFile('data0.parquet')
+pf.metadata
+pf.schema
+pf.num_row_groups
+pf.read_row_group(0)
+pf.read_row_group(0).column(0)
+
+meta = pq.read_metadata('data0.parquet')
+meta
+meta.row_group(0)
+meta.row_group(0).column(0)
+
+with pq.ParquetWriter('data1.parquet', table.schema) as writer:
+   for i in range(3):
+      writer.write_table(table)
+
+pf = pq.ParquetFile('data1.parquet')
+pf.num_row_groups
 ```
 
 ---
