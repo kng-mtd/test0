@@ -1,102 +1,4 @@
-# aws s3 CLI
-
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-
-aws --version
-
-aws configure
-
-AWS Access Key ID [None]: xxxxx...
-AWS Secret Access Key [None]: xxxxx...
-Default region name [None]: ap-northeast-1
-Default output format [None]: json
-
-aws s3
-
-| コマンド | 説明                                                    | 例                                                                             |
-| -------- | ------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| **ls**   | バケットまたはディレクトリの一覧表示                    | `aws s3 ls`<br>`aws s3 ls s3://my-bucket/`                                     |
-| **cp**   | ファイルやフォルダをコピー（アップ/ダウンロード両対応） | `aws s3 cp local.txt s3://my-bucket/`<br>`aws s3 cp s3://my-bucket/file.txt .` |
-| **sync** | ディレクトリ間を再帰的に同期                            | `aws s3 sync ./data s3://my-bucket/data/`                                      |
-| **mv**   | ファイルを移動                                          | `aws s3 mv s3://src/file.txt s3://dst/file.txt`                                |
-| **rm**   | ファイル削除                                            | `aws s3 rm s3://my-bucket/file.txt`                                            |
-| **rb**   | バケット削除（空である必要あり）                        | `aws s3 rb s3://my-bucket --force`                                             |
-
-|
-
-export MYBUCKET=my-data-bucket-123/
-aws s3 ls s3://$MYBUCKET
-
-alias s3ls='aws s3 ls s3://my-data-bucket-123/'
-alias s3cp='aws s3 cp s3://my-data-bucket-123/'
-
-aws s3 cp s3://my-bucket/data.csv - | sed -n '2,5p'
-s3cp /data.csv - | sed -n '2,5p'
-
-`aws s3api select-object-content` は **S3 上のオブジェクト（CSV / JSON / Parquet）から条件付きで部分的にデータを取得** できる機能です。
-巨大ファイルを効率的に処理するための **サーバーサイド抽出** です。
-
----
-
-## 基本機能
-
-- 条件に合致する **行だけ抽出**（WHERE 句）
-- 必要な **列だけ抽出**（SELECT 句）
-- データ形式指定（CSV / JSON / Parquet）
-- 入力・出力のシリアライズ形式指定
-
----
-
-## 主な特徴
-
-| 特徴                   | 説明                                                                        |
-| ---------------------- | --------------------------------------------------------------------------- |
-| 転送量削減             | S3 側で条件に合うデータだけ返すので、大ファイルでもネットワーク負荷が小さい |
-| シーケンシャルスキャン | 内部的には先頭から順にスキャン（ランダムアクセスではない）                  |
-| SQL ライクなクエリ     | `SELECT * FROM s3object s WHERE s.id='10'` のように記述可能                 |
-| 対応フォーマット       | CSV, JSON, Parquet                                                          |
-| 文字コード             | UTF-8 推奨                                                                  |
-
----
-
-## 基本構文
-
-```bash
-aws s3api select-object-content \
-  --bucket my-bucket \
-  --key data.csv \
-  --expression "SELECT * FROM s3object WHERE id = '10'" \
-  --expression-type SQL \
-  --input-serialization '{"CSV":{"FileHeaderInfo":"USE"}}' \
-  --output-serialization '{"CSV":{}}' \
-  output.csv
-```
-
-- `--expression` … SQL ライクな条件指定
-- `--input-serialization` … オブジェクトの形式（CSV/JSON/Parquet, ヘッダあり/なしなど）
-- `--output-serialization` … 抽出結果の形式
-
-- JSON: `{"JSON":{"Type":"LINES"}}`
-- Parquet: `{"Parquet":{}}`
-
-- `s3object` → S3 Select が参照するファイル全体
-- `alias` → テーブルエイリアス（任意）
-
-## WHERE 句の条件
-
-- 比較演算子： `=`, `!=`, `<`, `>`, `<=`, `>=`
-- 論理演算子： `AND`, `OR`, `NOT`
-- LIKE 演算子も一部サポート（ワイルドカード `%`）
-
-## 関数
-
-- **文字列関数**: `UPPER()`, `LOWER()`, `TRIM()`, `LENGTH()`
-- **数値関数**: `ABS()`, `CEIL()`, `FLOOR()`
-- **NULL チェック**: `IS NULL`, `IS NOT NULL`
-
-# 1. 巨大 CSV ワークフロー概要
+# 1. ローカル ワークフロー概要
 
 ```
 ① S3 上の対象ファイルをダウンロード（必要に応じて複数ファイル）
@@ -651,8 +553,6 @@ aws s3 cp "$NEW_FILE" "s3://$BUCKET/$FILE_KEY"
 
 ---
 
-# 4. 結論
-
 - 小規模なら s3 cp が最も簡単。
 - 更新対象が少ないなら S3 Select（10〜30GB くらいが効果絶大）。
 - 巨大分割や 100GB 以上では **S3 Select → DuckDB パイプ（完全ストリーム）** が最速・最安・最安定。
@@ -809,8 +709,6 @@ base64 よりはマシだが、やはり 1 行が大きいと効率悪い。
 
 ---
 
-# 6. 最適解まとめ
-
 ### 最も安定・高速・管理しやすい構成
 
 ```
@@ -950,7 +848,6 @@ AWS S3 Select for JSON の特長：
 
 ---
 
-# 4. 結論（明確）
 
 ## 1 行 1MB + binary 列 + 更新/compact
 
@@ -1239,7 +1136,6 @@ Lua が `awk` や `jq` より速いかどうかは、**用途と処理内容に�
 
 ---
 
-# 4. 結論
 
 - **フラット JSON + 単純フィルタ → awk 最速**
 - **複雑な JSON → Lua + JSON ライブラリは jq より軽量で高速になる場合がある**
@@ -2104,7 +2000,7 @@ s3://bucket/table_name/
 
 # ケース 1：**1 つの巨大な Parquet ファイルとして S3 に置く**（単一ファイル）
 
-結論：**非推奨（実務ではほぼやらない）**
+**非推奨（実務ではほぼやらない）**
 
 理由：
 
@@ -2121,7 +2017,7 @@ s3://bucket/table_name/
 
 （一般的な Data Lake の形）
 
-結論：**これは実務の標準。ベストプラクティス。**
+**実務の標準。ベストプラクティス。**
 
 例：
 
@@ -2691,365 +2587,115 @@ aws s3 cp bigfile.parquet s3://my-bucket/ \
 | `--storage-class`           | S3 ストレージクラス             | STANDARD（高速転送重視）                         |
 | `--cli-read-timeout`        | タイムアウト調整                | デフォルトより大きめ（長時間転送用）             |
 
-# **S3 上の巨大固定長バイナリファイルから特定レコードだけ直接取り出す**
 
-1. **複数の JPG を固定長（固定バイトサイズ）に変換**
-2. **固定長バイナリとして連結** → 巨大バイナリファイル作成
-3. **S3 にアップロード**
-4. **s3api get object、--range "bytes=$START-$END"で特定レコードを取り出す**
+
+---
+---
+---
+
+# DuckDBでS3 上の CSV や Parquet を直接クエリ、ローカルへダウンロードなし
+
+* S3 の **CSV / JSON / Parquet** に対してそのまま `SELECT` を実行
+* S3 Select ではなく、**DuckDB エンジン側でフィルタしながら読み込む**
+* Parquet は **列指向 + プッシュダウン最適化**が効くので高速
+* 認証は AWS の `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`、またはセッション設定で指定
 
 ---
 
-## 前提条件
+## 基本的な使い方
 
-- ローカル JPG が `images/*.jpg` にある
-- 固定バイトサイズ：`RECORD_SIZE`（例：50KB = 51200）
-- 連結後のファイル名：`all_images.bin`
-- S3 バケット：`my-bucket`
-- Python / AWS CLI はインストール済み
-
----
-
-## 1️⃣ JPG を固定サイズに揃え、パディングして連結
-
-```bash
-#!/bin/bash
-
-RECORD_SIZE=51200  # 50KB
-OUT_FILE="all_images.bin"
-
-# 出力ファイルを初期化
-> "$OUT_FILE"
-
-for f in images/*.jpg; do
-  tmp=$(mktemp)
-  # 解像度固定（例 256x256px） + 品質調整
-  convert "$f" -resize 256x256! -quality 85 "$tmp"
-
-  # バイナリサイズ取得
-  size=$(stat -c%s "$tmp")
-
-  if [ "$size" -gt "$RECORD_SIZE" ]; then
-    echo "Warning: $f exceeds RECORD_SIZE, truncating"
-    dd if="$tmp" bs=1 count=$RECORD_SIZE 2>/dev/null >> "$OUT_FILE"
-  else
-    cat "$tmp" >> "$OUT_FILE"
-    # 足りない場合は 0 でパディング
-    dd if=/dev/zero bs=1 count=$((RECORD_SIZE - size)) 2>/dev/null >> "$OUT_FILE"
-  fi
-  rm "$tmp"
-done
-
-echo "Created fixed-length binary: $OUT_FILE"
-```
-
-- 1 レコード = `RECORD_SIZE` バイト
-- JPG を縮小・圧縮してからパディング
-
----
-
-## 2️⃣ S3 にアップロード
-
-```bash
-aws s3 cp "$OUT_FILE" s3://my-bucket/all_images.bin
-```
-
-- これで巨大固定長バイナリファイルが S3 に保存されます
-
----
-
-## 3️⃣ S3 上の特定レコードを直接取り出す
-
-例えば、10 レコード目を取得したい場合：
-
-```bash
-RECORD_NUM=10
-START=$(( (RECORD_NUM - 1) * RECORD_SIZE ))
-END=$(( START + RECORD_SIZE - 1 ))
-
-aws s3api get-object \
-  --bucket my-bucket \
-  --key all_images.bin \
-  --range "bytes=$START-$END" \
-  record10.bin
-```
-
-- 取得した `record10.bin` は元の JPG と同じ固定バイト長
-- 解像度は維持されているので ImageMagick で表示可能
-
----
-
-## 4️⃣ オプション：Python で直接取得
+### 1. S3 設定（Python）
 
 ```python
-import boto3
+import duckdb
 
-bucket = 'my-bucket'
-key = 'all_images.bin'
-record_size = 51200
-record_num = 10
-
-s3 = boto3.client('s3')
-start = (record_num - 1) * record_size
-end = start + record_size - 1
-
-resp = s3.get_object(Bucket=bucket, Key=key, Range=f'bytes={start}-{end}')
-data = resp['Body'].read()
-
-with open(f'record{record_num}.jpg', 'wb') as f:
-    f.write(data)
+duckdb.sql("""
+SET s3_region='ap-northeast-1';
+SET s3_access_key_id='ACCESS_KEY';
+SET s3_secret_access_key='SECRET_KEY';
+""")
 ```
 
----
-
-#!/bin/bash
-
-# -------------------------------
-
-# Parameters
-
-# -------------------------------
-
-INPUT_DIR="images" # 元 JPEG/JPG があるディレクトリ
-RECORD_SIZE=51200 # 1 レコード固定バイトサイズ
-OUT_FILE="all_images.bin"
-S3_BUCKET="my-bucket"
-RESIZE_W=256
-RESIZE_H=256
-QUALITY=85 # JPEG 品質固定
-
-# -------------------------------
-
-# Step 0: 出力ファイル初期化
-
-# -------------------------------
-
-> "$OUT_FILE"
-
-# -------------------------------
-
-# Step 1: JPEG 変換 + 固定長パディング + 連結
-
-# -------------------------------
-
-for f in "$INPUT_DIR"/*.{jpg,JPG,jpeg,JPEG}; do
-  [ -e "$f" ] || continue
-tmp=$(mktemp).jpg
-
-# 解像度固定 + 品質固定
-
-convert "$f" -resize ${RESIZE_W}x${RESIZE_H}! -quality $QUALITY "$tmp"
-
-# サイズ取得
-
-size=$(stat -c%s "$tmp")
-
-if [ "$size" -gt "$RECORD_SIZE" ]; then
-echo "Warning: $f exceeds RECORD_SIZE, truncating"
-    dd if="$tmp" bs=1 count=$RECORD_SIZE 2>/dev/null >> "$OUT_FILE"
-else
-cat "$tmp" >> "$OUT_FILE" # パディングで固定サイズに
-dd if=/dev/zero bs=1 count=$((RECORD_SIZE - size)) 2>/dev/null >> "$OUT_FILE"
-fi
-
-rm "$tmp"
-done
-
-echo "✅ Created fixed-length JPEG binary: $OUT_FILE"
-
-# -------------------------------
-
-# Step 2: S3 アップロード
-
-# -------------------------------
-
-aws s3 cp "$OUT_FILE" s3://"$S3_BUCKET"/"$OUT_FILE"
-echo "✅ Uploaded to S3: s3://$S3_BUCKET/$OUT_FILE"
-
-# -------------------------------
-
-# Step 3: 任意レコード取得関数
-
-# -------------------------------
-
-get_record() {
-local record_num=$1
-  local out=$2
-  local start=$(( (record_num - 1) \* RECORD_SIZE ))
-local end=$(( start + RECORD_SIZE - 1 ))
-
-aws s3api get-object \
- --bucket "$S3_BUCKET" \
-    --key "$OUT_FILE" \
- --range "bytes=$start-$end" \
- "$out"
-
-echo "✅ Extracted record $record_num -> $out"
-}
-
-# 例: 10 レコード目を取得
-
-# get_record 10 "record10.jpg"
-
-## 1️⃣ PNG の特性
-
-- PNG は **可逆圧縮形式**
-- 画像内容が同じなら圧縮率もほぼ同じ
-- JPG のように圧縮アルゴリズムでサイズが大きく変動することは少ない
-- パディングを加えても、**正しい PNG ファイルとして表示可能**
-
----
-
-## 2️⃣ 固定バイト数にする方法
-
-### 方法
-
-1. **解像度を固定** → すべて同じ幅・高さに揃える
-2. **PNG に変換** → 可逆圧縮で安定したファイルサイズに
-3. **パディング** → 足りないバイトを末尾に追加して完全固定
-
----
-
-### Bash 例
-
-```bash
-#!/bin/bash
-
-RECORD_SIZE=51200  # 50KB
-OUT_FILE="all_images.bin"
-
-# 出力ファイル初期化
-> "$OUT_FILE"
-
-for f in images/*.jpg; do
-  tmp=$(mktemp).png
-  # 解像度固定 + PNG 変換
-  convert "$f" -resize 256x256! "$tmp"
-
-  size=$(stat -c%s "$tmp")
-
-  if [ "$size" -gt "$RECORD_SIZE" ]; then
-    echo "Warning: $f exceeds RECORD_SIZE, truncating"
-    dd if="$tmp" bs=1 count=$RECORD_SIZE 2>/dev/null >> "$OUT_FILE"
-  else
-    cat "$tmp" >> "$OUT_FILE"
-    dd if=/dev/zero bs=1 count=$((RECORD_SIZE - size)) 2>/dev/null >> "$OUT_FILE"
-  fi
-
-  rm "$tmp"
-done
-
-echo "Created fixed-length PNG binary: $OUT_FILE"
-```
-
-- 各 PNG ファイルの **末尾にゼロでパディング**して RECORD_SIZE に揃える
-- 末尾パディングしても PNG は正しく表示可能
-
-S3 を高速に入出力したい場合は、単純な `aws s3 cp` や `get-object` だけでは限界があります。用途（大容量ファイル / 多数ファイル / 小さいファイル）によってアプローチが変わります。以下に整理します。
-
----
-
-## 1️⃣ マルチパートアップロード / マルチスレッド
-
-### アップロード時
-
-- **`aws s3 cp --recursive`** や **`aws s3 sync`** だけでなく、
-- **大きなファイルはマルチパートアップロード** が推奨
-
-```bash
-aws s3 cp large_file.bin s3://my-bucket/ --storage-class STANDARD_IA --expected-size 1073741824
-```
-
-- AWS CLI v2 では自動でマルチパートアップロードされます
-- 並列数を増やしたい場合：
-
-```bash
-export AWS_MAX_CONCURRENT_REQUESTS=20
-aws s3 cp large_file.bin s3://my-bucket/
-```
-
----
-
-### ダウンロード時
-
-- `aws s3api get-object --range` で**バイト範囲指定**
-- 複数範囲を並列で取得して結合 → 大容量ファイル高速化
-
-```bash
-# 例: 1GBファイルを4スレッドで分割ダウンロード
-split_size=$((1024*1024*256)) # 256MB
-# 各範囲に対して get-object をバックグラウンドで実行
-```
-
----
-
-## 2️⃣ AWS S3 Transfer Acceleration
-
-- 地理的に離れたリージョンや高速転送が必要な場合に有効
-- S3 エンドポイントを `bucketname.s3-accelerate.amazonaws.com` に変えるだけ
-- 転送速度が 2 ～ 3 倍になる場合あり
-
-```bash
-aws s3 cp large_file.bin s3://my-bucket/ --endpoint-url https://bucketname.s3-accelerate.amazonaws.com
-```
-
----
-
-## 3️⃣ 小さなファイルが多数の場合
-
-- 小ファイルを直接アップロードすると遅い → **圧縮してまとめてアップロード**
-- tar + gzip でまとめて S3 にコピー → ダウンロード後に展開
-
-```bash
-tar czf all_images.tar.gz images/
-aws s3 cp all_images.tar.gz s3://my-bucket/
-```
-
-- 一括ダウンロードすると高速化
-
----
-
-## 4️⃣ S3 Select を使う
-
-- CSV / JSON / Parquet の特定部分だけ取得
-- 巨大ファイルでも必要な範囲だけ読み込める → 転送量削減
-
-```bash
-aws s3api select-object-content \
-  --bucket my-bucket \
-  --key data.csv \
-  --expression "SELECT * FROM s3object s WHERE s.id = '10'" \
-  --expression-type SQL \
-  --input-serialization '{"CSV": {"FileHeaderInfo": "USE"}}' \
-  --output-serialization '{"CSV": {}}' output.csv
-```
-
-- 特定行だけを直接取り出すのに最適
-
----
-
-## 5️⃣ 並列化 / 並行リクエスト
-
-- **GNU Parallel** や **xargs -P** を使って並列処理
-- 例：複数レコードの取得を並列で実行
-
-```bash
-seq 1 10 | xargs -n1 -P4 -I{} bash -c 'aws s3api get-object --bucket my-bucket --key all_images.bin --range bytes=$(( ({}-1)*51200 ))-$(( {}*51200-1 )) record{}.jpg'
-```
-
-- `-P4` → 4 並列
-
----
-
-## 6️⃣ SDK でストリーム処理
-
-- Python boto3 や Node.js SDK で**ストリームを使った入出力**
-- ローカルディスクに一時保存せずに直接処理可能
-- 巨大バイナリや画像連結用途に向く
+### 2. S3 の CSV に直接クエリ
 
 ```python
-resp = s3.get_object(Bucket='my-bucket', Key='all_images.bin', Range='bytes=0-51199')
-data = resp['Body'].read()
+duckdb.sql("""
+SELECT *
+FROM read_csv_auto('s3://bucket/path/to/data.csv')
+WHERE id = 100
+""")
+```
+
+### 3. S3 の Parquet に直接クエリ
+
+```python
+duckdb.sql("""
+SELECT user_id, amount
+FROM 's3://bucket/path/data.parquet'
+WHERE amount > 1000
+""")
+```
+
+### 4. 複数ファイル（ワイルドカード）
+
+```python
+duckdb.sql("""
+SELECT *
+FROM 's3://bucket/logs/*.parquet'
+WHERE status = 'OK'
+""")
 ```
 
 ---
+
+## 性能のポイント
+
+### Parquet の場合
+
+* **列単位読み込み**
+* **フィルタプッシュダウン**
+* 必要な部分だけ S3 から取得 → 高速・低コスト
+
+### CSV の場合
+
+* 全行スキャンになるので Parquet より遅い
+* それでも **S3 からストリーミングしながら処理**できる
+
+---
+
+
+# 2. Bash + DuckDB なら S3 の Parquet / CSV を直接クエリできる
+
+
+## DuckDB CLI を使った例
+
+### 例：S3 の Parquet に直接クエリ（Bash）
+
+```bash
+duckdb -c "
+SET s3_region='ap-northeast-1';
+SET s3_access_key_id='${AWS_ACCESS_KEY_ID}';
+SET s3_secret_access_key='${AWS_SECRET_ACCESS_KEY}';
+
+SELECT *
+FROM 's3://mybucket/data/*.parquet'
+WHERE amount > 100
+LIMIT 10;
+"
+```
+
+### S3 の CSV に直接クエリ
+
+```bash
+duckdb -c "
+SET s3_region='ap-northeast-1';
+SET s3_access_key_id='${AWS_ACCESS_KEY_ID}';
+SET s3_secret_access_key='${AWS_SECRET_ACCESS_KEY}';
+
+SELECT *
+FROM read_csv_auto('s3://mybucket/data/file.csv')
+WHERE id = 100;
+"
+```
+
+
