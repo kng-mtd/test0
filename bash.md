@@ -82,6 +82,10 @@ sudo gpasswd -d user0 group0
 
 ---
 
+command -v command/alias/function
+
+---
+
 - bash builtin commands
   compgen -b
   help
@@ -1328,8 +1332,26 @@ split -dl num file ./dir/part\_
 ---
 
 rsync dir0/ dir1/
+
+```
+[dir0]
+  ├─ file1          →   [dir1]
+  ├─ file2                 ├─ file1
+  └─ sub/                  ├─ file2
+                             └─ sub/
+```
+
 rsync dir0 dir1/
 
+```
+[dir0]  ─────→  [dir1]
+                     └─ dir0/
+                         ├─ file1
+                         ├─ file2
+                         └─ sub/
+```
+
+- -n, --dry-run
 - -a
 - -v
 - -z
