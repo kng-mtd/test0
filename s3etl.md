@@ -2698,4 +2698,589 @@ WHERE id = 100;
 "
 ```
 
+---
+---
+
+# Parquet は「ファイル形式」、Iceberg は「テーブル管理システム」
+
+Parquet を「ディレクトリで管理する」のと、Iceberg で「テーブルとして管理する」の違いは、**“メタデータをどこまで管理できるか”** にあります。
+
+# 1. parquetのディレクトリ管理（Hive-style partitioning）
+
+```
+/data/
+  year=2024/
+    part-0001.parquet
+    part-0002.parquet
+  year=2025/
+    part-0003.parquet
+```
+
+* クエリエンジン（DuckDB / Spark / Trino）が
+  `/data/` 配下の Parquet を全部スキャン
+* パーティション名である程度フィルタ可能（year=2025/ だけ読む）
+
+
+# 2. Iceberg（メタデータ + 実データ）
+
+```
+metadata/
+  v1.metadata.json
+  v2.metadata.json
+  v3.metadata.json   ← これが「今」のスナップショット
+
+data/
+  0001.parquet
+  0002.parquet
+  ...
+manifests/
+  mf-0001.avro
+  mf-0002.avro
+```
+
+### ◆ Iceberg が持っているメタ情報
+
+* 各スナップショットで、どの Parquet が有効か
+* Parquet ファイルごとの min/max 値
+* 行数
+* 削除ファイルの管理
+* パーティションの情報
+* スキーマのバージョン
+
+### ◆ Iceberg の特徴
+
+* **UPDATE / DELETE ができる**
+* **誤更新しても snapshot rollback できる**
+* **大量ファイルでも manifest を読むだけで高速プランニング**
+* **transaction commit（atomic commit）** により中途半端な状態が発生しない
+* **小さなファイル問題をコンパクションで解決**
+* **スキーマを変更しても安全**
+
+
+
+# 機能比較
+
+| 機能                       | Parquet をディレクトリで管理 | Iceberg                    |
+| ------------------------ | ------------------ | -------------------------- |
+| SELECT                   | ○（読み取れる）           | ○（高速）                      |
+| WHERE で min/max pushdown | △（ファイル単位のみ）        | ◎（manifest により最小限ファイルだけ読む） |
+| UPDATE                   | ✕                  | ◎                          |
+| DELETE                   | ✕                  | ◎                          |
+| MERGE INTO               | ✕                  | ◎                          |
+| スナップショット                 | ✕                  | ◎                          |
+| タイムトラベル                  | ✕                  | ◎                          |
+| スキーマ進化                   | △                  | ◎                          |
+| ファイル増対策              | ✕（自分でやる）           | ◎（Iceberg が管理）             |
+| トランザクション                 | ✕                  | ◎                          |
+
+---
+
+
+
+
+Iceberg with Duckdb
+
+LOAD 'httpfs';
+LOAD 'iceberg';
+
+SET s3_region='ap-northeast-1';
+SET s3_access_key_id='${AWS_ACCESS_KEY_ID}';
+SET s3_secret_access_key='${AWS_SECRET_ACCESS_KEY}';
+SET s3_session_token='${AWS_SESSION_TOKEN}';
+
+CREATE TABLE iceberg_write('s3://bucket/table')
+AS SELECT * FROM parquet_scan('data.parquet');
+
+CREATE TABLE iceberg_write('s3://mybucket/warehouse/table')
+AS SELECT * FROM read_csv_auto('data.csv');
+
+CREATE TABLE iceberg_write('s3://bucket/table')
+AS SELECT * FROM read_json_auto('data.jsonl');
+
+
+Iceberg テーブルはすべて Parquet + Metadata で構成されているので、
+CSV / JSONL は DuckDB が内部メモリで DataFrame に変換
+DuckDB が Iceberg writer で Parquet に変換
+metadata.json / manifest-list / manifest を生成し S3 に保存
+Iceberg テーブルとして完成
+
+
+table/
+  metadata/
+    v0001.metadata.json
+    snap-*.avro
+    manifest-list-*.avro
+  data/
+    *.parquet
+
+
+SELECT * FROM iceberg_scan('s3://bucket/warehouse/table');
+
+
+**複数ファイル（CSV / Parquet / JSONL など）を 1 つの Iceberg テーブルへ変換**
+
+```sql
+CREATE TABLE iceberg_write('s3://bucket/table')
+AS SELECT * FROM parquet_scan('data/*.parquet');
+```
+
+```sql
+CREATE TABLE iceberg_write('s3://bucket/table')
+AS SELECT * FROM read_csv_auto('data/*.csv');
+```
+
+```sql
+CREATE TABLE iceberg_write('s3://bucket/table')
+AS SELECT * FROM read_json_auto('data/*.jsonl');
+```
+
+```sql
+CREATE TABLE iceberg_write('s3://mybucket/ice/table')
+AS SELECT * FROM read_csv_auto('s3://mybucket/input/*.csv');
+```
+
+# Append（追加書き込み）する場合
+
+```sql
+CREATE TABLE iceberg_write('s3://bucket/table')
+AS SELECT * FROM read_csv_auto('data/batch1/*.csv');
+```
+
+追加バッチ：
+
+```sql
+INSERT INTO iceberg_write('s3://bucket/table')
+SELECT * FROM read_csv_auto('data/batch2/*.csv');
+```
+
+```
+metadata/
+  v1.metadata.json
+  v2.metadata.json ← INSERT 追加で生成
+  manifest-list-*.avro
+  manifest-*.avro
+```
+
+---
+
+
+
+
+# Iceberg CLI
+
+# ■ 0. Iceberg CLI の準備
+
+Docker で使うのが最も簡単：
+
+```bash
+docker run -it --rm \
+  -v $(pwd):/work \
+  apache/iceberg:latest
+```
+
+内部で `/work` を操作できます。
+
+---
+
+# ■ 1) CSV → Iceberg に変換
+
+```bash
+iceberg create s3://bucket/table \
+  --schema id:int,name:string,price:double \
+  --partition-spec "bucket(16,id)"
+
+iceberg add-files s3://bucket/table \
+  --format csv \
+  --files data/*.csv
+```
+
+`add-files` が “CSV → Parquet 変換” を自動で行います。
+
+---
+
+# ■ 2) Parquet → Iceberg に変換（最速）
+
+Parquet の場合は **そのまま追加**できます。
+
+```bash
+iceberg create s3://bucket/table
+iceberg add-files s3://bucket/table --files data/*.parquet
+```
+
+内部で manifest と metadata だけ作成されます。
+
+---
+
+# ■ 3) JSONL → Iceberg に変換
+
+Iceberg CLI は JSONL → Parquet 変換も対応。
+
+```bash
+iceberg create s3://bucket/table
+iceberg add-files s3://bucket/table --format json --files data/*.jsonl
+```
+
+
+# DuckDB と Iceberg CLI の使い分け
+
+| 操作             | DuckDB | Iceberg CLI        |
+| -------------- | ------ | ------------------ |
+| 初回の Iceberg 作成 | ◎ 最も簡単 | △ 事前に schema 指定が必要 |
+| Append         | ◎ 超簡単  | ◎ 公式               |
+| UPDATE         | × 未対応  | ◎ 完全対応             |
+| DELETE         | × 未対応  | ◎ 完全対応             |
+| MERGE          | ×      | ◎                  |
+| 巨大データの取り込み     | ◎ 高速   | ◎ 高速               |
+
+DuckDB ＝ **読み取り・初回作成・append に最適**
+Iceberg CLI ＝ **更新・削除・変換に最適**
+
+---
+
+
+## ■ 1) 大量 CSV → Iceberg の初回作成
+
+DuckDB で一括変換（1行のみ）：
+
+```sql
+CREATE TABLE iceberg_write('s3://bucket/table')
+AS SELECT * FROM read_csv_auto('s3://bucket/csv/*.csv');
+```
+
+## ■ 2) 更新/削除は Iceberg CLI
+
+```bash
+iceberg update s3://bucket/table --set "x = x + 1" --where "id = 5"
+iceberg delete s3://bucket/table --where "status = 'DELETED'"
+```
+
+
+**Iceberg CLI だけで Iceberg をフル操作できる完全チートシート**
+
+---
+
+# ============================================
+
+# Iceberg CLI 完全チートシート（2025 最新）
+
+# ============================================
+
+# --------------------------------------------
+
+# ■ 0. 基本
+
+# --------------------------------------------
+
+## CLI 起動（Docker）
+
+```bash
+docker run -it --rm \
+  -v $(pwd):/work \
+  apache/iceberg:latest
+```
+
+内部で `/work` が作業ディレクトリ。
+
+---
+
+# --------------------------------------------
+
+# ■ 1. Iceberg テーブルの作成
+
+# --------------------------------------------
+
+## ▼ 1-1）完全自動（スキーマ自動推論）
+
+Parquet ファイルを種にして作成：
+
+```bash
+iceberg create s3://bucket/db/table \
+  --from-files data/*.parquet
+```
+
+> Parquet のスキーマをそのまま Iceberg のスキーマに採用。
+
+---
+
+## ▼ 1-2）手動でスキーマ定義
+
+```bash
+iceberg create s3://bucket/db/table \
+  --schema id:int,name:string,price:double \
+  --partition-spec "bucket(16,id)"
+```
+
+
+---
+
+# --------------------------------------------
+
+# ■ 2. ファイル追加（append）
+
+# --------------------------------------------
+
+## ▼ 2-1）Parquet を Iceberg に追加（最速）
+
+```bash
+iceberg add-files s3://bucket/db/table \
+  --files data/*.parquet
+```
+
+> Parquet は内部変換なし。manifest だけ作る。
+
+---
+
+## ▼ 2-2）CSV を Iceberg に追加（内部で Parquet 化）
+
+```bash
+iceberg add-files s3://bucket/db/table \
+  --format csv \
+  --files data/*.csv
+```
+
+---
+
+## ▼ 2-3）JSON / JSONL を追加
+
+```bash
+iceberg add-files s3://bucket/db/table \
+  --format json \
+  --files data/*.jsonl
+```
+
+---
+
+# --------------------------------------------
+
+# ■ 3. 行レベル UPDATE
+
+# --------------------------------------------
+
+DuckDB ではできないが Iceberg CLI は対応。
+
+## ▼ 3-1）単純 UPDATE
+
+```bash
+iceberg update s3://bucket/db/table \
+  --set "price = price * 1.1" \
+  --where "category = 'Book'"
+```
+
+---
+
+## ▼ 3-2）複数カラムの UPDATE
+
+```bash
+iceberg update s3://bucket/db/table \
+  --set "price = price * 1.1", "updated_at = now()" \
+  --where "id = 100"
+```
+
+---
+
+## ▼ 3-3）複数条件
+
+```bash
+iceberg update s3://bucket/db/table \
+  --set "amount = 0" \
+  --where "status = 'CANCELLED' AND amount > 0"
+```
+
+---
+
+# --------------------------------------------
+
+# ■ 4. DELETE（行削除）
+
+# --------------------------------------------
+
+## ▼ 4-1）単純 DELETE
+
+```bash
+iceberg delete s3://bucket/db/table \
+  --where "id = 10"
+```
+
+---
+
+## ▼ 4-2）条件付き DELETE
+
+```bash
+iceberg delete s3://bucket/db/table \
+  --where "ts < timestamp '2024-01-01'"
+```
+
+---
+
+# --------------------------------------------
+
+# ■ 5. MERGE（UPSERT）
+
+# --------------------------------------------
+
+MERGE まで CLI だけで可能。
+
+```bash
+iceberg merge s3://bucket/db/table \
+  --key "id" \
+  --records updates.jsonl
+```
+
+`updates.jsonl` は行単位のデータ。
+
+---
+
+# --------------------------------------------
+
+# ■ 6. スナップショット管理（Time Travel）
+
+# --------------------------------------------
+
+## ▼ 6-1）スナップショット一覧
+
+```bash
+iceberg snapshots s3://bucket/db/table
+```
+
+---
+
+## ▼ 6-2）特定スナップショットへロールバック
+
+```bash
+iceberg rollback s3://bucket/db/table --to <snapshot-id>
+```
+
+---
+
+## ▼ 6-3）時刻指定でロールバック
+
+```bash
+iceberg rollback s3://bucket/db/table --to-timestamp "2024-01-01T00:00:00Z"
+```
+
+---
+
+# --------------------------------------------
+
+# ■ 7. GC（不要ファイルの削除）
+
+# --------------------------------------------
+
+Iceberg は古い metadata / manifest / データファイルを残すため
+GC が必要。
+
+## ▼ 7-1）有効でないファイルの削除
+
+```bash
+iceberg expire s3://bucket/db/table
+```
+
+---
+
+## ▼ 7-2）「30日以上前のスナップショットを削除」
+
+```bash
+iceberg expire s3://bucket/db/table \
+  --older-than "30d"
+```
+
+---
+
+## ▼ 7-3）特定ファイルを手動削除するためのリスト
+
+```bash
+iceberg orphan s3://bucket/db/table
+```
+
+---
+
+# --------------------------------------------
+
+# ■ 8. Iceberg → Parquet（エクスポート）
+
+# --------------------------------------------
+
+```bash
+iceberg export s3://bucket/db/table --output export_dir/
+```
+
+---
+
+# --------------------------------------------
+
+# ■ 9. Iceberg metadata の確認
+
+# --------------------------------------------
+
+## ▼ 9-1）スキーマ表示
+
+```bash
+iceberg schema s3://bucket/db/table
+```
+
+## ▼ 9-2）パーティション spec
+
+```bash
+iceberg partition-spec s3://bucket/db/table
+```
+
+## ▼ 9-3）manifest の確認
+
+```bash
+iceberg manifests s3://bucket/db/table
+```
+
+## ▼ 9-4）metadata.json の中身
+
+```bash
+iceberg metadata s3://bucket/db/table
+```
+
+---
+
+# --------------------------------------------
+
+# ■ 10. テーブル削除
+
+# --------------------------------------------
+
+```bash
+iceberg drop s3://bucket/db/table
+```
+
+---
+
+
+# ETL パイプラインの完全自動化（bash × DuckDB）
+
+```bash
+#!/bin/bash
+
+S3_RAW="s3://bucket/raw/users/*.csv"
+ICEBERG_TABLE="s3://bucket/iceberg/etl/raw_users"
+
+duckdb <<EOF
+SET s3_region='ap-northeast-1';
+SET s3_access_key_id='xxx';
+SET s3_secret_access_key='xxx';
+
+-- Extract
+CREATE OR REPLACE TABLE raw_input AS
+SELECT * FROM read_csv_auto('$S3_RAW');
+
+-- Transform
+CREATE OR REPLACE TABLE transformed AS
+SELECT
+  id::BIGINT,
+  initcap(name) AS name,
+  age,
+  now() AS updated_at
+FROM raw_input
+WHERE age > 0;
+
+-- Load
+INSERT INTO iceberg_write('$ICEBERG_TABLE')
+SELECT * FROM transformed;
+EOF
+```
 
