@@ -1352,8 +1352,9 @@ rsync dir0 dir1/
 ```
 
 - -n, --dry-run
-- -a
 - -v
+- -r
+- -a
 - -z
 - -u
 - --delete
