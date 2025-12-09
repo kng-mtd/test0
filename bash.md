@@ -68,7 +68,7 @@ sudo gpasswd -d user0 group0
 ---
 
 - super user
-  sudo command
+  sudo command0
   sudo user0
   sudo -i
   exit
@@ -82,7 +82,7 @@ sudo gpasswd -d user0 group0
 
 ---
 
-command -v command/alias/function
+command -v command0/alias/function
 
 ---
 
@@ -268,7 +268,7 @@ check syntax
 
 bash -n script.sh
 
-watcn -n num command
+watcn -n num command0
 
 debug mode
 
@@ -304,7 +304,7 @@ set +x
 ### continue line with \
 
 ```
-command ---\
+command0 ---\
 ---\
 ---
 ```
@@ -328,7 +328,7 @@ command1 | command2 | command3..
 from command, file, nothing
 
 ```
---- < command
+--- < command0
 --- < file
 --- < /dev/null
 ```
@@ -368,9 +368,9 @@ process result and error output
 add string to command
 
 ```
-command <<< str
+command0 <<< str
 
-command <<EOF
+command0 <<EOF
 line1
 line2
 ...
@@ -469,11 +469,11 @@ $# : n of args
 
 ---
 
+command0 | xargs
 command1 | xargs command2
-command | xargs
 
 - -t
-- -I{} command {}
+- -I{} command0 {}
 - -n num
 - -P num
 - -0
@@ -542,8 +542,8 @@ date
 ```
 var=str
 var='string has space'
-var=$(command)
-var=`command`
+var=$(command0)
+var=`command0`
 
 readonly var=str # it can't to be chaged or deleted in the session
 
@@ -822,7 +822,7 @@ echo ${arr[@]}
 
 mapfile arr < file.txt
 
-mapfile arr < <(command)
+mapfile arr < <(command0)
 ```
 
 - -t
@@ -881,15 +881,15 @@ done
 command1 && command2
 command1 && command2 || command3
 
-[[ $a == str ]] && command
-[[ $a != str ]] && command
-! [[ $a == str ]] && command
-[[ ! $a == str ]] && command
+[[ $a == str ]] && command0
+[[ $a != str ]] && command0
+! [[ $a == str ]] && command0
+[[ ! $a == str ]] && command0
 
-[[ "$a" == "str has space" ]] && command
+[[ "$a" == "str has space" ]] && command0
 
-[[ $a == glob ]] && command
-[[ $a =~ regex ]] && command
+[[ $a == glob ]] && command0
+[[ $a =~ regex ]] && command0
 
 [[ $a == glob / =~ regex ]] && echo $a #filter
 
@@ -897,10 +897,10 @@ command1 && command2 || command3
 [[ $a =~ regex ]] && echo ${BASH_REMATCH[1]} # capture first
 [[ $a =~ regex ]] && echo ${BASH_REMATCH[2]} # capture second
 
-[[ $a == str1 || $a == str2 ]] && command
-[[ $a == str1 ]] || [[ $a == str2 ]] && command
-[[ $a == str1 && $b == str2 ]] && command
-[[ $a == str1 ]] && [[ $b == str2 ]] && command
+[[ $a == str1 || $a == str2 ]] && command0
+[[ $a == str1 ]] || [[ $a == str2 ]] && command0
+[[ $a == str1 && $b == str2 ]] && command0
+[[ $a == str1 ]] && [[ $b == str2 ]] && command0
 
 [[ $a == str ]] && command1 || command2
 
@@ -1064,7 +1064,7 @@ exec 3> "$output_file"
 while IFS= read -r ln; do
   [[ -z "$ln" ]] && continue
 
-  batch+=("$(command <<< "$ln")")
+  batch+=("$(command0 <<< "$ln")")
   ((count++))
 
   ((count == batch_size)) && {
@@ -1380,7 +1380,7 @@ $LANG
 export LC_ALL=en_US.UTF-8
 export LC_ALL=ja_JP.UTF-8
 
-LC_ALL=en_US.UTF-8 command
+LC_ALL=en_US.UTF-8 command0
 ```
 
 - -a
@@ -1821,25 +1821,25 @@ wait PID
 
 ---
 
-nohup command/script.sh &
-nohup command/script.sh > file.txt 2>&1 &
+nohup command0/script.sh &
+nohup command0/script.sh > file.txt 2>&1 &
 
 ---
 
-| Action                                               | Command                          |
-| ---------------------------------------------------- | -------------------------------- |
-| Start job in background                              | `command &`                      |
-| Run job immune to hangup (without background)        | `nohup command`                  |
-| Start job in background and survive logout           | `nohup command &`                |
-| Start job with custom output file and survive logout | `nohup command > out.log 2>&1 &` |
-| List background jobs                                 | `jobs`                           |
-| Resume stopped job in background                     | `bg %job_number`                 |
-| Bring background job to foreground                   | `fg %job_number`                 |
-| Get last background job PID                          | `pid=$!`                         |
-| Wait for a certain job to finish                     | `wait PID`                       |
-| Wait for all jobs to finish                          | `wait`                           |
-| Kill background job                                  | `kill %job_number` or `kill PID` |
-| Start normal job then detach it from the shell       | `disown %job_number`             |
+| Action                                               | Command                           |
+| ---------------------------------------------------- | --------------------------------- |
+| Start job in background                              | `command0 &`                      |
+| Run job immune to hangup (without background)        | `nohup command0`                  |
+| Start job in background and survive logout           | `nohup command0 &`                |
+| Start job with custom output file and survive logout | `nohup command0 > out.log 2>&1 &` |
+| List background jobs                                 | `jobs`                            |
+| Resume stopped job in background                     | `bg %job_number`                  |
+| Bring background job to foreground                   | `fg %job_number`                  |
+| Get last background job PID                          | `pid=$!`                          |
+| Wait for a certain job to finish                     | `wait PID`                        |
+| Wait for all jobs to finish                          | `wait`                            |
+| Kill background job                                  | `kill %job_number` or `kill PID`  |
+| Start normal job then detach it from the shell       | `disown %job_number`              |
 
 ---
 
@@ -1857,9 +1857,11 @@ time script.sh
 time bash -c '--script--'
 time { --script--; }
 
+/usr/bin/time -v
+
 ---
 
-watch -n sec command
+watch -n sec command0
 
 ---
 
@@ -1874,6 +1876,14 @@ command1 | pv | command2
 - -e
 - -r
 - -b
+
+---
+
+pidstat num1 num2
+
+- -r
+- -d
+- -p pid
 
 ---
 
