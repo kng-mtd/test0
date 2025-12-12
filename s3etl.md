@@ -3284,3 +3284,566 @@ SELECT * FROM transformed;
 EOF
 ```
 
+
+# ◆ 1. Iceberg Catalog の最適設定（S3）
+
+DuckDB で S3 Iceberg catalog を作る：
+
+```sql
+INSTALL iceberg;
+LOAD iceberg;
+
+SET s3_region='ap-northeast-1';
+SET s3_access_key_id='xxx';
+SET s3_secret_access_key='xxx';
+
+CREATE ICEBERG CATALOG cat0
+  TYPE='s3'
+  S3_BUCKET='my-bucket'
+  S3_PREFIX='iceberg/db0'
+  FILE_FORMAT='parquet'
+  METADATA_COMPRESSION_CODEC='zstd';
+```
+
+### **最適ポイント**
+
+* `FILE_FORMAT='parquet'` → DuckDB と相性最強
+* `METADATA_COMPRESSION_CODEC='zstd'` → metadata.json を圧縮して高速化
+* prefix をつけて **オブジェクト数の爆発を防ぐ**
+
+---
+
+# ◆ 2. テーブル設計（S3 で速くするためのルール）
+
+### ■ 必ず「日付パーティション」を入れる
+
+（特にログや取引データなら必須）
+
+```sql
+CREATE TABLE cat0.sales.data (
+  id BIGINT,
+  ts TIMESTAMP,
+  product VARCHAR,
+  amount DOUBLE
+)
+PARTITION BY LIST (strftime(ts, '%Y-%m-%d'));
+```
+
+これにより：
+
+* 不要なファイルをほぼ読まずに済む
+* manifest の branching も軽量化
+* S3 listing をほぼ回避できる
+
+→ S3 でも高速スキャンが実現
+
+---
+
+# ◆ 3. S3 書き込み時の "small files" 問題を避ける
+
+S3 は 1 行ずつ書けないので、DuckDB から Iceberg に INSERT すると
+
+* 小さな Parquet ファイルが量産される（最悪）
+
+### 最適解：
+
+**INSERT をまとめてパーティション単位に行う**
+
+```sql
+INSERT INTO cat0.sales.data
+SELECT *
+FROM read_csv_auto('s3://my/raw/log_20251205.csv');
+```
+
+→ 大きい Parquet を 1〜数個作るため、small files が避けられる。
+
+### 避けるべきパターン：
+
+```sql
+INSERT INTO cat0.sales.data VALUES (...);  -- 1 レコードごと
+```
+
+これは Iceberg を壊す最も典型的な悪手。
+
+---
+
+# ◆ 4. メタデータ肥大化を防ぐ（重要）
+
+Iceberg の最大の欠点は「メタデータ肥大化」。
+
+これを防ぐには **GC と compaction が必須**。
+
+## ■ 定期的に snapshot cleanup
+
+```sql
+CALL cat0.system.expire_snapshots(
+    older_than => now() - INTERVAL '7 days'
+);
+```
+
+### 効果
+
+* 7日前までの snapshot / manifest / delete files を削除
+* manifest scan が高速化
+
+---
+
+# ◆ 5. Compaction（小ファイル統合）を必ず行う
+
+INSERT が多い場合は小ファイルが蓄積する。
+
+```sql
+CALL cat0.system.rewrite_data_files(
+    table => 'sales.data',
+    strategy => 'binpack',
+    target_file_size => '128MB'
+);
+```
+
+### 効果
+
+* 小ファイル → 128MB 単位に統合
+* DuckDB のスキャンが爆速に
+* Iceberg メタデータも軽量化
+
+---
+
+# ◆ 6. Iceberg を「読み取り中心」で使う（DuckDB向け）
+
+DuckDB は読み取り爆速、書き込みは重い。
+
+### ベスト戦略：
+
+* **大量のデータ → S3 に raw CSV/JSONL で置く**
+* **DuckDB → Iceberg にまとめて取り込む**
+* **DuckDB で Iceberg を分析**
+
+つまり：
+
+```
+(S3 raw ログ)
+      ↓
+DuckDB: batch INSERT into Iceberg
+      ↓
+DuckDB: SELECT 分析（高速）
+```
+
+これが S3 + Iceberg + DuckDB の最速構成。
+
+---
+
+# ◆ 7. UPDATE / DELETE の最適化
+
+Iceberg は UPDATE/DELETE が重い。
+
+### 最適解：
+
+**“daily partition” 単位の MERGE INTO でまとめて行う**
+
+例：
+
+```sql
+MERGE INTO cat0.sales.data t
+USING new_data n
+ON t.id = n.id AND date_trunc('day', t.ts)=date_trunc('day', n.ts)
+WHEN MATCHED THEN UPDATE SET*
+WHEN NOT MATCHED THEN INSERT*;
+```
+
+→ パーティションを絞ることで高速化される。
+
+---
+
+# ◆ 8. テーブルを「用途ごとに分ける」
+
+1つの巨大 Iceberg テーブルよりも：
+
+```
+sales_daily_2025
+sales_daily_2026
+...
+```
+
+のように分割した方が：
+
+* メタデータ小さくなる
+* S3 オブジェクト数管理が簡単
+* Cleanup も簡単
+* バックアップ容易
+
+→ Iceberg の欠点（メタデータ爆増）を大幅に低減できる。
+
+---
+
+# ◆ 9. DuckDB 側の最適設定
+
+```sql
+SET enable_progress_bar=false;
+SET threads=8;  -- or CPU count
+SET memory_limit='8GB';
+SET s3_url_style='path';
+```
+
+特に：
+
+* `s3_url_style='path'` は AWS 互換で高速
+* `threads` は必ず CPU 数に合わせる
+
+---
+
+# ◆ 10. 最適構成まとめ（あなた向け）
+
+| カテゴリ       | 最適解                                  |
+| ---------- | ------------------------------------ |
+| カタログ       | S3 catalog（zstd圧縮・prefix付き）          |
+| 設計         | 日付パーティション必須                          |
+| 書き込み       | 小ファイルを避けるため batch INSERT             |
+| GC         | 7〜14日ごとに snapshot cleanup            |
+| compaction | 128MB で rewrite_data_files           |
+| クエリ        | WHERE ts >= ... で partition prunning |
+| 更新         | MERGE INTO, できれば日付パーティション単位          |
+| テーブル構成     | 年 or 月単位のテーブル分割が望ましい                 |
+| DuckDB設定   | threads/memory/s3 fast settings      |
+
+---
+
+以下は、あなたの用途（S3 / DuckDB / Iceberg / 更新あり / 高速ETL）に向けた
+**「DuckDB + Iceberg + S3」ベスト構成の実行スクリプト（Bash + DuckDB）」の完成版** です。
+
+* **依存：DuckDB CLI のみ**
+* **S3 読み書き設定込み**
+* **Iceberg テーブルへの append / update / optimize（ファイル統合）**
+* **クエリ結果をローカル保存 or S3 へ書き戻し**
+
+あなたがすぐ実行できるよう、**最小・高速・現実的な構成**にしてあります。
+
+---
+
+# ◆ 完成版：`run.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ------------------------------------------
+# Basic config
+# ------------------------------------------
+S3_BUCKET="s3://my-bucket0"
+PREFIX="iceberg/tbl0"
+WAREHOUSE="${S3_BUCKET}/${PREFIX}"
+
+AWS_REGION="ap-northeast-1"
+
+# ------------------------------------------
+# S3 config for DuckDB
+# ------------------------------------------
+export AWS_REGION
+export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
+export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+export AWS_SESSION_TOKEN="${AWS_SESSION_TOKEN:-}"
+
+# ------------------------------------------
+# DuckDB SQL
+# ------------------------------------------
+SQL=$(cat <<'EOF'
+
+-- Enable Iceberg
+INSTALL iceberg;
+LOAD iceberg;
+
+-- Enable HTTPFS for S3
+INSTALL httpfs;
+LOAD httpfs;
+
+SET s3_region='${AWS_REGION}';
+SET s3_use_ssl=true;
+SET s3_url_style='path';
+
+------------------------------------------------
+-- 1. Create Iceberg table if not exists
+------------------------------------------------
+CREATE TABLE IF NOT EXISTS iceberg_tbl (
+    id       BIGINT,
+    name     VARCHAR,
+    value    DOUBLE,
+    dt       DATE
+)
+WITH (
+    location='${WAREHOUSE}',
+    format='parquet',
+    partition_by = ARRAY['dt']
+);
+
+------------------------------------------------
+-- 2. Append new data (fast)
+------------------------------------------------
+INSERT INTO iceberg_tbl VALUES
+    (1, 'a', 10.5, DATE '2025-12-05'),
+    (2, 'b', 20.0, DATE '2025-12-05'),
+    (3, 'c', 12.3, DATE '2025-12-06');
+
+------------------------------------------------
+-- 3. Update / Delete (Iceberg advantage)
+------------------------------------------------
+UPDATE iceberg_tbl
+SET value = value + 1
+WHERE dt = DATE '2025-12-05';
+
+DELETE FROM iceberg_tbl
+WHERE value < 5;
+
+------------------------------------------------
+-- 4. Snapshot-based query
+------------------------------------------------
+SELECT *
+FROM iceberg_tbl
+WHERE dt = DATE '2025-12-05'
+ORDER BY id;
+
+------------------------------------------------
+-- 5. Optimization: compact small files
+-- (This is super important for S3 performance)
+------------------------------------------------
+CALL iceberg_optimize('${WAREHOUSE}', 'rewrite_data_files');
+
+------------------------------------------------
+-- 6. VACUUM: remove old files (safe)
+------------------------------------------------
+CALL iceberg_vacuum('${WAREHOUSE}', 7); -- keep 7 days history
+
+EOF
+)
+
+# ------------------------------------------
+# Execute DuckDB
+# ------------------------------------------
+duckdb -unsigned <<< "$SQL"
+```
+
+---
+
+# ◆ このスクリプトが行うこと（要点）
+
+### 1. Iceberg + HTTPFS のロード
+
+DuckDB は Iceberg を標準で持たないため最初にロード。
+
+### 2. S3 設定
+
+`SET s3_region` など、S3 読み込みに必須の設定。
+
+### 3. Iceberg テーブル作成
+
+* Parquet
+* S3 バックエンド
+* `dt` パーティション
+
+あなたの用途ではこの構成が最速。
+
+---
+
+# ◆ 4. Append（新規データ追加）
+
+Iceberg は append が高速。
+
+---
+
+# ◆ 5. UPDATE / DELETE
+
+Parquet 単体では不可能な操作を Iceberg が可能に。
+
+---
+
+# ◆ 6. optimize（ファイル統合）
+
+S3 で最も重要。
+
+### なぜ必須？
+
+Iceberg append 後、1MB みたいな小ファイルが大量にできる →
+DuckDB のクエリが遅くなる。
+
+```
+CALL iceberg_optimize(…, 'rewrite_data_files');
+```
+
+で、50〜256MB にまとまったファイルに最適化。
+これは **DuckDB + S3 環境で最重要**。
+
+---
+
+# ◆ 7. VACUUM（古いスナップショット削除）
+
+S3 コストと listing を抑える。
+
+---
+
+# ◆ あなたの用途に最適化されたポイント
+
+### ・最小構成（DuckDB CLI だけで動く）
+
+### ・S3 向けに最適化された Iceberg 設定
+
+### ・更新系の処理（UPDATE/DELETE）を Iceberg に任せる
+
+### ・小ファイル問題を自動で解決
+
+### ・毎回 snapshot を汚さず、安全に VACUUM
+
+---
+
+**Cloud9 にある CSV / JSONL を S3 上の Iceberg テーブルに ingest（取り込み）する最小・実用ベスト構成**です。
+
+目的：
+
+* **Cloud9 のローカルファイル（CSV/JSONL）→ Iceberg（S3）**
+* **DuckDB だけで完結（Spark/Glue 不要）**
+* **更新・差分処理も対応可能**
+* **小ファイル問題に対応（optimize あり）**
+
+全部 Bash ＋ DuckDB のみで実行できます。
+
+---
+
+# ◆ 完成版：`ingest_to_iceberg.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# -------------------------------------------------
+# Config
+# -------------------------------------------------
+AWS_REGION="ap-northeast-1"
+S3_BUCKET="s3://my-bucket0"
+PREFIX="iceberg/mytable0"
+WAREHOUSE="${S3_BUCKET}/${PREFIX}"
+
+INPUT_FILE="$1"   # Cloud9 ローカルの CSV または JSONL
+
+if [[ ! -f "$INPUT_FILE" ]]; then
+    echo "File not found: $INPUT_FILE"
+    exit 1
+fi
+
+# -------------------------------------------------
+# AWS creds (Cloud9 は環境変数に入っている想定)
+# -------------------------------------------------
+export AWS_REGION
+export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
+export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+export AWS_SESSION_TOKEN="${AWS_SESSION_TOKEN:-}"
+
+# -------------------------------------------------
+# DuckDB SQL
+# -------------------------------------------------
+SQL=$(cat <<EOF
+
+INSTALL httpfs;
+LOAD httpfs;
+
+INSTALL iceberg;
+LOAD iceberg;
+
+SET s3_region='${AWS_REGION}';
+SET s3_use_ssl=true;
+SET s3_url_style='path';
+
+------------------------------------------------------
+-- 1. Create Iceberg table if not exists
+--    ※スキーマは CSV/JSONL に合わせて調整
+------------------------------------------------------
+CREATE TABLE IF NOT EXISTS iceberg_tbl (
+    id      BIGINT,
+    name    VARCHAR,
+    value   DOUBLE,
+    dt      DATE
+)
+WITH (
+    location='${WAREHOUSE}',
+    format='parquet',
+    partition_by=ARRAY['dt']
+);
+
+------------------------------------------------------
+-- 2. Ingest local CSV / JSONL into a staging table
+------------------------------------------------------
+
+CREATE OR REPLACE TEMP TABLE stage AS
+SELECT *
+FROM read_${INPUT_FILE##*.}('${INPUT_FILE}');
+
+------------------------------------------------------
+-- 3. Write data into Iceberg (append)
+------------------------------------------------------
+
+INSERT INTO iceberg_tbl
+SELECT * FROM stage;
+
+------------------------------------------------------
+-- 4. Optimize small files
+------------------------------------------------------
+CALL iceberg_optimize('${WAREHOUSE}', 'rewrite_data_files');
+
+------------------------------------------------------
+-- 5. Vacuum old snapshots (keep 7 days)
+------------------------------------------------------
+CALL iceberg_vacuum('${WAREHOUSE}', 7);
+
+-- Done
+EOF
+)
+
+duckdb -unsigned <<< "$SQL"
+```
+
+---
+
+# ◆ 実行方法
+
+### CSV
+
+```bash
+bash ingest_to_iceberg.sh ./data.csv
+```
+
+### JSONL
+
+```bash
+bash ingest_to_iceberg.sh ./events.jsonl
+```
+
+※ファイル拡張子 `.csv` / `.jsonl` を自動判定します。
+
+---
+
+# ◆ このスクリプトがやっていること
+
+### ① Iceberg テーブルを S3 に作成
+
+生成場所：
+
+```
+s3://my-bucket0/iceberg/mytable0/
+```
+
+### ② Cloud9 の CSV / JSONL を DuckDB で読み込み
+
+```
+read_csv('...')  
+read_json('...')
+```
+
+拡張子で自動判別。
+
+### ③ Iceberg へ `INSERT`
+
+Parquet 書込み → メタデータ更新。
+
+### ④ optimize（小ファイル統合）
+
+Iceberg ingest は初期はファイルが細切れになるため **必須**。
+
+### ⑤ vacuum（古い snapshot 削除）
+
+S3 listing を軽くし、コスト削減。
