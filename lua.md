@@ -1,3 +1,109 @@
+一般的な用途での Bash と Lua の使い分け
+
+---
+
+## 1. Bash が向いているケース
+
+**基本思想**
+
+- OS に近い操作やコマンド操作を中心にする場合に最適
+- 「既存のコマンドやツールをつなぐ」役割
+
+**具体例**
+
+1. **システム管理・運用**
+
+   - ユーザ管理、ディレクトリ構造の管理、パーミッション変更
+   - ログローテーションやバックアップ
+
+2. **ファイル操作・テキスト処理**
+
+   - ファイルコピー・移動・削除
+   - `grep`、`sed`、`awk` を使った簡易フィルタリング
+
+3. **自動化スクリプト**
+
+   - cron ジョブで定期的に実行
+   - コマンドラインツールのラッパー
+
+4. **パイプライン処理**
+
+   - コマンド同士をパイプでつないで処理
+
+**メリット**
+
+- OS コマンドとの親和性が高い
+- スクリプトが短く書ける
+- 標準入出力の操作が簡単
+
+**デメリット**
+
+- 複雑なロジックやデータ構造の管理には不向き
+- 数値計算や高度な文字列操作は苦手
+
+---
+
+## 2. Lua が向いているケース
+
+**基本思想**
+
+- 軽量スクリプト言語で、**ロジック・データ管理・計算・拡張**を担当する場合に最適
+- アプリ内組み込みやゲーム、C との連携に向く
+
+**具体例**
+
+1. **組み込みスクリプト**
+
+   - ゲームやアプリの設定スクリプト
+   - Wireshark や Nginx などで Lua 経由で機能拡張
+
+2. **ロジック処理・制御フロー**
+
+   - 複雑な条件分岐、ループ、テーブル操作
+   - 高速計算や配列操作（LuaJIT でさらに高速）
+
+3. **軽量サーバサイド処理**
+
+   - Nginx + Lua (OpenResty) での高速リクエスト処理
+
+4. **カスタム拡張・プラグイン**
+
+   - C/C++アプリへの埋め込みや API 拡張
+
+5. **データ加工・変換**
+
+   - CSV/JSON/XML のパース・生成
+   - 条件付きで大量データを高速処理
+
+**メリット**
+
+- 小規模でも大規模でも柔軟に使える
+- 高速で軽量
+- データ構造（テーブル）や文字列操作が得意
+
+**デメリット**
+
+- OS 操作やシェルコマンド呼び出しは限定的
+- Bash のように「パイプラインでコマンドを繋ぐ」用途には不向き
+
+---
+
+## 3. 総合的な使い分けの考え方
+
+| 用途 / 特徴                  | Bash | Lua                       |
+| ---------------------------- | ---- | ------------------------- |
+| OS 操作 / ファイル管理       | ◎    | △（限定的）               |
+| コマンド連携 / パイプ        | ◎    | △                         |
+| データ構造 / 配列 / テーブル | △    | ◎                         |
+| 数値計算 / 文字列処理        | △    | ◎                         |
+| 組み込み / プラグイン        | ×    | ◎                         |
+| 高速処理 / 大量データ        | △    | ◎（JIT ならさらに高速）   |
+| スクリプト短時間で書く       | ◎    | △（ロジック複雑だと有利） |
+
+---
+
+---
+
 sudo apt install lua5.4
 lua -v
 
@@ -19,9 +125,9 @@ time python3 -c 'import random; s=0;
 for _ in range(1000000):
     if random.randint(0,1)==0:
         s+=random.randint(0,99)
-print("\n python ", s)'
+print("\n python", s)'
 
-time python3 -c 'import random; s=0; [s:=s+random.randint(0,99) for _ in range(1000000) if random.randint(0,1)==0]; print("\n python with coprehensions ",s)'
+time python3 -c 'import random; s=0; [s:=s+random.randint(0,99) for _ in range(1000000) if random.randint(0,1)==0]; print("\n python with comprehensions",s)'
 
 time python3 -c 'import random; s=sum(random.randint(0,99) for _ in range(1000000) if random.randint(0,1)==0); print("\n python with sum function", s)'
 
@@ -32,6 +138,42 @@ time bun -e 'let s=0; for(let i=0;i<1e6;i++){ if((Math.random()*2|0)==0) s+=Math
 time lua -e 'local s=0; for i=1,1e6 do if math.random(0,1)==0 then s=s+math.random(0,99) end end; print("\n lua ",s)'
 
 time luajit -e 'local s=0; for i=1,1e6 do if math.random(0,1)==0 then s=s+math.random(0,99) end end; print("\n luajit ",s)'
+
+
+test.c
+ 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+ 
+int main(){
+    long long s=0;
+    for(int i=0;i<100000000;i++)
+        if(rand()%2==0) s+=rand()%100;
+        printf("%lld\n", s);
+}
+ 
+gcc -O2 -march=native test.c -o testc
+time ./testc
+ 
+ 
+ 
+test.cpp
+ 
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+ 
+int main(){
+    long long s = 0;
+    for(int i = 0; i < 100000000; i++)
+        if(std::rand()%2==0) s+=std::rand()%100;
+    std::cout << s << '\n';
+}
+ 
+ 
+g++ -O2 -march=native test.cpp -o testcpp
+time ./testcpp
 ```
 
 start dialog mode
@@ -318,6 +460,1521 @@ end
 
 ---
 
+
+基本方針は「**制御は bash、重い処理は Lua**」です。
+
+---
+
+## 基本構成パターン
+
+### 1. bash → lua（stdin / argv）
+
+```bash
+#!/bin/bash
+
+cat big.txt | lua process.lua arg1 arg2
+```
+
+```lua
+-- process.lua
+local arg1, arg2 = ...
+for line in io.lines() do
+    -- heavy logic
+    print(line)
+end
+```
+
+**用途**
+
+* 大量テキスト処理
+* awk/sed が読みにくくなった時
+* ループ・条件分岐が多い処理
+
+---
+
+### 2. bash → lua（ファイル処理）
+
+```bash
+lua process.lua input.csv output.csv
+```
+
+```lua
+-- process.lua
+local in_f, out_f = ...
+local fi = io.open(in_f)
+local fo = io.open(out_f, 'w')
+
+for line in fi:lines() do
+    fo:write(line, '\n')
+end
+
+fi:close()
+fo:close()
+```
+
+**用途**
+
+* CSV / TSV / ログ処理
+* bash では辛い状態管理
+
+---
+
+### 3. bash 関数の代わりに lua
+
+```bash
+parse() {
+    lua - "$@" <<'LUA'
+local a,b = ...
+print(a + b)
+LUA
+}
+
+parse 10 20
+```
+
+**用途**
+
+* 数値計算
+* 正規表現
+* 状態を持つ処理
+
+---
+
+## 実践例（bashが遅い典型）
+
+### ❌ bash / awk が辛いケース
+
+* ネストしたループ
+* map / set が欲しい
+* 複雑な条件分岐
+* JSON / 構造化データ
+
+---
+
+### 例1: bash で遅い集計 → lua
+
+```bash
+cat data.txt | lua count.lua
+```
+
+```lua
+-- count.lua
+local cnt = {}
+for line in io.lines() do
+    cnt[line] = (cnt[line] or 0) + 1
+end
+
+for k,v in pairs(cnt) do
+    print(k, v)
+end
+```
+
+👉 awk より **可読性・保守性が段違い**
+
+---
+
+### 例2: 正規表現 + 状態遷移
+
+```lua
+local state = 'INIT'
+
+for line in io.lines() do
+    if state == 'INIT' and line:match('^BEGIN') then
+        state = 'BODY'
+    elseif state == 'BODY' then
+        print(line)
+    end
+end
+```
+
+bash/awk だと **地獄**、Luaだと **普通**
+
+---
+
+## 高速化のコツ（重要）
+
+### 1. lua は **1回起動**
+
+❌ 行ごとに lua 呼び出し
+⭕ `cat | lua script.lua`
+
+---
+
+### 2. io.lines() を使う
+
+```lua
+for line in io.lines() do
+```
+
+* LuaJIT でなくても速い
+* メモリ効率が良い
+
+---
+
+### 3. print より write
+
+```lua
+io.stdout:write(line, '\n')
+```
+
+大量出力では差が出ます。
+
+---
+
+## bash + lua + 他ツールの役割分担
+
+| 役割     | ツール                  |
+| ------ | -------------------- |
+| ファイル探索 | bash / find          |
+| 並列     | xargs / GNU parallel |
+| 軽い整形   | sed / cut            |
+| 重い処理   | **Lua**              |
+| JSON   | jq or Lua            |
+
+---
+
+## lua を「bash の拡張言語」にする設計
+
+```bash
+#!/bin/bash
+set -e
+
+find . -name '*.log' |
+while read f; do
+    lua analyze.lua "$f"
+done
+```
+---
+
+## いつ awk より lua を使うべき？
+
+✅ Luaを使うべき
+
+* ロジックが20行を超えた
+* 配列 / set / map が欲しい
+* 後で仕様変更がありそう
+
+❌ awk のままでいい
+
+* 1〜3行
+* 単純な列操作
+
+---
+
+
+# ① bash ループ → lua に移す（典型）
+
+## 元の bash（遅くなりがち）
+
+```bash
+#!/bin/bash
+
+total=0
+while read n; do
+    if [ "$n" -gt 10 ]; then
+        total=$((total + n))
+    fi
+done < numbers.txt
+
+echo "$total"
+```
+
+### 問題点
+
+* 行ごとに bash の数値評価
+* 条件が増えると地獄
+* 浮動小数点が扱えない
+
+---
+
+## Lua に移行（stdin 処理）
+
+```bash
+cat numbers.txt | lua sum.lua
+```
+
+```lua
+-- sum.lua
+local total = 0
+
+for line in io.lines() do
+    local n = tonumber(line)
+    if n and n > 10 then
+        total = total + n
+    end
+end
+
+print(total)
+```
+
+✔ 可読性
+✔ 拡張性
+✔ 浮動小数点OK
+
+---
+
+# ② awk 集計 → lua（配列 / map）
+
+## awk
+
+```bash
+awk '{ cnt[$1]++ } END { for (k in cnt) print k, cnt[k] }' data.txt
+```
+
+---
+
+## Lua
+
+```lua
+-- count.lua
+local cnt = {}
+
+for line in io.lines() do
+    local key = line:match('^(%S+)')
+    if key then
+        cnt[key] = (cnt[key] or 0) + 1
+    end
+end
+
+for k, v in pairs(cnt) do
+    print(k, v)
+end
+```
+
+---
+
+# ③ awk 列処理 → lua（CSV / TSV）
+
+## awk（TSV）
+
+```bash
+awk -F'\t' '{ print $1, $3 }' data.tsv
+```
+
+---
+
+## Lua
+
+```lua
+-- tsv.lua
+for line in io.lines() do
+    local c1, c2, c3 = line:match('([^\t]+)\t([^\t]+)\t([^\t]+)')
+    if c1 and c3 then
+        print(c1, c3)
+    end
+end
+```
+
+---
+
+# ④ awk 正規表現 + 条件 → lua
+
+## awk
+
+```bash
+awk '$3 ~ /^ERR/ { print $1, $3 }' log.txt
+```
+
+---
+
+## Lua
+
+```lua
+for line in io.lines() do
+    local c1, c2, c3 = line:match('(%S+)%s+(%S+)%s+(%S+)')
+    if c3 and c3:match('^ERR') then
+        print(c1, c3)
+    end
+end
+```
+
+---
+
+# ⑤ awk 状態遷移 → lua（これが一番価値あり）
+
+## awk（読めない）
+
+```bash
+awk '
+/^BEGIN/ { in=1; next }
+/^END/   { in=0 }
+in { print }
+' file.txt
+```
+
+---
+
+## Lua（自然）
+
+```lua
+local in_block = false
+
+for line in io.lines() do
+    if line:match('^BEGIN') then
+        in_block = true
+    elseif line:match('^END') then
+        in_block = false
+    elseif in_block then
+        print(line)
+    end
+end
+```
+
+---
+
+# ⑥ awk の BEGIN / END → lua
+
+## awk
+
+```bash
+awk 'BEGIN { print "start" } { print } END { print "end" }'
+```
+
+---
+
+## Lua
+
+```lua
+print('start')
+
+for line in io.lines() do
+    print(line)
+end
+
+print('end')
+```
+
+---
+
+# ⑦ bash + awk パイプ → lua 1発に統合
+
+## 元
+
+```bash
+cat data.txt |
+grep ERROR |
+awk '{ sum += $2 } END { print sum }'
+```
+
+---
+
+## Lua に統合（高速）
+
+```bash
+cat data.txt | lua sum_error.lua
+```
+
+```lua
+local sum = 0
+
+for line in io.lines() do
+    if line:match('ERROR') then
+        local _, val = line:match('(%S+)%s+(%S+)')
+        sum = sum + (tonumber(val) or 0)
+    end
+end
+
+print(sum)
+```
+
+---
+
+# awk → lua 変換の思考テンプレ
+
+| awk     | lua                       |
+| ------- | ------------------------- |
+| `$1`    | `line:match('^(%S+)')`    |
+| `$NF`   | `line:match('(%S+)%s*$')` |
+| `FS`    | `match / gmatch`          |
+| 配列      | table                     |
+| `BEGIN` | 処理前                       |
+| `END`   | 処理後                       |
+
+---
+
+# パフォーマンス注意点（重要）
+
+❌ 行ごとに lua 起動
+⭕ `cat | lua script.lua`
+
+❌ print 乱用
+⭕ `io.stdout:write()`
+
+---
+
+> **大量出力・高速化が必要 → `io.stdout:write()`**
+> **デバッグ・少量出力 → `print()`**
+
+
+## 1. 機能差（何が違う？）
+
+### `print()`
+
+```lua
+print(a, b, c)
+```
+
+内部でやっていること：
+
+* `tostring()` を各引数に適用
+* 引数間に **タブ** を挿入
+* 最後に **改行を自動追加**
+* `io.stdout:write(...)` を呼ぶ
+
+つまり **便利だが余計な仕事が多い**。
+
+---
+
+### `io.stdout:write()`
+
+```lua
+io.stdout:write(a, ' ', b, '\n')
+```
+
+* **何もしてくれない**
+* 改行なし
+* 文字列以外は自分で変換
+
+👉 **最小コスト**
+
+---
+
+## 2. 速度差（重要）
+
+### 100万行出力の感覚
+
+| 方法                  | 体感    |
+| ------------------- | ----- |
+| `print()`           | 遅い    |
+| `io.stdout:write()` | 明確に速い |
+
+理由：
+
+* `print()` は毎回
+
+  * tostring
+  * 区切り処理
+  * 改行付与
+* `write()` は **素通し**
+
+---
+
+### 実用例（ログ処理）
+
+❌ 遅い
+
+```lua
+for line in io.lines() do
+    print(line)
+end
+```
+
+⭕ 速い
+
+```lua
+for line in io.lines() do
+    io.stdout:write(line, '\n')
+end
+```
+
+---
+
+## 3. 改行制御（重要差）
+
+### print は必ず改行
+
+```lua
+print('a')
+print('b')
+-- a
+-- b
+```
+
+### write は自分で管理
+
+```lua
+io.stdout:write('a\nb\n')
+```
+
+---
+
+## 4. フォーマット出力
+
+### print（簡単）
+
+```lua
+print(x, y, z)
+```
+
+### write（推奨）
+
+```lua
+io.stdout:write(string.format('%d %.3f %s\n', x, y, z))
+```
+
+※ `string.format` + `write` は **高速 & 明示的**
+
+---
+
+## 5. stderr に出したい場合
+
+```lua
+io.stderr:write('error: invalid input\n')
+```
+
+print ではできない（stdout 固定）。
+
+---
+
+## 6. バッファリングの観点
+
+* `write()` は **連続書き込みしやすい**
+* 行単位より **塊で書く**とさらに速い
+
+```lua
+local buf = {}
+for line in io.lines() do
+    buf[#buf+1] = line
+    buf[#buf+1] = '\n'
+end
+io.stdout:write(table.concat(buf))
+```
+
+---
+
+## 7. 実務での使い分け指針
+
+| 状況        | 使う                  |
+| --------- | ------------------- |
+| デバッグ      | `print()`           |
+| 少量出力      | `print()`           |
+| パイプ前提     | `write()`           |
+| 大量ログ      | `write()`           |
+| 生成系（CSV等） | `write()`           |
+| stderr 出力 | `io.stderr:write()` |
+
+---
+
+## 8. bash + lua 文脈での結論
+
+bash と組み合わせる場合：
+
+```bash
+cat big.log | lua filter.lua | sort
+```
+
+このとき Lua 側は **必ず**：
+
+```lua
+io.stdout:write(...)
+```
+
+にするべきです。
+
+`print()` を使うと：
+
+* パイプ全体が遅くなる
+* CPU が無駄に回る
+
+---
+
+
+
+bash ↔ Lua のデータ受け渡しは **5パターン覚えれば十分**です。
+「制御は bash、処理は Lua」という前提で、**実務で使う形だけ**まとめます。
+
+---
+
+## 1️⃣ 引数（argv）【最も基本】
+
+### bash → lua
+
+```bash
+lua calc.lua 10 20
+```
+
+```lua
+-- calc.lua
+local a, b = tonumber(arg[1]), tonumber(arg[2])
+print(a + b)
+```
+
+**用途**
+
+* 設定値
+* フラグ
+* 少量データ
+
+---
+
+## 2️⃣ 標準入力（stdin）【最重要】
+
+### bash → lua（大量データ）
+
+```bash
+cat data.txt | lua process.lua
+```
+
+```lua
+-- process.lua
+for line in io.lines() do
+    -- heavy processing
+    io.stdout:write(line, '\n')
+end
+```
+
+**用途**
+
+* テキスト
+* CSV / TSV
+* ログ
+
+👉 **awk/sed の代替はこれ**
+
+---
+
+## 3️⃣ 環境変数（env）【設定向き】
+
+### bash
+
+```bash
+export THRESHOLD=10
+lua filter.lua
+```
+
+### lua
+
+```lua
+local th = tonumber(os.getenv('THRESHOLD')) or 0
+```
+
+**用途**
+
+* 設定値
+* 秘密情報（※注意）
+
+---
+
+## 4️⃣ 一時ファイル（大きな構造）
+
+### bash
+
+```bash
+tmp=$(mktemp)
+lua gen.lua > "$tmp"
+lua consume.lua "$tmp"
+rm "$tmp"
+```
+
+### lua
+
+```lua
+local file = arg[1]
+for line in io.lines(file) do
+    ...
+end
+```
+
+**用途**
+
+* 中間結果保存
+* デバッグ
+* 再利用
+
+---
+
+## 5️⃣ eval / here-doc（関数代替）
+
+### bash → lua（インライン）
+
+```bash
+lua - "$@" <<'LUA'
+local x, y = ...
+print(x * y)
+LUA
+```
+
+**用途**
+
+* bash 関数の置き換え
+* 短い処理
+
+---
+
+# 🔁 lua → bash の受け渡し
+
+## 6️⃣ コマンド置換（値を返す）
+
+```bash
+result=$(lua calc.lua 10 20)
+echo "$result"
+```
+
+Lua 側：
+
+```lua
+print(10 + 20)
+```
+
+---
+
+## 7️⃣ exit code（真偽・状態）
+
+### lua
+
+```lua
+if error then
+    os.exit(1)
+end
+os.exit(0)
+```
+
+### bash
+
+```bash
+lua check.lua || echo "failed"
+```
+
+---
+
+## 8️⃣ JSON（構造化データ）
+
+### lua → bash (jq)
+
+```lua
+print('{"ok":true,"count":42}')
+```
+
+```bash
+json=$(lua gen.lua)
+echo "$json" | jq '.count'
+```
+
+**用途**
+
+* 複数値
+* 配列 / map
+
+---
+
+## 9️⃣ TSV / CSV（最速・最強）
+
+### lua
+
+```lua
+io.stdout:write(id, '\t', value, '\n')
+```
+
+### bash
+
+```bash
+lua gen.lua | while IFS=$'\t' read id value; do
+    ...
+done
+```
+
+---
+
+
+**bash + lua の並列処理**は「**bashで並列制御、luaで重処理**」
+
+
+# ① xargs -P（最頻出・最安定）
+
+## 構成
+
+* bash：並列数管理
+* lua：1ジョブ処理
+
+---
+
+### 例：ファイルを並列処理
+
+```bash
+find logs -name '*.log' |
+xargs -P 4 -n 1 lua analyze.lua
+```
+
+```lua
+-- analyze.lua
+local file = arg[1]
+
+for line in io.lines(file) do
+    if line:match('ERROR') then
+        io.stdout:write(file, '\n')
+        break
+    end
+end
+```
+
+### ポイント
+
+* `-P` = 並列数
+* Lua は **1ファイル = 1プロセス**
+* 安定・速い・簡単
+
+---
+
+# ② GNU parallel（最強）
+
+```bash
+find logs -name '*.log' |
+parallel -j 8 lua analyze.lua {}
+```
+
+### 特徴
+
+* 負荷制御が優秀
+* ログ混線しにくい
+* 進捗表示あり
+
+---
+
+# ③ bash job control（POSIX）
+
+```bash
+#!/bin/bash
+max=4
+running=0
+
+for f in *.log; do
+    lua analyze.lua "$f" &
+    ((running++))
+
+    if (( running >= max )); then
+        wait -n
+        ((running--))
+    fi
+done
+
+wait
+```
+
+### 特徴
+
+* GNU parallel 不要
+* 移植性◎
+* 記述は少し重い
+
+---
+
+# ④ stdin を分割して並列（高速）
+
+## xargs + stdin
+
+```bash
+cat big.txt |
+xargs -P 4 -n 1000 lua bulk.lua
+```
+
+```lua
+-- bulk.lua
+for line in io.lines() do
+    -- heavy logic
+    io.stdout:write(line, '\n')
+end
+```
+
+### ポイント
+
+* 1000行単位で処理
+* Lua 起動回数削減
+* 大量データ向け
+
+---
+
+# ⑤ 出力の衝突を避ける（重要）
+
+## ❌ 危険
+
+```lua
+io.stdout:write(result, '\n')
+```
+
+→ 並列だと混線
+
+---
+
+## ⭕ 安全（1行1 write）
+
+```lua
+io.stdout:write(result .. '\n')
+```
+
+または
+
+```bash
+parallel --line-buffer lua task.lua {}
+```
+
+---
+
+# ⑥ 集約パターン（Map → Reduce）
+
+### Map（並列）
+
+```bash
+find . -name '*.log' |
+parallel lua map.lua {} > tmp.tsv
+```
+
+### Reduce（単一）
+
+```bash
+lua reduce.lua tmp.tsv
+```
+
+---
+
+# ⑦ CPU vs I/O の判断
+
+| 処理    | 並列数         |
+| ----- | ----------- |
+| CPU重い | `nproc`     |
+| I/O重い | `nproc * 2` |
+| ネット   | 多め          |
+
+```bash
+jobs=$(nproc)
+```
+
+---
+
+# ⑧ やってはいけない例（超重要）
+
+```bash
+while read line; do
+    lua process.lua "$line" &
+done
+```
+
+❌ Lua起動地獄
+❌ コンテキストスイッチ地獄
+
+---
+
+# 🧠 設計テンプレ（実務）
+
+```bash
+#!/bin/bash
+set -e
+
+jobs=$(nproc)
+
+find input -type f |
+xargs -P "$jobs" -n 1 lua worker.lua |
+lua reducer.lua
+```
+
+---
+
+
+**bash + lua 並列処理**で一番ハマるのが「集約（reduce）」なので、
+**ロックを一切使わない実務テクニック**だけを体系化します。
+
+---
+
+# 基本原則（超重要）
+
+> **並列プロセスは「書かない」**
+> **集約は「最後に1回」**
+
+ロックレスはこれだけです。
+
+---
+
+# ① Map → Reduce（王道・最強）
+
+## 構成
+
+```
+[input] → (parallel map) → TSV/CSV → (single reduce)
+```
+
+---
+
+### Map（並列）
+
+```bash
+find logs -name '*.log' |
+parallel lua map.lua {} > tmp.tsv
+```
+
+```lua
+-- map.lua
+local file = arg[1]
+local count = 0
+
+for line in io.lines(file) do
+    if line:match('ERROR') then
+        count = count + 1
+    end
+end
+
+-- one record per process
+io.stdout:write(file, '\t', count, '\n')
+```
+
+✔ 書き込み競合なし
+✔ 1行 = 1プロセス
+
+---
+
+### Reduce（単一）
+
+```lua
+-- reduce.lua
+local sum = 0
+
+for line in io.lines() do
+    local _, cnt = line:match('([^\t]+)\t(%d+)')
+    sum = sum + tonumber(cnt)
+end
+
+print(sum)
+```
+
+---
+
+# ② ファイル分離 → 最後に統合
+
+## 並列（完全ロックレス）
+
+```bash
+mkdir -p tmp
+
+find logs -name '*.log' |
+parallel 'lua map.lua {} > tmp/{/.}.out'
+```
+
+* `{/.}` = 拡張子なしファイル名
+* 各プロセス **専用ファイル**
+
+---
+
+## 集約
+
+```bash
+cat tmp/*.out | lua reduce.lua
+```
+
+---
+
+# ③ シャーディング（キー別集約）
+
+### 目的
+
+* reduce も並列化したい
+* 巨大データ
+
+---
+
+### Map（キーで分割）
+
+```lua
+-- shard.lua
+local key, value = ...
+
+local shard = tonumber(key) % 8
+local f = io.open('tmp/shard_' .. shard .. '.tsv', 'a')
+f:write(key, '\t', value, '\n')
+f:close()
+```
+
+❌ これはロックが必要 → **NG**
+
+---
+
+### ⭕ ロックレス版
+
+```bash
+parallel lua shard.lua {} ::: input/*
+```
+
+```lua
+-- shard.lua
+local infile = arg[1]
+local shards = {}
+
+for line in io.lines(infile) do
+    local key, value = line:match('(%S+)%s+(%S+)')
+    local s = tonumber(key) % 8
+
+    shards[s] = shards[s] or {}
+    shards[s][#shards[s]+1] = key .. '\t' .. value .. '\n'
+end
+
+for s, buf in pairs(shards) do
+    local f = io.open('tmp/shard_' .. s .. '_' .. infile, 'w')
+    f:write(table.concat(buf))
+    f:close()
+end
+```
+
+👉 **「書き込み先 × プロセス」で完全分離**
+
+---
+
+# ④ stdout 原子性を使う（短文のみ）
+
+### POSIX 保証
+
+* **PIPE_BUF（通常 4KB）以内の write は原子的**
+
+---
+
+### 安全な例
+
+```lua
+io.stdout:write(id, '\t', value, '\n')
+```
+
+✔ 1 write
+✔ 4KB 未満
+✔ ロック不要
+
+---
+
+### 危険な例
+
+```lua
+print(id)
+print(value)
+```
+
+❌ 混線
+
+---
+
+# ⑤ バイナリ集約（高速・上級）
+
+### Map
+
+```lua
+-- write binary
+io.stdout:write(string.pack('I4I4', key, value))
+```
+
+### Reduce
+
+```lua
+while true do
+    local buf = io.stdin:read(8)
+    if not buf then break end
+    local k, v = string.unpack('I4I4', buf)
+end
+```
+
+✔ 高速
+✔ コンパクト
+❌ 可読性低
+
+---
+
+# ⑥ SQLite を使わない理由（並列）
+
+| 方法     | 評価    |
+| ------ | ----- |
+| SQLite | ロック地獄 |
+| flock  | 遅い    |
+| append | 壊れる   |
+
+👉 **集約はファイル or stdout**
+
+---
+
+# ⑦ 実務テンプレ（完成形）
+
+```bash
+#!/bin/bash
+set -e
+
+jobs=$(nproc)
+tmp=$(mktemp)
+
+find input -type f |
+xargs -P "$jobs" -n 1 lua map.lua > "$tmp"
+
+lua reduce.lua < "$tmp"
+rm "$tmp"
+```
+
+---
+
+
+**SQLite / DuckDB を並列で使うときの「やっていい／ダメ」**をはっきり分けます。
+
+---
+
+# 結論サマリ（最重要）
+
+| DB     | 並列 WRITE          | 並列 READ | 推奨構成                          |
+| ------ | ----------------- | ------- | ----------------------------- |
+| SQLite | ❌ 原則NG            | ⭕ OK    | **Map → ファイル → single write** |
+| DuckDB | ❌ 外部からの同時WRITE NG | ⭕ 非常に強い | **外で並列 → DuckDBで集約**          |
+
+---
+
+# ① SQLite + 並列の落とし穴
+
+## ❌ やってはいけない例
+
+```bash
+find logs -name '*.log' |
+parallel lua insert.lua {}
+```
+
+```lua
+-- insert.lua
+db:exec("INSERT INTO errors VALUES (...)")
+```
+
+### 何が起きる？
+
+* `database is locked`
+* WALでも詰まる
+* リトライ地獄
+* スループット激減
+
+---
+
+## SQLite の本質
+
+* **同時WRITEは1つだけ**
+* WALでも：
+
+  * writer は1
+  * readers は複数
+
+👉 並列WRITE = 設計ミス
+
+---
+
+## ⭕ 正しい SQLite 構成（王道）
+
+### Map（並列・DB触らない）
+
+```bash
+parallel lua map.lua {} > tmp.tsv
+```
+
+### Reduce（単一WRITE）
+
+```lua
+-- reduce.lua
+db:exec('BEGIN')
+
+for line in io.lines() do
+    -- parse
+    stmt:bind(...)
+    stmt:step()
+    stmt:reset()
+end
+
+db:exec('COMMIT')
+```
+
+✔ 最速
+✔ ロックなし
+✔ 安定
+
+---
+
+## SQLite 高速化の必須設定（Reduce時）
+
+```sql
+PRAGMA journal_mode = WAL;
+PRAGMA synchronous = OFF;
+PRAGMA temp_store = MEMORY;
+PRAGMA cache_size = -200000;
+```
+
+※ **Reduce専用プロセスのみ**
+
+---
+
+# ② SQLite で「どうしても並列WRITE」したい場合
+
+### 選択肢（非推奨順）
+
+1. **プロセスごとにDB分ける**
+2. 後でATTACHして統合
+3. 最終的にVACUUM
+
+```bash
+parallel lua map_to_db.lua {} ::: files/*
+```
+
+```sql
+ATTACH 'db1.sqlite' AS d1;
+INSERT INTO main.t SELECT * FROM d1.t;
+```
+
+👉 これも **実質 Map → Reduce**
+
+---
+
+# ③ DuckDB + 並列の考え方
+
+## DuckDB の誤解
+
+> 「DuckDB は並列に強い」
+> → **内部並列が強い**
+> → **外部からの同時WRITEはNG**
+
+---
+
+## ❌ やってはいけない例
+
+```bash
+parallel lua duck_insert.lua {}
+```
+
+```lua
+conn:execute("INSERT INTO table VALUES (...)")
+```
+
+### 問題
+
+* ファイルロック
+* 不定期クラッシュ
+* パフォーマンス低下
+# 🏁 最終結論
+
+> **並列中は DB を触るな**
+
+* bash + lua：並列 Map
+* ファイル / stdout：中間
+* SQLite / DuckDB：最後に Reduce
+
+これが
+**最速・最安定・最小コード**です。
+
+---
+
+次に行くなら：
+
+* SQLite-only で擬似並列を作る設計
+* DuckDB + Parquet + compaction 戦略
+* 巨大ログ（TB級）の shard / multi-reduce
+
+どれいきます？
+
+---
+
+## ⭕ 正しい DuckDB 構成
+
+### ① 外で並列（bash + lua）
+
+```bash
+parallel lua map.lua {} > tmp.parquet
+```
+
+### ② DuckDB で一気に読む（内部並列）
+
+```sql
+INSERT INTO table
+SELECT * FROM read_parquet('tmp.parquet');
+```
+
+✔ DuckDB の得意技
+✔ 超高速
+✔ 安定
+
+---
+
+## DuckDB の真価（ここが重要）
+
+* `read_csv_auto`
+* `read_parquet`
+* `COPY FROM`
+* 内部スレッド最適化
+
+👉 **「並列WRITE」より「並列READ」**
+
+---
+
+# ④ SQLite vs DuckDB 役割分担
+
+| 用途       | SQLite | DuckDB |
+| -------- | ------ | ------ |
+| 小規模更新    | ◎      | △      |
+| トランザクション | ◎      | △      |
+| 分析       | △      | ◎      |
+| 並列集約     | ❌      | ◎      |
+| ファイル指向   | △      | ◎      |
+
+---
+
+# ⑤ Lua から DB を使う時の注意
+
+## ❌ Map フェーズで DB open/close
+
+```lua
+for file in files do
+    db = open()
+    insert
+    close()
+end
+```
+
+→ オーバーヘッド地獄
+
+---
+
+## ⭕ Reduce フェーズでまとめて
+
+```lua
+db = open()
+BEGIN
+for all data do
+    insert
+COMMIT
+close
+```
+
+---
+
+# ⑥ 安全な設計テンプレ（完成形）
+
+```bash
+#!/bin/bash
+set -e
+
+jobs=$(nproc)
+tmp=$(mktemp)
+
+# Map (parallel, no DB)
+find input -type f |
+xargs -P "$jobs" -n 1 lua map.lua > "$tmp"
+
+# Reduce (single DB writer)
+lua reduce_to_sqlite.lua < "$tmp"
+```
+
+DuckDB 版：
+
+```bash
+parallel lua map.lua {} ::: files/*
+duckdb db.duckdb -c "INSERT INTO t SELECT * FROM read_csv('$tmp')"
+```
+
+---
+
+# ⑦ よくある誤解まとめ
+
+| 誤解           | 真実       |
+| ------------ | -------- |
+| WALなら並列OK    | ❌        |
+| DuckDBは何でも並列 | ❌        |
+| ロックは悪        | ❌（設計が悪）  |
+| DBで集約すべき     | ❌（最後でいい） |
+
+---
+
+
+
+
 10GB 級の CSV でもメモリをオーバーさせずに処理する
 
 ---
@@ -598,6 +2255,541 @@ luarocks list
 | `luajit-request` | HTTP クライアント（LuaJIT 高速版） | `luarocks install luajit-request` |
 
 ---
+
+
+**FFI を使わなくても LuaJIT はかなり速くできます。**
+ポイントは「JIT が気持ちよくトレースできる形に書く」ことです。
+
+以下、**実務で効く順**にまとめます。
+
+---
+
+## 0. 結論（超要約）
+
+> **LuaJIT を速くする＝
+> ① 型を固定
+> ② table を避ける
+> ③ 同じループを回す
+> ④ JIT を壊さない**
+
+---
+
+## 1. number だけを使う（最重要）
+
+LuaJIT は **number（double）特化**で最適化します。
+
+### 良い
+
+```lua
+local x = 0.0
+for i = 1, n do
+  x = x + i * 0.5
+end
+```
+
+### 悪い
+
+```lua
+local x = 0        -- integer
+x = x + 0.5        -- 型揺れ
+```
+
+👉 **必ず `0.0` で初期化**
+
+---
+
+## 2. table アクセスを最小化する
+
+### 悪い
+
+```lua
+for i=1,n do
+  sum = sum + t[i]
+end
+```
+
+### 良い（ローカル変数化）
+
+```lua
+local t_local = t
+for i=1,n do
+  sum = sum + t_local[i]
+end
+```
+
+👉 **グローバル / upvalue は地雷**
+
+---
+
+## 3. グローバルを使わない
+
+### 悪い
+
+```lua
+sum = sum + math.sin(x)
+```
+
+### 良い
+
+```lua
+local sin = math.sin
+sum = sum + sin(x)
+```
+
+👉 **関数参照は必ず local**
+
+---
+
+## 4. 関数を小さくしすぎない
+
+LuaJIT は **関数をまたぐと JIT が切れる**ことがある。
+
+### 悪い
+
+```lua
+for i=1,n do
+  sum = sum + f(i)
+end
+```
+
+### 良い
+
+```lua
+for i=1,n do
+  sum = sum + i * 0.5
+end
+```
+
+👉 **ホットループ内では展開**
+
+---
+
+## 5. 分岐を減らす（トレースを壊さない）
+
+### 悪い
+
+```lua
+if x > 0 then
+  a = b + c
+else
+  a = d + e
+end
+```
+
+### 良い（条件を外に出す）
+
+```lua
+if x > 0 then
+  for i=1,n do a = b + c end
+else
+  for i=1,n do a = d + e end
+end
+```
+
+👉 **ループ中に分岐しない**
+
+---
+
+## 6. for ループは単純に
+
+* `for i=1,n` が最速
+* `while` より安定
+* `ipairs` / `pairs` は使わない
+
+---
+
+## 7. メタテーブルを避ける
+
+### 悪い
+
+```lua
+setmetatable(t, mt)
+```
+
+👉 **JIT 無効化トリガー**
+
+---
+
+## 8. tostring / print をループに入れない
+
+* デバッグ中は OK
+* 本番では **即アウト**
+
+---
+
+## 9. JIT を確認する（必須）
+
+```bash
+luajit -jv script.lua
+```
+
+* `TRACE` が出る → OK
+* `NYI` / `abort` → 遅い
+
+---
+
+## 10. LuaJIT が「C になる」例
+
+```lua
+local a, b = 1.0, 2.0
+local s = 0.0
+
+for i=1,1e8 do
+  s = s + a * i + b
+end
+```
+
+👉 **C と誤差レベル**
+
+---
+
+## 11. それでも遅いときは
+
+### 優先順位
+
+1. アルゴリズム改善
+2. LuaJIT 最適化
+3. FFI
+4. C 実装
+
+---
+
+## 12. 一言まとめ
+
+> **LuaJIT は
+> 「素直な数値ループ」だけ書けば
+> C に変身する**
+
+---
+
+### 最重要チェックリスト
+
+* [ ] number 固定
+* [ ] local 変数化
+* [ ] table 最小
+* [ ] 分岐なし
+* [ ] JIT trace 確認
+
+---
+
+**「LuaJIT JIT abort 実例集」→「FFI を使うべき境界線」**の順で、
+**実務で踏みがちな地雷だけ**を厳選します。
+
+---
+
+# 1. LuaJIT JIT abort 実例集（実戦版）
+
+JIT abort ＝
+
+> **「ここから先は JIT できない。インタプリタに戻る」**
+
+`luajit -jv script.lua` で確認できます。
+
+---
+
+## 1.1 table が原因（最頻出）
+
+### ❌ 例
+
+```lua
+for i=1,n do
+  sum = sum + t[i]
+end
+```
+
+### abort 理由
+
+* table index
+* hash/array 混在
+* shape 不安定
+
+### ✅ 回避
+
+```lua
+local t0 = t
+for i=1,n do
+  sum = sum + t0[i]
+end
+```
+
+---
+
+## 1.2 pairs / ipairs
+
+### ❌
+
+```lua
+for k,v in pairs(t) do
+  sum = sum + v
+end
+```
+
+### abort
+
+* iterator が不透明
+
+### ✅
+
+```lua
+for i=1,#t do
+  sum = sum + t[i]
+end
+```
+
+---
+
+## 1.3 型が揺れる
+
+### ❌
+
+```lua
+x = 0
+if cond then x = 1.5 end
+```
+
+### abort
+
+* int → double
+
+### ✅
+
+```lua
+x = 0.0
+```
+
+---
+
+## 1.4 関数呼び出し（特に upvalue）
+
+### ❌
+
+```lua
+function f(x) return x*2 end
+for i=1,n do sum = sum + f(i) end
+```
+
+### abort
+
+* trace split
+* call boundary
+
+### ✅
+
+```lua
+for i=1,n do sum = sum + i*2 end
+```
+
+---
+
+## 1.5 math ライブラリ
+
+### ❌
+
+```lua
+sum = sum + math.sin(x)
+```
+
+### abort
+
+* C call
+
+### ✅
+
+```lua
+local sin = math.sin
+sum = sum + sin(x)
+```
+
+（完全回避は不可、緩和のみ）
+
+---
+
+## 1.6 メタテーブル
+
+### ❌
+
+```lua
+setmetatable(t, mt)
+```
+
+### abort
+
+* metamethod call
+
+### ✅
+
+* hot loop では使わない
+
+---
+
+## 1.7 可変長テーブル
+
+### ❌
+
+```lua
+t[#t+1] = x
+```
+
+### abort
+
+* shape change
+
+### ✅
+
+* サイズ固定
+* preallocate
+
+---
+
+## 1.8 tostring / print
+
+### ❌
+
+```lua
+print(i)
+```
+
+### abort
+
+* I/O call
+
+### ✅
+
+* ループ外へ
+
+---
+
+## 1.9 NYI（Not Yet Implemented）
+
+### 例
+
+* 64bit 整数演算
+* 複雑な bit 演算
+* coroutine
+
+👉 **仕様的に無理**
+
+---
+
+# 2. FFI を使うべき境界線
+
+## 判断基準（これだけ覚えればOK）
+
+> **「JIT abort を潰し切っても遅いなら FFI」**
+
+---
+
+## 2.1 FFI を使うべきケース（YES）
+
+### ✅ 配列が本質
+
+* 行列
+* ベクトル
+* 画像
+* バッファ
+
+👉 **table が限界**
+
+---
+
+### ✅ 同じループを何億回も回す
+
+* 物理シミュレーション
+* DSP
+* ゲーム内部計算
+
+---
+
+### ✅ 既存 C ライブラリがある
+
+* BLAS
+* FFTW
+* libpng
+
+👉 **書かない理由がない**
+
+---
+
+## 2.2 FFI を使わない方がよいケース（NO）
+
+### ❌ 制御フロー中心
+
+* 状態遷移
+* パーサ
+* ゲームロジック
+
+---
+
+### ❌ 寿命管理が複雑
+
+* ポインタ保持
+* 非同期
+* スレッド
+
+---
+
+### ❌ チーム開発
+
+* C が読めない人が多い
+* デバッグ重視
+
+---
+
+## 2.3 決断フローチャート（実用）
+
+```text
+遅い？
+  ↓
+JIT trace 出てる？
+  ├─ NO → LuaJIT 書き方修正
+  └─ YES
+        ↓
+table が原因？
+  ├─ YES → FFI
+  └─ NO
+        ↓
+演算が重い？
+  ├─ YES → FFI / C
+  └─ NO → アルゴリズム
+```
+
+---
+
+# 3. 典型的な移行パターン
+
+### Before（LuaJIT 限界）
+
+```lua
+for i=1,n do
+  sum = sum + t[i] * w[i]
+end
+```
+
+### After（FFI）
+
+```lua
+local a = ffi.new('double[?]', n)
+local b = ffi.new('double[?]', n)
+```
+
+👉 **10〜50倍**
+
+---
+
+# 4. 一言まとめ
+
+### JIT abort
+
+> **「LuaJIT からの赤信号」**
+
+### FFI 境界線
+
+> **「構造が数値配列なら FFI」
+> 「ロジックなら Lua」**
+
+
+---
+
 
 ## 1️⃣ Lua 標準で簡単な行列計算
 
