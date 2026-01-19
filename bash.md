@@ -119,7 +119,7 @@ command -v command0/alias/function
 | `dirs`                   | ディレクトリスタックを表示。         |
 | `test` / `[ ]` / `[[ ]]` | 条件式評価。                         |
 | `ulimit`                 | リソース制限の設定・表示。           |
-| `time`                  | CPU 時間を表示。                     |
+| `time`                   | CPU 時間を表示。                     |
 | `true` / `false`         | 常に成功または失敗を返す。           |
 
 | コマンド              | 説明                                |
@@ -254,14 +254,24 @@ or
 script file
 script.sh
 
+run script
+bash ./script.sh
+
+use shebang and run without 'bash'
+
+which bash
+
 ```
 #!/bin/bash
+  or
+#!/usr/bin/env bash
+
 ( bash script )
 ```
 
-bash script.sh
-
 chmod +x script.sh
+
+run script
 ./script.sh
 
 check syntax
