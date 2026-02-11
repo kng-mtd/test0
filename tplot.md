@@ -267,12 +267,36 @@ tail -f log.csv | python3 scatterlast10.py
 
 
 
+duckdb
 
+copy (
+	select * from read_csv('penguins.csv', nullstr=['NA', 'null', 'NULL']))
+to 'penguins1.csv' with(header);
 
-
-
-
-
+from penguins1.csv;
 
 sqlite3 db.sqlite "select val from t" | python3 line.py
 duckdb -csv -c "select value from tbl" db.duckdb | tplot
+awk -F, '{print $4,$5,$5,$6}' penguins1.csv | head -n5
+
+duckdb -csv -c '
+select bill_length_mm, bill_depth_mm from penguins1.csv
+where bill_length_mm is not null and bill_depth_mm is not null limit 10;
+' | awk -F, '{print $1,$2}' | python3 scatter2.py
+
+
+duckdb -csv <<EOF | awk -F, '{print $1,$2}' | python3 scatter2.py
+select bill_length_mm, bill_depth_mm from 'penguins1.csv'
+where bill_length_mm is not null and bill_depth_mm is not null limit 10;
+EOF
+
+duckdb -csv <<EOF | awk -F, '{print $1,$2}' | python3 scatter2.py
+select bill_length_mm, bill_depth_mm from 'penguins1.csv'
+where sex='male' and bill_length_mm is not null and bill_depth_mm is not null;
+EOF
+
+duckdb -csv <<EOF | awk -F, '{print $1,$2}' | python3 scatter2.py
+select bill_length_mm, bill_depth_mm from 'penguins1.csv'
+where sex='female' and bill_length_mm is not null and bill_depth_mm is not null;
+EOF
+
