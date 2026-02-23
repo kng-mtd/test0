@@ -2957,3 +2957,431 @@ c:on{
 c:connect()
 mqtt.run()
 ```
+
+### **Lua + lua-mqtt + lua-nats** を使った
+
+**MQTT → topic→subject 変換 → NATS publish**
+
+luarocks install mqtt
+luarocks install nats
+
+- Lua 5.1+
+- MQTT broker（mosquitto など）
+- NATS server（4222）
+
+最小ブリッジ
+
+bridge_min.lua
+
+```lua
+local mqtt = require('mqtt')
+local nats = require('nats')
+
+-- NATS
+local nc = nats.connect{
+  host = '127.0.0.1',
+  port = 4222,
+}
+nc:connect()
+
+-- MQTT
+local mc = mqtt.client{
+  uri = 'mqtt://localhost',
+  id  = 'mqtt-nats-bridge',
+}
+
+mc:on{
+  connect = function()
+    print('mqtt connected')
+    mc:subscribe{ topic = 'sensors/+/data', qos = 0 }
+  end,
+
+  message = function(pkt)
+    local subject = 'mqtt.' .. pkt.topic:gsub('/', '.')
+    nc:publish(subject, pkt.payload)
+  end,
+}
+
+mc:connect()
+mqtt.run()
+```
+
+```text
+mosquitto_pub → mosquitto_sub
+                   ↓
+             Lua bridge
+                   ↓
+               nats pub
+```
+
+---
+
+実用向け（再接続・ログ付き）
+
+bridge.lua
+
+```lua
+local mqtt = require('mqtt')
+local nats = require('nats')
+
+-- ===== NATS =====
+local nc = nats.connect{
+  host = '127.0.0.1',
+  port = 4222,
+}
+
+local function nats_connect()
+  local ok, err = pcall(function()
+    nc:connect()
+  end)
+  if not ok then
+    print('nats connect error:', err)
+  else
+    print('nats connected')
+  end
+end
+
+nats_connect()
+
+-- ===== MQTT =====
+local mc = mqtt.client{
+  uri        = 'mqtt://localhost',
+  id         = 'mqtt-nats-bridge',
+  clean      = true,
+  keepalive  = 30,
+}
+
+mc:on{
+  connect = function()
+    print('mqtt connected')
+    mc:subscribe{ topic = 'sensors/+/data', qos = 0 }
+  end,
+
+  message = function(pkt)
+    local topic   = pkt.topic
+    local payload = pkt.payload
+
+    -- topic -> subject
+    local subject = 'mqtt.' .. topic:gsub('/', '.')
+
+    -- publish to NATS
+    local ok, err = pcall(function()
+      nc:publish(subject, payload)
+    end)
+
+    if not ok then
+      print('nats publish error:', err)
+    end
+  end,
+
+  error = function(err)
+    print('mqtt error:', err)
+  end,
+
+  close = function()
+    print('mqtt closed')
+  end,
+}
+
+mc:connect()
+mqtt.run()
+```
+
+nats sub 'mqtt.sensors.>'
+
+```lua
+message = function(pkt)
+  local subject = 'mqtt.' .. pkt.topic:gsub('/', '.')
+  nc:publish(subject, pkt.payload)
+end
+```
+
+---
+
+##`lightningmdb`
+
+- Written specifically as a binding for LMDB
+- Uses LuaJIT FFI for high performance
+- Supports basic LMDB operations (`env`, `txn`, `dbi`, `get`, `put`, etc.)
+- Much easier and safer than rolling your own FFI
+
+This makes it **one of the best options for using LMDB from Lua** in real applications.
+
+sudo apt install liblmdb-dev
+
+luarocks install lightningmdb
+
+Simple Usage Example
+
+Here’s a minimal example showing how to open an LMDB environment, put a key, and get it back.
+
+```lua
+local mdb = require("lightningmdb")
+
+-- open environment
+local env = mdb.env_create()
+env:set_mapsize(1024*1024*1024)  -- 1GB
+env:open("./lmdbdata", mdb.MDB_NOSUBDIR)
+
+-- begin a write txn
+local txn = env:txn_begin(nil, true)
+local dbi = txn:dbi_open()
+txn:put(dbi, "mykey", "hello from LUA")
+txn:commit()
+
+-- read txn
+local rtxn = env:txn_begin(nil, false)
+local val  = rtxn:get(dbi, "mykey")
+print("value:", val)  --> "hello from LUA"
+rtxn:abort()
+```
+
+---
+
+MQTT → LMDB Direct Write
+
+```lua
+local mqtt    = require("mqtt")
+local nats    = require("nats")
+local mdb     = require("lightningmdb")
+
+-- LMDB setup
+local env = mdb.env_create()
+env:set_mapsize(1024*1024*1024)
+env:open("./msgs.lmdb", mdb.MDB_NOSUBDIR)
+local writeTxn, dbi
+
+-- start write txn
+writeTxn = env:txn_begin(nil, true)
+dbi      = writeTxn:dbi_open()
+
+-- MQTT setup
+local mc = mqtt.client{ uri = "mqtt://localhost" }
+mc:on{
+  connect = function()
+    mc:subscribe{ topic="sensors/#" }
+  end,
+
+  message = function(pkt)
+    -- store in LMDB
+    writeTxn:put(dbi, pkt.topic, pkt.payload)
+
+    -- optionally commit now or batch commit
+    writeTxn:commit()
+    writeTxn = env:txn_begin(nil, true) -- new write txn
+
+    -- NATS publish
+    local subject = "mqtt." .. pkt.topic:gsub("/", ".")
+    nats:connect():publish(subject, pkt.payload)
+  end
+}
+
+mc:connect()
+mqtt.run()
+```
+
+---
+
+### **MQTT + lightningmdb (LMDB) + lua-nats**
+
+- MQTT は **入口**
+- LMDB は **高速バッファ / ローカル永続**
+- NATS は **即 fan-out**
+
+```
+mosquitto_pub
+   ↓
+lua-mqtt
+   ↓
+(topic → subject 変換)
+   ↓
+LMDB (lightningmdb)
+   ↓
+lua-nats
+   ↓
+nats sub mqtt.>
+```
+
+sudo apt install -y liblmdb-dev
+luarocks install mqtt
+luarocks install nats
+luarocks install lightningmdb
+
+mqtt_lmdb_nats_bridge.lua
+
+```lua
+
+local mqtt = require('mqtt')
+local nats = require('nats')
+local mdb  = require('lightningmdb')
+
+--------------------------------------------------
+-- LMDB SETUP
+--------------------------------------------------
+local env = mdb.env_create()
+env:set_mapsize(1024 * 1024 * 1024)   -- 1GB
+env:open('./data.lmdb', mdb.MDB_NOSUBDIR)
+
+local function new_write_txn()
+  local txn = env:txn_begin(nil, true)
+  local dbi = txn:dbi_open()
+  return txn, dbi
+end
+
+local wtxn, dbi = new_write_txn()
+
+--------------------------------------------------
+-- NATS SETUP
+--------------------------------------------------
+local nc = nats.connect{
+  host = '127.0.0.1',
+  port = 4222,
+}
+
+local function nats_connect()
+  local ok, err = pcall(function()
+    nc:connect()
+  end)
+  if ok then
+    print('[nats] connected')
+  else
+    print('[nats] connect error:', err)
+  end
+end
+
+nats_connect()
+
+--------------------------------------------------
+-- MQTT SETUP
+--------------------------------------------------
+local mc = mqtt.client{
+  uri       = 'mqtt://localhost',
+  id        = 'mqtt-lmdb-nats-bridge',
+  clean     = true,
+  keepalive = 30,
+}
+
+--------------------------------------------------
+-- MESSAGE HANDLER
+--------------------------------------------------
+local msg_count = 0
+local COMMIT_INTERVAL = 100   -- LMDB batch commit
+
+mc:on{
+  connect = function()
+    print('[mqtt] connected')
+    mc:subscribe{ topic = 'sensors/+/data', qos = 0 }
+  end,
+
+  message = function(pkt)
+    local topic   = pkt.topic
+    local payload = pkt.payload
+    local subject = 'mqtt.' .. topic:gsub('/', '.')
+
+    ------------------------------------------------
+    -- LMDB WRITE
+    ------------------------------------------------
+    local key = topic .. ':' .. os.time() .. ':' .. msg_count
+    wtxn:put(dbi, key, payload)
+    msg_count = msg_count + 1
+
+    if msg_count % COMMIT_INTERVAL == 0 then
+      wtxn:commit()
+      wtxn, dbi = new_write_txn()
+      print('[lmdb] committed', msg_count)
+    end
+
+    ------------------------------------------------
+    -- NATS PUBLISH
+    ------------------------------------------------
+    local ok, err = pcall(function()
+      nc:publish(subject, payload)
+    end)
+
+    if not ok then
+      print('[nats] publish error:', err)
+    end
+  end,
+
+  error = function(err)
+    print('[mqtt] error:', err)
+  end,
+
+  close = function()
+    print('[mqtt] closed')
+  end,
+}
+
+--------------------------------------------------
+-- START
+--------------------------------------------------
+mc:connect()
+mqtt.run()
+```
+
+```sh
+seq 5 | while read i; do
+  mosquitto_pub -t sensors/temp/data -m "msg-$i"
+done
+```
+
+```sh
+nats sub 'mqtt.sensors.>'
+```
+
+1. LMDB を「キュー」として使っている
+
+- **即 commit しない**
+- `COMMIT_INTERVAL` で **まとめ書き**
+- 落ちても **途中までは残る**
+
+2. MQTT → LMDB → NATS の順序保証
+
+- 先に LMDB
+- その後 NATS
+- 「配ったけど保存してない」を防ぐ
+
+---
+
+### **「止まらない配線」**
+
+① 接続は「永続」ではなく「再取得」
+② 状態は「メモリ」ではなく「外部化」
+③ 処理は「即時」ではなく「分離」
+④ 復帰は「人手」ではなく「自動」
+
+① 再接続（reconnect loop）
+
+止まらない配線
+
+connect → error → wait → connect
+
+```lua
+local function forever_connect(connect_fn, name)
+  while true do
+    local ok, err = pcall(connect_fn)
+    if ok then
+      print(name, 'connected')
+      return
+    end
+    print(name, 'retry in 1s:', err)
+    os.execute('sleep 1')
+  end
+end
+```
+
+- MQTT / NATS 両方これ
+
+② 状態を外に出す（LMDB）
+
+③ 処理分離（ingest / flush）
+
+④ 自動復帰（supervisor）
+
+Lua が最適な理由（再確認）
+
+- while true が軽い
+- FFI で LMDB が速い
+- GC が安定
+- プロセスが軽い
+- 書き捨てやすい
