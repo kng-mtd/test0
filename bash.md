@@ -25,8 +25,8 @@ id user0
 
 groups user0
 
-cat /etc/passwd
-grep -E '/bash|/sh' /etc/passwd
+cat /etc/passwd  
+grep -E '/bash|/sh' /etc/passwd  
 grep bash /etc/passwd
 
 cat /etc/group
@@ -47,38 +47,42 @@ userdel user0
 - -r
 - -f
 
-passwd
+passwd  
 sudo passwd user0
 
-su user0
+su user0  
 exit
 
-sudo usermod -l user1 user0
-sudo usermod -L user0
+sudo usermod -l user1 user0  
+sudo usermod -L user0  
 sudo usermod -U user0
 
 ---
 
-sudo groupadd group0
+sudo groupadd group0  
 sudo groupdel group0
 
-sudo gpasswd -a user0 group0
+sudo gpasswd -a user0 group0  
 sudo gpasswd -d user0 group0
 
 ---
 
 - super user
-  sudo command0
-  sudo user0
-  sudo -i
-  exit
+  sudo command0  
+  sudo user0  
+  sudo -i  
+  exit  
   sudo shutdown -h now
 
 - sudo group
-  getent group sudo
-  sudo adduser user0
-  sudo usermod -aG sudo user0
-  sudo deluser user0
+  getent group sudo  
+  sudo adduser user0  
+  sudo usermod -aG sudo user0  
+  sudo deluser user0  
+
+---
+
+which command0
 
 ---
 
@@ -87,7 +91,7 @@ command -v command0/alias/function
 ---
 
 - bash builtin commands
-  compgen -b
+  compgen -b  
   help
 
 | コマンド                                  | 説明                                 |
@@ -169,10 +173,10 @@ command -v command0/alias/function
 
 bash external commands
 
-echo $PATH
+echo $PATH  
 ls /bin /dir/bin
 
-find $(echo $PATH | tr ':' ' ') -maxdepth 1 -type f -executable 2>/dev/null
+find $(echo $PATH | tr ':' ' ') -maxdepth 1 -type f -executable 2>/dev/null  
 find $(echo $PATH | tr ':' ' ') -maxdepth 1 -type f -executable 2>/dev/null -exec basename {} \;
 
 ---
@@ -183,7 +187,7 @@ find $(echo $PATH | tr ':' ' ') -maxdepth 1 -type f -executable 2>/dev/null -exe
 ---
 
 - all usable commands
-  compgen -c
+  compgen -c  
   compgen -c | sort -u
 
 ---
@@ -219,7 +223,7 @@ find $(echo $PATH | tr ':' ' ') -maxdepth 1 -type f -executable 2>/dev/null -exe
 | libc.so.6            | GNU C ライブラリ（glibc）。標準 I/O、文字列、ファイル操作など Bash 内部もこれを利用 |
 | ld-linux-x86-64.so.2 | ELF 実行ファイルをロード・リンクするためのランタイムリンカ                          |
 
-sudo find /lib /x86*64-linux-gnu/ -type f -name '*.so*' 2>/dev/null | sort | less
+sudo find /lib /x86*64-linux-gnu/ -type f -name '*.so*' 2>/dev/null | sort | less  
 sudo find /lib /usr/lib -type f -name '*.so\_' 2>/dev/null | sort | less
 
 | カテゴリ                  |                                                 |
@@ -246,15 +250,15 @@ sudo find /lib /usr/lib -type f -name '*.so\_' 2>/dev/null | sort | less
 
 ### run script
 
-one liner
-bash -c '--script--'
-or
+one liner  
+bash -c '--script--'  
+or  
 { --script--;--script--;...; }
 
-script file
+script file  
 script.sh
 
-run script
+run script  
 bash ./script.sh
 
 use shebang and run without 'bash'
@@ -271,7 +275,7 @@ which bash
 
 chmod +x script.sh
 
-run script
+run script  
 ./script.sh
 
 check syntax
@@ -314,7 +318,7 @@ set +x
 ### continue line with \
 
 ```
-command0 ---\
+command0 ---\  
 ---\
 ---
 ```
@@ -391,28 +395,28 @@ EOF
 
 ### scheduled jobs
 
-systemctl status atd
+systemctl status atd  
 sudo systemctl enable atd
 
-at now +num minutes/hours
-at HH:MM
+at now +num minutes/hours  
+at HH:MM  
 at HH:MM yyyy-mm-dd
 
-at> command1
+at> command1  
 at> command2
 ...
 at> ctrl+d
 
-at -l
+at -l  
 atrm job
 
-at の出力は /var/log/syslog に記録されます。
+at の出力は /var/log/syslog に記録されます。  
 `grep atd /var/log/syslog`
 
 ---
 
-sudo systemctl status cron
-sudo systemctl start/stop cron
+sudo systemctl status cron  
+sudo systemctl start/stop cron  
 sudo sytemctl enable
 
 | コマンド     | 説明                           |
@@ -421,7 +425,7 @@ sudo sytemctl enable
 | `crontab -l` | 登録されているジョブ一覧を表示 |
 | `crontab -r` | 現在のジョブを全削除           |
 
-crontab -e
+crontab -e  
 分 時 日 月 曜日 コマンド、script.sh
 
 | 設定           | 意味           | cron 書式      |
@@ -442,7 +446,7 @@ crontab -e
 | `@daily`   | 毎日 0:00              | `0 0 * * *`      |
 | `@hourly`  | 毎時 0 分              | `0 * * * *`      |
 
-cron の出力は /var/log/syslog に記録されます。
+cron の出力は /var/log/syslog に記録されます。  
 `grep CRON /var/log/syslog`
 
 ---
@@ -479,7 +483,7 @@ $# : n of args
 
 ---
 
-command0 | xargs
+command0 | xargs  
 command1 | xargs command2
 
 - -t
@@ -1201,8 +1205,8 @@ realpath script.sh
 
 ---
 
-touch file1 file2...
-touch glob
+touch file1 file2...  
+touch glob  
 touch file{seq} #ex. file{00..99}.txt
 
 ---
@@ -1224,7 +1228,7 @@ pwd
 
 ---
 
-ls
+ls  
 ls glob
 
 - -l
@@ -1252,17 +1256,17 @@ mkdir dir/
 
 ---
 
-cp file0 file1
+cp file0 file1  
 cp -r dir0/ dir1/
 
 ---
 
-mv file dir/
+mv file dir/  
 mv file0 file1
 
 ---
 
-rm file
+rm file  
 rm -r dir/
 
 ---
@@ -1273,7 +1277,7 @@ ln file link
 
 ---
 
-alias abbr='command line'
+alias abbr='command line'  
 unalias abbr
 
 ---
@@ -1287,7 +1291,7 @@ diff file1 file2
 
 locate glob1 glob2...
 
-(sudo apt install mlocate)
+(sudo apt install mlocate)  
 updatedb
 
 - -i
@@ -1312,6 +1316,7 @@ find path glob
 zip file.zip file1 file2...
 
 - -r file.zip dir/
+- -e
 
 unzip file.zip
 
@@ -1321,12 +1326,24 @@ unzip file.zip
 ---
 
 gzip file
+
 gunzip file.gz
 
 ---
 
+bzip2 file
+
+bunzip2 file.bz2
+
+---
+
 tar -czvf file.tar.gz dir/
+
 tar -xzvf file.tar.gz
+
+tar -cjvf file.tar.bz2 dir/
+
+tar -xjvf file.tar.bz2
 
 ---
 
@@ -1387,7 +1404,7 @@ locale
 ```
 $LANG
 
-export LC_ALL=en_US.UTF-8
+export LC_ALL=en_US.UTF-8  
 export LC_ALL=ja_JP.UTF-8
 
 LC_ALL=en_US.UTF-8 command0
@@ -1429,6 +1446,16 @@ tail file1 file2...
 
 ---
 
+uniq 
+
+- -c
+
+histgram of csv column  
+sort file | uniq -c | sort -r/-nr  
+cut -d , -f num file | sort | uniq -c | sort -r/-nr
+
+---
+
 sort file
 
 - -n
@@ -1465,13 +1492,13 @@ tr chr1 chr2 < file.txt (not for multi byte character)
 - tr -s ' \t'
 - tr -s '\n'
 
-delete new line at not end
+delete new line at not end  
 `tr -d '\\n' < file.txt`
 
-use POSIX class
+use POSIX class  
 `tr '[:lower:]' '[:upper:]' < file.txt`
 
-delete except number,alphabet,new line
+delete except number,alphabet,new line  
 `tr -cd '[:alnum:]\n' < file.txt`
 
 | POSIX クラス | 意味                                 | マッチする文字                                                   |     |
@@ -1555,10 +1582,8 @@ grep regex file1 file2...
 
 delete empty line
 
-```
-grep -v '^$' file.txt
+grep -v '^$' file.txt  
 grep -v '^[[:space:]]*$' file.txt
-```
 
 #### glob (wildcard)
 
@@ -1586,7 +1611,7 @@ grep -v '^[[:space:]]*$' file.txt
 
 ---
 
-sed script file1 file2...
+sed script file1 file2...  
 sed -e 'script1' -e 'script2'... file1 file2...
 
 - -e
@@ -1706,9 +1731,8 @@ functions
 
 #### make csv from text
 
-sed -nE 's/--(re1)--(re2)--(re3)--/\1,\2,\3/p' file.txt > file.csv
-ex.
-
+sed -nE 's/--(re1)--(re2)--(re3)--/\1,\2,\3/p' file.txt > file.csv  
+ex.  
 - delim : space, 3 columns
 
 ```
@@ -1761,6 +1785,10 @@ sed -E ':a; s/^([^ ]+) +([^ ]+)/\1,\2/; ta' file.txt > file.csv
 
 ---
 
+neofetch
+
+---
+
 df
 
 - -h
@@ -1805,7 +1833,7 @@ ps
 
 ---
 
-kill PID
+kill PID  
 pkill process-name
 
 - -9
@@ -1821,8 +1849,18 @@ jobs
 
 ---
 
-sleep 1
-sleep 0.1
+command0 &
+
+fg  
+fg job_number
+
+bg  
+bg job_number
+
+---
+
+sleep 1  
+sleep 0.1  
 sleep 1d 1h 1m 1s
 
 ---
@@ -1831,7 +1869,7 @@ wait PID
 
 ---
 
-nohup command0/script.sh &
+nohup command0/script.sh &  
 nohup command0/script.sh > file.txt 2>&1 &
 
 ---
@@ -1863,11 +1901,11 @@ lsof
 
 ---
 
-time script.sh
-time bash -c '--script--'
+time script.sh  
+time bash -c '--script--'  
 time { --script--; }
 
-/usr/bin/time
+/usr/bin/time  
 /usr/bin/time -v
 
 ---
@@ -1878,7 +1916,7 @@ watch -n sec command0
 
 pv file0 > file1
 
-command1 | pv > /dev/null
+command1 | pv > /dev/null  
 command1 | pv | command2
 
 - -p
@@ -1904,8 +1942,8 @@ sudo iotop
 
 ---
 
-systemctl status service(back groud job)
-systemctl start/stop/restart service
+systemctl status service(back groud job)  
+systemctl start/stop/restart service  
 systemctl enable service
 
 ---
@@ -1925,7 +1963,7 @@ ping url
 - -i
 - -W
 
-run if connection is available
+run if connection is available  
 (ping -c 1 -W 1 url > /dev/null 2>&1 && command1) || command2
 
 ---
@@ -1948,12 +1986,17 @@ curl url
 
 ---
 
+https://github.com/sivel/speedtest-cli  
+curl -s speedtest-cli https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 -
+
+---
+
 ftp
 
 prepare FTP server
 
 ```
-sudo apt install vsftpd
+sudo apt install vsftpd  
 sudo nano /etc/vsftpd.conf
 ```
 
@@ -1968,7 +2011,7 @@ sudo nano /etc/vsftpd.conf
 ```
 sudo adduser ftpuser
 
-sudo systemctl restart vsftpd
+sudo systemctl restart vsftpd  
 sudo systemctl enable vsftpd
 ```
 
@@ -1991,10 +2034,10 @@ ftp> bye
 prepare SFTP server
 
 ```
-sudo apt install vsftpd
+sudo apt install vsftpd  
 sudo nano /etc/vsftpd.conf
 ```
-
+```
 listen=YES
 listen_ipv6=NO
 anonymous_enable=NO
@@ -2009,7 +2052,7 @@ force_local_logins_ssl=YES
 rsa_cert_file=/etc/ssl/certs/vsftpd.pem
 rsa_private_key_file=/etc/ssl/private/vsftpd.key
 ssl_ciphers=HIGH
-
+```
 ```
 sudo mkdir -p /etc/ssl/private
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -2156,12 +2199,12 @@ xmllint --xpath 'declare namespace ns="http://example.com"; //ns:item' file.xml
 
 xmllint --xpath '//\*[local-name()="item"]' file.xml
 ```
-
+```
 use alias
 .bashrc
 alias xpath=xmllint --xpath
 source ~/.bashrc
-
+```
 xpath
 | 構文 | 意味 |
 | ------- | --------------- |
@@ -2367,3 +2410,14 @@ open-jtalk
 | `tmux kill-server`          | tmux 全体を終了           |
 | `tmux source ~/.tmux.conf`  | .tmux.conf の再読込       |
 | `tmux -V`                   | バージョン確認            |
+
+
+
+## etc
+
+weather
+
+curl wttr.in
+
+---
+
