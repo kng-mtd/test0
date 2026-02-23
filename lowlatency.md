@@ -2605,3 +2605,355 @@ writer 1 (lmdb)
 - 高頻度 write（数万/s を複数プロセス）
 
 ---
+
+### A.MQTT 側で subscriber を分ける方式
+
+```
+MQTT broker
+ ├─ sub sensors/fast/#  → NATS → LMDB
+ ├─ sub sensors/slow/#  → NATS → SQLite
+ ├─ sub sensors/log/#   → NATS → …
+```
+
+### B.MQTT は1 subscriber、NATS で分ける方式
+
+```
+MQTT broker
+ └─ sub sensors/#
+       ↓
+     NATS (topic→subject)
+       ├─ sub mqtt.sensors.fast.> → LMDB
+       ├─ sub mqtt.sensors.slow.> → SQLite
+       └─ sub mqtt.sensors.log.>  → …
+```
+
+| 観点            | A: MQTT分岐 | B: NATS分岐     |
+| --------------- | ----------- | --------------- |
+| 構造の美しさ    | △           | **◎**           |
+| 拡張性          | △           | **◎**           |
+| 再配線コスト    | 高          | **低**          |
+| Fan-out         | MQTT依存    | **NATS得意**    |
+| 再処理 / replay | ほぼ不可    | **JetStream可** |
+| 運用            | 複雑        | **単純**        |
+| 将来変更        | 壊れやすい  | **強い**        |
+
+MQTT は「末端プロトコル」
+
+- IoT / edge 向け
+- Topic はあるが **fan-out・再配線が弱い**
+- subscriber 増えるほど broker 負荷増
+
+NATS は「分配・配線のためのミドル層」
+
+- subject wildcard
+- fan-out が O(1) 感覚
+- subscriber 増やしても publisher 側変更ゼロ
+
+```text
+mqtt.sensors.fast.>   → LMDB
+mqtt.sensors.slow.>   → SQLite
+mqtt.sensors.>        → monitor
+```
+
+LMDB / SQLite は「処理特性が真逆」
+
+| DB     | 向き                  |
+| ------ | --------------------- |
+| LMDB   | burst / cache / queue |
+| SQLite | durable / SQL / join  |
+
+→ **処理要件で subscriber を分けたい**
+→ MQTT 側で分けると設計が歪む
+
+再処理・実験ができる
+
+B の場合
+
+- 新しい subscriber を **追加するだけ**
+- 過去データも JetStream で replay 可能
+
+A の場合
+
+- MQTT subscriber を追加
+- broker 設定変更
+- 再送不可
+
+MQTT subscriber を増やすと
+
+- broker が全 subscriber に copy
+- QoS 管理が増える
+- retain 処理が重くなる
+
+NATS subscriber を増やすと
+
+- fan-out が軽い
+- QoS 概念なし（速い）
+- subject match が超軽量
+
+```text
+MQTT
+  └─ single subscriber
+       ↓
+   NATS (topic → subject)
+       ├─ LMDB writer (fast path)
+       ├─ SQLite writer (slow path)
+       ├─ Monitor / metrics
+       └─ Debug / replay
+```
+
+---
+
+なぜ MQTT はエッジ止まりがよいか
+
+MQTT は「軽さ特化」
+
+- 小さなメモリ
+- 低帯域
+- 不安定ネットワーク
+
+MQTT を中枢にすると苦しくなる
+
+| 問題     | 実際に起きること                  |
+| -------- | --------------------------------- |
+| Fan-out  | subscriber 増えると broker が重い |
+| 再処理   | replay ができない                 |
+| 配線変更 | broker 設定が必要                 |
+| 分岐     | topic 設計が複雑化                |
+| 観測性   | メトリクス弱い                    |
+
+NATS は配線のためのミドル層
+
+- fan-out が本業
+- subject wildcard が強力
+- subscriber 追加が無コスト
+- 後段を自由に組み替え可能
+
+再処理・耐久性を後付けできる
+
+- JetStream を足すだけ
+- replay / backfill / audit が可能
+
+MQTT 単体ではほぼ不可能。
+
+例外（MQTT を残すべきケース）
+
+| ケース          | 判断     |
+| --------------- | -------- |
+| device ↔ device | MQTT     |
+| retain が本質   | MQTT     |
+| 超低遅延 QoS    | MQTT     |
+| 超小規模        | MQTT単体 |
+
+mqtt_nats_bridge.py
+
+```
+import asyncio
+import signal
+from nats.aio.client import Client as NATS
+import paho.mqtt.client as mqtt
+
+MQTT_BROKER = 'localhost'
+MQTT_TOPIC  = 'sensors/#'
+NATS_URL    = 'nats://localhost:4222'
+
+loop = asyncio.get_event_loop()
+nc = NATS()
+
+def on_message(client, userdata, msg):
+    subj = 'mqtt.' + msg.topic.replace('/', '.')
+    loop.create_task(nc.publish(subj, msg.payload))
+
+async def main():
+    await nc.connect(servers=[NATS_URL])
+
+    m = mqtt.Client(client_id='mqtt-nats-bridge')
+    m.on_message = on_message
+    m.connect(MQTT_BROKER, 1883)
+    m.subscribe(MQTT_TOPIC, qos=0)
+    m.loop_start()
+
+    stop = asyncio.Future()
+    for s in (signal.SIGINT, signal.SIGTERM):
+        loop.add_signal_handler(s, stop.set_result, None)
+    await stop
+
+    m.loop_stop()
+    await nc.close()
+
+loop.run_until_complete(main())
+```
+
+# MQTT and lua
+
+## Lua と MQTT の関係
+
+- Lua は **軽量・組み込み向け**
+- MQTT は **低リソース端末向け**
+- **相性は非常に良い**（ゲートウェイ / edge で定番）
+
+Lua で MQTT subscribe（最小）
+
+sudo apt install lua5.1 luarocks
+luarocks install lua-mqtt
+
+最小 subscriber
+
+sub.lua
+
+```lua
+local mqtt = require('mqtt')
+
+local client = mqtt.client{
+  uri = 'mqtt://localhost',
+  id  = 'lua-subscriber'
+}
+
+client:on{
+  connect = function()
+    print('connected')
+    client:subscribe{ topic = 'sensors/#' }
+  end,
+
+  message = function(pkt)
+    print(pkt.topic, pkt.payload)
+  end
+}
+
+client:connect()
+client:loop_forever()
+```
+
+lua sub.lua
+
+mosquitto_pub -t test/topic0 -m msg0
+
+Lua で MQTT publish
+
+pub.lua
+
+```lua
+local mqtt = require('mqtt')
+
+local client = mqtt.client{
+  uri = 'mqtt://localhost',
+  id  = 'lua-publisher'
+}
+
+client:connect()
+client:publish{
+  topic   = 'test/topic0',
+  payload = 'msg0'
+}
+client:disconnect()
+```
+
+lua pub.lua
+
+Lua × MQTT が向いている理由
+
+| 項目     | 評価      |
+| -------- | --------- |
+| メモリ   | ◎（数MB） |
+| CPU      | ◎         |
+| 起動速度 | ◎         |
+| 安定性   | ○         |
+| 実装量   | 少ない    |
+
+---
+
+### lua-mqtt（純 Lua / libuv ベース）
+
+- 非同期
+- reconnect 対応
+- 長時間常駐向き
+- API が素直
+
+luarocks install mqtt
+
+クライアント生成
+
+```lua
+local mqtt = require('mqtt')
+
+local client = mqtt.client{
+  uri      = 'mqtt://localhost',
+  id       = 'bridge-1',
+  clean    = true,
+  keepalive = 60
+}
+```
+
+イベント API
+
+lua-mqtt は **イベント駆動**
+
+```lua
+client:on{
+  connect = function()
+    print('connected')
+  end,
+
+  message = function(pkt)
+    print(pkt.topic, pkt.payload)
+  end,
+
+  error = function(err)
+    print('error', err)
+  end,
+
+  close = function()
+    print('connection closed')
+  end
+}
+```
+
+pkt.topic -- string
+pkt.payload -- string
+pkt.qos -- 0/1/2
+pkt.retain -- boolean
+
+subscribe / publish
+
+```lua
+client:subscribe{
+  topic = 'test',
+  qos   = 0
+}
+
+client:publish{
+  topic   = 'test',
+  payload = 'msg0',
+  qos     = 0,
+  retain  = false
+}
+```
+
+実行ループ（必須）
+
+```lua
+client:connect()
+mqtt.run()
+```
+
+### MQTT → topic 変換 → 処理
+
+```lua
+local mqtt = require('mqtt')
+
+local c = mqtt.client{ uri = 'mqtt://localhost' }
+
+c:on{
+  connect = function()
+    c:subscribe{ topic = 'test' }
+  end,
+
+  message = function(pkt)
+    local subject = 'mqtt.' .. pkt.topic:gsub('/', '.')
+    local msg = pkt.payload
+    print(subject, msg)
+  end
+}
+
+c:connect()
+mqtt.run()
+```
