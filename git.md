@@ -1,257 +1,665 @@
-\# git
+以下のように整理しました（構造・表現・スペル・コマンドの整理をしています）：
 
-> sudo apt install git-all
+---
 
-> git --version
+# Git 基本メモ（整理版）
 
-\## make working directory at local/remote
+## インストールと確認
 
-> mkdir work
-> cd work
+```bash
+sudo apt install git-all
+git --version
+```
 
-\## make stage, repository on working directory
+---
 
-> git init
-> ls -a
+## リポジトリの作成
 
-.git file is database for git
-'worktree', 'stage', 'repository' on working directory
+```bash
+mkdir work
+cd work
+git init
+ls -a
+```
 
-\## make and modify file on working directory 'worktree'
+- `.git` ディレクトリがGitのデータベース
+- 構成：
+  - worktree（作業ディレクトリ）
+  - stage（インデックス）
+  - repository（履歴）
 
-> nano readme.txt
+---
 
-write and save contents
-> git status
+## ファイル作成・状態確認
 
-\## add file to stage
+```bash
+nano readme.txt
+git status
+```
 
-> git add readme.txt
-> git add .
+---
 
-add all modified files
+## ステージング
 
-> git status
+```bash
+git add readme.txt
+git add .
+```
 
-\## commit file from stage to repository with a message
+---
 
-> git config --global core.editor 'nano'
-or
-> export EDITOR=/usr/bin/nano
+## コミット
 
-> git commit
+```bash
+git config --global core.editor 'nano'
+# または
+export EDITOR=/usr/bin/nano
 
-write message at 1st line
-write about change as message
-or
-> git commit -m 'message'
+git commit
+# または
+git commit -m 'message'
+```
 
-> git status
+---
 
-\## see log
-> git log
+## ログ確認
 
-\## see just commit message in log
-> git log --oneline
+```bash
+git log
+git log --oneline
+git log -1
+```
 
-\## see last log
-> git log -1
+---
 
-\## modify file, add new file on worktree
+## ファイル変更と追加
 
-> nano readme.txt
-> git status
+```bash
+nano readme.txt
+nano readme2.txt
+git status
 
-> nano readme2.txt
-> git status
+git add .
+git status
+```
 
-\## add all files to stage
+---
 
-> git add .
-> git status
+## コミット（変更＋追加）
 
-\## commit modified file from woretree,
-new file from stage to repository with a message
+```bash
+git commit -a
+git commit -a -m 'message'
+```
 
-> git commit -a
-or
-> git commit -a -m 'massage'
-> git status
->git log
+---
 
-see change history
+## 差分確認
 
-\## see difference between last commit file and stage file
+### ステージ vs 最終コミット
 
-> nano readme.txt
-> git add
-> git commit
-> nano readme.txt
+```bash
+git diff --staged
+```
 
-modify file
-> git add .
-> git status
-> git diff --staged
+### 作業ディレクトリ vs 最終コミット
 
-\## see difference between last commit file and worktree file
+```bash
+git diff
+```
 
-> nano readme.txt
-> git add
-> git commit
-> nano readme.txt
+### コミット同士
 
-modify file
-> git status
-> git diff
+```bash
+git diff commitA commitB
+git difftool commitA commitB
 
-\## see diffrence between commits
+git diff HEAD~1 HEAD
+git difftool HEAD~1 HEAD
+```
 
-> git log --oneline
-> git diff commitA commitB
-> git difftool commitA commitB
+---
 
-> git diff HEAD\~1 HEAD
-> git difftool HEAD\~1 HEAD
+## 変更の取り消し
 
-\## revert stage file with last commit file
+### ステージを戻す
 
-> git restore -staged readme.txt
-> git status
+```bash
+git restore --staged readme.txt
+```
 
-\## revert worktree file with last commit file
+### 作業ディレクトリを戻す
 
-> git restore readme.txt
-> git status
+```bash
+git restore readme.txt
+```
 
-\## branch for bugfix, development of main branch
-branch is label, its add by last commit
+---
 
-\## see exist branch at now
+## ブランチ操作
 
-> git branch
+### 確認
 
-myself is in HEAD branch at now
+```bash
+git branch
+```
 
-\## add sub branch, and switch branch, like using other worktree, and modify file and commit
+### 作成・切替
 
-> git branch dev1
-> git branch
-> git switch dev1
-> git branch
-or
-> git branch -c dev1
-> git branch
+```bash
+git branch dev1
+git switch dev1
 
-\## modify file in sub branch worktree
-> git commit -a -m 'message'
+# 同時に作成＋切替
+git switch -c dev1
+```
 
-\## move to main branch
+---
 
-> git switch main
-> git branch
+## マージ
 
-\## copy branch to main branch and delete branch
+```bash
+git switch main
+git merge dev1
+git branch -d dev1
+```
 
-> git merge dev1
-> git log
-> git branch -d dev1
+---
 
-\## merge occur confilct if it modify file and commit in main branch worktree after making sub branch
+## コンフリクト対応
 
-\## see conflict in merging and solve it
+```bash
+git status
+```
 
-> git status
+コンフリクト内容：
 
-see conflict file (unmerged paths)
-> git checkout main
-see conflict file, find
-> <<<<<HEAD contents
-> =====
-> sub branch contents>>>>>
-> correct code and delete <<,==,>>
-> git add readme.txt
-> git commit
-> git log
+```
+<<<<<<< HEAD
+mainの内容
+=======
+devの内容
+>>>>>>> dev
+```
 
-\## multi user share direcory of host or localhost as remote repository
+対応：
 
-on host (path: (host or localhost)/tmp)
-> mkdir rmt\_work
-> cd rmt\_work
-> git init
+- 手動で修正
+- マーカー削除
 
-\## integrate remote repositry to local repository,
+```bash
+git add readme.txt
+git commit
+```
 
-> mkdir work1
-> cd work1
-> git clone /tmp/rmt\_work.git/
-> ls
-> cd rmt\_work
-> ls -a
-> git status
-> git log
-> git remote -v
+---
 
-\## after cloning get other users commit to remote repository
+## ローカルリモート（共有リポジトリ）
 
-> git pull /tmp/rmt\_work.git/
-> git log
+### リモート作成（ホスト側）
 
-\## modify worktree file, and commit to local repository
+```bash
+mkdir /tmp/rmt_work
+cd /tmp/rmt_work
+git init --bare
+```
 
-modify worktree file
-> git commit -a -m 'message'
+---
 
-\## copy local repository to remote repository (origin)
-> git push origin main
+### クローン
 
-\## see branch local and remote
-> git branch -a
+```bash
+mkdir work1
+cd work1
+git clone /tmp/rmt_work.git
+```
 
-\## merge remote branch, remote name 'origin'
-> git merge origin/main
+---
 
-\## use git-hub
+### 取得
 
-register user name and email on git-hub web site
+```bash
+git pull /tmp/rmt_work.git
+```
 
-\## initialize user for using git-hub
-> git config --global user.name 'km'
-> git config --global user.email muchagorou112@gmail.com
-> git config --list
+---
 
-on git-hub web site, make repository with the same name as local repository
+### プッシュ
 
-\## add remote repository to local
-git add origin git-hub repository URL(https://---.git)
+```bash
+git push origin main
+```
 
-\## pull repository files to local repository and worktree
-> git pull origin main
+---
 
-update local repository as remote repository (sharing contents with members)
+### ブランチ確認
 
-\## pull repository files to local just repository
-> git fetch origin
+```bash
+git branch -a
+```
 
-\## make sub branch for my working
-> git switch -c dev1
+---
 
-modify files
+### リモートマージ
 
-\## add and commit to sub branch
-> git add .
-> git commit -m 'message'
+```bash
+git merge origin/main
+```
 
-\## push sub branch files to remote repository
-> git push origin dev1
+---
 
-on git-hub web site
+## GitHub 利用
 
-do pull request, compare main and sub branch
-make request, write title and comment about change
-choose reviewer
+### 初期設定
 
-after review
+```bash
+git config --global user.name 'km'
+git config --global user.email 'your@email.com'
+git config --list
+```
 
-merge to main and delete sub branch
+---
 
+### リモート追加
+
+```bash
+git remote add origin https://xxx.git
+```
+
+---
+
+### 取得
+
+```bash
+git pull origin main
+git fetch origin
+```
+
+---
+
+### ブランチ作業
+
+```bash
+git switch -c dev1
+git add .
+git commit -m 'message'
+git push origin dev1
+```
+
+---
+
+## Pull Request（GitHub上）
+
+1. ブランチをpush
+2. GitHubでPR作成
+3. レビュー依頼
+4. マージ
+5. ブランチ削除
+
+---
+
+では「**Hugo → GitHub Pages 自動デプロイ**」を最短構成でまとめます。
+（pushするだけでサイト更新される状態まで）
+
+---
+
+# 全体像（これだけ理解すればOK）
+
+```text
+Hugoで生成 → GitHubにpush → 自動ビルド → 公開
+```
+
+---
+
+# ① Hugoサイト作成
+
+```bash
+hugo new site mysite
+cd mysite
+```
+
+---
+
+# ② テーマ追加（例：PaperMod）
+
+```bash
+git init
+git submodule add https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
+```
+
+`hugo.toml` を編集：
+
+```toml
+baseURL = 'https://ユーザー名.github.io/mysite/'
+languageCode = 'en-us'
+title = 'My Site'
+theme = 'PaperMod'
+```
+
+---
+
+# ③ 記事作成
+
+```bash
+hugo new posts/first.md
+```
+
+編集：
+
+```bash
+nano content/posts/first.md
+```
+
+```md
++++
+title = 'First Post'
+date = 2026-01-01
++++
+
+Hello Hugo
+```
+
+---
+
+# ④ ローカル確認
+
+```bash
+hugo server
+```
+
+👉 [http://localhost:1313](http://localhost:1313) で確認
+
+---
+
+# ⑤ GitHubリポジトリ作成
+
+GitHub で：
+
+- リポジトリ名：`mysite`
+- Public
+- READMEなし
+
+---
+
+# ⑥ Git初期化＆push
+
+```bash
+git add .
+git commit -m 'init'
+git branch -M main
+git remote add origin https://github.com/ユーザー名/mysite.git
+git push -u origin main
+```
+
+---
+
+# ⑦ 自動デプロイ設定（これが重要）
+
+`.github/workflows/hugo.yml` を作る：
+
+```bash
+mkdir -p .github/workflows
+nano .github/workflows/hugo.yml
+```
+
+中身：
+
+```yaml
+name: Deploy Hugo site
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: 'latest'
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+```
+
+---
+
+# ⑧ push（これで自動化スタート）
+
+```bash
+git add .
+git commit -m 'add workflow'
+git push
+```
+
+---
+
+# ⑨ GitHub Pages設定
+
+GitHubの：
+
+- Settings → Pages
+- Source：
+  - **Deploy from a branch**
+  - Branch：`gh-pages`
+
+---
+
+# ⑩ 公開URL
+
+```text
+https://ユーザー名.github.io/mysite/
+```
+
+---
+
+# 更新方法（今後はこれだけ）
+
+```bash
+hugo new posts/xxx.md
+# 編集
+git add .
+git commit -m 'post'
+git push
+```
+
+👉 自動でビルド＆公開
+
+---
+
+# よくあるハマり
+
+### submodule忘れ
+
+```bash
+git submodule update --init --recursive
+```
+
+---
+
+### baseURLミス
+
+```toml
+baseURL = 'https://ユーザー名.github.io/mysite/'
+```
+
+---
+
+### gh-pages未設定
+
+→ 表示されない
+
+---
+
+では「**Hugo → Cloudflare Pages（自動デプロイ）**」を最短でいきます。
+（GitHub連携して push だけで公開される構成）
+
+---
+
+# 全体像
+
+```text
+Hugo → GitHub → Cloudflare Pages → 自動公開
+```
+
+👉 GitHub Pagesより速くて設定もシンプル
+
+---
+
+# ① Hugoサイト作成（済んでいればOK）
+
+```bash
+hugo new site mysite
+cd mysite
+git init
+```
+
+テーマ（例）：
+
+```bash
+git submodule add https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
+```
+
+`hugo.toml`：
+
+```toml
+baseURL = '/'
+title = 'My Site'
+theme = 'PaperMod'
+```
+
+👉 Cloudflareでは `baseURL='/'` がポイント
+
+---
+
+# ② GitHubにpush
+
+GitHub にリポジトリ作成して：
+
+```bash
+git add .
+git commit -m 'init'
+git branch -M main
+git remote add origin https://github.com/ユーザー名/mysite.git
+git push -u origin main
+```
+
+---
+
+# ③ Cloudflare Pages設定
+
+Cloudflare にログイン
+
+1. 「Pages」へ
+2. 「Create a project」
+3. 「Connect to Git」
+
+👉 GitHubと連携してリポジトリ選択
+
+---
+
+# ④ ビルド設定（重要）
+
+設定はこれだけ：
+
+```text
+Framework preset: Hugo
+Build command: hugo
+Build output directory: public
+```
+
+---
+
+# ⑤ デプロイ
+
+「Save and Deploy」
+
+👉 数十秒で公開される
+
+---
+
+# ⑥ 公開URL
+
+```text
+https://xxxx.pages.dev
+```
+
+---
+
+# 更新方法（今後）
+
+```bash
+git add .
+git commit -m 'update'
+git push
+```
+
+👉 自動デプロイされる
+
+---
+
+# カスタムドメイン（任意）
+
+Cloudflare Pagesで：
+
+- 「Custom domains」
+- ドメイン追加
+
+👉 DNSも自動設定される（Cloudflare使ってれば特に楽）
+
+---
+
+# よくあるハマり
+
+### baseURLミス
+
+```toml
+baseURL = '/'
+```
+
+---
+
+### テーマ読み込めない
+
+```bash
+git submodule update --init --recursive
+```
+
+---
+
+### ビルド失敗
+
+→ Hugo version指定（必要な場合）
+
+```text
+Environment variable:
+HUGO_VERSION = 0.1xx.x
+```
+
+---
+
+# GitHub Pagesとの違い（重要）
+
+| 項目       | Cloudflare Pages | GitHub Pages |
+| ---------- | ---------------- | ------------ |
+| 速度       | 速い             | 普通         |
+| 設定       | 簡単             | やや面倒     |
+| 自動ビルド | 標準             | Actions必要  |
+| CDN        | 強い             | 普通         |
+
+---
