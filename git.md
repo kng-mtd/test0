@@ -1,171 +1,170 @@
-git
+\# git
 
-sudo apt install git-all
+> sudo apt install git-all
 
-git --version
+> git --version
 
-#make working directory at local/remote
+\## make working directory at local/remote
 
-mkdir work
-cd work
+> mkdir work
+> cd work
 
-#make stage, repository on working directory
+\## make stage, repository on working directory
 
-git init
-ls -a
+> git init
+> ls -a
 
-> .git file is database for git
-> 'worktree', 'stage', 'repository' on working directory
+.git file is database for git
+'worktree', 'stage', 'repository' on working directory
 
-#make and modify file on working directory 'worktree'
+\## make and modify file on working directory 'worktree'
 
-nano readme.txt
+> nano readme.txt
 
-> write and save contents
+write and save contents
 > git status
 
-#add file to stage
+\## add file to stage
 
-git add readme.txt
-git add .
+> git add readme.txt
+> git add .
 
-> add all modified files
+add all modified files
 
-git status
+> git status
 
-#commit file from stage to repository with a message
+\## commit file from stage to repository with a message
 
-git config --global core.editor 'nano'
+> git config --global core.editor 'nano'
 or
-export EDITOR=/usr/bin/nano
+> export EDITOR=/usr/bin/nano
 
-git commit
+> git commit
 
-> write message at 1st line
-> write about change as message
-> or
+write message at 1st line
+write about change as message
+or
 > git commit -m 'message'
 
-git status
+> git status
 
-#see log
-git log
+\## see log
+> git log
 
-#see just commit message in log
-git log --oneline
+\## see just commit message in log
+> git log --oneline
 
-#see last log
-git log -1
+\## see last log
+> git log -1
 
-#modify file, add new file on worktree
+\## modify file, add new file on worktree
 
-nano readme.txt
-git status
+> nano readme.txt
+> git status
 
-nano readme2.txt
-git status
+> nano readme2.txt
+> git status
 
-#add all files to stage
+\## add all files to stage
 
-git add .
-git status
+> git add .
+> git status
 
-#commit modified file from woretree,
+\## commit modified file from woretree,
 new file from stage to repository with a message
 
-git commit -a
+> git commit -a
 or
-git commit -a -m 'massage'
-git status
-git log
+> git commit -a -m 'massage'
+> git status
+>git log
 
-> see change history
+see change history
 
-#see difference between last commit file and stage file
+\## see difference between last commit file and stage file
 
-nano readme.txt
-git add
-git commit
-nano readme.txt
+> nano readme.txt
+> git add
+> git commit
+> nano readme.txt
 
-> modify file
+modify file
 > git add .
 > git status
 > git diff --staged
 
-#see difference between last commit file and worktree file
+\## see difference between last commit file and worktree file
 
-nano readme.txt
-git add
-git commit
-nano readme.txt
+> nano readme.txt
+> git add
+> git commit
+> nano readme.txt
 
-> modify file
+modify file
 > git status
 > git diff
 
-#see diffrence between commits
+\## see diffrence between commits
 
-git log --oneline
-git diff commitA commitB
-git difftool commitA commitB
+> git log --oneline
+> git diff commitA commitB
+> git difftool commitA commitB
 
-git diff HEAD~1 HEAD
-git difftool HEAD~1 HEAD
+> git diff HEAD\~1 HEAD
+> git difftool HEAD\~1 HEAD
 
-#revert stage file with last commit file
+\## revert stage file with last commit file
 
-git restore -staged readme.txt
-git status
+> git restore -staged readme.txt
+> git status
 
-#revert worktree file with last commit file
+\## revert worktree file with last commit file
 
-git restore readme.txt
-git status
+> git restore readme.txt
+> git status
 
-#branch for bugfix, development of main branch
+\## branch for bugfix, development of main branch
 branch is label, its add by last commit
 
-#see exist branch at now
+\## see exist branch at now
 
-git branch
+> git branch
 
-> myself is in HEAD branch at now
+myself is in HEAD branch at now
 
-#add sub branch, and switch branch, like using other worktree,
-#and modify file and commit
+\## add sub branch, and switch branch, like using other worktree, and modify file and commit
 
-git branch dev1
-git branch
-git switch dev1
-git branch
+> git branch dev1
+> git branch
+> git switch dev1
+> git branch
 or
-git branch -c dev1
-git branch
+> git branch -c dev1
+> git branch
 
-#modify file in sub branch worktree
-git commit -a -m 'message'
+\## modify file in sub branch worktree
+> git commit -a -m 'message'
 
-#move to main branch
+\## move to main branch
 
-git switch main
-git branch
+> git switch main
+> git branch
 
-#copy branch to main branch and delete branch
+\## copy branch to main branch and delete branch
 
-git merge dev1
-git log
-git branch -d dev1
+> git merge dev1
+> git log
+> git branch -d dev1
 
-#merge occur confilct if it modify file and commit in main branch worktree after making sub branch
+\## merge occur confilct if it modify file and commit in main branch worktree after making sub branch
 
-#see conflict in merging and solve it
+\## see conflict in merging and solve it
 
-git status
+> git status
 
-> see conflict file (unmerged paths)
-> git checkput main
-> see conflict file, find
+see conflict file (unmerged paths)
+> git checkout main
+see conflict file, find
 > <<<<<HEAD contents
 > =====
 > sub branch contents>>>>>
@@ -174,85 +173,85 @@ git status
 > git commit
 > git log
 
-#multi user share direcory of host or localhost as remote repository
+\## multi user share direcory of host or localhost as remote repository
 
-> on host (path: (host or localhost)/tmp)
-> mkdir rmt_work
-> cd rmt_work
+on host (path: (host or localhost)/tmp)
+> mkdir rmt\_work
+> cd rmt\_work
 > git init
 
-#integrate remote repositry to local repository,
+\## integrate remote repositry to local repository,
 
-mkdir work1
-cd work1
-git clone /tmp/rmt_work.git/
-ls
-cd rmt_work
-ls -a
-git status
-git log
-git remote -v
+> mkdir work1
+> cd work1
+> git clone /tmp/rmt\_work.git/
+> ls
+> cd rmt\_work
+> ls -a
+> git status
+> git log
+> git remote -v
 
-#after cloning get other users commit to remote repository
+\## after cloning get other users commit to remote repository
 
-git pull /tmp/rmt_work.git/
-git log
+> git pull /tmp/rmt\_work.git/
+> git log
 
-#modify worktree file, and commit to local repository
+\## modify worktree file, and commit to local repository
 
-> modify worktree file
+modify worktree file
 > git commit -a -m 'message'
 
-#copy local repository to remote repository (origin)
-git push origin main
+\## copy local repository to remote repository (origin)
+> git push origin main
 
-#see branch local and remote
-git branch -a
+\## see branch local and remote
+> git branch -a
 
-#merge remote branch, remote name 'origin'
-git merge origin/main
+\## merge remote branch, remote name 'origin'
+> git merge origin/main
 
-#use git-hub
+\## use git-hub
 
 register user name and email on git-hub web site
 
-#initialize user for using git-hub
-git config --global user.name 'km'
-git config --global user.email muchagorou112@gmail.com
-git config --list
+\## initialize user for using git-hub
+> git config --global user.name 'km'
+> git config --global user.email muchagorou112@gmail.com
+> git config --list
 
 on git-hub web site, make repository with the same name as local repository
 
-#add remote repository to local
+\## add remote repository to local
 git add origin git-hub repository URL(https://---.git)
 
-#pull repository files to local repository and worktree
-git pull origin main
+\## pull repository files to local repository and worktree
+> git pull origin main
 
-> update local repository as remote repository (sharing contents with members)
+update local repository as remote repository (sharing contents with members)
 
-#pull repository files to l
-ocal just repository
-git fetch origin
+\## pull repository files to local just repository
+> git fetch origin
 
-#make sub branch for my working
-git switch -c dev1
+\## make sub branch for my working
+> git switch -c dev1
 
 modify files
 
-#add and commit to sub branch
-git add .
-git commit -m 'message'
+\## add and commit to sub branch
+> git add .
+> git commit -m 'message'
 
-#push sub branch files to remote repository
-git push origin dev1
+\## push sub branch files to remote repository
+> git push origin dev1
 
 on git-hub web site
 
-do pull reqouest, compare main and sub branch
+do pull request, compare main and sub branch
 make request, write title and comment about change
 choose reviewer
 
 after review
 
 merge to main and delete sub branch
+
