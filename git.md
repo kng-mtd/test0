@@ -1,7 +1,3 @@
-以下のように整理しました（構造・表現・スペル・コマンドの整理をしています）：
-
----
-
 # Git 基本メモ（整理版）
 
 ## インストールと確認
@@ -298,7 +294,7 @@ git push origin dev1
 
 ---
 
-では「**Hugo → GitHub Pages 自動デプロイ**」を最短構成でまとめます。
+「**Hugo → GitHub Pages 自動デプロイ**」を最短構成でまとめます。
 （pushするだけでサイト更新される状態まで）
 
 ---
@@ -506,7 +502,7 @@ baseURL = 'https://ユーザー名.github.io/mysite/'
 
 ---
 
-では「**Hugo → Cloudflare Pages（自動デプロイ）**」を最短でいきます。
+「**Hugo → Cloudflare Pages（自動デプロイ）**」を最短でいきます。
 （GitHub連携して push だけで公開される構成）
 
 ---
