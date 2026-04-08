@@ -2345,7 +2345,22 @@ class Solution {
 https://neetcode.io/problems/minimum-recolors-to-get-k-consecutive-black-blocks/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} blocks
+   * @param {number} k
+   * @return {number}
+   */
+  minimumRecolors(blocks, k) {
+    let a = blocks.slice(0, k).replaceAll('B', '').length;
+    let a0 = a;
+    for (let i = k; i < blocks.length; i++) {
+      a = a - (blocks[i - k] == 'W' ? 1 : 0) + (blocks[i] == 'W' ? 1 : 0);
+      a0 = a < a0 ? a : a0;
+    }
+    return a0;
+  }
+}
 ```
 
 # Minimum Difference Between Highest And Lowest of K Scores
@@ -2353,7 +2368,22 @@ https://neetcode.io/problems/minimum-recolors-to-get-k-consecutive-black-blocks/
 https://neetcode.io/problems/minimum-difference-between-highest-and-lowest-of-k-scores/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  minimumDifference(nums, k) {
+    nums.sort((x1, x2) => x1 - x2);
+    let a = Infinity;
+    k--;
+    for (let i = k; i < nums.length; i++) {
+      a = nums[i] - nums[i - k] < a ? nums[i] - nums[i - k] : a;
+    }
+    return a;
+  }
+}
 ```
 
 # Defuse the Bomb
@@ -2405,4 +2435,412 @@ const decrypt = (code, k) => {
   }
   return a;
 };
+```
+
+# Crawler Log Folder
+
+https://neetcode.io/problems/crawler-log-folder/question?
+
+```js
+
+```
+
+# Baseball Game
+
+https://neetcode.io/problems/baseball-game/question
+
+```js
+class Solution {
+  /**
+   * @param {string[]} operations
+   * @return {number}
+   */
+  calPoints(operations) {
+    let a = [];
+    for (let i = 0; i < operations.length; i++) {
+      const b = operations[i];
+      const c = a.length;
+      if (b == '+') {
+        a.push(a[c - 1] * 1 + a[c - 2] * 1);
+      } else if (b == 'D') {
+        a.push(a[c - 1] * 2);
+      } else if (b == 'C') {
+        a.pop();
+      } else {
+        a.push(+b);
+      }
+    }
+    return a.reduce((x1, x2) => x1 + x2, 0);
+  }
+}
+```
+
+# Valid Parentheses
+
+https://neetcode.io/problems/validate-parentheses/question
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {boolean}
+   */
+  isValid(s) {
+    let n = s.length;
+    while (true) {
+      const s1 = s.replace('()', '').replace('[]', '').replace('{}', '');
+      const n1 = s1.length;
+      if (n1 == 0) return true;
+      else if (n == n1) return false;
+      s = s1;
+      n = n1;
+    }
+  }
+}
+```
+
+````js
+class Solution {
+    /**
+     * @param {string} s
+     * @return {boolean}
+     */
+    isValid(s) {
+        let a=[];
+        a.push(s[0]);
+        for(let i=1;i<s.length;i++){
+            const b=s[i],c=a[a.length-1];
+            if(b==')'){
+                if(c=='(') a.pop();
+                else return false;
+            }else if(b==']'){
+                if(c=='[') a.pop();
+                else return false;
+            }else if(b=='}'){
+                if(c=='{') a.pop();
+                else  return false;
+            }else a.push(b);
+        }
+        return a.length==0;
+    }
+}
+``
+
+# Implement Stack Using Queues
+https://neetcode.io/problems/implement-stack-using-queues/question
+
+```js
+class MyStack {
+    constructor() {
+        this.a=[];
+    }
+
+    /**
+     * @param {number} x
+     * @return {void}
+     */
+    push(x) {
+        this.a.push(x);
+    }
+
+    /**
+     * @return {number}
+     */
+    pop() {
+        return this.a.pop();
+    }
+
+    /**
+     * @return {number}
+     */
+    top() {
+        return this.a[this.a.length-1];
+    }
+
+    /**
+     * @return {boolean}
+     */
+    empty() {
+        return this.a.length==0;
+    }
+}
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * var obj = new MyStack()
+ * obj.push(x)
+ * var param_2 = obj.pop()
+ * var param_3 = obj.top()
+ * var param_4 = obj.empty()
+ */
+````
+
+# Implement Queue using Stacks
+
+https://neetcode.io/problems/implement-queue-using-stacks/question
+
+```js
+class MyQueue {
+  constructor() {
+    this.a = [];
+  }
+
+  /**
+   * @param {number} x
+   * @return {void}
+   */
+  push(x) {
+    this.a.push(x);
+  }
+
+  /**
+   * @return {number}
+   */
+  pop() {
+    return this.a.shift();
+  }
+
+  /**
+   * @return {number}
+   */
+  peek() {
+    return this.a[0];
+  }
+
+  /**
+   * @return {boolean}
+   */
+  empty() {
+    return this.a.length == 0;
+  }
+}
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * var obj = new MyQueue()
+ * obj.push(x)
+ * var param_2 = obj.pop()
+ * var param_3 = obj.peek()
+ * var param_4 = obj.empty()
+ */
+```
+
+# Final Prices With a Special Discount in a Shop
+
+https://leetcode.com/problems/final-prices-with-a-special-discount-in-a-shop/description/
+
+```js
+/**
+ * @param {number[]} prices
+ * @return {number[]}
+ */
+const finalPrices = (prices) => {
+  const a = [];
+  for (let i = 0; i < prices.length; i++) {
+    while (a.length && prices[a.at(-1)] >= prices[i]) {
+      const j = a.pop();
+      prices[j] -= prices[i];
+    }
+    a.push(i);
+  }
+  return prices;
+};
+```
+
+# Make the String Great
+
+https://leetcode.com/problems/make-the-string-great/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+const makeGood = (s) => {
+  let a = [];
+  for (let i of s) {
+    if (a.length && Math.abs(a.at(-1).charCodeAt(0) - i.charCodeAt(0)) == 32) a.pop();
+    else a.push(i);
+  }
+  return a.join('');
+};
+```
+
+# Minimum String Length After Removing Substrings
+
+https://leetcode.com/problems/minimum-string-length-after-removing-substrings/editorial/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minLength = (s) => {
+  let a = [];
+  for (let i of s) {
+    if ((a.length && a.at(-1) + i == 'AB') || a.at(-1) + i == 'CD') a.pop();
+    else a.push(i);
+  }
+  return a.length;
+};
+```
+
+# Clear Digits
+
+https://leetcode.com/problems/clear-digits/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+const clearDigits = (s) => {
+  a = [];
+  for (let i of s) {
+    if (/[a-z]/.test(a.at(-1)) && /[0-9]/.test(i)) a.pop();
+    else a.push(i);
+  }
+  return a.join('');
+};
+```
+
+# Binary Search
+
+https://neetcode.io/problems/binary-search/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number}
+   */
+  search(nums, target) {
+    let l = 0,
+      r = nums.length - 1,
+      m;
+    while (l <= r) {
+      m = Math.floor((l + r) / 2);
+      //console.log([l,r,m]);
+      if (nums[m] == target) return m;
+      [l, r] = nums[m] < target ? [m + 1, r] : [l, m - 1];
+    }
+    return -1;
+  }
+}
+```
+
+# Search Insert Position
+
+https://neetcode.io/problems/search-insert-position/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number}
+   */
+  searchInsert(nums, target) {
+    let l = 0,
+      r = nums.length - 1,
+      m;
+    while (l <= r) {
+      m = Math.floor((l + r) / 2);
+      //console.log([l,r,m]);
+      if (nums[m] == target) return m;
+      [l, r] = nums[m] < target ? [m + 1, r] : [l, m - 1];
+    }
+    return nums[m] < target ? m + 1 : m;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number}
+   */
+  searchInsert(nums, target) {
+    let l = 0,
+      r = nums.length - 1;
+    while (l <= r) {
+      const m = Math.floor((l + r) / 2);
+      if (nums[m] === target) return m;
+      if (nums[m] < target) {
+        l = m + 1;
+      } else {
+        r = m - 1;
+      }
+    }
+    return l;
+  }
+}
+```
+
+# Guess Number Higher Or Lower
+
+https://neetcode.io/problems/guess-number-higher-or-lower/question
+
+```js
+/**
+ * Forward declaration of guess API.
+ * @param {number} num   your guess
+ * @return 	     -1 if num is higher than the picked number
+ *			      1 if num is lower than the picked number
+ *               otherwise return 0
+ * function guess(num) {}
+ */
+
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  guessNumber(n) {
+    let l = 1,
+      r = n,
+      m;
+    while (l <= r) {
+      m = Math.floor((l + r) / 2);
+      if (guess(m) == 0) return m;
+      [l, r] = guess(m) > 0 ? [m + 1, r] : [l, m - 1];
+    }
+  }
+}
+/**
+ * Forward declaration of guess API.
+ * @param {number} num   your guess
+ * @return 	     -1 if num is higher than the picked number
+ *			      1 if num is lower than the picked number
+ *               otherwise return 0
+ * function guess(num) {}
+ */
+
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  guessNumber(n) {
+    let l = 1,
+      r = n,
+      m;
+    while (l <= r) {
+      m = Math.floor((l + r) / 2);
+      if (guess(m) == 0) return m;
+      [l, r] = guess(m) > 0 ? [m + 1, r] : [l, m - 1];
+    }
+  }
+}
+```
+
+# Arranging Coins
+
+https://neetcode.io/problems/arranging-coins/question
+
+```js
+
 ```
