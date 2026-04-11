@@ -92,7 +92,7 @@ pj0/
 ├── analyses/           # ad-hoc SQL
 │   └── check.sql
 
-├── target/             # 生成物（無視）
+├── target/             # 生成物
 └── logs/
 ```
 
@@ -151,18 +151,18 @@ target/
 ```
 source
   ↓
-stage（stg_）
+stage
   ↓
 fact
   ↓
 mart
 ```
 
-| 層    | prefix       |
-| ----- | ------------ |
-| stage | stg\_        |
-| fact  | fct\_        |
-| mart  | dim* / mart* |
+| 層    | prefix         |
+| ----- | -------------- |
+| stage | stg\_          |
+| fact  | fct\_          |
+| mart  | dim\_ / mart\_ |
 
 ---
 
@@ -177,24 +177,22 @@ models/
 
 ---
 
-## dbt で使う YAML 一覧（全体像）
+## dbt で使う YAML 一覧
 
 - dbt_project.yml ← プロジェクト設定（必須）
 - profiles.yml ← DB 接続設定（~/.dbt）
-
 - models/schema.yml ← models の定義（tests / docs）
 - models/src.yml ← sources 定義
-
 - seeds/\*.yml ← seeds 設定
 - snapshots/\*.yml ← snapshots 設定（任意）
 
-### dbt_project.yml（最重要）
+### dbt_project.yml
 
 プロジェクト全体設定
 
 例
 
-```yaml id="6x6p3k"
+```yaml
 name: pj0
 version: 1.0
 config-version: 2
@@ -230,8 +228,6 @@ seeds:
 
 通常は `~/.dbt/profiles.yml`
 
----
-
 例（DuckDB）
 
 ```yaml
@@ -243,11 +239,9 @@ pj0:
       path: db.duckdb
 ```
 
----
-
 例（Snowflake）
 
-```yaml id="d1p0rj"
+```yaml
 pj0:
   target: dev
   outputs:
@@ -365,8 +359,6 @@ models/
 version: 2
 ```
 
-- tests → test
-
 - ref に {{ }} 付け忘れ
 
 ```yaml
@@ -374,8 +366,6 @@ to: { { ref('stage0') } }
 ```
 
 - モデル名にパスを書く
-
----
 
 ## models
 
@@ -393,11 +383,9 @@ pj0/
       result0.sql
 ```
 
----
+### SQL ルール
 
-## SQL ルール
-
-### stage（raw 整形）
+stage（raw 整形）
 
 ```sql
 with src as (
@@ -408,11 +396,9 @@ select *
 from src
 ```
 
-**セミコロン不要**
+セミコロン不要
 
----
-
-### fact（中間）
+fact（中間）
 
 ```sql
 select
@@ -423,9 +409,7 @@ join {{ ref('stage1') }} b
   on a.id = b.id
 ```
 
----
-
-### mart（最終）
+mart（最終）
 
 ```sql
 {{ config(materialized='table') }}
@@ -434,9 +418,7 @@ select *
 from {{ ref('fact0') }}
 ```
 
----
-
-## materialization
+### materialization
 
 ```sql
 {{ config(materialized='view') }}   -- default
@@ -444,9 +426,7 @@ from {{ ref('fact0') }}
 {{ config(materialized='incremental') }}
 ```
 
----
-
-## dbt_project.yml
+### dbt_project.yml
 
 ```yaml
 models:
@@ -460,15 +440,13 @@ models:
       +materialized: table
 ```
 
-### ポイント
+ポイント
 
 - `+` を付ける（dbt の設定）
 - ディレクトリ名と一致させる
 - schema は論理的に分ける
 
----
-
-## 実行
+### 実行
 
 ```bash
 dbt run
@@ -486,18 +464,14 @@ dbt run --select result0
 dbt run --select +result0
 ```
 
----
-
-## ref
+### ref
 
 ```sql
 {{ ref('stage0') }}
 {{ ref('fact0') }}
 ```
 
----
-
-## stage / fact / mart の役割（重要）
+### stage / fact / mart の役割
 
 | 層    | 役割                         |
 | ----- | ---------------------------- |
@@ -505,18 +479,14 @@ dbt run --select +result0
 | fact  | join・集約                   |
 | mart  | BI 用の最終テーブル          |
 
----
-
-## source を使う（推奨）
+### source を使う（推奨）
 
 ```sql
 select *
 from {{ source('raw', 'users') }}
 ```
 
----
-
-## incremental
+### incremental
 
 ```sql
 {{ config(materialized='incremental') }}
@@ -528,8 +498,6 @@ from source_table
 where updated_at > (select max(updated_at) from {{ this }})
 {% endif %}
 ```
-
----
 
 ## seeds
 
@@ -566,8 +534,6 @@ seeds:
     +schema: seed
 ```
 
----
-
 ## analysis
 
 ```
@@ -576,8 +542,6 @@ pj0/analysis/test.sql
 
 - DB には**保存されない**
 - SELECT 結果だけ確認
-
----
 
 ### 実行
 
@@ -594,8 +558,6 @@ dbt run-operation
 - 検証用クエリ
 - データチェック
 - 一時的な分析 SQL
-
----
 
 ## sources
 
@@ -614,8 +576,6 @@ sources:
 | name       | dbt 内の名前       |
 | identifier | 実 DB のテーブル名 |
 
----
-
 ```sql
 select *
 from {{ source('src0', 'ref0') }}
@@ -628,9 +588,7 @@ select *
 from table0
 ```
 
----
-
-### schema も指定できる（重要）
+schema も指定できる
 
 ```yaml
 version: 2
@@ -661,21 +619,19 @@ models/
     stg_users.sql
 ```
 
-### source → stage
+source → stage
 
 ```sql
 select *
 from {{ source('src0', 'ref0') }}
 ```
 
-### stage → fact
+stage → fact
 
 ```sql
 select *
 from {{ ref('stg_users') }}
 ```
-
----
 
 ## test
 
@@ -729,9 +685,7 @@ models:
 - `version: 2` 必須
 - `ref()` は Jinja なので `{{ }}` が必要
 
----
-
-### singular tests（単発テスト）
+### singular tests
 
 pj0/tests/test0.sql
 
@@ -797,9 +751,7 @@ sources:
         description: "raw table"
 ```
 
----
-
-###docs ブロック（再利用ドキュメント）
+### docs ブロック（再利用ドキュメント）
 
 pj0/models/docs.md
 
@@ -809,13 +761,7 @@ This is shared documentation.
 {% enddocs %}
 ```
 
-使用方法
-
-```yaml
-description: "{{ doc('doc0') }}"
-```
-
-### doc の適用例
+doc の適用例
 
 ```yaml
 version: 2
@@ -841,19 +787,15 @@ target/catalog.json
 target/index.html
 ```
 
----
-
 ### docs 表示
 
 ```bash
 dbt docs serve
 ```
 
-👉 ブラウザで UI 表示
+ブラウザで UI 表示
 
----
-
-### docs で見えるもの（重要）
+docs で見えるもの
 
 - モデル構造
 - カラム説明
@@ -874,11 +816,11 @@ models/
 models/docs.md
 ```
 
-**schema.yml に description を書くのが基本**
+schema.yml に description を書くのが基本
 
 ## jinja
 
-### Jinja の基本構文（整理）
+### Jinja の基本構文
 
 ```jinja
 {% ... %}   # control statement（制御）
@@ -911,16 +853,12 @@ models/docs.md
 {{ function() }}
 ```
 
-### dbt での Jinja（超重要）
-
-dbt では Jinja は 👇 に使う
+### dbt での Jinja
 
 - SQL の動的生成
 - ref / source
 - config
 - macro
-
----
 
 ref
 
@@ -946,15 +884,13 @@ config
 
 条件分岐（環境差分）
 
+開発環境だけ制限
+
 ```jinja
 {% if target.name == 'dev' %}
   limit 100
 {% endif %}
 ```
-
-開発環境だけ制限
-
----
 
 ループ（列展開）
 
@@ -968,7 +904,7 @@ config
 a, b, c
 ```
 
-カラム自動生成（実務でよく使う）
+カラム自動生成
 
 ```jinja
 {% set cols = ['col1', 'col2', 'col3'] %}
@@ -1000,7 +936,7 @@ where value > {{ threshold }}
 {% endmacro %}
 ```
 
-### 使用
+使用
 
 ```sql
 select {{ add_prefix('id') }}
@@ -1015,17 +951,13 @@ target
 {{ target.schema }}
 ```
 
----
-
 this（現在モデル）
+
+テーブル名になる
 
 ```jinja
 {{ this }}
 ```
-
-テーブル名になる
-
----
 
 var
 
@@ -1071,8 +1003,7 @@ from table
 
 ① macro は「文字列を返す」
 
-- Python 関数ではなく
-- **SQL を生成するテンプレート**
+**SQL を生成するテンプレート**
 
 ② 引数はそのまま埋め込まれる
 
@@ -1082,11 +1013,9 @@ from table
 
 `'a'` はそのまま入る
 
----
-
 ### 実務パターン
 
-① 共通ロジック
+共通ロジック
 
 ```jinja
 {% macro safe_divide(a, b) %}
@@ -1103,7 +1032,7 @@ select {{ safe_divide('sales', 'count') }}
 from table
 ```
 
-② カラム変換
+カラム変換
 
 ```jinja
 {% macro prefix(col) %}
@@ -1111,7 +1040,7 @@ prefix_{{ col }}
 {% endmacro %}
 ```
 
-③ 条件付き SQL
+条件付き SQL
 
 ```jinja
 {% macro filter_recent(column) %}
@@ -1119,7 +1048,7 @@ prefix_{{ col }}
 {% endmacro %}
 ```
 
-### return を使うパターン（上級）
+### return を使うパターン
 
 ```jinja
 {% macro get_columns() %}
@@ -1134,7 +1063,7 @@ prefix_{{ col }}
 {% endfor %}
 ```
 
-### adapter 分岐（重要）
+### adapter 分岐
 
 DB 差分対応
 
