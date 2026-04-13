@@ -3113,6 +3113,97 @@ https://neetcode.io/problems/intersection-of-two-linked-lists/question
 
 ```
 
+# (suppliment) TreeNode
+
+## use function
+
+```js
+const TreeNode = (val, left = null, right = null) => ({ val, left, right });
+
+const n = TreeNode(val, left, right);
+
+const n = TreeNode(1, TreeNode(2), TreeNode(3));
+
+const root = TreeNode(1);
+root.left = TreeNode(2);
+root.right = TreeNode(3);
+```
+
+## use class
+
+```js
+class TreeNode {
+  constructor(val = 0, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
+
+const n = new TreeNode(val, left, right);
+```
+
+## array to binary tree, using function
+
+```js
+const buildTree = (arr) => {
+  if (!arr.length) return null;
+  const root = TreeNode(arr[0]);
+  const queue = [root];
+  let i = 1;
+
+  while (queue.length && i < arr.length) {
+    const node = queue.shift();
+    if (arr[i] != null) {
+      node.left = TreeNode(arr[i]);
+      queue.push(node.left);
+    }
+    i++;
+    if (i < arr.length && arr[i] != null) {
+      node.right = TreeNode(arr[i]);
+      queue.push(node.right);
+    }
+    i++;
+  }
+
+  return root;
+};
+
+const arr = [0, 1, 2, 3, null, null, 6];
+const root = buildTree(arr);
+
+console.log(root);
+console.log(JSON.stringify(root, null, 2));
+```
+
+or without shift()
+
+```js
+const buildTree = (arr) => {
+  if (!arr.length) return null;
+  const root = TreeNode(arr[0]);
+  const queue = [root];
+  let head = 0;
+  let i = 1;
+
+  while (head < queue.length && i < arr.length) {
+    const node = queue[head++];
+    if (arr[i] != null) {
+      node.left = TreeNode(arr[i]);
+      queue.push(node.left);
+    }
+    i++;
+    if (i < arr.length && arr[i] != null) {
+      node.right = TreeNode(arr[i]);
+      queue.push(node.right);
+    }
+    i++;
+  }
+
+  return root;
+};
+```
+
 # Binary Tree Inorder Traversal
 
 https://neetcode.io/problems/binary-tree-inorder-traversal/question
