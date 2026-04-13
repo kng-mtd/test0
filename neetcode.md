@@ -2442,7 +2442,20 @@ const decrypt = (code, k) => {
 https://neetcode.io/problems/crawler-log-folder/question?
 
 ```js
-
+class Solution {
+  /**
+   * @param {string[]} logs
+   * @return {number}
+   */
+  minOperations(logs) {
+    let a = 0;
+    for (let i of logs) {
+      if (i == '../') a = a > 0 ? a - 1 : a;
+      else if (i != './') a++;
+    }
+    return a;
+  }
+}
 ```
 
 # Baseball Game
@@ -2840,6 +2853,681 @@ class Solution {
 # Arranging Coins
 
 https://neetcode.io/problems/arranging-coins/question
+
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  arrangeCoins(n) {
+    let a = 1;
+    while ((a * (a + 1)) / 2 <= n) a++;
+    return a - 1;
+  }
+}
+```
+
+# Valid Perfect Square
+
+https://neetcode.io/problems/valid-perfect-square/question
+
+```js
+class Solution {
+  /**
+   * @param {number} num
+   * @return {boolean}
+   */
+  isPerfectSquare(num) {
+    return num ** 0.5 % 1 == 0;
+  }
+}
+```
+
+# Sqrt(x)
+
+https://neetcode.io/problems/sqrtx/question
+
+```js
+class Solution {
+  /**
+   * @param {number} x
+   * @return {number}
+   */
+  mySqrt(x) {
+    let l = 0,
+      r = x,
+      m;
+    while (l <= r) {
+      m = Math.floor((l + r) / 2);
+      if (m ** 2 == x) return m;
+      [l, r] = m ** 2 < x ? [m + 1, r] : [l, m - 1];
+    }
+    return m ** 2 > x ? m - 1 : m;
+  }
+}
+```
+
+# Reverse Linked List
+
+https://neetcode.io/problems/reverse-a-linked-list/question
+
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @return {ListNode}
+   */
+  reverseList(head) {
+    let a = null;
+    while (head) [head.next, a, head] = [a, head, head.next];
+    return a;
+  }
+}
+```
+
+# Merge Two Sorted Linked Lists
+
+https://neetcode.io/problems/merge-two-sorted-linked-lists/question
+
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {ListNode} list1
+   * @param {ListNode} list2
+   * @return {ListNode}
+   */
+  mergeTwoLists(list1, list2) {
+    let n1 = list1,
+      n2 = list2;
+    let a = new ListNode();
+    let n = a;
+    while (n1 && n2) {
+      [n.next, n1, n2] = n1.val < n2.val ? [n1, n1.next, n2] : [n2, n1, n2.next];
+      n = n.next;
+    }
+    n.next = n1 || n2;
+    return a.next;
+  }
+}
+```
+
+# Linked List Cycle Detection
+
+https://neetcode.io/problems/linked-list-cycle-detection/question
+
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @return {boolean}
+   */
+  hasCycle(head) {
+    let n1 = head,
+      n2 = head;
+    while (n2 && n2.next) {
+      n1 = n1.next;
+      n2 = n2.next.next;
+      if (n1 === n2) return true;
+    }
+    return false;
+  }
+}
+```
+
+# Palindrome Linked List
+
+https://neetcode.io/problems/palindrome-linked-list/question
+
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @return {boolean}
+   */
+  isPalindrome(head) {
+    let a = [],
+      b = head;
+    while (b) {
+      a.push(b.val);
+      b = b.next;
+    }
+    let l = 0,
+      r = a.length - 1;
+    while (l < r) if (a[l++] != a[r--]) return false;
+    return true;
+  }
+}
+```
+
+# Remove Linked List Elements
+
+https://neetcode.io/problems/remove-linked-list-elements/question
+
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @param {number} val
+   * @return {ListNode}
+   */
+  removeElements(head, val) {
+    while (head && head.val == val) head = head.next;
+    let a = head;
+    while (a && a.next) {
+      if (a.next.val == val) a.next = a.next.next;
+      else a = a.next;
+    }
+    return head;
+  }
+}
+```
+
+# Remove Duplicates from Sorted List
+
+https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+const deleteDuplicates = (head) => {
+  let a = head;
+  while (a && a.next) {
+    if (a.val == a.next.val) a.next = a.next.next;
+    else a = a.next;
+  }
+  return head;
+};
+```
+
+# Middle of the Linked List
+
+https://neetcode.io/problems/middle-of-the-linked-list/question
+
+```js
+
+```
+
+# Intersection of Two Linked Lists
+
+https://neetcode.io/problems/intersection-of-two-linked-lists/question
+
+```js
+
+```
+
+# Binary Tree Inorder Traversal
+
+https://neetcode.io/problems/binary-tree-inorder-traversal/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[]}
+   */
+  inorderTraversal(root) {
+    const a = [];
+    const dfs = (n) => {
+      if (!n) return;
+      dfs(n.left);
+      a.push(n.val);
+      dfs(n.right);
+    };
+    dfs(root);
+    return a;
+  }
+}
+```
+
+# Binary Tree Preorder Traversal
+
+https://neetcode.io/problems/binary-tree-preorder-traversal/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[]}
+   */
+  preorderTraversal(root) {
+    const a = [];
+    const dfs = (n) => {
+      if (!n) return;
+      a.push(n.val);
+      dfs(n.left);
+      dfs(n.right);
+    };
+    dfs(root);
+    return a;
+  }
+}
+```
+
+# Binary Tree Postorder Traversal
+
+https://neetcode.io/problems/binary-tree-postorder-traversal/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[]}
+   */
+  postorderTraversal(root) {
+    const a = [];
+    const dfs = (n) => {
+      if (!n) return;
+      dfs(n.left);
+      dfs(n.right);
+      a.push(n.val);
+    };
+    dfs(root);
+    return a;
+  }
+}
+```
+
+# N-ary Tree Postorder Traversal
+
+https://neetcode.io/problems/n-ary-tree-postorder-traversal/question
+
+```js
+
+```
+
+# Invert Binary Tree
+
+https://neetcode.io/problems/invert-a-binary-tree/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {TreeNode}
+   */
+  invertTree(root) {
+    const dfs = (n) => {
+      if (!n) return;
+      [n.left, n.right] = [n.right, n.left];
+      dfs(n.left);
+      dfs(n.right);
+    };
+    dfs(root);
+    return root;
+  }
+}
+```
+
+# Maximum Depth of Binary Tree
+
+https://neetcode.io/problems/depth-of-binary-tree/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number}
+   */
+  maxDepth(root) {
+    let a0 = 0;
+    const dfs = (n, a) => {
+      if (!n) return;
+      a++;
+      a0 = a > a0 ? a : a0;
+      dfs(n.left, a);
+      dfs(n.right, a);
+      return;
+    };
+    dfs(root, 0);
+    return a0;
+  }
+}
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number}
+   */
+  maxDepth(n) {
+    if (!n) return 0;
+    const l = this.maxDepth(n.left);
+    const r = this.maxDepth(n.right);
+    return 1 + Math.max(l, r);
+  }
+}
+```
+
+# Diameter of Binary Tree
+
+https://neetcode.io/problems/binary-tree-diameter/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number}
+   */
+  diameterOfBinaryTree(n) {
+    let a = 0;
+    const dfs = (n) => {
+      if (!n) return 0;
+      const l = dfs(n.left);
+      const r = dfs(n.right);
+      a = l + r > a ? l + r : a;
+      return 1 + Math.max(l, r);
+    };
+    dfs(n);
+    return a;
+  }
+}
+```
+
+# Balanced Binary Tree
+
+https://neetcode.io/problems/balanced-binary-tree/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {boolean}
+   */
+  isBalanced(n) {
+    const dfs = (n) => {
+      if (!n) return true;
+      const l = dfs(n.left);
+      if (!l) return false;
+      const r = dfs(n.right);
+      if (!r) return false;
+      if (Math.abs(l - r) > 1) return false;
+      return 1 + Math.max(l, r);
+    };
+    return dfs(n) > 0;
+  }
+}
+```
+
+# Same Binary Tree
+
+https://neetcode.io/problems/same-binary-tree/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {TreeNode} p
+   * @param {TreeNode} q
+   * @return {boolean}
+   */
+  isSameTree(n1, n2) {
+    const dfs = (n1, n2) => {
+      if (!n1 && !n2) return true;
+      if (!n1 || !n2) return false;
+      const l = dfs(n1.left, n2.left);
+      const r = dfs(n1.right, n2.right);
+      return l && r && n1.val === n2.val;
+    };
+    return dfs(n1, n2);
+  }
+}
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {TreeNode} p
+   * @param {TreeNode} q
+   * @return {boolean}
+   */
+  isSameTree(n1, n2) {
+    if (!n1 || !n2) return n1 === n2;
+    return n1.val == n2.val && this.isSameTree(n1.left, n2.left) && this.isSameTree(n1.right, n2.right);
+  }
+}
+```
+
+# Subtree of Another Tree
+
+https://neetcode.io/problems/subtree-of-a-binary-tree/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {TreeNode} subRoot
+   * @return {boolean}
+   */
+  isSubtree(r0, r1) {
+    const isSame = (n1, n2) => {
+      if (!n1 || !n2) return n1 === n2;
+      return n1.val === n2.val && isSame(n1.left, n2.left) && isSame(n1.right, n2.right);
+    };
+
+    const dfs = (n) => {
+      if (!n) return false;
+      if (isSame(n, r1)) return true;
+      return dfs(n.left) || dfs(n.right);
+    };
+    return dfs(r0);
+  }
+}
+```
+
+# Convert Sorted Array to Binary Search Tree
+
+https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number[]} nums
+ * @return {TreeNode}
+ */
+const sortedArrayToBST = (nums) => {
+  const dfs = (l, r) => {
+    if (l > r) return null;
+    const m = (l + r) >> 1;
+    return {
+      val: nums[m],
+      left: dfs(l, m - 1),
+      right: dfs(m + 1, r),
+    };
+  };
+  return dfs(0, nums.length - 1);
+};
+```
+
+# Merge Two Binary Trees
+
+https://neetcode.io/problems/merge-two-binary-trees/question
+
+```js
+
+```
 
 ```js
 
