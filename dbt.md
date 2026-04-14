@@ -8,9 +8,6 @@ sudo apt install snapd
 sudo snap install duckdb
 sudo apt install python3-venv
 
-mkdir dbt0
-cd dbt0
-
 python -m venv venv0
 source venv0/bin/activate
 
