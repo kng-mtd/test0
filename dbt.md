@@ -41,7 +41,7 @@ pj0:
   outputs:
     dev:
       type: duckdb # or snowflake
-      path: db.duckdb
+      path: dev.duckdb
   target: dev
 ```
 
