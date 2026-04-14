@@ -3,22 +3,39 @@
 ## setup
 
 ```bash
+sudo apt update
+sudo apt install snapd
+snap install duckdb
+apt install python3-venv
+
 mkdir dbt0
 cd dbt0
 
 python -m venv venv0
 source venv0/bin/activate
 
-pip install dbt-snowflake   # or dbt-duckdb
-```
+pip install dbt-duckdb # or dbt-snowflake
 
-```bash
 mkdir -p ~/.dbt
 dbt init pj0
+ls
+
+dbt debug
+dbt run
+ls
+
+duckdb dev.duckdb
+```
+```sql
+.table
+.schema
+from my_first_dbt_model;
+from my_second_dbt_model;
 ```
 
 ### profiles.yml
 
+.dbt/profiles.yml
 ```yaml
 pj0:
   outputs:
@@ -28,14 +45,13 @@ pj0:
   target: dev
 ```
 
-```bash
-dbt debug
-```
-
 ---
 
 ### 最小構成（dbt init 直後）
-
+```bash
+cd pj0
+ls
+```
 ```
 pj0/
 ├── dbt_project.yml
@@ -48,6 +64,13 @@ pj0/
 ├── tests/
 ├── macros/
 └── target/
+```
+
+```bash
+cat dbt_project.yml
+ls models/example
+nano models/example/my_first_dbt_model.sql
+nano models/example/my_second_dbt_model.sql
 ```
 
 ### 実務でよく使う構成（推奨）
@@ -501,24 +524,25 @@ where updated_at > (select max(updated_at) from {{ this }})
 
 ## seeds
 
-### ディレクトリ
+### CSV保存
 
 ```
 pj0/seeds/ext0.csv
 ```
 
-### 実行
+### CSVからテーブル作成
 
 ```bash
 dbt seed --select ext0
 ```
 
-**CSV → テーブル作成**
-
 ### モデルから参照
 
+pj0/models/stg/stg_penguins.sql
 ```sql
-{{ ref('ext0') }}
+{{config(materialized='view')}}
+
+select col1. col2, col3 from {{ ref('ext0') }}
 ```
 
 seeds は
