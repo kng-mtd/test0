@@ -20,6 +20,9 @@ mkdir -p ~/.dbt
 dbt init pj0
 ls
 
+cd pj0
+ls
+
 dbt debug
 dbt run
 ls
@@ -48,10 +51,7 @@ pj0:
 ---
 
 ### 最小構成（dbt init 直後）
-```bash
-cd pj0
-ls
-```
+
 ```
 pj0/
 ├── dbt_project.yml
