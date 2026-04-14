@@ -531,15 +531,24 @@ pj0/seeds/ext0.csv
 
 ```bash
 dbt seed --select ext0
+
+duckdb dev.duckdb -c '.table'
+duckdb dev.duckdb -c '.schema'
 ```
 
 ### モデルから参照
 
-pj0/models/stg/stg_penguins.sql
+pj0/models/stg/stg_ext0.sql
 ```sql
 {{config(materialized='view')}}
 
 select col1. col2, col3 from {{ ref('ext0') }}
+```
+
+```bash
+dbt debug
+dbt --select stg_ext0
+duckdb dev.duckdb -c 'from ext0;'
 ```
 
 seeds は
