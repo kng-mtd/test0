@@ -75,44 +75,48 @@ nano models/example/my_second_dbt_model.sql
 ```
 pj0/
 ├── dbt_project.yml
-├── profiles.yml        # 通常は ~/.dbt に置く
 
 ├── models/
 │   ├── sources/        # source定義
 │   │   └── src.yml
 │   │
-│   ├── stage/          # raw整形
+│   ├── staging/        # raw整形
 │   │   ├── stg_users.sql
 │   │   └── schema.yml
 │   │
-│   ├── fact/           # 中間層
-│   │   ├── fact_orders.sql
-│   │   └── schema.yml
+│   ├── marts/          # 集約
+│   │   ├── fact/
+│   │   │   ├── fact_orders.sql
+│   │   │   └── schema.yml
+│   │   │
+│   │   ├── dim/
+│   │   │   └── dim_users.sql   # 追加想定
+│   │   │
+│   │   ├── metrics/            # 任意（KPIなど）
+│   │   │   └── mart_sales.sql
+│   │   │
+│   │   └── schema.yml          # marts全体定義でもOK
 │   │
-│   ├── mart/           # 最終（BI用）
-│   │   ├── mart_sales.sql
-│   │   └── schema.yml
-│   │
-│   └── docs.md         # 共通ドキュメント
+│   └── docs.md                 # 共通ドキュメント
 
-├── seeds/              # CSV → テーブル
+├── seeds/
 │   └── codes.csv
 
-├── snapshots/          # 履歴管理
+├── snapshots/
 │   └── users_snapshot.sql
 
-├── tests/              # singular / generic
+├── tests/
 │   ├── test_null.sql
 │   └── generic/
 │       └── custom_test.sql
 
-├── macros/             # Jinja関数
+├── macros/
 │   └── util.sql
 
-├── analyses/           # ad-hoc SQL
+├── analyses/
 │   └── check.sql
 
-├── target/             # 生成物
+├── target/
 └── logs/
 ```
 
@@ -180,9 +184,9 @@ mart
 
 | 層    | prefix         |
 | ----- | -------------- |
+| raw   | raw\_          |
 | stage | stg\_          |
-| fact  | fct\_          |
-| mart  | dim\_ / mart\_ |
+| mart  | dim\_ / fact\_ |
 
 ---
 
@@ -211,7 +215,6 @@ models/
 プロジェクト全体設定
 
 例
-
 ```yaml
 name: pj0
 version: 1.0
@@ -226,14 +229,17 @@ macro-paths: ["macros"]
 
 models:
   pj0:
-    stage:
+    staging:
       +schema: stage
-    fact:
-      +schema: fact
-    mart:
+    marts:
       +schema: mart
       +materialized: table
-
+      fact:
+        +tags: ['fact']
+      dim:
+        +tags: ['dim']
+      metrics:
+        +tags: ['metrics']
 seeds:
   pj0:
     +schema: seed
@@ -246,7 +252,7 @@ seeds:
 
 ### profiles.yml（接続設定）
 
-通常は `~/.dbt/profiles.yml`
+~/.dbt/profiles.yml
 
 例（DuckDB）
 
@@ -257,6 +263,14 @@ pj0:
     dev:
       type: duckdb
       path: db.duckdb
+```
+```yaml
+pj0:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: :memory:
 ```
 
 例（Snowflake）
@@ -327,15 +341,31 @@ sources:
 ```
 
 使用
+`select * from raw.user_table`
+or
+`select * from {{ source('src0', 'users') }}`
 
-```sql
-select *
-from {{ source('src0', 'users') }}
+S3より
+
+```yaml
+version: 2
+
+sources:
+  - name: src0
+    tables:
+      - name: users
+        description: "raw users"
+        external:
+          location: "s3://my-bucket/raw/users/*.parquet"
 ```
 
-### seeds.yml
+使用
+`select * from read_parquet('s3://bucket/raw/users/*.parquet')`
+or
+`select * from {{ source('src0', 'users') }}`
 
-seeds/ 配下
+
+### seeds.yml
 
 例
 
@@ -362,11 +392,12 @@ models/
   stage/
     stg_users.sql
     schema.yml
-  fact/
-    fact_orders.sql
-    schema.yml
-
-models/
+  marts/
+    fact/
+      fact_orders.sql
+      schema.yml
+    dim/
+      dim_users.sql
   sources/
     src.yml
 ```
@@ -397,8 +428,6 @@ pj0/
     stage/
       stage0.sql
       stage1.sql
-    fact/
-      fact0.sql
     mart/
       result0.sql
 ```
@@ -453,11 +482,13 @@ models:
   pj0:
     stage:
       +schema: stage
-    fact:
-      +schema: fact
     mart:
       +schema: mart
       +materialized: table
+      fact:
+        +tags: ['fact']
+      dim:
+        +tags: ['dim']
 ```
 
 ポイント
@@ -493,11 +524,13 @@ dbt run --select +result0
 
 ### stage / fact / mart の役割
 
-| 層    | 役割                         |
-| ----- | ---------------------------- |
-| stage | 生データ整形（rename, cast） |
-| fact  | join・集約                   |
-| mart  | BI 用の最終テーブル          |
+| 層                    | 役割                        |
+| -------------------- | ------------------------- |
+| staging              | 生データ整形（rename, cast, 型統一） |
+| marts.fact           | ビジネスイベント（粒度を持つ事実テーブル）     |
+| marts.dim            | マスタ（属性）                   |
+| marts.metrics        | BI用の最終集計・指標               |
+
 
 ### source を使う（推奨）
 
@@ -552,7 +585,6 @@ duckdb dev.duckdb -c 'from ext0;'
 ```
 
 seeds は
-
 - 小さなマスタデータ（コード表など）
 - lookup table
 
@@ -645,8 +677,9 @@ from raw.table0
 models/
   sources/
     src.yml
-  stage/
+  staging/
     stg_users.sql
+    schema.yml
 ```
 
 source → stage
@@ -702,7 +735,7 @@ models:
           - accepted_values:
               values: ["val1", "val2"]
           - relationships:
-              to: { { ref('stage1') } }
+              to: {{ ref('stage1') }}
               field: column00
 
   - name: fact0
