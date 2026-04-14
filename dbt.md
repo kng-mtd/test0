@@ -272,6 +272,14 @@ pj0:
       type: duckdb
       path: :memory:
 ```
+```yaml
+pj0:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: /tmp/db.duckdb
+```
 
 例（Snowflake）
 
