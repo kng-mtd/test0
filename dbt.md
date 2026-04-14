@@ -385,7 +385,7 @@ version: 2
 - ref に {{ }} 付け忘れ
 
 ```yaml
-to: { { ref('stage0') } }
+to: {{ ref('stage0') }}
 ```
 
 - モデル名にパスを書く
