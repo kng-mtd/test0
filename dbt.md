@@ -5,7 +5,7 @@
 ```bash
 sudo apt update
 sudo apt install snapd
-snap install duckdb
+sudo snap install duckdb
 sudo apt install python3-venv
 
 mkdir dbt0
