@@ -3102,7 +3102,30 @@ const deleteDuplicates = (head) => {
 https://neetcode.io/problems/middle-of-the-linked-list/question
 
 ```js
-
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @return {ListNode}
+   */
+  middleNode(head) {
+    let a = head,
+      b = head;
+    while (b && b.next) {
+      a = a.next;
+      b = b.next.next;
+    }
+    return a;
+  }
+}
 ```
 
 # Intersection of Two Linked Lists
@@ -3110,7 +3133,66 @@ https://neetcode.io/problems/middle-of-the-linked-list/question
 https://neetcode.io/problems/intersection-of-two-linked-lists/question
 
 ```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} headA
+   * @param {ListNode} headB
+   * @return {ListNode}
+   */
+  getIntersectionNode(headA, headB) {
+    let a = headA;
+    while (a) {
+      a.val = -a.val;
+      a = a.next;
+    }
+    let b = headB,
+      c = null;
+    while (b && b.val > 0) b = b.next;
+    c = b;
+    while (b) {
+      b.val = -b.val;
+      b = b.next;
+    }
+    return c;
+  }
+}
+```
 
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} headA
+   * @param {ListNode} headB
+   * @return {ListNode}
+   */
+  getIntersectionNode(headA, headB) {
+    let a = headA,
+      b = headB;
+    while (a !== b) {
+      a = a ? a.next : headB;
+      b = b ? b.next : headA;
+    }
+    return a;
+  }
+}
 ```
 
 # (suppliment) TreeNode
@@ -3146,6 +3228,8 @@ const n = new TreeNode(val, left, right);
 ## array to binary tree, using function
 
 ```js
+const TreeNode = (val, left = null, right = null) => ({ val, left, right });
+
 const buildTree = (arr) => {
   if (!arr.length) return null;
   const root = TreeNode(arr[0]);
@@ -3622,4 +3706,217 @@ https://neetcode.io/problems/merge-two-binary-trees/question
 
 ```js
 
+```
+
+# Path Sum
+
+https://neetcode.io/problems/path-sum/question
+
+```js
+
+```
+
+# Range Sum of BST
+
+https://neetcode.io/problems/range-sum-of-bst/question
+
+```js
+
+```
+
+# Leaf-Similar Trees
+
+https://leetcode.com/problems/leaf-similar-trees/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root1
+ * @param {TreeNode} root2
+ * @return {boolean}
+ */
+const leafSimilar = (root1, root2) => {
+  const fn = (n, a) => {
+    if (!n) return;
+    if (!n.left && !n.right) {
+      a.push(n.val);
+      return;
+    }
+    fn(n.left, a);
+    fn(n.right, a);
+  };
+
+  const a1 = [];
+  fn(root1, a1);
+  const a2 = [];
+  fn(root2, a2);
+  return a1.join(',') == a2.join(',');
+};
+```
+
+# Evaluate Boolean Binary Tree
+
+https://leetcode.com/problems/evaluate-boolean-binary-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+const evaluateTree = (root) => {
+  const a = [];
+  const dfs = (n) => {
+    if (!n) return;
+    dfs(n.left);
+    dfs(n.right);
+    if (n.val == 0 || n.val == 1) {
+      a.push(n.val);
+    } else {
+      const r = a.pop();
+      const l = a.pop();
+      a.push(n.val == 2 ? l || r : l && r);
+    }
+  };
+  dfs(root);
+  return a[0];
+};
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+const evaluateTree = (n) => {
+  if (!n.left && !n.right) return n.val;
+  const l = evaluateTree(n.left);
+  const r = evaluateTree(n.right);
+  if (n.val == 2) return l || r;
+  if (n.val == 3) return l && r;
+};
+```
+
+# Minimum Distance Between BST Nodes
+
+https://leetcode.com/problems/minimum-distance-between-bst-nodes/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const minDiffInBST = (root) => {
+  let a = -Infinity,
+    b = Infinity;
+  const dfs = (n) => {
+    if (!n) return;
+    dfs(n.left);
+    b = n.val - a < b ? n.val - a : b;
+    a = n.val;
+    dfs(n.right);
+  };
+  dfs(root);
+  return b;
+};
+```
+
+# Symmetric Tree
+
+https://leetcode.com/problems/symmetric-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+const isSymmetric = (root) => {
+  const dfs1 = (n) => {
+    if (!n) {
+      a1.push(null);
+      return;
+    }
+    a1.push(n.val);
+    dfs1(n.left);
+    dfs1(n.right);
+  };
+  let a1 = [];
+  dfs1(root.left);
+
+  const dfs2 = (n) => {
+    if (!n) {
+      a2.push(null);
+      return;
+    }
+    a2.push(n.val);
+    dfs2(n.right);
+    dfs2(n.left);
+  };
+  let a2 = [];
+  dfs2(root.right);
+
+  return a1.join(',') == a2.join(',');
+};
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+const isSymmetric = (root) => {
+  const dfs = (l, r) => {
+    if (!l && !r) return true;
+    if (!l || !r) return false;
+    if (l.val !== r.val) return false;
+    return dfs(l.left, r.right) && dfs(l.right, r.left);
+  };
+  return dfs(root.left, root.right);
+};
 ```
