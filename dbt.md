@@ -26,11 +26,10 @@ ls
 
 duckdb dev.duckdb
 ```
+
 ```sql
 .table
 .schema
-from my_first_dbt_model;
-from my_second_dbt_model;
 ```
 
 ### profiles.yml
@@ -55,6 +54,7 @@ pj0/
 ├── models/
 │   └── example/
 │       └── my_first_dbt_model.sql
+│       └── my_second_dbt_model.sql
 ├── analyses/
 ├── seeds/
 ├── snapshots/
@@ -63,11 +63,29 @@ pj0/
 └── target/
 ```
 
+nano models/example/raw0.sql
+```sql
+select now() as t
+```
+
+nano models/example/stg0.sql
+```sql
+select strftime(t, '%d/%m/%Y %H:%M') from {{ref('raw0')}}
+```
+
 ```bash
 cat dbt_project.yml
 ls models/example
-nano models/example/my_first_dbt_model.sql
-nano models/example/my_second_dbt_model.sql
+
+dbt debug
+dbt run
+
+duckdb dev.duckdb
+```
+
+```sql
+from raw0;
+from stg0;
 ```
 
 ### 実務でよく使う構成（推奨）
