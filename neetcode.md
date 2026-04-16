@@ -3395,7 +3395,31 @@ class Solution {
 https://neetcode.io/problems/n-ary-tree-postorder-traversal/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class Node {
+ *     constructor(val = 0, children = []) {
+ *         this.val = val;
+ *         this.children = children;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {Node|null} root
+   * @return {number[]}
+   */
+  postorder(root) {
+    const a = [];
+    const dfs = (n) => {
+      if (!n) return;
+      for (let i of n.children) dfs(i);
+      a.push(n.val);
+    };
+    dfs(root);
+    return a;
+  }
+}
 ```
 
 # Invert Binary Tree
@@ -3595,7 +3619,7 @@ class Solution {
       if (!n1 || !n2) return false;
       const l = dfs(n1.left, n2.left);
       const r = dfs(n1.right, n2.right);
-      return l && r && n1.val === n2.val;
+      return l && r && n1.val == n2.val;
     };
     return dfs(n1, n2);
   }
