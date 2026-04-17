@@ -8,7 +8,7 @@ URL: https://kng-mtd.github.io/hugo0/
 
 ## setup hugo
 ```bash
-sudo apt install snap
+sudo apt install snapd
 sudo snap install hugo
 hash -r
 hugo version
@@ -75,6 +75,8 @@ http://localhost:1313
 hugo
 cd public
 git add .
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
 git commit -m 'deploy web page files'
 git branch -M main
 git remote add origin https://github.com/kng-mtd/hugo0.git
@@ -180,6 +182,8 @@ Folder: / (root)
 ```
 ```bash
 git add .
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
 git commit -m 'setup github actions'
 git push origin main
 ```
