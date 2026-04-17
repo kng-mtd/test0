@@ -20,6 +20,9 @@ ls
 cd pj0
 ls
 
+cat dbt_project.yml
+cat models/example/schema.yml
+
 dbt debug
 dbt run
 ls
@@ -70,11 +73,10 @@ select now() as t
 
 nano models/example/stg0.sql
 ```sql
-select strftime(t, '%d/%m/%Y %H:%M') from {{ref('raw0')}}
+select strftime(t, '%Y/%m/%d %H:%M') from {{ref('raw0')}} as t
 ```
 
 ```bash
-cat dbt_project.yml
 ls models/example
 
 dbt debug
@@ -214,7 +216,7 @@ mart
 models/
   stage/
     stg_users.sql
-    schema.yml   ← 同じ階層に置く
+    schema.yml
 ```
 
 ---
