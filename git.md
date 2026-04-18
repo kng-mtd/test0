@@ -190,7 +190,7 @@ git commit
 
 ---
 
-## ローカルリモート（共有リポジトリ）
+## リモート（共有リポジトリ）利用
 
 ### リモート作成（ホスト側）
 
@@ -224,6 +224,9 @@ git pull /tmp/rmt_work.git
 
 ```bash
 git push origin main
+#or
+git push -u origin main #first
+git push #since then
 ```
 
 ---
@@ -281,7 +284,11 @@ git fetch origin
 git switch -c dev1
 git add .
 git commit -m 'message'
+
 git push origin dev1
+#or
+git push -u origin dev1 #first
+git push #since then
 ```
 
 ---
