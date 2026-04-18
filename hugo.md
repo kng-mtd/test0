@@ -69,6 +69,21 @@ ctrl+c
 http://localhost:1313
 
 
+### with online ubuntu ex. Killercoda
+```bash
+wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared-linux-amd64.deb
+
+cloudflared tunnel --url http://localhost:1313 --loglevel info
+```
+```
+2026-04-18T07:41:28Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2026-04-18T07:41:28Z INF |  https://man-parents-scientist-marie.trycloudflare.com                                     |
+```
+
+https://xxx-xxx-xxx-xxx.trycloudflare.com
+
+
 ## make directory "public/" for web page files 
 
 ```bash
