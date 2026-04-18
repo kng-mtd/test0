@@ -190,13 +190,13 @@ git commit
 
 ---
 
-## リモート（共有リポジトリ）利用
+## 同一サーバ内、リモート（共有リポジトリ）利用
 
-### リモート作成（ホスト側）
+### リモート作成（ローカル擬似サーバ）
 
 ```bash
-mkdir /tmp/rmt_work
-cd /tmp/rmt_work
+mkdir /tmp/rmt_work.git
+cd /tmp/rmt_work.git
 git init --bare
 ```
 
@@ -205,28 +205,28 @@ git init --bare
 ### クローン
 
 ```bash
-mkdir work1
+git clone /tmp/rmt_work.git work1
 cd work1
-git clone /tmp/rmt_work.git
 ```
 
 ---
 
-### 取得
+### コミット
 
 ```bash
-git pull /tmp/rmt_work.git
+touch README.md
+git add .
+git commit -m 'init'
 ```
 
----
-
-### プッシュ
+### プッシュ、プル
 
 ```bash
 git push origin main
 #or
 git push -u origin main #first
 git push #since then
+git pull
 ```
 
 ---
@@ -249,7 +249,19 @@ git merge origin/main
 
 ## GitHub 利用
 
-### 初期設定
+### SSH接続準備
+```bash
+ssh-keygen -t ed25519 -C 'xxx@gmail.com'
+cat ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+```
+github
+```
+ > Settings > SSH and GPG keys > New SSH key
+ > paste public key
+```
+
+### git初期設定
 
 ```bash
 git config --global user.name 'kng-mtd'
