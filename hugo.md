@@ -111,7 +111,7 @@ https://kng-mtd.github.io/hugo0/
 
 
 
-# with github actions, automatic publication
+## with github actions, automatic publication
 
 ```
 hugo0/
@@ -189,7 +189,7 @@ jobs:
 ```
 
 
-## setting, github pages
+### setting, github pages
 ```
 Source: Deploy from a branch
 Branch: main
@@ -226,10 +226,7 @@ git commit -m 'add post1'
 git push
 ```
 
-
-
-
-# PAT auth
+### PAT auth
 
 ```
 user navigation
