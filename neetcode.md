@@ -3725,11 +3725,58 @@ const sortedArrayToBST = (nums) => {
 https://neetcode.io/problems/merge-two-binary-trees/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root1
+   * @param {TreeNode} root2
+   * @return {TreeNode}
+   */
+  mergeTrees(root1, root2) {
+    if (!root1) return root2;
+    if (!root2) return root1;
+    root1.val += root2.val;
+    root1.left = this.mergeTrees(root1.left, root2.left);
+    root1.right = this.mergeTrees(root1.right, root2.right);
+    return root1;
+  }
+}
 ```
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root1
+   * @param {TreeNode} root2
+   * @return {TreeNode}
+   */
+  mergeTrees(root1, root2) {
+    if (!root1 && !root2) return null;
+    const n = new TreeNode((root1?.val ?? 0) + (root2?.val ?? 0));
+    n.left = this.mergeTrees(root1?.left, root2?.left);
+    n.right = this.mergeTrees(root1?.right, root2?.right);
+    return n;
+  }
+}
 ```
 
 # Path Sum
@@ -3737,7 +3784,32 @@ https://neetcode.io/problems/merge-two-binary-trees/question
 https://neetcode.io/problems/path-sum/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {number} targetSum
+   * @return {boolean}
+   */
+  hasPathSum(root, targetSum) {
+    const dfs = (n, s) => {
+      if (!n) return false;
+      s += n.val;
+      if (!n.left && !n.right) return s == targetSum;
+      return dfs(n.left, s) || dfs(n.right, s);
+    };
+    return dfs(root, 0);
+  }
+}
 ```
 
 # Range Sum of BST
@@ -3745,7 +3817,35 @@ https://neetcode.io/problems/path-sum/question
 https://neetcode.io/problems/range-sum-of-bst/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {number} low
+   * @param {number} high
+   * @return {number}
+   */
+  rangeSumBST(root, low, high) {
+    let a = 0;
+    const dfs = (n) => {
+      if (!n) return;
+      if (n.val >= low && n.val <= high) a += n.val;
+      dfs(n.left);
+      dfs(n.right);
+    };
+    dfs(root, low, high);
+    return a;
+  }
+}
 ```
 
 # Leaf-Similar Trees
@@ -3943,4 +4043,312 @@ const isSymmetric = (root) => {
   };
   return dfs(root.left, root.right);
 };
+```
+
+# Kth Largest Element in a Stream
+
+https://neetcode.io/problems/kth-largest-integer-in-a-stream/question
+
+```js
+class KthLargest {
+  /**
+   * @param {number} k
+   * @param {number[]} nums
+   */
+  constructor(k, nums) {
+    this.k = k;
+    this.nums = nums;
+  }
+
+  /**
+   * @param {number} val
+   * @return {number}
+   */
+  add(val) {
+    this.nums.push(val);
+    this.nums.sort((x1, x2) => x2 - x1).slice(0, this.k);
+    return this.nums[this.k - 1];
+  }
+}
+```
+
+# Last Stone Weight
+
+https://neetcode.io/problems/last-stone-weight/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} stones
+   * @return {number}
+   */
+  lastStoneWeight(stones) {
+    while (stones.length > 1) {
+      stones.sort((x1, x2) => x1 - x2);
+      const x = stones.pop();
+      const y = stones.pop();
+      if (x == y) continue;
+      stones.push(Math.abs(x - y));
+    }
+    return stones[0] || 0;
+  }
+}
+```
+
+# Take Gifts From the Richest Pile
+
+https://neetcode.io/problems/take-gifts-from-the-richest-pile/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} gifts
+   * @param {number} k
+   * @return {number}
+   */
+  pickGifts(gifts, k) {
+    for (let i = 0; i < k; i++) {
+      const ii = gifts.indexOf(Math.max(...gifts));
+      gifts[ii] = Math.floor(gifts[ii] ** 0.5);
+    }
+    return gifts.reduce((a, x) => a + x, 0);
+  }
+}
+```
+
+# Final Array State After K Multiplication Operations I
+
+https://neetcode.io/problems/final-array-state-after-k-multiplication-operations-i/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @param {number} multiplier
+   * @return {number[]}
+   */
+  getFinalState(nums, k, multiplier) {
+    for (let i = 0; i < k; i++) {
+      const ii = nums.indexOf(Math.min(...nums));
+      nums[ii] = nums[ii] * multiplier;
+    }
+    return nums;
+  }
+}
+```
+
+# Sum of All Subsets XOR Total
+
+https://neetcode.io/problems/sum-of-all-subset-xor-totals/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  subsetXORSum(nums) {
+    let a = 0;
+    for (let i of nums) a |= i;
+    return a << (nums.length - 1);
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  subsetXORSum(nums) {
+    const dfs = (i, x) => (i == nums.length ? x : dfs(i + 1, x ^ nums[i]) + dfs(i + 1, x));
+
+    return dfs(0, 0);
+  }
+}
+```
+
+# Count Prefix and Suffix Pairs I
+
+https://neetcode.io/problems/count-prefix-and-suffix-pairs-i/question
+
+```js
+class Solution {
+  /**
+   * @param {string[]} words
+   * @return {number}
+   */
+  isPrefixAndSuffix(str1, str2) {
+    const n = str1.length;
+    return str2.slice(0, n) == str1 && str2.slice(-n) == str1;
+  }
+
+  countPrefixSuffixPairs(words) {
+    let a = 0;
+    for (let i = 0; i < words.length - 1; i++) {
+      for (let j = i + 1; j < words.length; j++) {
+        a += this.isPrefixAndSuffix(words[i], words[j]) ? 1 : 0;
+      }
+    }
+    return a;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {string[]} words
+   * @return {number}
+   */
+  countPrefixSuffixPairs(words) {
+    const map = new Map();
+    let res = 0;
+    for (const w of words) {
+      const n = w.length;
+      for (let len = 1; len <= n; len++) {
+        const pre = w.slice(0, len);
+        const suf = w.slice(n - len);
+        if (pre == suf && map.has(pre)) {
+          res += map.get(pre);
+        }
+      }
+      map.set(w, (map.get(w) || 0) + 1);
+    }
+    return res;
+  }
+}
+```
+
+# Counting Words With a Given Prefix
+
+https://neetcode.io/problems/counting-words-with-a-given-prefix/question
+
+```js
+class Solution {
+  /**
+   * @param {string[]} words
+   * @param {string} pref
+   * @return {number}
+   */
+  prefixCount(words, pref) {
+    const re = new RegExp('^' + pref);
+    let a = 0;
+    for (let i of words) a = re.test(i) ? a + 1 : a;
+    return a;
+  }
+}
+```
+
+# Island Perimeter
+
+https://neetcode.io/problems/island-perimeter/question
+
+```js
+class Solution {
+    /**
+     * @param {number[][]} grid
+     * @return {number}
+     */
+    islandPerimeter(grid) {
+        const x=grid[0].length+2;
+        const y=grid.length+2;
+        let a=[new Array(x).fill(0)];
+        for(let i=0;i<y-2;i++) a.push([0,...grid[i],0]);
+        a.push(new Array(x).fill(0));
+        let b=0;
+        for(let i=1;i<y-1;i++){
+            for(let j=1;j<x-1;j++){
+                if(a[i][j]==1){
+                    if(a[i][j-1]==0) b++;
+                    if(a[i][j+1]==0) b++;
+                    if(a[i-1][j]==0) b++;
+                    if(a[i+1][j]==0) b++;
+                }
+            }
+        }
+        return b;
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  islandPerimeter(grid) {
+    let a = 0,
+      b = 0;
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[0].length; j++) {
+        if (grid[i][j] == 1) {
+          a++;
+          if (i > 0 && grid[i - 1][j] == 1) b++;
+          if (j > 0 && grid[i][j - 1] == 1) b++;
+        }
+      }
+    }
+    return a * 4 - b * 2;
+  }
+}
+```
+
+# Verifying An Alien Dictionary
+
+https://neetcode.io/problems/verifying-an-alien-dictionary/question
+
+```js
+class Solution {
+  /**
+   * @param {string[]} words
+   * @param {string} order
+   * @return {boolean}
+   */
+  isAlienSorted(words, order) {
+    let a = {};
+    for (let i = 0; i < 26; i++) a[order[i]] = String.fromCharCode(97 + i);
+    //console.log(a);
+    let b0 = '';
+    for (let i of words) {
+      let b = '';
+      for (let j of i) b += a[j];
+      if (b < b0) return false;
+      b0 = b;
+    }
+    return true;
+  }
+}
+```
+
+# Find the Town Judge
+
+https://neetcode.io/problems/find-the-town-judge/question
+
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} trust
+   * @return {number}
+   */
+  findJudge(n, trust) {
+    let c = Array(n + 1).fill(0);
+    for (let [a, b] of trust) {
+      c[a]--;
+      c[b]++;
+    }
+    return c.findIndex((x) => x == n - 1);
+  }
+}
+```
+
+# Flood Fill
+
+https://neetcode.io/problems/flood-fill/question
+
+```js
+
 ```
