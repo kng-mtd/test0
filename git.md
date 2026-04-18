@@ -152,7 +152,7 @@ git switch -c dev1
 
 ---
 
-## マージ
+## マージ、ブランチ削除
 
 ```bash
 git switch main
