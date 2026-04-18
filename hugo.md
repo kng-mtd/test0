@@ -53,7 +53,7 @@ nano content/posts/post0.md
 ---
 title: "Post0"
 date: 2026-01-01
-draft: true
+draft: false
 ---
 
 Hello Hugo
