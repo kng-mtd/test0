@@ -260,6 +260,8 @@ git config --list
 
 ```bash
 git remote add origin https://github.com/km/repo0.git
+
+git remote -v
 ```
 
 ---
