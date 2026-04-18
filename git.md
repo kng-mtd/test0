@@ -249,8 +249,8 @@ git merge origin/main
 ### 初期設定
 
 ```bash
-git config --global user.name 'km'
-git config --global user.email 'your@email.com'
+git config --global user.name 'kng-mtd'
+git config --global user.email 'muchagorou112@gmail.com'
 git config --list
 ```
 
