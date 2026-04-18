@@ -250,7 +250,7 @@ git merge origin/main
 
 ```bash
 git config --global user.name 'kng-mtd'
-git config --global user.email 'muchagorou112@gmail.com'
+git config --global user.email 'xxx@gmail.com'
 git config --list
 ```
 
