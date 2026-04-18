@@ -66,7 +66,7 @@ hugo server -D
 ```
 ctrl+c
 
-http://localhost:1313
+http://localhost:1313/hugo0/
 
 
 ### with online ubuntu ex. Killercoda
