@@ -90,11 +90,11 @@ https://xxx-xxx-xxx-xxx.trycloudflare.com
 hugo
 cd public
 git add .
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
 git commit -m 'deploy web page files'
 git branch -M main
 git remote add origin https://github.com/kng-mtd/hugo0.git
+git config --global user.email 'muchagorou112@gmail.com'
+git config --global user.name 'kng-mtd'
 git push -u origin main
 ```
 
