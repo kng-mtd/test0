@@ -1,4 +1,4 @@
-# Git 基本メモ
+# Git　メモ
 
 ## インストールと確認
 
@@ -259,7 +259,7 @@ git config --list
 ### リモート追加
 
 ```bash
-git remote add origin https://xxx.git
+git remote add origin https://github.com/km/repo0.git
 ```
 
 ---
