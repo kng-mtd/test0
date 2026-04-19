@@ -59,15 +59,30 @@ draft: false
 Hello Hugo
 ```
 
+```bash
+hugo new content posts/post1.md
+nano content/posts/post1.md
+```
+```md
+---
+title: "Post0"
+date: 2026-01-01
+draft: true
+---
+
+Hello Hugo again
+```
+
 ## test execution
 
 ```bash
 hugo server -D
+hugo server
 ```
-ctrl+c
 
 http://localhost:1313/hugo0/
 
+---
 
 ### with online ubuntu ex. Killercoda
 ```bash
@@ -83,33 +98,7 @@ cloudflared tunnel --url http://localhost:1313 --loglevel info
 
 https://xxx-xxx-xxx-xxx.trycloudflare.com
 
-
-## make directory "public/" for web page files 
-
-```bash
-hugo
-cd public
-git add .
-git commit -m 'deploy web page files'
-git branch -M main
-git remote add origin https://github.com/kng-mtd/hugo0.git
-git config --global user.email 'muchagorou112@gmail.com'
-git config --global user.name 'kng-mtd'
-git push -u origin main
-```
-
-## setting, github pages
-```
-Source: Deploy from a branch
-Branch: main
-Folder: / (root)
-```
-
-https://kng-mtd.github.io/hugo0/
-
-
-
-
+---
 
 ## with github actions, automatic publication
 
@@ -196,11 +185,13 @@ Branch: main
 Folder: / (root)
 ```
 ```bash
+git init
+git config --global user.email 'xxx@gmail.com'
+git config --global user.name 'kng-mtd'
 git add .
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-git commit -m 'setup github actions'
-git push origin main
+git commit -m 'init'
+git remote add origin git@github.com:kng-mtd/hugo0.git
+git push -u origin main
 ```
 
 https://kng-mtd.github.io/hugo0/
