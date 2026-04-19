@@ -1134,7 +1134,7 @@ class Solution {
     };
 
     let a = [];
-    for (let i = 0; i <= rowIndex; i++) a.push((fact(rowIndex) / fact(i) / fact(rowIndex - i)) >> 0);
+    for (let i = 0; i <= rowIndex; i++) a.push((fact(rowIndex) / fact(i) / fact(rowIndex - i)) | 0);
     return a;
   }
 }
@@ -4350,5 +4350,346 @@ class Solution {
 https://neetcode.io/problems/flood-fill/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} image
+   * @param {number} sr
+   * @param {number} sc
+   * @param {number} color
+   * @return {number[][]}
+   */
+  floodFill(image, sr, sc, color) {
+    const m = image.length;
+    const n = image[0].length;
+    const org = image[sr][sc];
+    if (org == color) return image;
+    let vst = Array.from({ length: m }, () => Array(n).fill(false));
+    let que = [];
 
+    const bfs = (y, x) => {
+      image[y][x] = color;
+      vst[y][x] = true;
+      que.push([y, x]);
+    };
+
+    bfs(sr, sc);
+    while (que.length) {
+      const [y, x] = que.pop();
+      if (y > 0 && !vst[y - 1][x] && image[y - 1][x] == org) bfs(y - 1, x);
+      if (y < m - 1 && !vst[y + 1][x] && image[y + 1][x] == org) bfs(y + 1, x);
+      if (x > 0 && !vst[y][x - 1] && image[y][x - 1] == org) bfs(y, x - 1);
+      if (x < n - 1 && !vst[y][x + 1] && image[y][x + 1] == org) bfs(y, x + 1);
+    }
+    return image;
+  }
+}
 ```
+
+```js
+class Solution {
+  /**
+   * @param {number[][]} image
+   * @param {number} sr
+   * @param {number} sc
+   * @param {number} color
+   * @return {number[][]}
+   */
+  floodFill(image, sr, sc, color) {
+    const m = image.length;
+    const n = image[0].length;
+    const org = image[sr][sc];
+    if (org == color) return image;
+    const dfs = (y, x) => {
+      if (y < 0 || x < 0 || y >= m || x >= n) return;
+      if (image[y][x] != org) return;
+      image[y][x] = color;
+      dfs(y + 1, x);
+      dfs(y - 1, x);
+      dfs(y, x + 1);
+      dfs(y, x - 1);
+    };
+
+    dfs(sr, sc);
+    return image;
+  }
+}
+```
+
+# Climbing Stairs
+
+https://neetcode.io/problems/climbing-stairs/question
+
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  climbStairs(n) {
+    if (n == 1) return 1;
+    let dp = [];
+    ((dp[0] = 1), (dp[1] = 1));
+    for (let i = 2; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2];
+    return dp[n];
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  climbStairs(n) {
+    let a = 1,
+      b = 1;
+    for (let i = 2; i <= n; i++) [a, b] = [b, b + a];
+    return b;
+  }
+}
+```
+
+# Min Cost Climbing Stairs
+
+https://neetcode.io/problems/min-cost-climbing-stairs/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} cost
+   * @return {number}
+   */
+  minCostClimbingStairs(cost) {
+    const n = cost.length;
+    let dp = [];
+    ((dp[0] = 0), (dp[1] = 0));
+    for (let i = 2; i <= n; i++) {
+      dp[i] = Math.min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
+    }
+    return dp[n];
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[]} cost
+   * @return {number}
+   */
+  minCostClimbingStairs(cost) {
+    let a = 0,
+      b = 0;
+    for (let i = 2; i <= cost.length; i++) {
+      [a, b] = [b, Math.min(b + cost[i - 1], a + cost[i - 2])];
+    }
+    return b;
+  }
+}
+```
+
+# N-th Tribonacci Number
+
+https://neetcode.io/problems/n-th-tribonacci-number/question
+
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  tribonacci(n) {
+    let dp = [];
+    ((dp[0] = 0), (dp[1] = 1), (dp[2] = 1));
+    for (let i = 3; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+    return dp[n];
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  tribonacci(n) {
+    if (n == 0) return 0;
+    let a = 0,
+      b = 1,
+      c = 1;
+    for (let i = 3; i <= n; i++) [a, b, c] = [b, c, a + b + c];
+    return c;
+  }
+}
+```
+
+# Buy Two Chocolates
+
+https://neetcode.io/problems/buy-two-chocolates/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} prices
+   * @param {number} money
+   * @return {number}
+   */
+  buyChoco(prices, money) {
+    prices.sort((x1, x2) => x1 - x2);
+    const a = prices[0] + prices[1];
+    return money < a ? money : money - a;
+  }
+}
+```
+
+# Lemonade Change
+
+https://neetcode.io/problems/lemonade-change/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} bills
+   * @return {boolean}
+   */
+  lemonadeChange(bills) {
+    let a05 = 0,
+      a10 = 0,
+      a20 = 0;
+    for (let i of bills) {
+      if (i == 5) {
+        a05++;
+      } else if (i == 10) {
+        (a05--, a10++);
+      } else {
+        if (a10 > 0) {
+          (a05--, a10--);
+        } else {
+          a05 -= 3;
+        }
+      }
+      if (a05 < 0) return false;
+    }
+    return true;
+  }
+}
+```
+
+# Minimum Number of Moves to Seat Everyone
+
+https://neetcode.io/problems/minimum-number-of-moves-to-seat-everyone/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} seats
+   * @param {number[]} students
+   * @return {number}
+   */
+  minMovesToSeat(seats, students) {
+    seats.sort((x1, x2) => x1 - x2);
+    students.sort((x1, x2) => x1 - x2);
+    let a = 0;
+    for (let i = 0; i < seats.length; i++) a += Math.abs(seats[i] - students[i]);
+    return a;
+  }
+}
+```
+
+# Maximum Odd Binary Number
+
+https://neetcode.io/problems/maximum-odd-binary-number/question
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {string}
+   */
+  maximumOddBinaryNumber(s) {
+    return s.replaceAll('0', '').slice(1) + s.replaceAll('1', '') + '1';
+  }
+}
+```
+
+# Maximum Nesting Depth of the Parentheses
+
+https://neetcode.io/problems/maximum-nesting-depth-of-the-parentheses/question
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  maxDepth(s) {
+    let a = 0,
+      b = 0;
+    for (let i of [...s]) {
+      if (i == '(') b++;
+      else if (i == ')') b--;
+      a = b > a ? b : a;
+    }
+    return a;
+  }
+}
+```
+
+# Check if One String Swap Can Make Strings Equal
+
+https://leetcode.com/problems/check-if-one-string-swap-can-make-strings-equal/description/
+
+```js
+/**
+ * @param {string} s1
+ * @param {string} s2
+ * @return {boolean}
+ */
+const areAlmostEqual = (s1, s2) => {
+  if (s1 == s2) return true;
+  for (let i1 = 0; i1 < s1.length - 1; i1++) {
+    for (let i2 = i1 + 1; i2 < s1.length; i2++) {
+      let s = [...s1];
+      [s[i1], s[i2]] = [s[i2], s[i1]];
+      if (s.join('') == s2) return true;
+    }
+  }
+  return false;
+};
+```
+
+# Make Two Arrays Equal by Reversing Subarrays
+
+https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays/description/
+
+```js
+/**
+ * @param {number[]} target
+ * @param {number[]} arr
+ * @return {boolean}
+ */
+const canBeEqual = (target, arr) => {
+  return target.sort().join(',') == arr.sort().join(',');
+};
+```
+
+```js
+/**
+ * @param {number[]} target
+ * @param {number[]} arr
+ * @return {boolean}
+ */
+const canBeEqual = (target, arr) => {
+  let a = {};
+  for (let i of target) a[i] = (a[i] ?? 0) + 1;
+  for (let i of arr) {
+    if (!a[i]) return false;
+    a[i]--;
+  }
+  return true;
+};
+```
+
+#
