@@ -1,4 +1,4 @@
-# Git 基本メモ（整理版）
+# Gitメモ
 
 ## インストールと確認
 
@@ -6,8 +6,6 @@
 sudo apt install git-all
 git --version
 ```
-
----
 
 ## リポジトリの作成
 
@@ -24,7 +22,6 @@ ls -a
   - stage（インデックス）
   - repository（履歴）
 
----
 
 ## ファイル作成・状態確認
 
@@ -33,7 +30,6 @@ nano readme.txt
 git status
 ```
 
----
 
 ## ステージング
 
@@ -42,7 +38,6 @@ git add readme.txt
 git add .
 ```
 
----
 
 ## コミット
 
@@ -56,7 +51,6 @@ git commit
 git commit -m 'message'
 ```
 
----
 
 ## ログ確認
 
@@ -66,7 +60,6 @@ git log --oneline
 git log -1
 ```
 
----
 
 ## ファイル変更と追加
 
@@ -79,7 +72,6 @@ git add .
 git status
 ```
 
----
 
 ## コミット（変更＋追加）
 
@@ -88,7 +80,6 @@ git commit -a
 git commit -a -m 'message'
 ```
 
----
 
 ## 差分確認
 
@@ -114,7 +105,6 @@ git diff HEAD~1 HEAD
 git difftool HEAD~1 HEAD
 ```
 
----
 
 ## 変更の取り消し
 
@@ -130,7 +120,6 @@ git restore --staged readme.txt
 git restore readme.txt
 ```
 
----
 
 ## ブランチ操作
 
@@ -150,9 +139,7 @@ git switch dev1
 git switch -c dev1
 ```
 
----
-
-## マージ
+## マージ、ブランチ削除
 
 ```bash
 git switch main
@@ -160,7 +147,6 @@ git merge dev1
 git branch -d dev1
 ```
 
----
 
 ## コンフリクト対応
 
@@ -190,43 +176,43 @@ git commit
 
 ---
 
-## ローカルリモート（共有リポジトリ）
+## 同一サーバ内、リモート（共有リポジトリ）利用
 
-### リモート作成（ホスト側）
+### リモート作成（ローカル擬似サーバ）
 
 ```bash
-mkdir /tmp/rmt_work
-cd /tmp/rmt_work
+mkdir /tmp/rmt_work.git
+cd /tmp/rmt_work.git
 git init --bare
 ```
 
----
 
 ### クローン
 
 ```bash
-mkdir work1
+git clone /tmp/rmt_work.git work1
 cd work1
-git clone /tmp/rmt_work.git
 ```
 
----
 
-### 取得
+### コミット
 
 ```bash
-git pull /tmp/rmt_work.git
+touch README.md
+git add .
+git commit -m 'init'
 ```
 
----
-
-### プッシュ
+### プッシュ、プル
 
 ```bash
 git push origin main
+#or
+git push -u origin main #first
+git push #since then
+git pull
 ```
 
----
 
 ### ブランチ確認
 
@@ -234,7 +220,6 @@ git push origin main
 git branch -a
 ```
 
----
 
 ### リモートマージ
 
@@ -246,23 +231,52 @@ git merge origin/main
 
 ## GitHub 利用
 
-### 初期設定
-
+### SSH接続準備
 ```bash
-git config --global user.name 'km'
-git config --global user.email 'your@email.com'
-git config --list
+ssh-keygen -t ed25519 -C 'xxx@gmail.com'
+cat ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
 ```
 
----
+github
+
+https://github.com/settings/keys
+```
+personal account > SSH and GPG keys > New SSH key
+ > (paste ssh-public key) > add key
+```
+
+```bash
+ssh -T git@github.com
+```
+
 
 ### リモート追加
 
 ```bash
-git remote add origin https://xxx.git
+git remote -v
+```
+> enpty
+```
+git remote add origin git@github.com:kng-mtd/repo0.git
+```
+> https exists
+```
+git remote set-url origin git@github.com:kng-mtd/repo0.git
+```
+```
+git remote -v
 ```
 
----
+
+### git push設定
+
+```bash
+git config --global user.name 'kng-mtd'
+git config --global user.email 'xxx@gmail.com'
+git config --list
+```
+
 
 ### 取得
 
@@ -271,15 +285,25 @@ git pull origin main
 git fetch origin
 ```
 
+### githubでのコミットをローカルに反映
+ 
+```
+git pull origin main --rebase
+```
+
 ---
 
-### ブランチ作業
+## ブランチ作業
 
 ```bash
 git switch -c dev1
 git add .
 git commit -m 'message'
+
 git push origin dev1
+#or
+git push -u origin dev1 #first
+git push #since then
 ```
 
 ---
@@ -291,371 +315,3 @@ git push origin dev1
 3. レビュー依頼
 4. マージ
 5. ブランチ削除
-
----
-
-「**Hugo → GitHub Pages 自動デプロイ**」を最短構成でまとめます。
-（pushするだけでサイト更新される状態まで）
-
----
-
-# 全体像（これだけ理解すればOK）
-
-```text
-Hugoで生成 → GitHubにpush → 自動ビルド → 公開
-```
-
----
-
-# ① Hugoサイト作成
-
-```bash
-hugo new site mysite
-cd mysite
-```
-
----
-
-# ② テーマ追加（例：PaperMod）
-
-```bash
-git init
-git submodule add https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
-```
-
-`hugo.toml` を編集：
-
-```toml
-baseURL = 'https://ユーザー名.github.io/mysite/'
-languageCode = 'en-us'
-title = 'My Site'
-theme = 'PaperMod'
-```
-
----
-
-# ③ 記事作成
-
-```bash
-hugo new posts/first.md
-```
-
-編集：
-
-```bash
-nano content/posts/first.md
-```
-
-```md
-+++
-title = 'First Post'
-date = 2026-01-01
-+++
-
-Hello Hugo
-```
-
----
-
-# ④ ローカル確認
-
-```bash
-hugo server
-```
-
-👉 [http://localhost:1313](http://localhost:1313) で確認
-
----
-
-# ⑤ GitHubリポジトリ作成
-
-GitHub で：
-
-- リポジトリ名：`mysite`
-- Public
-- READMEなし
-
----
-
-# ⑥ Git初期化＆push
-
-```bash
-git add .
-git commit -m 'init'
-git branch -M main
-git remote add origin https://github.com/ユーザー名/mysite.git
-git push -u origin main
-```
-
----
-
-# ⑦ 自動デプロイ設定（これが重要）
-
-`.github/workflows/hugo.yml` を作る：
-
-```bash
-mkdir -p .github/workflows
-nano .github/workflows/hugo.yml
-```
-
-中身：
-
-```yaml
-name: Deploy Hugo site
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: 'latest'
-
-      - name: Build
-        run: hugo --minify
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-```
-
----
-
-# ⑧ push（これで自動化スタート）
-
-```bash
-git add .
-git commit -m 'add workflow'
-git push
-```
-
----
-
-# ⑨ GitHub Pages設定
-
-GitHubの：
-
-- Settings → Pages
-- Source：
-  - **Deploy from a branch**
-  - Branch：`gh-pages`
-
----
-
-# ⑩ 公開URL
-
-```text
-https://ユーザー名.github.io/mysite/
-```
-
----
-
-# 更新方法（今後はこれだけ）
-
-```bash
-hugo new posts/xxx.md
-# 編集
-git add .
-git commit -m 'post'
-git push
-```
-
-👉 自動でビルド＆公開
-
----
-
-# よくあるハマり
-
-### submodule忘れ
-
-```bash
-git submodule update --init --recursive
-```
-
----
-
-### baseURLミス
-
-```toml
-baseURL = 'https://ユーザー名.github.io/mysite/'
-```
-
----
-
-### gh-pages未設定
-
-→ 表示されない
-
----
-
-「**Hugo → Cloudflare Pages（自動デプロイ）**」を最短でいきます。
-（GitHub連携して push だけで公開される構成）
-
----
-
-# 全体像
-
-```text
-Hugo → GitHub → Cloudflare Pages → 自動公開
-```
-
-👉 GitHub Pagesより速くて設定もシンプル
-
----
-
-# ① Hugoサイト作成（済んでいればOK）
-
-```bash
-hugo new site mysite
-cd mysite
-git init
-```
-
-テーマ（例）：
-
-```bash
-git submodule add https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
-```
-
-`hugo.toml`：
-
-```toml
-baseURL = '/'
-title = 'My Site'
-theme = 'PaperMod'
-```
-
-👉 Cloudflareでは `baseURL='/'` がポイント
-
----
-
-# ② GitHubにpush
-
-GitHub にリポジトリ作成して：
-
-```bash
-git add .
-git commit -m 'init'
-git branch -M main
-git remote add origin https://github.com/ユーザー名/mysite.git
-git push -u origin main
-```
-
----
-
-# ③ Cloudflare Pages設定
-
-Cloudflare にログイン
-
-1. 「Pages」へ
-2. 「Create a project」
-3. 「Connect to Git」
-
-👉 GitHubと連携してリポジトリ選択
-
----
-
-# ④ ビルド設定（重要）
-
-設定はこれだけ：
-
-```text
-Framework preset: Hugo
-Build command: hugo
-Build output directory: public
-```
-
----
-
-# ⑤ デプロイ
-
-「Save and Deploy」
-
-👉 数十秒で公開される
-
----
-
-# ⑥ 公開URL
-
-```text
-https://xxxx.pages.dev
-```
-
----
-
-# 更新方法（今後）
-
-```bash
-git add .
-git commit -m 'update'
-git push
-```
-
-👉 自動デプロイされる
-
----
-
-# カスタムドメイン（任意）
-
-Cloudflare Pagesで：
-
-- 「Custom domains」
-- ドメイン追加
-
-👉 DNSも自動設定される（Cloudflare使ってれば特に楽）
-
----
-
-# よくあるハマり
-
-### baseURLミス
-
-```toml
-baseURL = '/'
-```
-
----
-
-### テーマ読み込めない
-
-```bash
-git submodule update --init --recursive
-```
-
----
-
-### ビルド失敗
-
-→ Hugo version指定（必要な場合）
-
-```text
-Environment variable:
-HUGO_VERSION = 0.1xx.x
-```
-
----
-
-# GitHub Pagesとの違い（重要）
-
-| 項目       | Cloudflare Pages | GitHub Pages |
-| ---------- | ---------------- | ------------ |
-| 速度       | 速い             | 普通         |
-| 設定       | 簡単             | やや面倒     |
-| 自動ビルド | 標準             | Actions必要  |
-| CDN        | 強い             | 普通         |
-
----
