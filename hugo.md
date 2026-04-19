@@ -42,6 +42,8 @@ baseURL = 'https://kng-mtd.github.io/hugo0/'
 languageCode = 'en-us'
 title = 'My Hugo Site'
 theme = 'PaperMod'
+[params]
+  mainSections = ['posts']
 ```
 
 ## make page
@@ -180,9 +182,7 @@ jobs:
 
 ### setting, github pages
 ```
-Source: Deploy from a branch
-Branch: main
-Folder: / (root)
+Source: GitHub Actions
 ```
 ```bash
 git init
@@ -193,7 +193,6 @@ git commit -m 'init'
 git remote add origin git@github.com:kng-mtd/hugo0.git
 git push -u origin main
 ```
-
 https://kng-mtd.github.io/hugo0/
 
 ```
@@ -207,15 +206,19 @@ date: 2026-04-17
 draft: false
 ---
 
-Hello Hugo
+Hello Hugo again
 ```
 
 ```bash
-git add content/posts/post1.md
-#git add .
+git add .
+#git add content/posts/post1.md
 git commit -m 'add post1'
 git push
 ```
+https://kng-mtd.github.io/hugo0/
+
+
+---
 
 ### PAT auth
 
