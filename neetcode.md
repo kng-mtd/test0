@@ -506,7 +506,7 @@ class Solution {
    */
   nextGreaterElement(nums1, nums2) {
     const n = nums2.length;
-    let a = new Array(n).fill(-1),
+    let a = Array(n).fill(-1),
       b = [];
     for (let i = 0; i < n; i++) {
       while (b.length && nums2[i] > nums2[b.at(-1)]) a[b.pop()] = nums2[i];
@@ -1164,7 +1164,7 @@ class Solution {
    * @return {number[]}
    */
   getRow(rowIndex) {
-    let a = new Array(rowIndex + 1).fill(1);
+    let a = Array(rowIndex + 1).fill(1);
     for (let i = 1; i < rowIndex; i++) {
       for (let j = i; j > 0; j--) {
         a[j] += a[j - 1];
@@ -4255,9 +4255,9 @@ class Solution {
     islandPerimeter(grid) {
         const x=grid[0].length+2;
         const y=grid.length+2;
-        let a=[new Array(x).fill(0)];
+        let a=[Array(x).fill(0)];
         for(let i=0;i<y-2;i++) a.push([0,...grid[i],0]);
-        a.push(new Array(x).fill(0));
+        a.push(Array(x).fill(0));
         let b=0;
         for(let i=1;i<y-1;i++){
             for(let j=1;j<x-1;j++){
@@ -4692,4 +4692,267 @@ const canBeEqual = (target, arr) => {
 };
 ```
 
-#
+# Meeting Rooms
+
+https://neetcode.io/problems/meeting-schedule/question
+
+```js
+/**
+ * Definition of Interval:
+ * class Interval {
+ *   constructor(start, end) {
+ *     this.start = start;
+ *     this.end = end;
+ *   }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {Interval[]} intervals
+   * @returns {boolean}
+   */
+  canAttendMeetings(intervals) {
+    let a = [];
+    for (const { start: s0, end: e0 } of intervals) {
+      for (const [s, e] of a) {
+        if (s0 < e && e0 > s) return false;
+      }
+      a.push([s0, e0]);
+    }
+    return true;
+  }
+}
+```
+
+```js
+/**
+ * Definition of Interval:
+ * class Interval {
+ *   constructor(start, end) {
+ *     this.start = start;
+ *     this.end = end;
+ *   }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {Interval[]} intervals
+   * @returns {boolean}
+   */
+  canAttendMeetings(intervals) {
+    intervals.sort((x1, x2) => x1.start - x2.start);
+    for (let i = 1; i < intervals.length; i++) {
+      if (intervals[i].start < intervals[i - 1].end) return false;
+    }
+    return true;
+  }
+}
+```
+
+# Excel Sheet Column Title
+
+https://neetcode.io/problems/excel-sheet-column-title/question
+
+```js
+class Solution {
+  /**
+   * @param {number} columnNumber
+   * @return {string}
+   */
+  convertToTitle(columnNumber) {
+    let n = columnNumber;
+    let a = '';
+    while (n > 0) {
+      n--;
+      a = String.fromCharCode((n % 26) + 65) + a;
+      n = Math.floor(n / 26);
+    }
+    return a;
+  }
+}
+```
+
+# Greatest Common Divisor of Strings
+
+https://neetcode.io/problems/greatest-common-divisor-of-strings/question
+
+```js
+class Solution {
+  /**
+   * @param {string} str1
+   * @param {string} str2
+   * @return {string}
+   */
+  gcdOfStrings(str1, str2) {
+    let a = 0,
+      b;
+    if (str2.length > str1.length) [str2, str1] = [str1, str2];
+    while (true) {
+      a++;
+      b = str2.slice(0, str2.length / a);
+      if (str1.split(b).join('') == '' || b == '') return b;
+    }
+  }
+}
+```
+
+# Count Odd Numbers in an Interval Range
+
+https://neetcode.io/problems/count-odd-numbers-in-an-interval-range/question
+
+```js
+class Solution {
+  /**
+   * @param {number} low
+   * @param {number} high
+   * @return {number}
+   */
+  countOdds(low, high) {
+    return ((high + 1) >> 1) - (low >> 1);
+  }
+}
+```
+
+# Matrix Diagonal Sum
+
+https://neetcode.io/problems/matrix-diagonal-sum/question
+
+```js
+
+```
+
+# Calculate Money in Leetcode Bank
+
+https://leetcode.com/problems/calculate-money-in-leetcode-bank/description/
+
+```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+const totalMoney = (n) => {
+  const w = Math.floor(n / 7),
+    d = n % 7;
+  return 28 * w + (7 * w * (w - 1)) / 2 + d * w + (d * (d + 1)) / 2;
+};
+```
+
+# Largest Odd Number in String
+
+https://leetcode.com/problems/largest-odd-number-in-string/description/
+
+```js
+/**
+ * @param {string} num
+ * @return {string}
+ */
+const largestOddNumber = (num) => {
+  let n = num.length;
+  while (n > 0) {
+    if (num.at(n - 1) % 2 != 0) break;
+    n--;
+  }
+  return num.slice(0, n);
+};
+```
+
+# Image Smoother
+
+https://leetcode.com/problems/image-smoother/description/
+
+```js
+/**
+ * @param {number[][]} img
+ * @return {number[][]}
+ */
+const imageSmoother = (img) => {
+  const m = img.length,
+    n = img[0].length;
+  let a = Array.from({ length: m }, () => Array(n));
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      let b = 0,
+        c = 0;
+      for (let ii = -1; ii <= 1; ii++) {
+        for (let jj = -1; jj <= 1; jj++) {
+          if (i + ii < 0 || i + ii > m - 1 || j + jj < 0 || j + jj > n - 1) continue;
+          b += img[i + ii][j + jj];
+          c++;
+        }
+      }
+      a[i][j] = (b / c) | 0;
+    }
+  }
+  return a;
+};
+```
+
+# Count of Matches in Tournament
+
+https://leetcode.com/problems/count-of-matches-in-tournament/description/
+
+```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+const numberOfMatches = (n) => {
+  let a = 0;
+  while (n > 1) {
+    if (n % 2 == 0) [a, n] = [a + n / 2, n / 2];
+    else [a, n] = [a + (n - 1) / 2, (n - 1) / 2 + 1];
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+const numberOfMatches = (n) => n - 1;
+```
+
+# Water Bottles
+
+https://leetcode.com/problems/water-bottles/description/
+
+```js
+/**
+ * @param {number} numBottles
+ * @param {number} numExchange
+ * @return {number}
+ */
+const numWaterBottles = (numBottles, numExchange) => {
+  let a = numBottles,
+    b = a;
+  while (b >= numExchange) {
+    const c = (b / numExchange) | 0;
+    a += c;
+    b = c + (b % numExchange);
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number} numBottles
+ * @param {number} numExchange
+ * @return {number}
+ */
+const numWaterBottles = (numBottles, numExchange) => {
+  return (numBottles + (numBottles - 1) / (numExchange - 1)) | 0;
+};
+```
+
+# Largest Local Values in a Matrix
+
+https://leetcode.com/problems/largest-local-values-in-a-matrix/description/
+
+```js
+
+```
