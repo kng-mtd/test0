@@ -268,14 +268,14 @@ github
 
 https://github.com/settings
 
-1 Developer settings
-2 Personal access tokens
-3 Tokens (classic)
-4 Generate new token (classic)
-5 Note
-6 Expiration (recommend 30days or 90days)
-7 Scopes
-8 Generate token
+1. Developer settings
+2. Personal access tokens
+3. Tokens (classic)
+4. Generate new token (classic)
+5. Note
+6. Expiration (recommend 30days or 90days)
+7. Scopes
+8. Generate token
 ```
 ghp_xxxxxxxxxxxxx
 ```
@@ -306,11 +306,11 @@ github
 
 https://github.com/settings/keys
 
-1 personal account
-2 SSH and GPG keys
-3 New SSH key
-4 (paste ssh-public key)
-5 add key
+1. personal account
+2. SSH and GPG keys
+3. New SSH key
+4. (paste ssh-public key)
+5. add key
 
 ```bash
 ssh -T git@github.com
