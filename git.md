@@ -329,9 +329,19 @@ git clone git@github.com:kng-mtd/hugo0.git
 
 ```bash
 git pull origin main
-git pull origin main --rebase #GitHub上コミットをローカルに反映
 
+#GitHub上コミットをローカルに反映
+git pull origin main --rebase 
+
+#GitHub上とローカルの差異を確認してからローカル更新
 git fetch origin
+git status
+ # 差分確認
+git log origin/main  
+git diff main origin/main
+git merge origin/main
+#or
+git rebase origin/main
 ```
 
 ---
