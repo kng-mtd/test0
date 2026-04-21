@@ -229,29 +229,10 @@ git merge origin/main
 
 ---
 
+
 ## GitHub 利用
 
-### SSH接続準備
-```bash
-ssh-keygen -t ed25519 -C 'xxx@gmail.com'
-cat ~/.ssh/id_ed25519
-cat ~/.ssh/id_ed25519.pub
-```
-
-github
-
-https://github.com/settings/keys
-```
-personal account > SSH and GPG keys > New SSH key
- > (paste ssh-public key) > add key
-```
-
-```bash
-ssh -T git@github.com
-```
-
-
-### リモート追加
+### ローカルから開発開始、GitHubをリモートとして追加
 
 ```bash
 git remote -v
@@ -268,7 +249,6 @@ git remote set-url origin git@github.com:kng-mtd/repo0.git
 git remote -v
 ```
 
-
 ### git push設定
 
 ```bash
@@ -277,18 +257,76 @@ git config --global user.email 'xxx@gmail.com'
 git config --list
 ```
 
+### GitHubレポジトリから開発開始
 
-### 取得
+### PAT認証
+```bash
+git clone https://github.com/kng-mtd/repo0.git
+```
+
+github
+
+https://github.com/settings
+
+1 Developer settings
+2 Personal access tokens
+3 Tokens (classic)
+4 Generate new token (classic)
+5 Note
+6 Expiration (recommend 30days or 90days)
+7 Scopes
+8 Generate token
+```
+ghp_xxxxxxxxxxxxx
+```
+
+```bash
+git push
+
+Username: kng-mtd
+Password: ghp_xxxxxxxxxxxxx
+```
+
+PAT入力省略
+```bash
+git config --global credential.helper store
+```
+
+
+
+### SSH認証
+
+```bash
+ssh-keygen -t ed25519 -C 'xxx@gmail.com'
+cat ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+```
+
+github
+
+https://github.com/settings/keys
+
+1 personal account
+2 SSH and GPG keys
+3 New SSH key
+4 (paste ssh-public key)
+5 add key
+
+```bash
+ssh -T git@github.com
+```
+
+```bash
+git clone git@github.com:kng-mtd/hugo0.git
+```
+
+### ローカル更新
 
 ```bash
 git pull origin main
-git fetch origin
-```
+git pull origin main --rebase #GitHub上コミットをローカルに反映
 
-### githubでのコミットをローカルに反映
- 
-```
-git pull origin main --rebase
+git fetch origin
 ```
 
 ---
