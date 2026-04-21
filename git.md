@@ -237,12 +237,16 @@ git merge origin/main
 ```bash
 git remote -v
 ```
-> enpty
+> empty
 ```
+#PAT
+git remote add orogin https://github.com/kng-mtd/repo0.git
+#SSH
 git remote add origin git@github.com:kng-mtd/repo0.git
 ```
 > https exists
 ```
+git remote set-url origin https://github.com/kng-mtd/repo0.git
 git remote set-url origin git@github.com:kng-mtd/repo0.git
 ```
 ```
@@ -319,6 +323,7 @@ ssh -T git@github.com
 ```bash
 git clone git@github.com:kng-mtd/hugo0.git
 ```
+
 
 ### ローカル更新
 
