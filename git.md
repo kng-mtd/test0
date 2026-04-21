@@ -266,7 +266,7 @@ git clone https://github.com/kng-mtd/repo0.git
 
 github
 
-https://github.com/settings
+https://github.com/kng-mtd/repo0/settings
 
 1. Developer settings
 2. Personal access tokens
