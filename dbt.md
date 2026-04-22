@@ -90,7 +90,7 @@ from raw0;
 from stg0;
 ```
 
-### 実務でよく使う構成（推奨）
+### 実務でよく使う構成
 
 ```
 pj0/
@@ -223,8 +223,8 @@ models/
 
 ## dbt で使う YAML 一覧
 
-- dbt_project.yml ← プロジェクト設定（必須）
 - profiles.yml ← DB 接続設定（~/.dbt）
+- dbt_project.yml ← プロジェクト設定
 - models/schema.yml ← models の定義（tests / docs）
 - models/src.yml ← sources 定義
 - seeds/\*.yml ← seeds 設定
@@ -234,7 +234,6 @@ models/
 
 プロジェクト全体設定
 
-例
 ```yaml
 name: pj0
 version: 1.0
@@ -274,7 +273,7 @@ seeds:
 
 ~/.dbt/profiles.yml
 
-例（DuckDB）
+DuckDB
 
 ```yaml
 pj0:
@@ -301,7 +300,7 @@ pj0:
       path: /tmp/db.duckdb
 ```
 
-例（Snowflake）
+Snowflake
 
 ```yaml
 pj0:
@@ -318,15 +317,13 @@ pj0:
       schema: public
 ```
 
-### schema.yml（models 定義）
+### schema.yml（任意ファイル名、models 定義）
 
-models/ 配下に置く
+models/ 配下
 
 - tests
 - description（docs）
 - カラム定義
-
-例
 
 ```yaml
 version: 2
@@ -350,11 +347,9 @@ models:
               field: id
 ```
 
-### sources（src.yml）
+### src.yml（任意ファイル名、source 定義）
 
-外部テーブル定義
-
-例
+接続データベースのソース
 
 ```yaml
 version: 2
@@ -373,7 +368,7 @@ sources:
 or
 `select * from {{ source('src0', 'users') }}`
 
-S3より
+S3（接続データベース外のソース）
 
 ```yaml
 version: 2
@@ -394,8 +389,6 @@ or
 
 
 ### seeds.yml
-
-例
 
 ```yaml
 version: 2
@@ -444,7 +437,6 @@ version: 2
 to: {{ ref('stage0') }}
 ```
 
-- モデル名にパスを書く
 
 ## models
 
@@ -582,7 +574,7 @@ where updated_at > (select max(updated_at) from {{ this }})
 
 ## seeds
 
-### CSV保存
+### 保存CSV
 
 ```
 pj0/seeds/ext0.csv
@@ -699,7 +691,7 @@ from raw.table0
 
 ---
 
-### よくある構成（実務）
+### よくある構成
 
 ```
 models/
@@ -735,7 +727,7 @@ from {{ ref('stg_users') }}
 | accepted_values | 値制限    |
 | relationships   | 外部キー  |
 
-### よくある構成（実務）
+### よくある構成
 
 ```bash
 models/
@@ -790,7 +782,7 @@ where column0 is null   -- エラー条件
 dbt test --select test0
 ```
 
-### generic tests（カスタム）
+### generic tests（カスタムテスト）
 
 pj0/tests/generic/gentest0.sql
 
@@ -893,7 +885,7 @@ docs で見えるもの
 - lineage（依存関係）
 - tests 結果
 
-### よくある構成（実務）
+### よくある構成
 
 ```bash
 models/
@@ -971,7 +963,7 @@ config
 {{ config(materialized='table') }}
 ```
 
-### 実務でよく使う Jinja パターン
+### Jinja パターン
 
 条件分岐（環境差分）
 
