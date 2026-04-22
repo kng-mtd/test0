@@ -555,8 +555,7 @@ dbt run --select +result0
 ### source を使う（推奨）
 
 ```sql
-select *
-from {{ source('raw', 'users') }}
+select * from {{ source('src0', 'users') }}
 ```
 
 ### incremental
