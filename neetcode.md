@@ -5282,7 +5282,21 @@ const addToArrayForm = (num, k) => {
 https://neetcode.io/problems/find-the-difference/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @param {string} t
+   * @return {character}
+   */
+  findTheDifference(s, t) {
+    let a = {};
+    for (let i of s) a[i] = (a[i] ?? 0) + 1;
+    for (let i of t) {
+      if (!a[i]) return i;
+      a[i]--;
+    }
+  }
+}
 ```
 
 ## Power of Two
@@ -5290,7 +5304,15 @@ https://neetcode.io/problems/find-the-difference/question
 https://neetcode.io/problems/power-of-two/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @return {boolean}
+   */
+  isPowerOfTwo(n) {
+    return Number.isInteger(Math.log2(n));
+  }
+}
 ```
 
 ## Create Hello World Function
@@ -5604,7 +5626,7 @@ const fibGenerator = function* () {
 
 # Medium Problems
 
-## javascript
+# javascript
 
 ## Memoriza
 
@@ -5875,4 +5897,104 @@ const inorderTraversal = function* (arr) {
  * gen.next().value; // 2
  * gen.next().value; // 3
  */
+```
+
+---
+
+---
+
+---
+
+# Array & Hashing
+
+## Append Characters to String to Make Subsequence
+
+https://neetcode.io/problems/append-characters-to-string-to-make-subsequence/question
+
+```js
+
+```
+
+## Group Anagrams
+
+https://neetcode.io/problems/anagram-groups/question
+
+```js
+
+```
+
+## Count Vowel Strings in Ranges
+
+https://leetcode.com/problems/count-vowel-strings-in-ranges/description/
+
+```js
+/**
+ * @param {string[]} words
+ * @param {number[][]} queries
+ * @return {number[]}
+ */
+const vowelStrings = (words, queries) => {
+  const re = /[aeiou]/;
+  let a = [0];
+  for (let i of words) {
+    const c = re.test(i[0]) && re.test(i.at(-1)) ? 1 : 0;
+    a.push(a.at(-1) + c);
+  }
+  let b = [];
+  for (let [l, r] of queries) b.push(a[r + 1] - a[l]);
+  return b;
+};
+```
+
+```js
+/**
+ * @param {string[]} words
+ * @param {number[][]} queries
+ * @return {number[]}
+ */
+const vowelStrings = (words, queries) => {
+  const re = /[aeiou]/;
+  let a = [0];
+  for (let i of words) {
+    const c = re.test(i[0]) && re.test(i.at(-1)) ? 1 : 0;
+    a.push(a.at(-1) + c);
+  }
+  return queries.map(([l, r]) => a[r + 1] - a[l]);
+};
+```
+
+## Average Waiting Time
+
+https://leetcode.com/problems/average-waiting-time/description/
+
+```js
+/**
+ * @param {number[][]} customers
+ * @return {number}
+ */
+const averageWaitingTime = (customers) => {
+  let b = 0,
+    c = 0;
+  for (let [a, t] of customers) {
+    c = c < a ? a + t : c + t;
+    b += c - a;
+  }
+  return b / customers.length;
+};
+```
+
+## Sort an Array
+
+https://neetcode.io/problems/sort-an-array/question
+
+```js
+
+```
+
+## Sort Colors
+
+https://neetcode.io/problems/sort-colors/question
+
+```js
+
 ```
