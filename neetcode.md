@@ -992,7 +992,7 @@ class Solution {
       b = -1;
     for (let i of arr) a[i] = (a[i] ?? 0) + 1;
     for (let i in a) {
-      if (i - 0 == a[i]) b = a[i] > b ? a[i] : b;
+      if (+i == a[i]) b = a[i] > b ? a[i] : b;
     }
     return b;
   }
@@ -1711,7 +1711,7 @@ const relativeSortArray = (arr1, arr2) => {
   let c = [];
   for (let i in a) {
     while (a[i] > 0) {
-      c.push(i - 0);
+      c.push(+i);
       a[i]--;
     }
   }
@@ -2040,7 +2040,7 @@ const mergeArrays = (nums1, nums2) => {
   let a = {};
   for (let [k, v] of [...nums1, ...nums2]) a[k] = (a[k] ?? 0) + v;
   return Object.entries(a)
-    .map((x) => [x[0] - 0, x[1]])
+    .map((x) => [+x[0], x[1]])
     .sort((x1, x2) => x1[0] - x2[0]);
 };
 ```
@@ -5912,7 +5912,22 @@ const inorderTraversal = function* (arr) {
 https://neetcode.io/problems/append-characters-to-string-to-make-subsequence/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @param {string} t
+   * @return {number}
+   */
+  appendCharacters(s, t) {
+    let i1 = 0,
+      i2 = 0;
+    while (i1 < s.length && i2 < t.length) {
+      i2 = s[i1] == t[i2] ? i2 + 1 : i2;
+      i1++;
+    }
+    return t.length - i2;
+  }
+}
 ```
 
 ## Group Anagrams
