@@ -6168,3 +6168,97 @@ https://neetcode.io/problems/valid-sudoku/question
 ```js
 
 ```
+
+## Longest Consecutive Sequence
+
+https://neetcode.io/problems/longest-consecutive-sequence/question
+
+```js
+
+```
+
+## Encode and Decode TinyURL
+
+https://leetcode.com/problems/encode-and-decode-tinyurl/description/
+
+```js
+const ids = new Map();
+let id = 0;
+
+/**
+ * Encodes a URL to a shortened URL.
+ *
+ * @param {string} longUrl
+ * @return {string}
+ */
+
+const encode = (longUrl) => {
+  id++;
+  ids.set(id.toString(), longUrl);
+  return 'http://tinyurl.com/' + id;
+};
+
+/**
+ * Decodes a shortened URL to its original URL.
+ *
+ * @param {string} shortUrl
+ * @return {string}
+ */
+const decode = (shortUrl) => {
+  const id = shortUrl.split('/').pop();
+  return ids.get(id);
+};
+
+/**
+ * Your functions will be called as such:
+ * decode(encode(url));
+ */
+```
+
+## Brick Wall
+
+https://leetcode.com/problems/brick-wall/description/
+
+```js
+/**
+ * @param {number[][]} wall
+ * @return {number}
+ */
+const leastBricks = (wall) => {
+  let a = [];
+  for (let arr of wall) {
+    let b = 0;
+    for (let i of arr.slice(0, -1)) {
+      b += i;
+      a.push(b);
+    }
+  }
+  let c = {},
+    d = 0;
+  for (let i of a) {
+    c[i] = (c[i] ?? 0) + 1;
+    d = c[i] > d ? c[i] : d;
+  }
+  return wall.length - d;
+};
+```
+
+```js
+/**
+ * @param {number[][]} wall
+ * @return {number}
+ */
+const leastBricks = (wall) => {
+  let a = {},
+    b = 0;
+  for (let arr of wall) {
+    let c = 0;
+    for (let i = 0; i < arr.length - 1; i++) {
+      c += arr[i];
+      a[c] = (a[c] ?? 0) + 1;
+      b = a[c] > b ? a[c] : b;
+    }
+  }
+  return wall.length - b;
+};
+```
