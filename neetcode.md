@@ -219,7 +219,7 @@ class Solution {
   findMaxConsecutiveOnes(nums) {
     let a = nums.map(String).join('');
     let b = '';
-    while (a.indexOf(b) != -1) b += '1';
+    while (a.includes(b)) b += '1';
     return b.length - 1;
   }
 }
@@ -1586,7 +1586,7 @@ const commonChars = (words) => {
     c = '';
   for (let s of words) [b, c] = s.length < b ? [s.length, s] : [b, c];
   for (let i of c) {
-    if (words.every((x) => x.indexOf(i) > -1)) {
+    if (words.every((x) => x.includes(i))) {
       words = words.map((x) => x.replace(i, ''));
       console.log(i, words);
       a.push(i);
@@ -5935,7 +5935,21 @@ class Solution {
 https://neetcode.io/problems/anagram-groups/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string[]} strs
+   * @return {string[][]}
+   */
+  groupAnagrams(strs) {
+    let a = {};
+    for (let s of strs) {
+      const b = [...s].sort().join('');
+      a[b] ??= [];
+      a[b].push(s);
+    }
+    return Object.values(a);
+  }
+}
 ```
 
 ## Count Vowel Strings in Ranges
@@ -6003,12 +6017,153 @@ const averageWaitingTime = (customers) => {
 https://neetcode.io/problems/sort-an-array/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  sortArray(nums) {
+    let a = true;
+    while (a) {
+      a = false;
+      for (let i = 1; i < nums.length; i++) {
+        if (nums[i] < nums[i - 1]) [nums[i - 1], nums[i], a] = [nums[i], nums[i - 1], true];
+      }
+    }
+    return nums;
+  }
+}
 ```
 
 ## Sort Colors
 
 https://neetcode.io/problems/sort-colors/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {void} Do not return anything, modify nums in-place instead.
+   */
+  sortColors(nums) {
+    let i = 0,
+      i1 = 0,
+      i2 = nums.length - 1;
+    while (i <= i2) {
+      if (nums[i] == 0) {
+        [nums[i1], nums[i]] = [nums[i], nums[i1]];
+        i1++;
+        i++;
+      } else if (nums[i] == 2) {
+        [nums[i2], nums[i]] = [nums[i], nums[i2]];
+        i2--;
+      } else i++;
+    }
+    return nums;
+  }
+}
+```
+
+## Custom Sort String
+
+https://neetcode.io/problems/custom-sort-string/question
+
+```js
+
+```
+
+## Top K Frequent Elements
+
+https://neetcode.io/problems/top-k-elements-in-list/question
+
+```js
+
+```
+
+## Encode and Decode Strings
+
+https://neetcode.io/problems/string-encode-and-decode/question
+
+```js
+
+```
+
+## Range Sum Query 2D Immutable
+
+https://neetcode.io/problems/range-sum-query-2d-immutable/question
+
+```js
+
+```
+
+## Analyze User Website Visit Pattern
+
+https://neetcode.io/problems/analyze-user-website-visit-pattern/question
+
+```js
+
+```
+
+## Products of Array Except Self
+
+https://neetcode.io/problems/products-of-array-discluding-self/question
+
+```js
+
+```
+
+## Minimum Number of Operations to Move All Balls to Each Box
+
+https://leetcode.com/problems/minimum-number-of-operations-to-move-all-balls-to-each-box/description/
+
+```js
+/**
+ * @param {string} boxes
+ * @return {number[]}
+ */
+const minOperations = (boxes) => {
+  const n = boxes.length;
+  let a = [];
+  for (let i = 0; i < n; i++) {
+    let b = 0;
+    for (let j = 0; j < n; j++) {
+      if (boxes[j] == '0') continue;
+      b += Math.abs(i - j);
+    }
+    a.push(b);
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {string} boxes
+ * @return {number[]}
+ */
+const minOperations = (boxes) => {
+  const n = boxes.length;
+  let a = Array(n).fill(0);
+  let b = 0,
+    c = 0;
+  for (let i = 0; i < n; i++) {
+    a[i] += c;
+    b += boxes[i] == '1';
+    c += b;
+  }
+  ((b = 0), (c = 0));
+  for (let i = n - 1; i >= 0; i--) {
+    a[i] += c;
+    b += boxes[i] == '1';
+    c += b;
+  }
+  return a;
+};
+```
+
+## Valid Sudoku
+
+https://neetcode.io/problems/valid-sudoku/question
 
 ```js
 
