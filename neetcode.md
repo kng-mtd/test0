@@ -6069,7 +6069,49 @@ class Solution {
 https://neetcode.io/problems/custom-sort-string/question
 
 ```js
+class Solution {
+  /**
+   * @param {string} order
+   * @param {string} s
+   * @return {string}
+   */
+  customSortString(order, s) {
+    let a = {};
+    for (let i of s) a[i] = (a[i] ?? '') + i;
+    let b = '';
+    for (let i of order) if (a[i]) [b, a[i]] = [b + a[i], ''];
+    for (let i in a) b += a[i];
+    return b;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {string} order
+   * @param {string} s
+   * @return {string}
+   */
+  customSortString(order, s) {
+    const a = {};
+    for (let i of s) a[i] = (a[i] ?? 0) + 1;
+    let b = '';
+    for (let i of order) {
+      while (a[i] > 0) {
+        b += i;
+        a[i]--;
+      }
+    }
+    for (let i in a) {
+      while (a[i] > 0) {
+        b += i;
+        a[i]--;
+      }
+    }
+    return b;
+  }
+}
 ```
 
 ## Top K Frequent Elements
