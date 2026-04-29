@@ -6119,7 +6119,21 @@ class Solution {
 https://neetcode.io/problems/top-k-elements-in-list/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number[]}
+   */
+  topKFrequent(nums, k) {
+    let a = {};
+    for (let i of nums) a[i] = (a[i] ?? 0) + 1;
+    return Object.entries(a)
+      .sort((x1, x2) => x2[1] - x1[1])
+      .slice(0, k)
+      .map((x) => +x[0]);
+  }
+}
 ```
 
 ## Encode and Decode Strings
@@ -6302,5 +6316,33 @@ const leastBricks = (wall) => {
     }
   }
   return wall.length - b;
+};
+```
+
+## Minimum Index of a Valid Split
+
+https://leetcode.com/problems/minimum-index-of-a-valid-split/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const minimumIndex = (nums) => {
+  let a,
+    b = 0;
+  for (let i of nums) {
+    if (i == a) b++;
+    else if (b == 0) [a, b] = [i, 1];
+    else b--;
+  }
+  b = 0;
+  for (let i of nums) b += i == a ? 1 : 0;
+  let c = 0;
+  for (let i = 0; i < nums.length - 1; i++) {
+    if (nums[i] == a) c++;
+    if (c * 2 > i + 1 && (b - c) * 2 > nums.length - i - 1) return i;
+  }
+  return -1;
 };
 ```
