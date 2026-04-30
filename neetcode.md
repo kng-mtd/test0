@@ -6448,6 +6448,58 @@ const minSubarray = (nums, p) => {
 };
 ```
 
+## Unique Length-3 Palindromic Subsequences
+
+https://leetcode.com/problems/unique-length-3-palindromic-subsequences/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const countPalindromicSubsequence = (s) => {
+  let a = {};
+  for (let i = 0; i < s.length; i++) {
+    if (!a[s[i]]) a[s[i]] = [];
+    a[s[i]].push(i);
+  }
+  let b = 0;
+  for (let k in a) {
+    let arr = a[k];
+    if (arr.length < 2) continue;
+    let l = arr[0];
+    let r = arr.at(-1);
+    b += new Set(s.slice(l + 1, r)).size;
+  }
+  return b;
+};
+```
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const countPalindromicSubsequence = (s) => {
+  const n = s.length;
+  let l = new Array(26).fill(0);
+  let r = new Array(26).fill(0);
+  let a = Array.from({ length: 26 }, () => new Array(26).fill(0));
+
+  for (let c of s) r[c.charCodeAt(0) - 97]++;
+  let b = 0;
+  for (let i = 0; i < n; i++) {
+    let m = s.charCodeAt(i) - 97;
+    r[m]--;
+    for (let x = 0; x < 26; x++) {
+      if (l[x] && r[x] && !a[x][m]) [a[x][m], b] = [1, b + 1];
+    }
+    l[m]++;
+  }
+  return b;
+};
+```
+
 ## Number of Sub-arrays With Odd Sum
 
 https://leetcode.com/problems/number-of-sub-arrays-with-odd-sum/description/
