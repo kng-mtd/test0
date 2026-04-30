@@ -6141,7 +6141,33 @@ class Solution {
 https://neetcode.io/problems/string-encode-and-decode/question
 
 ```js
+class Solution {
+  /**
+   * @param {string[]} strs
+   * @returns {string}
+   */
+  encode(strs) {
+    let a = '';
+    for (let i of strs) a += i.length + '!' + i;
+    return a;
+  }
 
+  /**
+   * @param {string} str
+   * @returns {string[]}
+   */
+  decode(str) {
+    let a = [];
+    while (str.length > 0) {
+      const b = str.indexOf('!');
+      const c = +str.slice(0, b);
+      str = str.slice(b + 1);
+      a.push(str.slice(0, c));
+      str = str.slice(c);
+    }
+    return a;
+  }
+}
 ```
 
 ## Range Sum Query 2D Immutable
