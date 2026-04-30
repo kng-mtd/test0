@@ -6345,6 +6345,22 @@ const leastBricks = (wall) => {
 };
 ```
 
+## Best Time to Buy and Sell Stock II
+
+https://neetcode.io/problems/best-time-to-buy-and-sell-stock-ii/question
+
+```js
+
+```
+
+## Majority Element II
+
+https://neetcode.io/problems/majority-element-ii/question
+
+```js
+
+```
+
 ## Minimum Index of a Valid Split
 
 https://leetcode.com/problems/minimum-index-of-a-valid-split/description/
@@ -6370,5 +6386,88 @@ const minimumIndex = (nums) => {
     if (c * 2 > i + 1 && (b - c) * 2 > nums.length - i - 1) return i;
   }
   return -1;
+};
+```
+
+## Subarray Sum Equals K
+
+https://neetcode.io/problems/subarray-sum-equals-k/question
+
+```js
+
+```
+
+## Subarray Sums Divisible by K
+
+https://leetcode.com/problems/subarray-sums-divisible-by-k/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const subarraysDivByK = (nums, k) => {
+  let a = { 0: 1 },
+    b = 0,
+    c = 0;
+  for (let i of nums) {
+    b += i;
+    const d = ((b % k) + k) % k;
+    c += a[d] ?? 0;
+    a[d] = (a[d] ?? 0) + 1;
+  }
+  return c;
+};
+```
+
+## Make Sum Divisible by P
+
+https://leetcode.com/problems/make-sum-divisible-by-p/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} p
+ * @return {number}
+ */
+const minSubarray = (nums, p) => {
+  const n = nums.length;
+  const e = nums.reduce((a, x) => a + x, 0) % p;
+  if (e == 0) return 0;
+  let a = { 0: -1 },
+    b = 0,
+    c = n;
+  for (let i = 0; i < n; i++) {
+    b = (b + nums[i]) % p;
+    const d = (b - e + p) % p;
+    if (d in a) c = i - a[d] < c ? i - a[d] : c;
+    a[b] = i;
+  }
+  return c == n ? -1 : c;
+};
+```
+
+## Number of Sub-arrays With Odd Sum
+
+https://leetcode.com/problems/number-of-sub-arrays-with-odd-sum/description/
+
+```js
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+const numOfSubarrays = (arr) => {
+  let a = 0,
+    b = 0,
+    c = 1,
+    d = 0;
+  for (let i of arr) {
+    b += i;
+    if (b % 2 == 0) [a, c] = [a + d, c + 1];
+    else [a, d] = [a + c, d + 1];
+    a %= 1e9 + 7;
+  }
+  return a;
 };
 ```
