@@ -6574,3 +6574,149 @@ const minSwaps = (s) => {
   return b;
 };
 ```
+
+## Number of Pairs of Interchangeable Rectangles
+
+https://leetcode.com/problems/number-of-pairs-of-interchangeable-rectangles/description/
+
+```js
+/**
+ * @param {number[][]} rectangles
+ * @return {number}
+ */
+const interchangeableRectangles = (rectangles) => {
+  let a = [];
+  for (let [w, h] of rectangles) a[w / h] = (a[w / h] ?? 0) + 1;
+  let b = 0;
+  for (let i in a) {
+    if (a[i] == 1) continue;
+    b += (a[i] * (a[i] - 1)) / 2;
+  }
+  return b;
+};
+```
+
+```js
+/**
+ * @param {number[][]} rectangles
+ * @return {number}
+ */
+const interchangeableRectangles = (rectangles) => {
+  const a = {};
+  let b = 0;
+  for (let [w, h] of rectangles) {
+    const c = a[w / h] ?? 0;
+    [b, a[w / h]] = [b + c, c + 1];
+  }
+  return b;
+};
+```
+
+## Maximum Product of the Length of Two Palindromic Subsequences
+
+https://leetcode.com/problems/maximum-product-of-the-length-of-two-palindromic-subsequences/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const maxProduct = (s) => {
+  let c = 0;
+  const isPal = (str) => {
+    let l = 0,
+      r = str.length - 1;
+    while (l < r) if (str[l++] !== str[r--]) return false;
+    return true;
+  };
+  const dfs = (i, a, b) => {
+    if (i === s.length) {
+      if (isPal(a) && isPal(b)) c = Math.max(c, a.length * b.length);
+      return;
+    }
+    dfs(i + 1, a + s[i], b);
+    dfs(i + 1, a, b + s[i]);
+    dfs(i + 1, a, b);
+  };
+
+  dfs(0, '', '');
+  return c;
+};
+```
+
+## Grid Game
+
+https://leetcode.com/problems/grid-game/description/
+
+```js
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+const gridGame = (grid) => {
+  const n = grid[0].length;
+  let a = grid[0].reduce((a, x) => a + x, 0),
+    b = 0,
+    c = Infinity;
+  for (let i = 0; i < n; i++) {
+    a -= grid[0][i];
+    c = Math.min(c, Math.max(a, b));
+    b += grid[1][i];
+  }
+  return c;
+};
+```
+
+## Find All Anaglams in a String
+
+https://leetcode.com/problems/find-all-anagrams-in-a-string/description/
+
+```js
+/**
+ * @param {string} s
+ * @param {string} p
+ * @return {number[]}
+ */
+const findAnagrams = (s, p) => {
+  const a = [];
+  const b = Array(26).fill(0);
+  const c = Array(26).fill(0);
+
+  for (let i of p) b[i.charCodeAt(0) - 97]++;
+  let l = 0;
+  for (let r = 0; r < s.length; r++) {
+    c[s[r].charCodeAt(0) - 97]++;
+    if (r - l + 1 > p.length) {
+      c[s[l].charCodeAt(0) - 97]--;
+      l++;
+    }
+    if (r - l + 1 == p.length) {
+      let d = true;
+      for (let i = 0; i < 26; i++) {
+        if (c[i] != b[i]) {
+          d = false;
+          break;
+        }
+      }
+      if (d) a.push(l);
+    }
+  }
+  return a;
+};
+```
+
+## Wiggle Sort
+
+https://neetcode.io/problems/wiggle-sort/question
+
+```js
+
+```
+
+## Largest Number
+
+https://neetcode.io/problems/largest-number/question
+
+```js
+
+```
