@@ -6175,7 +6175,35 @@ class Solution {
 https://neetcode.io/problems/range-sum-query-2d-immutable/question
 
 ```js
+class NumMatrix {
+  /**
+   * @param {number[][]} matrix
+   */
+  constructor(matrix) {
+    this.matrix = matrix;
+  }
 
+  /**
+   * @param {number} row1
+   * @param {number} col1
+   * @param {number} row2
+   * @param {number} col2
+   * @return {number}
+   */
+  sumRegion(row1, col1, row2, col2) {
+    let a = 0;
+    for (let i = row1; i <= row2; i++) {
+      for (let j = col1; j <= col2; j++) a += this.matrix[i][j];
+    }
+    return a;
+  }
+}
+
+/**
+ * Your NumMatrix object will be instantiated and called as such:
+ * var obj = new NumMatrix(matrix)
+ * var param_1 = obj.sumRegion(row1,col1,row2,col2)
+ */
 ```
 
 ## Analyze User Website Visit Pattern
@@ -6521,5 +6549,28 @@ const numOfSubarrays = (arr) => {
     a %= 1e9 + 7;
   }
   return a;
+};
+```
+
+## Minimum Number of Swaps to Make the String Balanced
+
+https://leetcode.com/problems/minimum-number-of-swaps-to-make-the-string-balanced/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minSwaps = (s) => {
+  let a = 0,
+    b = 0;
+  for (let i of s) {
+    if (i == '[') a++;
+    else {
+      if (a > 0) a--;
+      else [a, b] = [a + 1, b + 1];
+    }
+  }
+  return b;
 };
 ```
