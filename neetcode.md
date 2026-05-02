@@ -6772,3 +6772,73 @@ https://neetcode.io/problems/largest-number/question
 ```js
 
 ```
+
+## Continuous Subarray Sum
+
+https://neetcode.io/problems/continuous-subarray-sum/question
+
+```js
+
+```
+
+## Push Dominoes
+
+https://leetcode.com/problems/push-dominoes/description/
+
+```js
+
+```
+
+## Repeated DNA Sequences
+
+https://leetcode.com/problems/repeated-dna-sequences/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {string[]}
+ */
+const findRepeatedDnaSequences = (s) => {
+  let a = {},
+    b = new Set();
+  for (let i = 0; i <= s.length - 10; i++) {
+    const c = s.slice(i, i + 10);
+    if (a[c]) b.add(c);
+    else a[c] = true;
+  }
+  return [...b];
+};
+```
+
+## Insert Delete Get Random O(1)
+
+https://neetcode.io/problems/insert-delete-getrandom-o1/question
+
+```js
+
+```
+
+## Check if a String Contains All binary Codes of Size K
+
+https://leetcode.com/problems/check-if-a-string-contains-all-binary-codes-of-size-k/description/
+
+```js
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {boolean}
+ */
+const hasAllCodes = (s, k) => {
+  let a = Array(2 ** k).fill(false);
+  for (let i = 0; i <= s.length - k; i++) a[parseInt(s.slice(i, i + k), 2)] = true;
+  return !a.includes(false);
+};
+```
+
+## Non Decreasing Array
+
+https://leetcode.com/problems/non-decreasing-array/description/
+
+```js
+
+```
