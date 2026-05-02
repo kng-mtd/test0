@@ -6211,7 +6211,59 @@ class NumMatrix {
 https://neetcode.io/problems/analyze-user-website-visit-pattern/question
 
 ```js
+class Solution {
+  /**
+   * @param {string[]} username
+   * @param {number[]} timestamp
+   * @param {string[]} website
+   * @return {string[]}
+   */
+  mostVisitedPattern(username, timestamp, website) {
+    const n = username.length;
+    let arr = [];
+    for (let i = 0; i < n; i++) arr.push([timestamp[i], username[i], website[i]]);
+    arr.sort((x1, x2) => {
+      if (x1[1] == x2[1]) return x1[0] - x2[0];
+      return x1[1] < x2[1] ? -1 : 1;
+    });
 
+    let a = {},
+      i = 0;
+    while (i < n) {
+      let j = i;
+      let b = [];
+      while (j < n && arr[j][1] === arr[i][1]) {
+        b.push(arr[j][2]);
+        j++;
+      }
+
+      let c = new Set();
+      let d = b.length;
+
+      for (let x = 0; x < d; x++) {
+        for (let y = x + 1; y < d; y++) {
+          for (let z = y + 1; z < d; z++) {
+            const k = b[x] + '!' + b[y] + '!' + b[z];
+            if (!c.has(k)) {
+              c.add(k);
+              a[k] = (a[k] || 0) + 1;
+            }
+          }
+        }
+      }
+      i = j;
+    }
+    let e = null,
+      f = 0;
+    for (let k in a) {
+      if (a[k] > f || (a[k] == f && k < e)) {
+        e = k;
+        f = a[k];
+      }
+    }
+    return e.split('!');
+  }
+}
 ```
 
 ## Products of Array Except Self
