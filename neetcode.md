@@ -6271,7 +6271,51 @@ class Solution {
 https://neetcode.io/problems/products-of-array-discluding-self/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  productExceptSelf(nums) {
+    const n = nums.length;
+    let a = [];
+    let b = 1;
+    for (let i = 0; i < n; i++) [a[i], b] = [b, b * nums[i]];
+    b = 1;
+    for (let i = n - 1; i >= 0; i--) [a[i], b] = [a[i] * b, b * nums[i]];
+    return a;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  productExceptSelf(nums) {
+    const n = nums.length;
+    let a = 1,
+      b = false,
+      c;
+    for (let i = 0; i < n; i++) {
+      if (nums[i] == 0) {
+        if (b) return Array(n).fill(0);
+        b = true;
+        c = i;
+        continue;
+      }
+      a *= nums[i];
+    }
+    if (b) {
+      let d = Array(n).fill(0);
+      d[c] = a;
+      return d;
+    }
+    return nums.map((x) => a / x);
+  }
+}
 ```
 
 ## Minimum Number of Operations to Move All Balls to Each Box
@@ -6328,7 +6372,118 @@ const minOperations = (boxes) => {
 https://neetcode.io/problems/valid-sudoku/question
 
 ```js
+class Solution {
+  /**
+   * @param {character[][]} board
+   * @return {boolean}
+   */
+  isValidSudoku(board) {
+    const row = Array.from({ length: 9 }, () => []);
+    const col = Array.from({ length: 9 }, () => []);
+    const box = Array.from({ length: 9 }, () => []);
 
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const v = board[r][c];
+        if (v == '.') continue;
+        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        if (row[r].includes(v) || col[c].includes(v) || box[b].includes(v)) return false;
+
+        row[r].push(v);
+        col[c].push(v);
+        box[b].push(v);
+      }
+    }
+    return true;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {character[][]} board
+   * @return {boolean}
+   */
+  isValidSudoku(board) {
+    const row = Array.from({ length: 9 }, () => []);
+    const col = Array.from({ length: 9 }, () => []);
+    const box = Array.from({ length: 9 }, () => []);
+
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const v = board[r][c];
+        if (v == '.') continue;
+        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        if (row[r].includes(v) || col[c].includes(v) || box[b].includes(v)) return false;
+
+        row[r].push(v);
+        col[c].push(v);
+        box[b].push(v);
+      }
+    }
+    return true;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {character[][]} board
+   * @return {boolean}
+   */
+  isValidSudoku(board) {
+    const row = Array.from({ length: 9 }, () => Array(10).fill(false));
+    const col = Array.from({ length: 9 }, () => Array(10).fill(false));
+    const box = Array.from({ length: 9 }, () => Array(10).fill(false));
+
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const v = board[r][c];
+        if (v == '.') continue;
+        const i = +v;
+        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        if (row[r][i] || col[c][i] || box[b][i]) return false;
+
+        row[r][i] = true;
+        col[c][i] = true;
+        box[b][i] = true;
+      }
+    }
+    return true;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {character[][]} board
+   * @return {boolean}
+   */
+  isValidSudoku(board) {
+    const row = Array(9).fill(0);
+    const col = Array(9).fill(0);
+    const box = Array(9).fill(0);
+
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const v = board[r][c];
+        if (v == '.') continue;
+        const i = +v;
+        const bit = 1 << i;
+        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        if (row[r] & bit || col[c] & bit || box[b] & bit) return false;
+
+        row[r] |= bit;
+        col[c] |= bit;
+        box[b] |= bit;
+      }
+    }
+    return true;
+  }
+}
 ```
 
 ## Longest Consecutive Sequence
@@ -6336,7 +6491,47 @@ https://neetcode.io/problems/valid-sudoku/question
 https://neetcode.io/problems/longest-consecutive-sequence/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  longestConsecutive(nums) {
+    let a = [...new Set(nums)].sort((x1, x2) => x1 - x2);
+    console.log(a);
+    let b = 0,
+      l = 0;
+    for (let r = 1; r < a.length; r++) {
+      if (a[r] - a[r - 1] == 1) continue;
+      b = r - l > b ? r - l : b;
+      l = r;
+    }
+    b = Math.max(b, a.length - l);
+    return b;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  longestConsecutive(nums) {
+    const a = new Set(nums);
+    let b = 0;
+    for (let i of a) {
+      if (!a.has(i - 1)) {
+        let c = i,
+          d = 1;
+        while (a.has(c + 1)) [c, d] = [c + 1, d + 1];
+        b = d > b ? d : b;
+      }
+    }
+    return b;
+  }
+}
 ```
 
 ## Encode and Decode TinyURL
@@ -6430,7 +6625,19 @@ const leastBricks = (wall) => {
 https://neetcode.io/problems/best-time-to-buy-and-sell-stock-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} prices
+   * @return {number}
+   */
+  maxProfit(prices) {
+    let a = 0;
+    for (let i = 1; i < prices.length; i++) {
+      a += prices[i] > prices[i - 1] ? prices[i] - prices[i - 1] : 0;
+    }
+    return a;
+  }
+}
 ```
 
 ## Majority Element II
