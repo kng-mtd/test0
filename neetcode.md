@@ -6645,7 +6645,52 @@ class Solution {
 https://neetcode.io/problems/majority-element-ii/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  majorityElement(nums) {
+    let a1,
+      a2,
+      b1 = 0,
+      b2 = 0;
+    for (let i of nums) {
+      if (i == a1) b1++;
+      else if (i == a2) b2++;
+      else if (b1 == 0) [a1, b1] = [i, 1];
+      else if (b2 == 0) [a2, b2] = [i, 1];
+      else [b1, b2] = [b1 - 1, b2 - 1];
+    }
+    ((b1 = 0), (b2 = 0));
+    for (let i of nums) {
+      if (i == a1) b1++;
+      else if (i == a2) b2++;
+    }
+    let c = [];
+    if (b1 > nums.length / 3) c.push(a1);
+    if (b2 > nums.length / 3) c.push(a2);
+    return c;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  majorityElement(nums) {
+    let a = [];
+    for (let i of nums) a[i] = (a[i] ?? 0) + 1;
+    let b = [];
+    for (let i in a) {
+      if (a[i] > nums.length / 3) b.push(i);
+    }
+    return b;
+  }
+}
 ```
 
 ## Minimum Index of a Valid Split
