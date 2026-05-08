@@ -7406,5 +7406,100 @@ const wordSubsets = (words1, words2) => {
 https://leetcode.com/problems/optimal-partition-of-string/description/
 
 ```js
-
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const partitionString = (s) => {
+  let a = 1,
+    c = {};
+  for (let i = 0; i < s.length; i++) {
+    if (c[s[i]]) [a, c] = [a + 1, {}];
+    c[s[i]] = true;
+  }
+  return a;
+};
 ```
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const partitionString = (s) => {
+  let a = 1;
+  let b = Array(26).fill(0);
+  for (const c of s) {
+    const i = c.charCodeAt(0) - 97;
+    if (b[i] == a) a++;
+    b[i] = a;
+  }
+  return a;
+};
+```
+
+## Design Underground System
+
+https://leetcode.com/problems/design-underground-system/description/
+
+```js
+const UndergroundSystem = function () {
+  this.checkin = new Map();
+  this.routes = new Map();
+};
+
+/**
+ * @param {number} id
+ * @param {string} stationName
+ * @param {number} t
+ * @return {void}
+ */
+UndergroundSystem.prototype.checkIn = function (id, stationName, t) {
+  this.checkin.set(id, [stationName, t]);
+};
+
+/**
+ * @param {number} id
+ * @param {string} stationName
+ * @param {number} t
+ * @return {void}
+ */
+UndergroundSystem.prototype.checkOut = function (id, stationName, t) {
+  const [startStation, startTime] = this.checkin.get(id);
+
+  const key = startStation + '-' + stationName;
+
+  const time = t - startTime;
+
+  if (!this.routes.has(key)) {
+    this.routes.set(key, [0, 0]);
+  }
+
+  const [total, count] = this.routes.get(key);
+
+  this.routes.set(key, [total + time, count + 1]);
+
+  this.checkin.delete(id);
+};
+
+/**
+ * @param {string} startStation
+ * @param {string} endStation
+ * @return {number}
+ */
+UndergroundSystem.prototype.getAverageTime = function (startStation, endStation) {
+  const [total, count] = this.routes.get(startStation + '-' + endStation);
+
+  return total / count;
+};
+
+/**
+ * Your UndergroundSystem object will be instantiated and called as such:
+ * var obj = new UndergroundSystem()
+ * obj.checkIn(id,stationName,t)
+ * obj.checkOut(id,stationName,t)
+ * var param_3 = obj.getAverageTime(startStation,endStation)
+ */
+```
+
+##
