@@ -7173,3 +7173,199 @@ const checkPossibility = (nums) => {
   return true;
 };
 ```
+
+## Number of Ways to Split Array
+
+https://leetcode.com/problems/number-of-ways-to-split-array/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const waysToSplitArray = (nums) => {
+  const a = nums.reduce((a, x) => a + x, 0);
+  let b = 0,
+    c = 0;
+  for (let i of nums.slice(0, -1)) {
+    b += i;
+    if (b >= a - b) c++;
+  }
+  return c;
+};
+```
+
+## Shifting Letters II
+
+https://leetcode.com/problems/shifting-letters-ii/description/
+
+```js
+/**
+ * @param {string} s
+ * @param {number[][]} shifts
+ * @return {string}
+ */
+const shiftingLetters = (s, shifts) => {
+  let a = [];
+  for (let i = 0; i < s.length; i++) a.push(s.charCodeAt(i) - 97);
+  for (let [l, r, d] of shifts) {
+    for (let i = l; i <= r; i++) {
+      a[i] += d * 2 - 1;
+      a[i] += a[i] < 0 ? 26 : 0;
+    }
+  }
+  for (let i = 0; i < a.length; i++) a[i] = String.fromCharCode((a[i] % 26) + 97);
+  return a.join('');
+};
+```
+
+```js
+/**
+ * @param {string} s
+ * @param {number[][]} shifts
+ * @return {string}
+ */
+const shiftingLetters = (s, shifts) => {
+  let a = Array(s.length + 1).fill(0);
+  for (let [l, r, d] of shifts) {
+    const b = d ? 1 : -1;
+    ((a[l] += b), (a[r + 1] -= b));
+  }
+  let b = 0,
+    c = [];
+  for (let i = 0; i < s.length; i++) {
+    b += a[i];
+    let d = s.charCodeAt(i) - 97;
+    d = (d + b) % 26;
+    d += d < 0 ? 26 : 0;
+    c.push(String.fromCharCode(d + 97));
+  }
+  return c.join('');
+};
+```
+
+## Number of Zero Filled Subarrays
+
+https://leetcode.com/problems/number-of-zero-filled-subarrays/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const zeroFilledSubarray = (nums) => {
+  let a = 0,
+    b = 0;
+  for (let i of nums) {
+    b = i == 0 ? b + 1 : 0;
+    a += b;
+  }
+  return a;
+};
+```
+
+## Word Subsets
+
+https://leetcode.com/problems/word-subsets/description/
+
+```js
+/**
+ * @param {string[]} words1
+ * @param {string[]} words2
+ * @return {string[]}
+ */
+const wordSubsets = (words1, words2) => {
+  let a = [],
+    b = [];
+  for (let i = 0; i < words2.length; i++) {
+    b[i] = {};
+    for (let c of words2[i]) b[i][c] = (b[i][c] ?? 0) + 1;
+  }
+  for (let s of words1) {
+    let e = false;
+    let d = {};
+    for (let c of s) d[c] = (d[c] ?? 0) + 1;
+    for (let o of b) {
+      for (let i in o) {
+        if ((d[i] ?? 0) < o[i]) {
+          e = true;
+          break;
+        }
+      }
+      if (e) break;
+    }
+    if (!e) a.push(s);
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {string[]} words1
+ * @param {string[]} words2
+ * @return {string[]}
+ */
+const wordSubsets = (words1, words2) => {
+  let a = [],
+    b = {};
+  for (let s of words2) {
+    let c = {};
+    for (let i of s) c[i] = (c[i] ?? 0) + 1;
+    for (let i in c) b[i] = Math.max(b[i] ?? 0, c[i]);
+  }
+  for (let s of words1) {
+    let e = true;
+    let c = {};
+    for (let i of s) c[i] = (c[i] ?? 0) + 1;
+    for (let i in b) {
+      if ((c[i] ?? 0) < b[i]) {
+        e = false;
+        break;
+      }
+    }
+    if (e) a.push(s);
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {string[]} words1
+ * @param {string[]} words2
+ * @return {string[]}
+ */
+const wordSubsets = (words1, words2) => {
+  let a = [];
+  let b = Array(26).fill(0);
+  for (let s of words2) {
+    let c = Array(26).fill(0);
+    for (let i of s) c[i.charCodeAt(0) - 97]++;
+    for (let i = 0; i < 26; i++) b[i] = Math.max(b[i], c[i]);
+  }
+
+  for (let s of words1) {
+    let c = Array(26).fill(0);
+    for (let i of s) c[i.charCodeAt(0) - 97]++;
+
+    let e = true;
+    for (let i = 0; i < 26; i++) {
+      if (c[i] < b[i]) {
+        e = false;
+        break;
+      }
+    }
+    if (e) a.push(s);
+  }
+  return a;
+};
+```
+
+## Optimal Partition of String
+
+https://leetcode.com/problems/optimal-partition-of-string/description/
+
+```js
+
+```
