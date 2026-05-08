@@ -7038,7 +7038,51 @@ https://neetcode.io/problems/continuous-subarray-sum/question
 https://leetcode.com/problems/push-dominoes/description/
 
 ```js
+/**
+ * @param {string} dominoes
+ * @return {string}
+ */
+const pushDominoes = (dominoes) => {
+  let a = [...('L' + dominoes + 'R')],
+    i1 = 0;
+  for (let i = 1; i < a.length; i++) {
+    if (a[i] == '.') continue;
+    else if (a[i] == 'R') {
+      if (a[i1] == 'R') while (i1 < i) a[i1++] = 'R';
+    } else if (a[i1] == 'L') while (i1 < i) a[i1++] = 'L';
+    else {
+      let i2 = i;
+      while (i1 < i2) [a[i1++], a[i2--]] = ['R', 'L'];
+    }
+    i1 = i;
+  }
+  return a.slice(1, -1).join('');
+};
+```
 
+```js
+/**
+ * @param {string} dominoes
+ * @return {string}
+ */
+const pushDominoes = (dominoes) => {
+  let a = [...('L' + dominoes + 'R')];
+  let i = 0;
+  for (let j = 1; j < a.length; j++) {
+    if (a[j] == '.') continue;
+    if (j - i > 1) {
+      if (a[i] == a[j]) {
+        for (let k = i + 1; k < j; k++) a[k] = a[i];
+      } else if (a[i] == 'R' && a[j] == 'L') {
+        let l = i + 1,
+          r = j - 1;
+        while (l < r) [a[l++], a[r--]] = ['R', 'L'];
+      }
+    }
+    i = j;
+  }
+  return a.slice(1, -1).join('');
+};
 ```
 
 ## Repeated DNA Sequences
@@ -7092,5 +7136,40 @@ const hasAllCodes = (s, k) => {
 https://leetcode.com/problems/non-decreasing-array/description/
 
 ```js
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+const checkPossibility = (nums) => {
+  let a = false;
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i - 1] > nums[i]) {
+      if (a) return false;
+      a = true;
+      if (i < 2 || nums[i - 2] <= nums[i]) nums[i - 1] = nums[i];
+      else nums[i] = nums[i - 1];
+    }
+  }
+  return true;
+};
+```
 
+```js
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+const checkPossibility = (nums) => {
+  let a1 = -Infinity,
+    a2 = nums[0];
+  let b = false;
+  for (let i of nums.slice(1)) {
+    if (i < a2) {
+      if (b) return false;
+      b = true;
+      if (i >= a1) a2 = i;
+    } else [a1, a2] = [a2, i];
+  }
+  return true;
+};
 ```
