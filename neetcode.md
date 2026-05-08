@@ -7502,4 +7502,50 @@ UndergroundSystem.prototype.getAverageTime = function (startStation, endStation)
  */
 ```
 
-##
+## Convert an Array Into a 2D Array With Conditions
+
+https://leetcode.com/problems/convert-an-array-into-a-2d-array-with-conditions/description/
+
+```js
+
+```
+
+## Minimum Number of Operations to Make Array Empty
+
+https://neetcode.io/problems/minimum-number-of-operations-to-make-array-empty/question
+
+```js
+
+```
+
+## Divide Array Into Arrays With Max Difference
+
+https://leetcode.com/problems/divide-array-into-arrays-with-max-difference/description/
+
+```js
+
+```
+
+## Sequential Digits
+
+https://leetcode.com/problems/sequential-digits/description/
+
+```js
+
+```
+
+## Sort the Jumbled Numbers
+
+https://leetcode.com/problems/sort-the-jumbled-numbers/description/
+
+```js
+
+```
+
+## Find Polygon With the Largest Perimeter
+
+https://leetcode.com/problems/find-polygon-with-the-largest-perimeter/description/
+
+```js
+
+```
