@@ -1,3 +1,25 @@
+# memo
+
+| Type        | Contiguous | Order Matters |
+| ----------- | ---------- | ------------- |
+| substring   | Yes        | Yes           |
+| subsequence | No         | Yes           |
+| subset      | No         | No            |
+
+### Count Lowercase
+
+```js
+const fn = (s) => {
+  let c = Array(26).fill(0);
+  for (let i of s) c[i.charCodeAt(0) - 97]++;
+  let a = {};
+  for (let i = 0; i < 26; i++) {
+    if (c[i] > 0) a[String.fromCharCode(i + 97)] = c[i];
+  }
+  return a;
+};
+```
+
 # Easy Problems
 
 ## Concatenation of Array
@@ -51,6 +73,23 @@ class Solution {
 
     for (let i = 0; i < s.length; i++) if (c1[i] != c2[i]) return false;
     return true;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @param {string} t
+   * @return {boolean}
+   */
+  isAnagram(s, t) {
+    if (s.length != t.length) return false;
+    let c = Array(26).fill(0);
+    for (let i of s) c[i.charCodeAt(0) - 97]++;
+    for (let i of t) c[i.charCodeAt(0) - 97]--;
+    return c.every((x) => x == 0);
   }
 }
 ```
