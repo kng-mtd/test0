@@ -20,6 +20,12 @@ const fn = (s) => {
 };
 ```
 
+---
+
+---
+
+---
+
 # Easy Problems
 
 ## Concatenation of Array
@@ -6765,7 +6771,45 @@ const minimumIndex = (nums) => {
 https://neetcode.io/problems/subarray-sum-equals-k/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  subarraySum(nums, k) {
+    let a = 0;
+    for (let l = 0; l < nums.length; l++) {
+      let b = 0;
+      for (let r = l; r < nums.length; r++) {
+        b += nums[r];
+        if (b == k) a++;
+      }
+    }
+    return a;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  subarraySum(nums, k) {
+    let a = { 0: 1 },
+      b = 0,
+      c = 0;
+    for (let i of nums) {
+      b += i;
+      c += a[b - k] ?? 0;
+      a[b] = (a[b] ?? 0) + 1;
+    }
+    return c;
+  }
+}
 ```
 
 ## Subarray Sums Divisible by K
@@ -7549,3 +7593,11 @@ https://leetcode.com/problems/find-polygon-with-the-largest-perimeter/descriptio
 ```js
 
 ```
+
+---
+
+---
+
+---
+
+# Stack
