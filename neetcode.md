@@ -7097,7 +7097,19 @@ const findAnagrams = (s, p) => {
 https://neetcode.io/problems/wiggle-sort/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {void} Do not return anything, modify nums in-place instead.
+   */
+  wiggleSort(nums) {
+    nums.sort((x1, x2) => x1 - x2);
+    for (let i = 1; i < nums.length - 1; i += 2) {
+      [nums[i], nums[i + 1]] = [nums[i + 1], nums[i]];
+    }
+    return nums;
+  }
+}
 ```
 
 ## Largest Number
@@ -7551,7 +7563,28 @@ UndergroundSystem.prototype.getAverageTime = function (startStation, endStation)
 https://leetcode.com/problems/convert-an-array-into-a-2d-array-with-conditions/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+const findMatrix = (nums) => {
+  let a = {};
+  for (let i of nums) a[i] = (a[i] ?? 0) + 1;
+  let b = [],
+    c = true;
+  while (c) {
+    c = false;
+    let d = [];
+    for (let i in a) {
+      if (!a[i]) continue;
+      a[i]--;
+      d.push(+i);
+      c = true;
+    }
+    if (c) b.push(d);
+  }
+  return b;
+};
 ```
 
 ## Minimum Number of Operations to Make Array Empty
@@ -7567,7 +7600,21 @@ https://neetcode.io/problems/minimum-number-of-operations-to-make-array-empty/qu
 https://leetcode.com/problems/divide-array-into-arrays-with-max-difference/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number[][]}
+ */
+const divideArray = (nums, k) => {
+  nums.sort((x1, x2) => x1 - x2);
+  let a = [],
+    i = 0;
+  for (let i = 0; i < nums.length; i += 3) {
+    if (nums[i + 2] - nums[i] > k) return [];
+    a.push([nums[i], nums[i + 1], nums[i + 2]]);
+  }
+  return a;
+};
 ```
 
 ## Sequential Digits
@@ -7575,7 +7622,46 @@ https://leetcode.com/problems/divide-array-into-arrays-with-max-difference/descr
 https://leetcode.com/problems/sequential-digits/description/
 
 ```js
+/**
+ * @param {number} low
+ * @param {number} high
+ * @return {number[]}
+ */
+const sequentialDigits = (low, high) => {
+  const a = [12, 123, 1234, 12345, 123456, 1234567, 12345678];
+  const b = [89, 789, 6789, 56789, 456789, 3456789, 23456789];
+  const c = [11, 111, 1111, 11111, 111111, 1111111, 11111111];
+  let d = [];
+  for (let i = 0; i < a.length; i++) {
+    for (let x = a[i]; x <= b[i]; x += c[i]) {
+      if (x >= low && x <= high) d.push(x);
+    }
+  }
+  if (low <= 123456789 && high >= 123456789) d.push(123456789);
+  return d;
+};
+```
 
+## Sort Characters by Frequency
+
+https://leetcode.com/problems/sort-characters-by-frequency/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+const frequencySort = (s) => {
+  let a = {};
+  for (let i of s) a[i] = (a[i] ?? 0) + 1;
+  let b = Object.entries(a);
+  b.sort((x1, x2) => x2[1] - x1[1]);
+  let c = '';
+  for (let [k, v] of b) {
+    for (let i = 0; i < v; i++) c += k;
+  }
+  return c;
+};
 ```
 
 ## Sort the Jumbled Numbers
@@ -7583,7 +7669,42 @@ https://leetcode.com/problems/sequential-digits/description/
 https://leetcode.com/problems/sort-the-jumbled-numbers/description/
 
 ```js
+/**
+ * @param {number[]} mapping
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+const sortJumbled = (mapping, nums) => {
+  const fn = (n) => {
+    if (n == 0) return mapping[0];
+    let a = '';
+    while (n > 0) [a, n] = [mapping[n % 10] + a, (n / 10) | 0];
+    return +a;
+  };
+  return nums.sort((x1, x2) => fn(x1) - fn(x2));
+};
+```
 
+```js
+/**
+ * @param {number[]} mapping
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+const sortJumbled = (mapping, nums) => {
+  const fn = (n) => {
+    if (n == 0) return mapping[0];
+    let x = 0,
+      p = 1;
+    while (n) [x, p, n] = [x + mapping[n % 10] * p, p * 10, (n / 10) | 0];
+    return x;
+  };
+
+  return nums
+    .map((x) => [fn(x), x])
+    .sort((x1, x2) => x1[0] - x2[0])
+    .map((x) => x[1]);
+};
 ```
 
 ## Find Polygon With the Largest Perimeter
@@ -7591,7 +7712,20 @@ https://leetcode.com/problems/sort-the-jumbled-numbers/description/
 https://leetcode.com/problems/find-polygon-with-the-largest-perimeter/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const largestPerimeter = (nums) => {
+  nums.sort((x1, x2) => x1 - x2);
+  let a = nums.reduce((a, x) => a + x, 0);
+  let b = Infinity;
+  while (a <= b && nums.length) {
+    b = nums.pop();
+    a -= b;
+  }
+  return a ? a + b : -1;
+};
 ```
 
 ---
