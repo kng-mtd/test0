@@ -7728,7 +7728,45 @@ const largestPerimeter = (nums) => {
 };
 ```
 
-##
+## Contiguous Array
+
+https://leetcode.com/problems/contiguous-array/description/
+
+```js
+
+```
+
+## Count Number of Bad Pairs
+
+https://leetcode.com/problems/count-number-of-bad-pairs/description/
+
+```js
+
+```
+
+## Find All Duplicates in an Array
+
+https://leetcode.com/problems/find-all-duplicates-in-an-array/description/
+
+```js
+
+```
+
+## Find the Length of the Longest Common Prefix
+
+https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/description/
+
+```js
+
+```
+
+## Count Unguarded Cells in the Grid
+
+https://leetcode.com/problems/count-unguarded-cells-in-the-grid/description/
+
+```js
+
+```
 
 ---
 
