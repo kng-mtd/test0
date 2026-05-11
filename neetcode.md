@@ -7626,7 +7626,45 @@ const champagneTower = (poured, query_row, query_glass) => {
 https://leetcode.com/problems/sum-of-absolute-differences-in-a-sorted-array/description/
 
 ```js
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+const getSumAbsoluteDifferences = (nums) => {
+  const n = nums.length;
+  let a = [0];
+  for (let i = 0; i < n; i++) a[i + 1] = a[i] + nums[i];
+  let b = [];
+  for (let i = 0; i < n; i++) {
+    const l = nums[i] * i - a[i];
+    const r = a[n] - a[i + 1] - nums[i] * (n - i - 1);
+    b.push(l + r);
+  }
+  return b;
+};
+```
 
+```js
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+const getSumAbsoluteDifferences = (nums) => {
+  const n = nums.length;
+  const ans = Array(n);
+  let total = 0;
+  for (let i = 0; i < n; i++) total += nums[i];
+
+  let leftSum = 0;
+  for (let i = 0; i < n; i++) {
+    const x = nums[i];
+    const l = x * i - leftSum;
+    const r = total - leftSum - x - x * (n - i - 1);
+    ans[i] = l + r;
+    leftSum += x;
+  }
+  return ans;
+};
 ```
 
 ## Design a Food Rating System
