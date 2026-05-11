@@ -7598,7 +7598,27 @@ const bestClosingTime = (customers) => {
 https://leetcode.com/problems/champagne-tower/description/
 
 ```js
-
+/**
+ * @param {number} poured
+ * @param {number} query_row
+ * @param {number} query_glass
+ * @return {number}
+ */
+const champagneTower = (poured, query_row, query_glass) => {
+  let dp = [];
+  for (let i = 0; i <= query_row + 1; i++) dp[i] = Array(i + 1).fill(0);
+  dp[0][0] = poured;
+  for (let i = 0; i <= query_row; i++) {
+    for (let j = 0; j <= i; j++) {
+      const a = dp[i][j] - 1;
+      if (a > 0) {
+        dp[i + 1][j] += a / 2;
+        dp[i + 1][j + 1] += a / 2;
+      }
+    }
+  }
+  return Math.min(1, dp[query_row][query_glass]);
+};
 ```
 
 ## Sum of Absolute Differences in a Sorted Array
