@@ -7117,7 +7117,21 @@ class Solution {
 https://neetcode.io/problems/largest-number/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {string}
+   */
+  largestNumber(nums) {
+    return (
+      nums
+        .map(String)
+        .sort((x1, x2) => (x2 + x1 > x1 + x2 ? 1 : x2 + x1 < x1 + x2 ? -1 : 0))
+        .join('')
+        .replace(/^0+/, '') || '0'
+    );
+  }
+}
 ```
 
 ## Continuous Subarray Sum
@@ -7556,6 +7570,51 @@ UndergroundSystem.prototype.getAverageTime = function (startStation, endStation)
  * obj.checkOut(id,stationName,t)
  * var param_3 = obj.getAverageTime(startStation,endStation)
  */
+```
+
+## Minimum Penalty for a Shop
+
+https://leetcode.com/problems/minimum-penalty-for-a-shop/description/
+
+```js
+/**
+ * @param {string} customers
+ * @return {number}
+ */
+const bestClosingTime = (customers) => {
+  let a = -1,
+    b = 0,
+    c = 0;
+  for (let i = 0; i < customers.length; i++) {
+    c = customers[i] == 'Y' ? c - 1 : c + 1;
+    [a, b] = c < b ? [i, c] : [a, b];
+  }
+  return a + 1;
+};
+```
+
+## Champagne Tower
+
+https://leetcode.com/problems/champagne-tower/description/
+
+```js
+
+```
+
+## Sum of Absolute Differences in a Sorted Array
+
+https://leetcode.com/problems/sum-of-absolute-differences-in-a-sorted-array/description/
+
+```js
+
+```
+
+## Design a Food Rating System
+
+https://leetcode.com/problems/design-a-food-rating-system/description/
+
+```js
+
 ```
 
 ## Convert an Array Into a 2D Array With Conditions
