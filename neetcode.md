@@ -7139,7 +7139,23 @@ class Solution {
 https://neetcode.io/problems/continuous-subarray-sum/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {boolean}
+   */
+  checkSubarraySum(nums, k) {
+    for (let i = 0; i < nums.length - 1; i++) {
+      let a = nums[i];
+      for (let j = i + 1; j < nums.length; j++) {
+        a += nums[j];
+        if (a % k == 0) return true;
+      }
+    }
+    return false;
+  }
+}
 ```
 
 ## Push Dominoes
