@@ -1,10 +1,14 @@
 # memo
 
+### sub...
+
 | Type        | Contiguous | Order Matters |
 | ----------- | ---------- | ------------- |
 | substring   | Yes        | Yes           |
 | subsequence | No         | Yes           |
 | subset      | No         | No            |
+
+---
 
 ### Count Lowercase
 
@@ -18,6 +22,91 @@ const fn = (s) => {
   }
   return a;
 };
+```
+
+---
+
+### heap class
+
+```js
+class Heap {
+  constructor(fn1 = (a, b) => a < b) {
+    this.data = [];
+    this.fn1 = fn1;
+  }
+  size() {
+    return this.data.length;
+  }
+  isEmpty() {
+    return this.data.length == 0;
+  }
+  top() {
+    return this.data[0];
+  }
+  push(value) {
+    const a = this.data;
+    a.push(value);
+    let i = a.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (this.fn1(a[p], a[i])) break;
+      [a[p], a[i]] = [a[i], a[p]];
+      i = p;
+    }
+  }
+  pop() {
+    const a = this.data;
+    if (a.length == 0) return undefined;
+    if (a.length == 1) return a.pop();
+    const top = a[0];
+    a[0] = a.pop();
+    let i = 0;
+    while (true) {
+      let l = i * 2 + 1;
+      let r = i * 2 + 2;
+      let id = i;
+      if (l < a.length && !this.fn1(a[id], a[l])) id = l;
+      if (r < a.length && !this.fn1(a[id], a[r])) id = r;
+      if (id == i) break;
+      [a[i], a[id]] = [a[id], a[i]];
+      i = id;
+    }
+    return top;
+  }
+}
+```
+
+min heap:
+
+```js
+const h = new Heap((a, b) => a < b);
+
+h.push(5);
+h.push(2);
+h.push(8);
+
+console.log(h.pop()); // 2
+```
+
+max heap:
+
+```js
+const h = new Heap((a, b) => a > b);
+
+h.push(5);
+h.push(2);
+h.push(8);
+
+console.log(h.pop()); // 8
+```
+
+オブジェクト 1. score 降順、2. name 昇順
+
+```js
+const h = new Heap((a, b) => {
+  if (a.score !== b.score) return a.score > b.score;
+  else return a.name < b.name;
+});
 ```
 
 ---
@@ -7688,7 +7777,151 @@ const getSumAbsoluteDifferences = (nums) => {
 https://leetcode.com/problems/design-a-food-rating-system/description/
 
 ```js
+/**
+ * @param {string[]} foods
+ * @param {string[]} cuisines
+ * @param {number[]} ratings
+ */
+const FoodRatings = function (foods, cuisines, ratings) {
+  ((this.cuisine = {}), (this.food = {}));
+  for (let i = 0; i < foods.length; i++) {
+    (this.cuisine[cuisines[i]] ??= []).push(foods[i]);
+    this.food[foods[i]] = { rating: ratings[i], cuisine: cuisines[i] };
+  }
+};
 
+/**
+ * @param {string} food
+ * @param {number} newRating
+ * @return {void}
+ */
+FoodRatings.prototype.changeRating = function (food, newRating) {
+  this.food[food].rating = newRating;
+};
+
+/**
+ * @param {string} cuisine
+ * @return {string}
+ */
+FoodRatings.prototype.highestRated = function (cuisine) {
+  let a = '',
+    b = -1;
+  for (let i of this.cuisine[cuisine]) {
+    const c = this.food[i].rating;
+    if (c > b || (c == b && i < a)) [a, b] = [i, c];
+  }
+  return a;
+};
+
+/**
+ * Your FoodRatings object will be instantiated and called as such:
+ * var obj = new FoodRatings(foods, cuisines, ratings)
+ * obj.changeRating(food,newRating)
+ * var param_2 = obj.highestRated(cuisine)
+ */
+```
+
+```js
+class MyHeap {
+  constructor(fn1) {
+    this.data = [];
+    this.fn1 = fn1;
+  }
+  push(value) {
+    const a = this.data;
+    a.push(value);
+    let i = a.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (this.fn1(a[p], a[i])) break;
+      [a[p], a[i]] = [a[i], a[p]];
+      i = p;
+    }
+  }
+  pop() {
+    const a = this.data;
+    if (a.length === 1) return a.pop();
+    const top = a[0];
+    a[0] = a.pop();
+    let i = 0;
+    while (true) {
+      let l = i * 2 + 1;
+      let r = i * 2 + 2;
+      let best = i;
+      if (l < a.length && !this.fn1(a[best], a[l])) {
+        best = l;
+      }
+      if (r < a.length && !this.fn1(a[best], a[r])) {
+        best = r;
+      }
+      if (best === i) break;
+      [a[i], a[best]] = [a[best], a[i]];
+      i = best;
+    }
+    return top;
+  }
+  top() {
+    return this.data[0];
+  }
+}
+
+/**
+ * @param {string[]} foods
+ * @param {string[]} cuisines
+ * @param {number[]} ratings
+ */
+const FoodRatings = function (foods, cuisines, ratings) {
+  this.food = {};
+  this.heap = {};
+  for (let i = 0; i < foods.length; i++) {
+    const food = foods[i];
+    const cuisine = cuisines[i];
+    const rating = ratings[i];
+    this.food[food] = {
+      cuisine,
+      rating,
+    };
+    this.heap[cuisine] ??= new MyHeap((a, b) => {
+      if (a.rating !== b.rating) {
+        return a.rating > b.rating;
+      }
+      return a.food < b.food;
+    });
+    this.heap[cuisine].push({
+      food,
+      rating,
+    });
+  }
+};
+
+/**
+ * @param {string} food
+ * @param {number} newRating
+ * @return {void}
+ */
+FoodRatings.prototype.changeRating = function (food, newRating) {
+  const cuisine = this.food[food].cuisine;
+  this.food[food].rating = newRating;
+  this.heap[cuisine].push({
+    food,
+    rating: newRating,
+  });
+};
+
+/**
+ * @param {string} cuisine
+ * @return {string}
+ */
+FoodRatings.prototype.highestRated = function (cuisine) {
+  const heap = this.heap[cuisine];
+  while (true) {
+    const top = heap.top();
+    if (this.food[top.food].rating === top.rating) {
+      return top.food;
+    }
+    heap.pop();
+  }
+};
 ```
 
 ## Convert an Array Into a 2D Array With Conditions
