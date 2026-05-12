@@ -8099,7 +8099,45 @@ const largestPerimeter = (nums) => {
 https://leetcode.com/problems/contiguous-array/description/
 
 ```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const findMaxLength = (nums) => {
+  const n = nums.length;
+  let a0 = Array(n + 1).fill(0);
+  let a1 = Array(n + 1).fill(0);
+  for (let i = 0; i < n; i++) {
+    a0[i + 1] = a0[i] + (nums[i] == 0);
+    a1[i + 1] = a1[i] + (nums[i] == 1);
+  }
+  for (let k = n; k >= 2; k--) {
+    if (k & 1) continue;
+    for (let i = 0; i + k <= n; i++) {
+      if (a0[i + k] - a0[i] == a1[i + k] - a1[i]) return k;
+    }
+  }
+  return 0;
+};
+```
 
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const findMaxLength = (nums) => {
+  let a = new Map();
+  a.set(0, -1);
+  let b = 0,
+    c = 0;
+  for (let i = 0; i < nums.length; i++) {
+    b += nums[i] ? 1 : -1;
+    if (a.has(b)) c = Math.max(c, i - a.get(b));
+    else a.set(b, i);
+  }
+  return c;
+};
 ```
 
 ## Count Number of Bad Pairs
