@@ -7325,7 +7325,46 @@ const findRepeatedDnaSequences = (s) => {
 https://neetcode.io/problems/insert-delete-getrandom-o1/question
 
 ```js
+class RandomizedSet {
+  constructor() {
+    this.vals = new Set();
+  }
 
+  /**
+   * @param {number} val
+   * @return {boolean}
+   */
+  insert(val) {
+    const a = this.vals.has(val);
+    this.vals.add(val);
+    return a;
+  }
+
+  /**
+   * @param {number} val
+   * @return {boolean}
+   */
+  remove(val) {
+    const a = this.vals.has(val);
+    this.vals.delete(val);
+  }
+
+  /**
+   * @return {number}
+   */
+  getRandom() {
+    const a = [...this.vals];
+    return a[(Math.random() * a.length) | 0];
+  }
+}
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * var obj = new RandomizedSet()
+ * var param_1 = obj.insert(val)
+ * var param_2 = obj.remove(val)
+ * var param_3 = obj.getRandom()
+ */
 ```
 
 ## Check if a String Contains All binary Codes of Size K
@@ -8145,7 +8184,36 @@ const findMaxLength = (nums) => {
 https://leetcode.com/problems/count-number-of-bad-pairs/description/
 
 ```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const countBadPairs = (nums) => {
+  const n = nums.length;
+  let a = {},
+    b = 0;
+  for (let i = 0; i < n; i++) a[nums[i] - i] = (a[nums[i] - i] ?? 0) + 1;
+  for (let i in a) b += ((a[i] - 1) * a[i]) / 2;
+  return ((n - 1) * n) / 2 - b;
+};
+```
 
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const countBadPairs = (nums) => {
+  const n = nums.length;
+  let a = {},
+    b = 0;
+  for (let i = 0; i < n; i++) {
+    const c = nums[i] - i;
+    b += a[c] ?? 0;
+    a[c] = (a[c] ?? 0) + 1;
+  }
+  return ((n - 1) * n) / 2 - b;
+};
 ```
 
 ## Find All Duplicates in an Array
