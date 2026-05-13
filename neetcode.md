@@ -8221,7 +8221,19 @@ const countBadPairs = (nums) => {
 https://leetcode.com/problems/find-all-duplicates-in-an-array/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+const findDuplicates = (nums) => {
+  let a = {},
+    b = [];
+  for (let i of nums) {
+    if (a[i]) b.push(i);
+    a[i] = true;
+  }
+  return b;
+};
 ```
 
 ## Find the Length of the Longest Common Prefix
@@ -8229,7 +8241,26 @@ https://leetcode.com/problems/find-all-duplicates-in-an-array/description/
 https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/description/
 
 ```js
-
+/**
+ * @param {number[]} arr1
+ * @param {number[]} arr2
+ * @return {number}
+ */
+const longestCommonPrefix = (arr1, arr2) => {
+  const a = new Set();
+  for (let i of arr1) {
+    const b = i + '';
+    for (let j = 1; j <= b.length; j++) a.add(b.slice(0, j));
+  }
+  let c = 0;
+  for (let i of arr2) {
+    const b = i + '';
+    for (let j = 1; j <= b.length; j++) {
+      if (a.has(b.slice(0, j))) c = j > c ? j : c;
+    }
+  }
+  return c;
+};
 ```
 
 ## Count Unguarded Cells in the Grid
@@ -8247,3 +8278,19 @@ https://leetcode.com/problems/count-unguarded-cells-in-the-grid/description/
 ---
 
 # Stack
+
+## Min Stack
+
+https://neetcode.io/problems/minimum-stack/question
+
+```js
+
+```
+
+## Evaluate Reverse Polish Notation
+
+https://neetcode.io/problems/evaluate-reverse-polish-notation/question
+
+```js
+
+```
