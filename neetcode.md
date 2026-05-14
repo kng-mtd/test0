@@ -7997,7 +7997,21 @@ const findMatrix = (nums) => {
 https://neetcode.io/problems/minimum-number-of-operations-to-make-array-empty/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  minOperations(nums) {
+    let a = {};
+    for (let i of nums) a[i] = (a[i] ?? 0) + 1;
+    const b = Object.values(a);
+    if (b.includes(1)) return -1;
+    let c = 0;
+    for (let i of b) c += i % 3 == 0 ? i / 3 : ((i / 3) | 0) + 1;
+    return c;
+  }
+}
 ```
 
 ## Divide Array Into Arrays With Max Difference
@@ -8131,6 +8145,14 @@ const largestPerimeter = (nums) => {
   }
   return a ? a + b : -1;
 };
+```
+
+## Minimum Remove to make Valid Parentheses
+
+https://neetcode.io/problems/minimum-remove-to-make-valid-parentheses/question
+
+```js
+
 ```
 
 ## Contiguous Array
@@ -8294,3 +8316,45 @@ https://neetcode.io/problems/evaluate-reverse-polish-notation/question
 ```js
 
 ```
+
+## Validate Stack Ssequences
+
+https://leetcode.com/problems/validate-stack-sequences/description/
+
+```js
+
+```
+
+## Asteroid Collision
+
+https://neetcode.io/problems/asteroid-collision/question
+
+```ja
+
+```
+
+## Daily Temperatures
+
+https://neetcode.io/problems/daily-temperatures/question
+
+```js
+
+```
+
+## Online Stock Span
+
+https://neetcode.io/problems/online-stock-span/question
+
+```js
+
+```
+
+## Car Fleet
+
+https://neetcode.io/problems/car-fleet/question
+
+```js
+
+```
+
+## Car Fleet
