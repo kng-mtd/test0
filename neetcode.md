@@ -8152,7 +8152,27 @@ const largestPerimeter = (nums) => {
 https://neetcode.io/problems/minimum-remove-to-make-valid-parentheses/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {string}
+   */
+  minRemoveToMakeValid(s) {
+    let a = [],
+      b = [],
+      c = [...s];
+    for (let i = 0; i < c.length; i++) {
+      if (c[i] == '(') a.push(i);
+      else if (c[i] == ')') {
+        if (a.length) a.pop();
+        else b.push(i);
+      }
+    }
+    for (let i of a) c[i] = '';
+    for (let i of b) c[i] = '';
+    return c.join('');
+  }
+}
 ```
 
 ## Contiguous Array
