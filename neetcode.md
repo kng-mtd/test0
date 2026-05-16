@@ -8310,6 +8310,126 @@ const longestCommonPrefix = (arr1, arr2) => {
 https://leetcode.com/problems/count-unguarded-cells-in-the-grid/description/
 
 ```js
+/**
+ * @param {number} m
+ * @param {number} n
+ * @param {number[][]} guards
+ * @param {number[][]} walls
+ * @return {number}
+ */
+const countUnguarded = (m, n, guards, walls) => {
+  let g = new Set(guards.map(String));
+  let w = new Set(walls.map(String));
+  let a = 0;
+  for (let y0 = 0; y0 < m; y0++) {
+    for (let x0 = 0; x0 < n; x0++) {
+      let b = false;
+
+      let x = x0,
+        y = y0;
+      if (g.has(y + ',' + x) || w.has(y + ',' + x)) continue;
+
+      while (x > 0) {
+        x--;
+        if (g.has(y + ',' + x)) {
+          b = true;
+          break;
+        }
+        if (w.has(y + ',' + x)) break;
+      }
+      if (b) continue;
+
+      x = x0;
+      while (x < n - 1) {
+        x++;
+        if (g.has(y + ',' + x)) {
+          b = true;
+          break;
+        }
+        if (w.has(y + ',' + x)) break;
+      }
+      if (b) continue;
+
+      x = x0;
+      while (y > 0) {
+        y--;
+        if (g.has(y + ',' + x)) {
+          b = true;
+          break;
+        }
+        if (w.has(y + ',' + x)) break;
+      }
+      if (b) continue;
+
+      y = y0;
+      while (y < m - 1) {
+        y++;
+        if (g.has(y + ',' + x)) {
+          b = true;
+          break;
+        }
+        if (w.has(y + ',' + x)) break;
+      }
+      if (b) continue;
+
+      a++;
+    }
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number} m
+ * @param {number} n
+ * @param {number[][]} guards
+ * @param {number[][]} walls
+ * @return {number}
+ */
+const countUnguarded = (m, n, guards, walls) => {
+  let w = new Set(walls.map(String));
+  let g = new Set();
+  for (let [y0, x0] of guards) {
+    let x = x0,
+      y = y0;
+    g.add(y + ',' + x);
+    while (x > 0) {
+      x--;
+      if (w.has(y + ',' + x)) break;
+      g.add(y + ',' + x);
+    }
+    x = x0;
+    while (x < n - 1) {
+      x++;
+      if (w.has(y + ',' + x)) break;
+      g.add(y + ',' + x);
+    }
+    x = x0;
+    while (y > 0) {
+      y--;
+      if (w.has(y + ',' + x)) break;
+      g.add(y + ',' + x);
+    }
+    y = y0;
+    while (y < m - 1) {
+      y++;
+      if (w.has(y + ',' + x)) break;
+      g.add(y + ',' + x);
+    }
+  }
+  let b = g.union(w);
+  let a = 0;
+  for (let y = 0; y < m; y++) {
+    for (let x = 0; x < n; x++) {
+      if (!b.has(y + ',' + x)) a++;
+    }
+  }
+  return a;
+};
+```
+
+```js
 
 ```
 
@@ -8326,7 +8446,42 @@ https://leetcode.com/problems/count-unguarded-cells-in-the-grid/description/
 https://neetcode.io/problems/minimum-stack/question
 
 ```js
+class MinStack {
+  constructor() {
+    this.a = [];
+  }
 
+  /**
+   * @param {number} val
+   * @return {void}
+   */
+  push(val) {
+    this.a.push(val);
+  }
+
+  /**
+   * @return {void}
+   */
+  pop() {
+    this.a.pop();
+  }
+
+  /**
+   * @return {number}
+   */
+  top() {
+    return this.a.at(-1);
+  }
+
+  /**
+   * @return {number}
+   */
+  getMin() {
+    let b = Infinity;
+    for (let i of this.a) b = i < b ? i : b;
+    return b;
+  }
+}
 ```
 
 ## Evaluate Reverse Polish Notation
