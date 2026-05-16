@@ -8430,7 +8430,49 @@ const countUnguarded = (m, n, guards, walls) => {
 ```
 
 ```js
+/**
+ * @param {number} m
+ * @param {number} n
+ * @param {number[][]} guards
+ * @param {number[][]} walls
+ * @return {number}
+ */
+const countUnguarded = (m, n, guards, walls) => {
+  let w = new Set(walls.map(String));
+  let g = Array.from({ length: m }, () => Array(n).fill(4));
+  for (let [y, x] of guards) g[y][x] = 2;
+  for (let [y, x] of walls) g[y][x] = 1;
 
+  for (let y = 0; y < m; y++) {
+    let a = false;
+    for (let x = 0; x < n; x++) {
+      if (g[y][x] == 2) a = true;
+      else if (g[y][x] == 1) a = false;
+      else if (a) g[y][x] = 0;
+    }
+    a = false;
+    for (let x = n - 1; x >= 0; x--) {
+      if (g[y][x] == 2) a = true;
+      else if (g[y][x] == 1) a = false;
+      else if (a) g[y][x] = 0;
+    }
+  }
+  for (let x = 0; x < n; x++) {
+    let a = false;
+    for (let y = 0; y < m; y++) {
+      if (g[y][x] == 2) a = true;
+      else if (g[y][x] == 1) a = false;
+      else if (a) g[y][x] = 0;
+    }
+    a = false;
+    for (let y = m - 1; y >= 0; y--) {
+      if (g[y][x] == 2) a = true;
+      else if (g[y][x] == 1) a = false;
+      else if (a) g[y][x] = 0;
+    }
+  }
+  return g.flat().reduce((a, x) => a + (x >> 2), 0);
+};
 ```
 
 ---
