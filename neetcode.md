@@ -8531,7 +8531,45 @@ class MinStack {
 https://neetcode.io/problems/evaluate-reverse-polish-notation/question
 
 ```js
+class Solution {
+  /**
+   * @param {string[]} tokens
+   * @return {number}
+   */
+  evalRPN(tokens) {
+    let a = [];
+    for (let i of tokens) {
+      if (i == '+') a.push(a.pop() + a.pop());
+      else if (i == '-') a.push(-a.pop() + a.pop());
+      else if (i == '*') a.push(a.pop() * a.pop());
+      else if (i == '/') {
+        const b = a.pop(),
+          c = a.pop();
+        a.push((c / b) | 0);
+      } else a.push(+i);
+    }
+    return a[0];
+  }
+}
+```
 
+## Removing Stars from a String
+
+https://leetcode.com/problems/removing-stars-from-a-string/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+const removeStars = (s) => {
+  let a = [];
+  for (let i of s) {
+    if (i == '*') a.pop();
+    else a.push(i);
+  }
+  return a.join('');
+};
 ```
 
 ## Validate Stack Ssequences
@@ -8539,7 +8577,23 @@ https://neetcode.io/problems/evaluate-reverse-polish-notation/question
 https://leetcode.com/problems/validate-stack-sequences/description/
 
 ```js
-
+/**
+ * @param {number[]} pushed
+ * @param {number[]} popped
+ * @return {boolean}
+ */
+const validateStackSequences = (pushed, popped) => {
+  let a = [],
+    b = 0;
+  for (let i of pushed) {
+    a.push(i);
+    while (a.length && a.at(-1) == popped[b]) {
+      a.pop();
+      b++;
+    }
+  }
+  return !a.length;
+};
 ```
 
 ## Asteroid Collision
@@ -8574,4 +8628,4 @@ https://neetcode.io/problems/car-fleet/question
 
 ```
 
-## Car Fleet
+##
