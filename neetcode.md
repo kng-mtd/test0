@@ -8601,7 +8601,29 @@ const validateStackSequences = (pushed, popped) => {
 https://neetcode.io/problems/asteroid-collision/question
 
 ```ja
-
+class Solution {
+    /**
+     * @param {number[]} asteroids
+     * @return {number[]}
+     */
+    asteroidCollision(asteroids) {
+        let a=[];
+        for(let i of asteroids){
+            let b=true;
+            while(b && a.length && a.at(-1)>0 && i<0){
+                const c=a.at(-1);
+                if(c<-i) a.pop();
+                else if(c==-i){
+                    a.pop();
+                    b=false;
+                }
+                else b=false;
+            }
+            if(b) a.push(i);
+        }
+        return a;
+    }
+}
 ```
 
 ## Daily Temperatures
