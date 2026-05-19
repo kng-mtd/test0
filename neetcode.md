@@ -8631,7 +8631,25 @@ class Solution {
 https://neetcode.io/problems/daily-temperatures/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} temperatures
+   * @return {number[]}
+   */
+  dailyTemperatures(temperatures) {
+    const n = temperatures.length;
+    let a = Array(n).fill(0),
+      b = [];
+    for (let i = 0; i < n; i++) {
+      while (b.length && temperatures[i] > temperatures[b.at(-1)]) {
+        const c = b.pop();
+        a[c] = i - c;
+      }
+      b.push(i);
+    }
+    return a;
+  }
+}
 ```
 
 ## Online Stock Span
@@ -8650,4 +8668,103 @@ https://neetcode.io/problems/car-fleet/question
 
 ```
 
-##
+## Simplify Path
+
+https://neetcode.io/problems/simplify-path/question
+
+```js
+
+```
+
+## Decode String
+
+https://neetcode.io/problems/decode-string/question
+
+```js
+
+```
+
+## Remove k Digits
+
+https://leetcode.com/problems/remove-k-digits/description/
+
+```js
+/**
+ * @param {string} num
+ * @param {number} k
+ * @return {string}
+ */
+const removeKdigits = (num, k) => {
+  if (num.length == k) return '0';
+  let a = [];
+  for (let i of num) {
+    while (k > 0 && a.length && a.at(-1) > i) {
+      a.pop();
+      k--;
+    }
+    a.push(i);
+  }
+  if (k) a = a.slice(0, -k);
+  return a.join('').replace(/^0+/, '') || '0';
+};
+```
+
+## Remove All Adjacent Duplicates In String II
+
+https://neetcode.io/problems/remove-all-adjacent-duplicates-in-string-ii/question
+
+```js
+
+```
+
+## Reverse Substrings Between Each Pair of Parentheses
+
+https://leetcode.com/problems/reverse-substrings-between-each-pair-of-parentheses/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+const reverseParentheses = (s) => {
+  let a = [],
+    c = '';
+  for (let i of s) {
+    if (i == '(') {
+      a.push(c);
+      c = '';
+    } else if (i == ')') c = a.pop() + c.split('').reverse().join('');
+    else c += i;
+  }
+  return c;
+};
+```
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+const reverseParentheses = (s) => {
+  const n = s.length;
+  let a = Array(n);
+  let b = [];
+  for (let i = 0; i < n; i++) {
+    if (s[i] == '(') b.push(i);
+    else if (s[i] === ')') {
+      const j = b.pop();
+      a[i] = j;
+      a[j] = i;
+    }
+  }
+  let c = [],
+    i = 0,
+    d = 1;
+  while (i < n) {
+    if (s[i] == '(' || s[i] == ')') [i, d] = [a[i], -d];
+    else c.push(s[i]);
+    i += d;
+  }
+  return c.join('');
+};
+```
