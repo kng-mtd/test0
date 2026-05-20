@@ -8657,7 +8657,28 @@ class Solution {
 https://neetcode.io/problems/online-stock-span/question
 
 ```js
+class StockSpanner {
+  constructor() {
+    this.a = [];
+  }
 
+  /**
+   * @param {number} price
+   * @return {number}
+   */
+  next(price) {
+    let b = 1;
+    while (this.a.length - b >= 0 && this.a.at(-b) <= price) b++;
+    this.a.push(price);
+    return b;
+  }
+}
+
+/**
+ * Your StockSpanner object will be instantiated and called as such:
+ * var obj = new StockSpanner()
+ * var param_1 = obj.next(price)
+ */
 ```
 
 ## Car Fleet
@@ -8768,3 +8789,51 @@ const reverseParentheses = (s) => {
   return c.join('');
 };
 ```
+
+## Minimum Add to Make Parentheses Valid
+
+https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minAddToMakeValid = (s) => {
+  let l = 0,
+    r = 0;
+  for (let i of s) {
+    if (i == '(') l++;
+    else if (i == ')') {
+      if (l > 0) l--;
+      else r++;
+    }
+  }
+  return l + r;
+};
+```
+
+## Maximum Width Ramp
+
+https://leetcode.com/problems/maximum-width-ramp/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const maxWidthRamp = (nums) => {
+  let n = nums.length;
+  let a = [0];
+  for (let i = 0; i < n; i++) {
+    if (nums[i] < nums[a.at(-1)]) a.push(i);
+  }
+  let b = 0;
+  for (let i = n - 1; i >= 0; i--) {
+    while (a.length && nums[a.at(-1)] <= nums[i]) b = Math.max(i - a.pop(), b);
+  }
+  return b;
+};
+```
+
+##
