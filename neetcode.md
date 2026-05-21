@@ -8686,7 +8686,25 @@ class StockSpanner {
 https://neetcode.io/problems/car-fleet/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} target
+   * @param {number[]} position
+   * @param {number[]} speed
+   * @return {number}
+   */
+  carFleet(target, position, speed) {
+    let a = [];
+    for (let i = 0; i < position.length; i++) {
+      a.push([position[i], (target - position[i]) / speed[i]]);
+    }
+    a.sort((x1, x2) => x2[0] - x1[0]);
+    let t0 = 0,
+      b = 0;
+    for (let [, t] of a) [t0, b] = t > t0 ? [t, b + 1] : [t0, b];
+    return b;
+  }
+}
 ```
 
 ## Simplify Path
