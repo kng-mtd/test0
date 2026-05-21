@@ -8867,7 +8867,20 @@ https://neetcode.io/problems/basic-calculator-ii/question
 https://leetcode.com/problems/132-pattern/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+const find132pattern = (nums) => {
+  let a = [],
+    b = -Infinity;
+  for (let i = nums.length - 1; i >= 0; i--) {
+    if (nums[i] < b) return true;
+    while (a.length && nums[i] > a.at(-1)) b = a.pop();
+    a.push(nums[i]);
+  }
+  return false;
+};
 ```
 
 ## Flatten Nested List Iterator
