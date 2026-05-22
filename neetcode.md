@@ -8712,7 +8712,22 @@ class Solution {
 https://neetcode.io/problems/simplify-path/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} path
+   * @return {string}
+   */
+  simplifyPath(path) {
+    let a = [];
+    for (let i of path.split('/')) {
+      if (i == '' || i == '.') continue;
+      if (i == '..') {
+        if (a.length) a.pop();
+      } else a.push(i);
+    }
+    return '/' + a.join('/');
+  }
+}
 ```
 
 ## Decode String
@@ -8874,10 +8889,10 @@ https://leetcode.com/problems/132-pattern/description/
 const find132pattern = (nums) => {
   let a = [],
     b = -Infinity;
-  for (let i = nums.length - 1; i >= 0; i--) {
-    if (nums[i] < b) return true;
-    while (a.length && nums[i] > a.at(-1)) b = a.pop();
-    a.push(nums[i]);
+  for (let i of nums.reverse()) {
+    if (i < b) return true;
+    while (a.length && i > a.at(-1)) b = a.pop();
+    a.push(i);
   }
   return false;
 };
