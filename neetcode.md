@@ -9045,3 +9045,34 @@ const sumSubarrayMins = (arr) => {
   return a;
 };
 ```
+
+---
+
+---
+
+---
+
+# Two Pointers
+
+## Adding Spaces to a String
+
+https://leetcode.com/problems/adding-spaces-to-a-string/description/
+
+```js
+/**
+ * @param {string} s
+ * @param {number[]} spaces
+ * @return {string}
+ */
+const addSpaces = (s, spaces) => {
+  let a = '',
+    i0 = 0;
+  for (let i of spaces) {
+    a += s.slice(i0, i) + ' ';
+    i0 = i;
+  }
+  return a + s.slice(i0);
+};
+```
+
+##
