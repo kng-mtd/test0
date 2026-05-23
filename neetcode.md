@@ -8600,29 +8600,28 @@ const validateStackSequences = (pushed, popped) => {
 
 https://neetcode.io/problems/asteroid-collision/question
 
-```ja
+```js
 class Solution {
-    /**
-     * @param {number[]} asteroids
-     * @return {number[]}
-     */
-    asteroidCollision(asteroids) {
-        let a=[];
-        for(let i of asteroids){
-            let b=true;
-            while(b && a.length && a.at(-1)>0 && i<0){
-                const c=a.at(-1);
-                if(c<-i) a.pop();
-                else if(c==-i){
-                    a.pop();
-                    b=false;
-                }
-                else b=false;
-            }
-            if(b) a.push(i);
-        }
-        return a;
+  /**
+   * @param {number[]} asteroids
+   * @return {number[]}
+   */
+  asteroidCollision(asteroids) {
+    let a = [];
+    for (let i of asteroids) {
+      let b = true;
+      while (b && a.length && a.at(-1) > 0 && i < 0) {
+        const c = a.at(-1);
+        if (c < -i) a.pop();
+        else if (c == -i) {
+          a.pop();
+          b = false;
+        } else b = false;
+      }
+      if (b) a.push(i);
     }
+    return a;
+  }
 }
 ```
 
@@ -8735,7 +8734,32 @@ class Solution {
 https://neetcode.io/problems/decode-string/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {string}
+   */
+  decodeString(s) {
+    let a = [],
+      b = [],
+      c = '',
+      k = 0;
+    for (const i of s) {
+      if (/\d/.test(i)) k = k * 10 + +i;
+      else if (i == '[') {
+        a.push(k);
+        b.push(c);
+        k = 0;
+        c = '';
+      } else if (i == ']') {
+        const k0 = a.pop(),
+          c0 = b.pop();
+        c = c0 + c.repeat(k0);
+      } else c += i;
+    }
+    return c;
+  }
+}
 ```
 
 ## Remove k Digits
@@ -8979,5 +9003,45 @@ NestedIterator.prototype.next = function() {
 https://leetcode.com/problems/sum-of-subarray-minimums/description/
 
 ```js
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+const sumSubarrayMins = (arr) => {
+  const M = 1e9 + 7;
+  let a = 0;
+  for (let i = 0; i < arr.length; i++) {
+    const b = arr[i];
+    let l = i,
+      r = i;
+    while (l > 0 && arr[l - 1] > b) l--;
+    while (r < arr.length - 1 && arr[r + 1] >= b) r++;
+    a = (a + b * (i - l + 1) * (r - i + 1)) % M;
+  }
+  return a;
+};
+```
 
+```js
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+const sumSubarrayMins = (arr) => {
+  const M = 1e9 + 7;
+  const n = arr.length;
+  let a = 0;
+  let b = [];
+  for (let i = 0; i <= n; i++) {
+    while (b.length && (i == n || arr[b.at(-1)] >= arr[i])) {
+      const m = b.pop();
+      const l = b.length ? b.at(-1) : -1;
+      const r = i;
+      const c = (m - l) * (r - m);
+      a = (a + arr[m] * c) % M;
+    }
+    b.push(i);
+  }
+  return a;
+};
 ```
