@@ -8792,7 +8792,50 @@ const removeKdigits = (num, k) => {
 https://neetcode.io/problems/remove-all-adjacent-duplicates-in-string-ii/question
 
 ```js
+class Solution {
+  /**
+   * @param {string} s
+   * @param {number} k
+   * @return {string}
+   */
+  removeDuplicates(s, k) {
+    let a = [];
+    for (let i of s) {
+      a.push(i);
+      let b = true;
+      for (let j = 1; j < k; j++) {
+        if (i != a.at(-j - 1)) {
+          b = false;
+          break;
+        }
+      }
+      if (!b) continue;
+      a = a.slice(0, -k);
+    }
+    return a.join('');
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @param {number} k
+   * @return {string}
+   */
+  removeDuplicates(s, k) {
+    let a = [];
+    for (let i of s) {
+      if (a.length && a.at(-1)[0] == i) a.at(-1)[1]++;
+      else a.push([i, 1]);
+      if (a.at(-1)[1] == k) a.pop();
+    }
+    let b = '';
+    for (let [i, c] of a) b += i.repeat(c);
+    return b;
+  }
+}
 ```
 
 ## Reverse Substrings Between Each Pair of Parentheses
