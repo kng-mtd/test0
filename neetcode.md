@@ -9244,7 +9244,16 @@ https://neetcode.io/problems/number-of-subsequences-that-satisfy-the-given-sum-c
 https://leetcode.com/problems/array-with-elements-not-equal-to-average-of-neighbors/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+const rearrangeArray = (nums) => {
+  const n = nums.length;
+  nums.sort((x1, x2) => x1 - x2);
+  for (let i = 1; i < n - 1; i += 2) [nums[i], nums[i + 1]] = [nums[i + 1], nums[i]];
+  return nums;
+};
 ```
 
 ## Divide Players Into Teams of Equal Skill
@@ -9252,5 +9261,19 @@ https://leetcode.com/problems/array-with-elements-not-equal-to-average-of-neighb
 https://leetcode.com/problems/divide-players-into-teams-of-equal-skill/description/
 
 ```js
-
+/**
+ * @param {number[]} skill
+ * @return {number}
+ */
+const dividePlayers = (skill) => {
+  skill.sort((x1, x2) => x1 - x2);
+  const a = skill[0] + skill.at(-1);
+  let b = 0;
+  for (let i = 0; i < skill.length / 2; i++) {
+    const c = skill[i] + skill.at(-1 - i);
+    if (c != a) return -1;
+    b += skill[i] * skill.at(-1 - i);
+  }
+  return b;
+};
 ```
