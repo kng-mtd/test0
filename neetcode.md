@@ -8941,7 +8941,41 @@ const maxWidthRamp = (nums) => {
 https://neetcode.io/problems/basic-calculator-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  calculate(s) {
+    s = s.replaceAll(' ', '');
+    let a = [],
+      b = 0;
+    for (let i of s) {
+      if (/\d/.test(i)) b = +i + b * 10;
+      else {
+        a.push(b);
+        b = 0;
+        a.push(i);
+      }
+    }
+    a.push(b);
+    b = [];
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] == '*') {
+        b.push(b.pop() * a[i + 1]);
+        i++;
+      } else if (a[i] == '/') {
+        b.push((b.pop() / a[i + 1]) | 0);
+        i++;
+      } else b.push(a[i]);
+    }
+    let c = b[0];
+    for (let i = 1; i < b.length; i += 2) {
+      c += b[i] == '+' ? b[i + 1] : -b[i + 1];
+    }
+    return c;
+  }
+}
 ```
 
 ## 132 Pattern
