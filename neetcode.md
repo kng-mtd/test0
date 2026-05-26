@@ -9300,3 +9300,47 @@ const dividePlayers = (skill) => {
   return b;
 };
 ```
+
+## Boats to Save People
+
+https://neetcode.io/problems/boats-to-save-people/question
+
+```js
+
+```
+
+## K-th Symbol in Grammar
+
+https://leetcode.com/problems/k-th-symbol-in-grammar/description/
+
+```js
+/**
+ * @param {number} n
+ * @param {number} k
+ * @return {number}
+ */
+const kthGrammar = (n, k) => {
+  let a = [false];
+  for (let i = 0; i < n; i++) {
+    for (let ii = 0; ii < 2 ** i; ii++) a.push(!a[ii]);
+  }
+  return a[k - 1] ? 1 : 0;
+};
+```
+
+```js
+/**
+ * @param {number} n
+ * @param {number} k
+ * @return {number}
+ */
+const kthGrammar = (n, k) => {
+  k--;
+  let a = 0;
+  while (k) {
+    a += k & 1;
+    k >>= 1;
+  }
+  return a % 2;
+};
+```
