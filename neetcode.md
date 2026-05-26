@@ -9344,3 +9344,41 @@ const kthGrammar = (n, k) => {
   return a % 2;
 };
 ```
+
+## Minimum Time to Make Rope Colorful
+
+https://leetcode.com/problems/minimum-time-to-make-rope-colorful/description/
+
+```js
+/**
+ * @param {string} colors
+ * @param {number[]} neededTime
+ * @return {number}
+ */
+const minCost = (colors, neededTime) => {
+  let a = 0,
+    b = neededTime[0],
+    c = b,
+    d = colors[0];
+  for (let i = 1; i < colors.length; i++) {
+    if (colors[i] != d) {
+      a += b - c;
+      b = neededTime[i];
+      c = b;
+      d = colors[i];
+    } else {
+      b += neededTime[i];
+      c = Math.max(neededTime[i], c);
+    }
+  }
+  return a + b - c;
+};
+```
+
+## Rearrange Array Elements by Sign
+
+https://neetcode.io/problems/rearrange-array-elements-by-sign/question
+
+```js
+
+```
