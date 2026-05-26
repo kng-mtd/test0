@@ -9157,7 +9157,30 @@ const addSpaces = (s, spaces) => {
 https://neetcode.io/problems/string-compression/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {character[]} chars
+   * @return {number}
+   */
+  compress(chars) {
+    let i1 = 0,
+      i2 = 0;
+    while (i1 < chars.length) {
+      const a = chars[i1];
+      let b = 0;
+      while (i1 < chars.length && chars[i1] == a) {
+        i1++;
+        b++;
+      }
+      chars[i2++] = a;
+      if (b > 1) {
+        for (let i of b + '') chars[i2++] = i;
+      }
+    }
+    chars.length = i2;
+    return i2;
+  }
+}
 ```
 
 ## Remove Duplicates From Sorted Array II
