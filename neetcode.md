@@ -9188,7 +9188,20 @@ class Solution {
 https://neetcode.io/problems/remove-duplicates-from-sorted-array-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  removeDuplicates(nums) {
+    if (nums.length <= 2) return nums.length;
+    let i0 = 2;
+    for (let i = 2; i < nums.length; i++) {
+      if (nums[i] != nums[i0 - 2]) nums[i0++] = nums[i];
+    }
+    return i0;
+  }
+}
 ```
 
 ## Partition Array According to Given Pivot
@@ -9382,3 +9395,87 @@ https://neetcode.io/problems/rearrange-array-elements-by-sign/question
 ```js
 
 ```
+
+## Bag of Tokens
+
+https://leetcode.com/problems/bag-of-tokens/description/
+
+```js
+/**
+ * @param {number[]} tokens
+ * @param {number} power
+ * @return {number}
+ */
+const bagOfTokensScore = (tokens, power) => {
+  tokens.sort((x1, x2) => x1 - x2);
+  let l = 0,
+    r = tokens.length - 1,
+    a0 = 0,
+    a = 0;
+  while (l <= r) {
+    if (power >= tokens[l]) {
+      a++;
+      a0 = Math.max(a, a0);
+      power -= tokens[l++];
+    } else if (a > 0) {
+      a--;
+      power += tokens[r--];
+    } else break;
+  }
+  return a0;
+};
+```
+
+## Minimum Length of String After Deleting Similar Ends
+
+https://leetcode.com/problems/minimum-length-of-string-after-deleting-similar-ends/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minimumLength = (s) => {
+  let l = 0,
+    r = s.length - 1;
+  while (s[l] == s[r] && l < r) {
+    const a = s[l];
+    while (s[l] == a && l <= r) l++;
+    while (s[r] == a && l < r) r--;
+  }
+  return r - l + 1;
+};
+```
+
+## Sentence Similarity III
+
+https://leetcode.com/problems/sentence-similarity-iii/description/
+
+```js
+/**
+ * @param {string} sentence1
+ * @param {string} sentence2
+ * @return {boolean}
+ */
+const areSentencesSimilar = (sentence1, sentence2) => {
+  if (sentence1 == sentence2) return true;
+  let s1 = sentence1.split(' '),
+    s2 = sentence2.split(' ');
+  if (s1.length < s2.length) [s1, s2] = [s2, s1];
+  let a = 0;
+  while (s1[a] == s2[a]) a++;
+  let b = 1;
+  while (s1.at(-b) == s2.at(-b)) b++;
+  return a + b - 1 >= s2.length;
+};
+```
+
+---
+
+---
+
+---
+
+# Sliding Window
+
+##
