@@ -9232,7 +9232,19 @@ const pivotArray = (nums, pivot) => {
 https://neetcode.io/problems/two-integer-sum-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} numbers
+   * @param {number} target
+   * @return {number[]}
+   */
+  twoSum(numbers, target) {
+    for (let i = 0; i < numbers.length; i++) {
+      const k = numbers.indexOf(target - numbers[i]);
+      if (k > -1 && k != i) return [i + 1, k + 1];
+    }
+  }
+}
 ```
 
 ## 3Sum
@@ -9240,7 +9252,78 @@ https://neetcode.io/problems/two-integer-sum-ii/question
 https://neetcode.io/problems/three-integer-sum/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  threeSum(nums) {
+    let a = new Set();
+    let ap = [],
+      an = [],
+      z = 0;
+    for (let i of nums) {
+      if (i > 0) ap.push(i);
+      else if (i < 0) an.push(i);
+      else z++;
+    }
+    const sp = new Set(ap);
+    const sn = new Set(an);
 
+    if (z > 2) a.add('0,0,0');
+    if (z > 0) {
+      for (let p of ap) {
+        if (sn.has(-p)) a.add(-p + ',' + p + ',0');
+      }
+    }
+
+    for (let i = 0; i < ap.length - 1; i++) {
+      for (let j = i + 1; j < ap.length; j++) {
+        const n = -ap[i] - ap[j];
+        if (sn.has(n)) a.add([ap[i], ap[j], n].sort().join(','));
+      }
+    }
+    for (let i = 0; i < an.length - 1; i++) {
+      for (let j = i + 1; j < an.length; j++) {
+        const p = -an[i] - an[j];
+        if (sp.has(p)) a.add([an[i], an[j], p].sort().join(','));
+      }
+    }
+
+    return [...a].map((x) => x.split(',').map(Number));
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  threeSum(nums) {
+    nums.sort((x1, x2) => x1 - x2);
+    const a = [];
+    for (let i = 0; i < nums.length - 2; i++) {
+      if (i > 0 && nums[i] == nums[i - 1]) continue;
+      let l = i + 1,
+        r = nums.length - 1;
+      while (l < r) {
+        const b = nums[i] + nums[l] + nums[r];
+        if (b < 0) l++;
+        else if (b > 0) r--;
+        else {
+          a.push([nums[i], nums[l], nums[r]]);
+          l++;
+          r--;
+          while (l < r && nums[l] == nums[l - 1]) l++;
+          while (l < r && nums[r] == nums[r + 1]) r--;
+        }
+      }
+    }
+    return a;
+  }
+}
 ```
 
 ## 4Sum
