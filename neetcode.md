@@ -556,7 +556,7 @@ class Solution {
   majorityElement(nums) {
     let a = {};
     for (let i of nums) {
-      a[i] = a[i] == undefined ? 1 : a[i] + 1;
+      a[i] = (a[i] ?? 0) + 1;
       if (a[i] == Math.ceil(nums.length / 2)) return i;
     }
   }
@@ -1033,7 +1033,7 @@ class MyHashSet {
    * @return {boolean}
    */
   contains(key) {
-    return this.hash[key] != undefined;
+    return !(key in this.hash);
   }
 }
 
@@ -1070,7 +1070,7 @@ class MyHashMap {
    * @return {number}
    */
   get(key) {
-    return this.hash[key] == undefined ? -1 : this.hash[key];
+    return key in this.hash ? this.hash[key] : -1;
   }
 
   /**
@@ -1660,7 +1660,7 @@ class Solution {
    */
   firstUniqChar(s) {
     let a = {};
-    for (let i = 0; i < s.length; i++) a[s[i]] = a[s[i]] == undefined ? i : Infinity;
+    for (let i = 0; i < s.length; i++) a[s[i]] = s[i] in a ? Infinity : i;
     let b = Math.min(...Object.values(a));
     return b === Infinity ? -1 : b;
   }
