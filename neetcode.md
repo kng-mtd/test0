@@ -9593,4 +9593,41 @@ const areSentencesSimilar = (sentence1, sentence2) => {
 
 # Sliding Window
 
-##
+## Number of Sub Arrays of Size K and Avg Greater than or Equal to Threshold
+
+https://neetcode.io/problems/number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold/question
+
+```js
+
+```
+
+## Grumpy Bookstore Owner
+
+https://neetcode.io/problems/grumpy-bookstore-owner/question
+
+```js
+
+```
+
+## Alternating Groups II
+
+https://leetcode.com/problems/alternating-groups-ii/description/
+
+```js
+/**
+ * @param {number[]} colors
+ * @param {number} k
+ * @return {number}
+ */
+const numberOfAlternatingGroups = (colors, k) => {
+  const n = colors.length;
+  let a = 0,
+    b = 1;
+  for (let i = 1; i < n + k - 1; i++) {
+    if (colors[i % n] != colors[(i - 1) % n]) b++;
+    else b = 1;
+    a += b >= k ? 1 : 0;
+  }
+  return a;
+};
+```
