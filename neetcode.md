@@ -9331,7 +9331,39 @@ class Solution {
 https://neetcode.io/problems/4sum/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number[][]}
+   */
+  fourSum(nums, target) {
+    nums.sort((x1, x2) => x1 - x2);
+    const a = [],
+      n = nums.length;
+    for (let i = 0; i < n - 3; i++) {
+      if (i > 0 && nums[i] == nums[i - 1]) continue;
+      for (let j = i + 1; j < n - 2; j++) {
+        if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+        let l = j + 1,
+          r = n - 1;
+        while (l < r) {
+          const b = nums[i] + nums[j] + nums[l] + nums[r];
+          if (b < target) l++;
+          else if (b > target) r--;
+          else {
+            a.push([nums[i], nums[j], nums[l], nums[r]]);
+            l++;
+            r--;
+            while (l < r && nums[l] == nums[l - 1]) l++;
+            while (l < r && nums[r] == nums[r + 1]) r--;
+          }
+        }
+      }
+    }
+    return a;
+  }
+}
 ```
 
 ## Rotate Array
