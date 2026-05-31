@@ -9705,3 +9705,54 @@ const maxVowels = (s, k) => {
   return a0;
 };
 ```
+
+## Minimum Number of Flips to Make the Binary String Alternating
+
+https://leetcode.com/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minFlips = (s) => {
+  const n = s.length,
+    ss = s + s;
+  let a1 = 0,
+    a2 = 0,
+    a = n;
+  for (let i = 0; i < ss.length; i++) {
+    const c1 = i % 2,
+      c2 = 1 - c1;
+    if (+ss[i] != c1) a1++;
+    if (+ss[i] != c2) a2++;
+    if (i >= n) {
+      const d1 = (i - n) % 2,
+        d2 = 1 - d1;
+      if (+ss[i - n] != d1) a1--;
+      if (+ss[i - n] != d2) a2--;
+    }
+    if (i >= n - 1) a = Math.min(a, a1, a2);
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minFlips = (s) => {
+  const n = s.length,
+    ss = s + s;
+  let a0 = n,
+    a = 0;
+  for (let i = 0; i < ss.length; i++) {
+    if (+ss[i] != i % 2) a++;
+    if (i >= n && +ss[i - n] != (i - n) % 2) a--;
+    if (i >= n - 1) a0 = Math.min(a0, a, n - a);
+  }
+  return a0;
+};
+```
