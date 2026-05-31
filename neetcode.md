@@ -9371,7 +9371,18 @@ class Solution {
 https://neetcode.io/problems/rotate-array/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {void} Do not return anything, modify nums in-place instead.
+   */
+  rotate(nums, k) {
+    const n = nums.length;
+    k %= n;
+    nums.unshift(...nums.splice(n - k, k));
+  }
+}
 ```
 
 ## Container With Most Water
