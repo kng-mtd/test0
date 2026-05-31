@@ -9642,3 +9642,66 @@ const numberOfAlternatingGroups = (colors, k) => {
   return a;
 };
 ```
+
+## Longest Substring Without Repeating Characters
+
+https://neetcode.io/problems/longest-substring-without-duplicates/question
+
+```js
+
+```
+
+## Longest Repeating Character Replacement
+
+https://neetcode.io/problems/longest-repeating-substring-with-replacement/question
+
+```js
+
+```
+
+## Permutation in String
+
+https://neetcode.io/problems/permutation-string/question
+
+```js
+
+```
+
+## Frequency of The Most Frequent Element
+
+https://neetcode.io/problems/frequency-of-the-most-frequent-element/question
+
+```js
+
+```
+
+## Fruits into Basket
+
+https://neetcode.io/problems/fruit-into-baskets/question
+
+```js
+
+```
+
+## Maximum Number of Vowels in a Substring of Given Length
+
+https://leetcode.com/problems/maximum-number-of-vowels-in-a-substring-of-given-length/description/
+
+```js
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {number}
+ */
+const maxVowels = (s, k) => {
+  const re = /[aeiou]/;
+  let a = 0;
+  for (let i = 0; i < k; i++) a += re.test(s[i]) ? 1 : 0;
+  let a0 = a;
+  for (let i = k; i < s.length; i++) {
+    a += -(re.test(s[i - k]) ? 1 : 0) + (re.test(s[i]) ? 1 : 0);
+    a0 = a > a0 ? a : a0;
+  }
+  return a0;
+};
+```
