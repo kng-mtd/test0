@@ -9390,7 +9390,23 @@ class Solution {
 https://neetcode.io/problems/max-water-container/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} heights
+   * @return {number}
+   */
+  maxArea(heights) {
+    let a = 0;
+    let l = 0,
+      r = heights.length - 1;
+    while (l < r) {
+      const h = Math.min(heights[l], heights[r]);
+      a = Math.max(a, h * (r - l));
+      [l, r] = heights[l] < heights[r] ? [l + 1, r] : [l, r - 1];
+    }
+    return a;
+  }
+}
 ```
 
 ## Number of Subsequences That Satisfy The Given Sum Condition
