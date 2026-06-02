@@ -9414,7 +9414,31 @@ class Solution {
 https://neetcode.io/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number}
+   */
+  numSubseq(nums, target) {
+    const M = 1e9 + 7;
+    const n = nums.length;
+    const pow2 = Array(n).fill(1);
+    for (let i = 1; i < n; i++) pow2[i] = (pow2[i - 1] * 2) % M;
 
+    nums.sort((x1, x2) => x1 - x2);
+    let a = 0,
+      l = 0,
+      r = n - 1;
+    while (l <= r) {
+      if (nums[l] + nums[r] <= target) {
+        a = (a + pow2[r - l]) % M;
+        l++;
+      } else r--;
+    }
+    return a;
+  }
+}
 ```
 
 ## Array with Elements not Equal to Average of Neighbors
@@ -9770,5 +9794,69 @@ const minFlips = (s) => {
     if (i >= n - 1) a0 = Math.min(a0, a, n - a);
   }
   return a0;
+};
+```
+
+## Minimum Size Subarray Sum
+
+https://neetcode.io/problems/minimum-size-subarray-sum/question
+
+```js
+
+```
+
+## Find K Closest Elements
+
+https://neetcode.io/problems/find-k-closest-elements/question
+
+```js
+
+```
+
+## Minimum Operations to Reduce x to Zero
+
+https://leetcode.com/problems/minimum-operations-to-reduce-x-to-zero/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} x
+ * @return {number}
+ */
+const minOperations = (nums, x) => {
+  const n = nums.length;
+  let al = [0],
+    ar = [0],
+    a = Infinity;
+  for (let i of nums) al.push(al.at(-1) + i);
+  for (let i of nums.reverse()) ar.push(ar.at(-1) + i);
+  for (let i = 0; i <= n; i++) {
+    const b = ar.indexOf(x - al[i]);
+    if (b >= 0 && b <= n - i) a = Math.min(i + b, a);
+  }
+  return a != Infinity ? a : -1;
+};
+```
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} x
+ * @return {number}
+ */
+const minOperations = (nums, x) => {
+  const n = nums.length,
+    a = nums.reduce((a, x) => a + x, 0) - x;
+  if (a < 0) return -1;
+  else if (!a) return n;
+  let b = 0,
+    l = 0,
+    c = -1;
+  for (let r = 0; r < n; r++) {
+    b += nums[r];
+    while (b > a) b -= nums[l++];
+    if (b == a) c = Math.max(r - l + 1, c);
+  }
+  return c == -1 ? -1 : n - c;
 };
 ```
