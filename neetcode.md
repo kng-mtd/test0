@@ -9860,3 +9860,62 @@ const minOperations = (nums, x) => {
   return c == -1 ? -1 : n - c;
 };
 ```
+
+## Get Equal Substrings Within Budget
+
+https://leetcode.com/problems/get-equal-substrings-within-budget/description/
+
+```js
+/**
+ * @param {string} s
+ * @param {string} t
+ * @param {number} maxCost
+ * @return {number}
+ */
+const equalSubstring = (s, t, maxCost) => {
+  let a = 0,
+    b = 0,
+    i0 = 0;
+  for (let i = 0; i < s.length; i++) {
+    a += Math.abs(s[i].charCodeAt(0) - t[i].charCodeAt(0));
+    while (a > maxCost) {
+      a -= Math.abs(s[i0].charCodeAt(0) - t[i0].charCodeAt(0));
+      i0++;
+    }
+    b = Math.max(i - i0 + 1, b);
+  }
+  return b;
+};
+```
+
+## Number of Substrings Containing All Three Characters
+
+https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const numberOfSubstrings = (s) => {
+  let n = { a: 0, b: 0, c: 0 },
+    a = 0,
+    l = 0;
+  for (let r = 0; r < s.length; r++) {
+    n[s[r]]++;
+    while (n.a && n.b && n.c) {
+      a += s.length - r;
+      n[s[l++]]--;
+    }
+  }
+  return a;
+};
+```
+
+## Binary Subarrays with Sum
+
+https://neetcode.io/problems/binary-subarrays-with-sum/question
+
+```js
+
+```
