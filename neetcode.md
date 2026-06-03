@@ -9485,7 +9485,25 @@ const dividePlayers = (skill) => {
 https://neetcode.io/problems/boats-to-save-people/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} people
+   * @param {number} limit
+   * @return {number}
+   */
+  numRescueBoats(people, limit) {
+    people.sort((x1, x2) => x1 - x2);
+    let a = 0,
+      l = 0,
+      r = people.length - 1;
+    while (l <= r) {
+      if (people[l] + people[r] <= limit) l++;
+      r--;
+      a++;
+    }
+    return a;
+  }
+}
 ```
 
 ## K-th Symbol in Grammar
