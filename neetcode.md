@@ -8,6 +8,219 @@
 | subsequence | No         | Yes           |
 | subset      | No         | No            |
 
+## Question Pattern
+
+### 1. 全探索 (Brute Force)
+
+全ての区間や組み合わせを試す。
+
+```js
+for(let i=0;i<n;i++){
+    for(let j=i;j<n;j++){
+        ...
+    }
+}
+```
+
+- O(n²), O(n³)
+
+- Subarray Sum
+
+### 2. Two Pointers
+
+左右から探索。ソート済み　＞　左右から縮める
+
+```js
+let l=0,r=n-1;
+while(l<r){
+    ...
+}
+```
+
+- Two Sum II
+- Container With Most Water
+- Valid Palindrome
+- 3Sum
+
+### 3. Sliding Window
+
+連続部分配列を扱う。最長、最短、連続区間
+
+```js
+let l=0;
+
+for(let r=0;r<n;r++){
+    ...
+    while(condition){
+        l++;
+    }
+}
+```
+
+- Longest Substring Without Repeating Characters
+- Max Consecutive Ones III
+- Minimum Size Subarray Sum
+
+### 4. Prefix Sum
+
+区間和を高速化。区間和、部分配列の和
+
+```js
+prefix[i + 1] = prefix[i] + nums[i];
+```
+
+区間和:
+
+```text
+prefix[r+1]-prefix[l]
+```
+
+- Range Sum Query
+- Subarray Sum Equals K
+
+### 5. Prefix Sum + HashMap
+
+部分配列の個数を数える定番。
+条件を満たす部分配列の個数
+
+```js
+sum += x;
+ans += cnt.get(sum - k) || 0;
+cnt.set(sum, (cnt.get(sum) || 0) + 1);
+```
+
+- Subarray Sum Equals K
+- Binary Subarrays With Sum
+- Count Number of Nice Subarrays
+- Subarray Sums Divisible by K
+
+### 6. Monotonic Stack
+
+単調増加・単調減少スタック。次に大きい要素、次に小さい要素
+
+```js
+while (st.length && nums[st.at(-1)] < nums[i]) {
+  st.pop();
+}
+```
+
+- Daily Temperatures
+- Next Greater Element
+- Largest Rectangle in Histogram
+
+### 7. Monotonic Queue (Deque)
+
+スライディングウィンドウの最大値・最小値。区間最大、区間最小
+
+- Sliding Window Maximum
+
+### 8. Binary Search
+
+探索空間を半分にする。ソート済み　＞　答えを二分探索
+
+```js
+while (l <= r) {
+  const m = (l + r) >> 1;
+}
+```
+
+- Search Insert Position
+- Find Peak Element
+
+### 9. Binary Search on Answer
+
+答えそのものを二分探索。最小値、最大値を求める
+
+- Koko Eating Bananas
+- Capacity To Ship Packages
+
+### 10. Hash Set / Hash Map
+
+出現確認。存在判定、重複判定、頻度集計
+
+```js
+const s = new Set();
+```
+
+- Contains Duplicate
+- Longest Consecutive Sequence
+- Two Sum
+
+### 11. Sorting
+
+並び替えて解く。順序が重要
+
+```js
+nums.sort((a, b) => a - b);
+```
+
+- Merge Intervals
+- 3Sum
+- Meeting Rooms
+
+### 12. Greedy
+
+その時点で最善を選ぶ。最適解を構築
+
+- Jump Game
+- Gas Station
+- Partition Labels
+
+### 13. Dynamic Programming (DP)
+
+過去の結果を利用。i番目までの最適解
+
+- House Robber
+- Maximum Subarray
+- Coin Change
+
+t
+
+### 14. Heap (Priority Queue)
+
+最大値・最小値を頻繁に取得。Top K、優先順位
+
+- Kth Largest Element
+- Top K Frequent Elements
+
+## LeetCodeで頻出の見分け方
+
+| 問題文のキーワード          | 解法候補                    |
+| --------------------------- | --------------------------- |
+| sorted                      | Two Pointers, Binary Search |
+| subarray sum                | Prefix Sum                  |
+| count subarrays             | Prefix Sum + HashMap        |
+| longest / shortest subarray | Sliding Window              |
+| next greater                | Monotonic Stack             |
+| window maximum              | Monotonic Queue             |
+| top k                       | Heap                        |
+| minimum feasible value      | Binary Search on Answer     |
+| maximum/minimum ending at i | DP                          |
+
+配列問題では、まず次の順で考えるとかなりの問題を分類できます。
+
+```
+連続区間？
+↓
+Yes → Sliding Window / Prefix Sum
+
+個数を数える？
+↓
+Yes → Prefix Sum + HashMap
+
+次に大きい・小さい？
+↓
+Yes → Monotonic Stack
+
+最長・最短？
+↓
+Yes → Sliding Window
+
+最適解？
+↓
+Yes → DP or Greedy
+```
+
 ---
 
 ### Count Lowercase
@@ -9936,4 +10149,47 @@ https://neetcode.io/problems/binary-subarrays-with-sum/question
 
 ```js
 
+```
+
+## Count Number of Nice Subarrays
+
+https://leetcode.com/problems/count-number-of-nice-subarrays/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const numberOfSubarrays = (nums, k) => {
+  let c = new Map([[0, 1]]),
+    a = 0,
+    b = 0;
+  for (let i of nums) {
+    a += i & 1;
+    b += c.get(a - k) || 0;
+    c.set(a, (c.get(a) || 0) + 1);
+  }
+  return b;
+};
+```
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const numberOfSubarrays = (nums, k) => {
+  let a = [-1];
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] & 1) a.push(i);
+  }
+  a.push(nums.length);
+  let b = 0;
+  for (let i = 1; i + k - 1 < a.length - 1; i++) {
+    b += (a[i] - a[i - 1]) * (a[i + k] - a[i + k - 1]);
+  }
+  return b;
+};
 ```
