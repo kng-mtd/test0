@@ -9790,7 +9790,22 @@ const minCost = (colors, neededTime) => {
 https://neetcode.io/problems/rearrange-array-elements-by-sign/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  rearrangeArray(nums) {
+    let a = [],
+      i1 = 0,
+      i2 = 1;
+    for (let i of nums) {
+      if (i > 0) [a[i1], i1] = [i, i1 + 2];
+      else [a[i2], i2] = [i, i2 + 2];
+    }
+    return a;
+  }
+}
 ```
 
 ## Bag of Tokens
