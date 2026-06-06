@@ -9895,7 +9895,23 @@ const areSentencesSimilar = (sentence1, sentence2) => {
 https://neetcode.io/problems/number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} arr
+   * @param {number} k
+   * @param {number} threshold
+   * @return {number}
+   */
+  numOfSubarrays(arr, k, threshold) {
+    let a = arr.slice(0, k).reduce((a, x) => a + x, 0),
+      b = 0;
+    for (let i = 0; i <= arr.length - k; i++) {
+      b += a >= threshold * k ? 1 : 0;
+      a += -arr[i] + arr[i + k];
+    }
+    return b;
+  }
+}
 ```
 
 ## Grumpy Bookstore Owner
