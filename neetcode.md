@@ -9919,7 +9919,29 @@ class Solution {
 https://neetcode.io/problems/grumpy-bookstore-owner/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} customers
+   * @param {number[]} grumpy
+   * @param {number} minutes
+   * @return {number}
+   */
+  maxSatisfied(customers, grumpy, minutes) {
+    const m = minutes;
+    let a0 = 0;
+    for (let i = 0; i < m; i++) a0 += customers[i] * !grumpy[i];
+    let b = customers.slice(0, m).reduce((a, x) => a + x, 0);
+    let a = a0,
+      c = b - a;
+    for (let i = m; i < customers.length; i++) {
+      a0 += customers[i] * !grumpy[i];
+      a += -customers[i - m] * !grumpy[i - m] + customers[i] * !grumpy[i];
+      b += -customers[i - m] + customers[i];
+      c = b - a > c ? b - a : c;
+    }
+    return a0 + c;
+  }
+}
 ```
 
 ## Alternating Groups II
@@ -10223,4 +10245,51 @@ const numberOfSubarrays = (nums, k) => {
   }
   return b;
 };
+```
+
+## Subarray Product Less Than K
+
+https://neetcode.io/problems/subarray-product-less-than-k/question
+
+```js
+
+```
+
+## Max Consecutive Ones III
+
+https://neetcode.io/problems/max-consecutive-ones-iii/question
+
+```js
+
+```
+
+## Find the Power of K-Size Subarrays I
+
+https://leetcode.com/problems/find-the-power-of-k-size-subarrays-i/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number[]}
+ */
+const resultsArray = (nums, k) => {
+  if (k == 1) return nums;
+  let a = [],
+    b = 1;
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] == nums[i - 1] + 1) b++;
+    else b = 1;
+    if (i >= k - 1) a.push(b >= k ? nums[i] : -1);
+  }
+  return a;
+};
+```
+
+## Maximum Sum of Distinct Subarrays With Length K
+
+https://leetcode.com/problems/maximum-sum-of-distinct-subarrays-with-length-k/description/
+
+```js
+
 ```
