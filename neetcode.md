@@ -239,6 +239,101 @@ const fn = (s) => {
 
 ---
 
+### TreeNode
+
+#### use function
+
+```js
+const TreeNode = (val, left = null, right = null) => ({ val, left, right });
+
+const n = TreeNode(val, left, right);
+
+const n = TreeNode(1, TreeNode(2), TreeNode(3));
+
+const root = TreeNode(1);
+root.left = TreeNode(2);
+root.right = TreeNode(3);
+```
+
+#### use class
+
+```js
+class TreeNode {
+  constructor(val = 0, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
+
+const n = new TreeNode(val, left, right);
+```
+
+#### array to binary tree, using function
+
+```js
+const TreeNode = (val, left = null, right = null) => ({ val, left, right });
+
+const buildTree = (arr) => {
+  if (!arr.length) return null;
+  const root = TreeNode(arr[0]);
+  const queue = [root];
+  let i = 1;
+
+  while (queue.length && i < arr.length) {
+    const node = queue.shift();
+    if (arr[i] != null) {
+      node.left = TreeNode(arr[i]);
+      queue.push(node.left);
+    }
+    i++;
+    if (i < arr.length && arr[i] != null) {
+      node.right = TreeNode(arr[i]);
+      queue.push(node.right);
+    }
+    i++;
+  }
+
+  return root;
+};
+
+const arr = [0, 1, 2, 3, null, null, 6];
+const root = buildTree(arr);
+
+console.log(root);
+console.log(JSON.stringify(root, null, 2));
+```
+
+or without shift()
+
+```js
+const buildTree = (arr) => {
+  if (!arr.length) return null;
+  const root = TreeNode(arr[0]);
+  const queue = [root];
+  let head = 0;
+  let i = 1;
+
+  while (head < queue.length && i < arr.length) {
+    const node = queue[head++];
+    if (arr[i] != null) {
+      node.left = TreeNode(arr[i]);
+      queue.push(node.left);
+    }
+    i++;
+    if (i < arr.length && arr[i] != null) {
+      node.right = TreeNode(arr[i]);
+      queue.push(node.right);
+    }
+    i++;
+  }
+
+  return root;
+};
+```
+
+---
+
 ### heap class
 
 ```js
@@ -329,6 +424,319 @@ const h = new Heap((a, b) => {
 ---
 
 # Easy Problems
+
+# Javascript
+
+## Create Hello World Function
+
+https://leetcode.com/problems/create-hello-world-function/description/
+
+```js
+/**
+ * @return {Function}
+ */
+const createHelloWorld = () => {
+  return () => 'Hello World';
+};
+
+/**
+ * const f = createHelloWorld();
+ * f(); // "Hello World"
+ */
+```
+
+## Counter
+
+https://leetcode.com/problems/counter/description/
+
+```js
+/**
+ * @param {number} n
+ * @return {Function} counter
+ */
+const createCounter = (n) => () => n++;
+
+/**
+ * const counter = createCounter(10)
+ * counter() // 10
+ * counter() // 11
+ * counter() // 12
+ */
+```
+
+## Counter Ⅱ
+
+https://leetcode.com/problems/counter-ii/description/
+
+```js
+/**
+ * @param {integer} init
+ * @return { increment: Function, decrement: Function, reset: Function }
+ */
+const createCounter = (init) => {
+  let val = init;
+  const increment = () => ++val;
+  const decrement = () => --val;
+  const reset = () => {
+    val = init;
+    return val;
+  };
+
+  return { increment, decrement, reset };
+};
+
+/**
+ * const counter = createCounter(5)
+ * counter.increment(); // 6
+ * counter.reset(); // 5
+ * counter.decrement(); // 4
+ */
+```
+
+## Apply Transform Over Each Element In Array
+
+https://leetcode.com/problems/apply-transform-over-each-element-in-array/description/
+
+```js
+/**
+ * @param {number[]} arr
+ * @param {Function} fn
+ * @return {number[]}
+ */
+const map = (arr, fn) => {
+  let a = [];
+  for (let i = 0; i < arr.length; i++) a[i] = fn(arr[i], i);
+  return a;
+};
+```
+
+## Filter Elements From Array
+
+https://leetcode.com/problems/filter-elements-from-array/description/
+
+```js
+/**
+ * @param {number[]} arr
+ * @param {Function} fn
+ * @return {number[]}
+ */
+const filter = (arr, fn) => {
+  let a = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (fn(arr[i], i)) a.push(arr[i]);
+  }
+  return a;
+};
+```
+
+## Array Reduce Transformation
+
+https://leetcode.com/problems/array-reduce-transformation/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {Function} fn
+ * @param {number} init
+ * @return {number}
+ */
+const reduce = (nums, fn, init) => {
+  let val = init;
+  for (let i of nums) val = fn(val, i);
+  return val;
+};
+```
+
+## Function Composition
+
+https://leetcode.com/problems/function-composition/description/
+
+```js
+/**
+ * @param {Function[]} functions
+ * @return {Function}
+ */
+const compose = (functions) => {
+  return (x) => {
+    for (let fn of functions.reverse()) x = fn(x);
+    return x;
+  };
+};
+
+/**
+ * const fn = compose([x => x + 1, x => 2 * x])
+ * fn(4) // 9
+ */
+```
+
+## Allow One Function Call
+
+https://leetcode.com/problems/allow-one-function-call/description/
+
+```js
+/**
+ * @param {Function} fn
+ * @return {Function}
+ */
+const once = (fn) => {
+  let a = false;
+  return (...args) => {
+    if (a) return undefined;
+    a = true;
+    return fn(...args);
+  };
+};
+
+/**
+ * let fn = (a,b,c) => (a + b + c)
+ * let onceFn = once(fn)
+ *
+ * onceFn(1,2,3); // 6
+ * onceFn(2,3,6); // returns undefined without calling fn
+ */
+```
+
+## Sleep
+
+https://leetcode.com/problems/sleep/description/
+
+```js
+/**
+ * @param {number} millis
+ * @return {Promise}
+ */
+const sleep = (millis) => new Promise((res) => setTimeout(res, millis));
+
+/**
+ * let t = Date.now()
+ * sleep(100).then(() => console.log(Date.now() - t)) // 100
+ */
+```
+
+## Promise Time Limit
+
+https://leetcode.com/problems/promise-time-limit/description/
+
+```js
+/**
+ * @param {Function} fn
+ * @param {number} t
+ * @return {Function}
+ */
+const timeLimit =
+  (fn, t) =>
+  (...args) =>
+    Promise.race([fn(...args), new Promise((_, rej) => setTimeout(() => rej('Time Limit Exceeded'), t))]);
+
+/**
+ * const limited = timeLimit((t) => new Promise(res => setTimeout(res, t)), 100);
+ * limited(150).catch(console.log) // "Time Limit Exceeded" at t=100ms
+ */
+```
+
+## Chunk Array
+
+https://leetcode.com/problems/chunk-array/description/
+
+```js
+/**
+ * @param {Array} arr
+ * @param {number} size
+ * @return {Array}
+ */
+const chunk = (arr, size) => {
+  let a = [];
+  while (arr.length > 0) a.push(arr.splice(0, size));
+  return a;
+};
+```
+
+## Array Prototype Last
+
+https://leetcode.com/problems/array-prototype-last/description/
+
+```js
+/**
+ * @return {null|boolean|number|string|Array|Object}
+ */
+Array.prototype.last = function () {
+  if (this.length == 0) return -1;
+  return this.pop();
+};
+
+/**
+ * const arr = [1, 2, 3];
+ * arr.last(); // 3
+ */
+```
+
+## Array Wrapper
+
+https://leetcode.com/problems/array-wrapper/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {void}
+ */
+var ArrayWrapper = function (nums) {
+  this.nums = nums;
+};
+
+/**
+ * @return {number}
+ */
+ArrayWrapper.prototype.valueOf = function () {
+  return this.nums.reduce((a, x) => a + x, 0);
+};
+
+/**
+ * @return {string}
+ */
+ArrayWrapper.prototype.toString = function () {
+  return '[' + String(this.nums) + ']';
+};
+
+/**
+ * const obj1 = new ArrayWrapper([1,2]);
+ * const obj2 = new ArrayWrapper([3,4]);
+ * obj1 + obj2; // 10
+ * String(obj1); // "[1,2]"
+ * String(obj2); // "[3,4]"
+ */
+```
+
+## Generate Fibonacci Sequence
+
+https://leetcode.com/problems/generate-fibonacci-sequence/description/
+
+```js
+/**
+ * @return {Generator<number>}
+ */
+const fibGenerator = function* () {
+  let a = 0,
+    b = 1;
+  while (true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+};
+
+/**
+ * const gen = fibGenerator();
+ * gen.next().value; // 0
+ * gen.next().value; // 1
+ */
+```
+
+---
+
+---
+
+---
+
+# Arrays & Hashing
 
 ## Concatenation of Array
 
@@ -2222,6 +2630,304 @@ ParkingSystem.prototype.addCar = function (carType) {
 };
 ```
 
+---
+
+---
+
+---
+
+# Stack
+
+## Crawler Log Folder
+
+https://neetcode.io/problems/crawler-log-folder/question?
+
+```js
+class Solution {
+  /**
+   * @param {string[]} logs
+   * @return {number}
+   */
+  minOperations(logs) {
+    let a = 0;
+    for (let i of logs) {
+      if (i == '../') a = a > 0 ? a - 1 : a;
+      else if (i != './') a++;
+    }
+    return a;
+  }
+}
+```
+
+## Baseball Game
+
+https://neetcode.io/problems/baseball-game/question
+
+```js
+class Solution {
+  /**
+   * @param {string[]} operations
+   * @return {number}
+   */
+  calPoints(operations) {
+    let a = [];
+    for (let i = 0; i < operations.length; i++) {
+      const b = operations[i];
+      const c = a.length;
+      if (b == '+') {
+        a.push(a[c - 1] * 1 + a[c - 2] * 1);
+      } else if (b == 'D') {
+        a.push(a[c - 1] * 2);
+      } else if (b == 'C') {
+        a.pop();
+      } else {
+        a.push(+b);
+      }
+    }
+    return a.reduce((a, x) => a + x, 0);
+  }
+}
+```
+
+## Valid Parentheses
+
+https://neetcode.io/problems/validate-parentheses/question
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {boolean}
+   */
+  isValid(s) {
+    let n = s.length;
+    while (true) {
+      const s1 = s.replace('()', '').replace('[]', '').replace('{}', '');
+      const n1 = s1.length;
+      if (n1 == 0) return true;
+      else if (n == n1) return false;
+      s = s1;
+      n = n1;
+    }
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {boolean}
+   */
+  isValid(s) {
+    let a = [];
+    a.push(s[0]);
+    for (let i = 1; i < s.length; i++) {
+      const b = s[i],
+        c = a[a.length - 1];
+      if (b == ')') {
+        if (c == '(') a.pop();
+        else return false;
+      } else if (b == ']') {
+        if (c == '[') a.pop();
+        else return false;
+      } else if (b == '}') {
+        if (c == '{') a.pop();
+        else return false;
+      } else a.push(b);
+    }
+    return a.length == 0;
+  }
+}
+```
+
+## Implement Stack Using Queues
+
+https://neetcode.io/problems/implement-stack-using-queues/question
+
+```js
+class MyStack {
+  constructor() {
+    this.a = [];
+  }
+
+  /**
+   * @param {number} x
+   * @return {void}
+   */
+  push(x) {
+    this.a.push(x);
+  }
+
+  /**
+   * @return {number}
+   */
+  pop() {
+    return this.a.pop();
+  }
+
+  /**
+   * @return {number}
+   */
+  top() {
+    return this.a[this.a.length - 1];
+  }
+
+  /**
+   * @return {boolean}
+   */
+  empty() {
+    return this.a.length == 0;
+  }
+}
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * var obj = new MyStack()
+ * obj.push(x)
+ * var param_2 = obj.pop()
+ * var param_3 = obj.top()
+ * var param_4 = obj.empty()
+ */
+```
+
+## Implement Queue using Stacks
+
+https://neetcode.io/problems/implement-queue-using-stacks/question
+
+```js
+class MyQueue {
+  constructor() {
+    this.a = [];
+  }
+
+  /**
+   * @param {number} x
+   * @return {void}
+   */
+  push(x) {
+    this.a.push(x);
+  }
+
+  /**
+   * @return {number}
+   */
+  pop() {
+    return this.a.shift();
+  }
+
+  /**
+   * @return {number}
+   */
+  peek() {
+    return this.a[0];
+  }
+
+  /**
+   * @return {boolean}
+   */
+  empty() {
+    return this.a.length == 0;
+  }
+}
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * var obj = new MyQueue()
+ * obj.push(x)
+ * var param_2 = obj.pop()
+ * var param_3 = obj.peek()
+ * var param_4 = obj.empty()
+ */
+```
+
+## Final Prices With a Special Discount in a Shop
+
+https://leetcode.com/problems/final-prices-with-a-special-discount-in-a-shop/description/
+
+```js
+/**
+ * @param {number[]} prices
+ * @return {number[]}
+ */
+const finalPrices = (prices) => {
+  const a = [];
+  for (let i = 0; i < prices.length; i++) {
+    while (a.length && prices[a.at(-1)] >= prices[i]) {
+      const j = a.pop();
+      prices[j] -= prices[i];
+    }
+    a.push(i);
+  }
+  return prices;
+};
+```
+
+## Make the String Great
+
+https://leetcode.com/problems/make-the-string-great/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+const makeGood = (s) => {
+  let a = [];
+  for (let i of s) {
+    if (a.length && Math.abs(a.at(-1).charCodeAt(0) - i.charCodeAt(0)) == 32) a.pop();
+    else a.push(i);
+  }
+  return a.join('');
+};
+```
+
+## Minimum String Length After Removing Substrings
+
+https://leetcode.com/problems/minimum-string-length-after-removing-substrings/editorial/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minLength = (s) => {
+  let a = [];
+  for (let i of s) {
+    if ((a.length && a.at(-1) + i == 'AB') || a.at(-1) + i == 'CD') a.pop();
+    else a.push(i);
+  }
+  return a.length;
+};
+```
+
+## Clear Digits
+
+https://leetcode.com/problems/clear-digits/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+const clearDigits = (s) => {
+  a = [];
+  for (let i of s) {
+    if (/[a-z]/.test(a.at(-1)) && /[0-9]/.test(i)) a.pop();
+    else a.push(i);
+  }
+  return a.join('');
+};
+```
+
+---
+
+---
+
+---
+
+# Two Pointers
+
 ## Reverse String
 
 https://neetcode.io/problems/reverse-string/question
@@ -2644,6 +3350,14 @@ const applyOperations = (nums) => {
 };
 ```
 
+---
+
+---
+
+---
+
+# Sliding Window
+
 ## Contains Duplicate II
 
 https://neetcode.io/problems/contains-duplicate-ii/question
@@ -2786,285 +3500,13 @@ const decrypt = (code, k) => {
 };
 ```
 
-## Crawler Log Folder
+---
 
-https://neetcode.io/problems/crawler-log-folder/question?
+---
 
-```js
-class Solution {
-  /**
-   * @param {string[]} logs
-   * @return {number}
-   */
-  minOperations(logs) {
-    let a = 0;
-    for (let i of logs) {
-      if (i == '../') a = a > 0 ? a - 1 : a;
-      else if (i != './') a++;
-    }
-    return a;
-  }
-}
-```
+---
 
-## Baseball Game
-
-https://neetcode.io/problems/baseball-game/question
-
-```js
-class Solution {
-  /**
-   * @param {string[]} operations
-   * @return {number}
-   */
-  calPoints(operations) {
-    let a = [];
-    for (let i = 0; i < operations.length; i++) {
-      const b = operations[i];
-      const c = a.length;
-      if (b == '+') {
-        a.push(a[c - 1] * 1 + a[c - 2] * 1);
-      } else if (b == 'D') {
-        a.push(a[c - 1] * 2);
-      } else if (b == 'C') {
-        a.pop();
-      } else {
-        a.push(+b);
-      }
-    }
-    return a.reduce((a, x) => a + x, 0);
-  }
-}
-```
-
-## Valid Parentheses
-
-https://neetcode.io/problems/validate-parentheses/question
-
-```js
-class Solution {
-  /**
-   * @param {string} s
-   * @return {boolean}
-   */
-  isValid(s) {
-    let n = s.length;
-    while (true) {
-      const s1 = s.replace('()', '').replace('[]', '').replace('{}', '');
-      const n1 = s1.length;
-      if (n1 == 0) return true;
-      else if (n == n1) return false;
-      s = s1;
-      n = n1;
-    }
-  }
-}
-```
-
-````js
-class Solution {
-    /**
-     * @param {string} s
-     * @return {boolean}
-     */
-    isValid(s) {
-        let a=[];
-        a.push(s[0]);
-        for(let i=1;i<s.length;i++){
-            const b=s[i],c=a[a.length-1];
-            if(b==')'){
-                if(c=='(') a.pop();
-                else return false;
-            }else if(b==']'){
-                if(c=='[') a.pop();
-                else return false;
-            }else if(b=='}'){
-                if(c=='{') a.pop();
-                else  return false;
-            }else a.push(b);
-        }
-        return a.length==0;
-    }
-}
-``
-
-## Implement Stack Using Queues
-https://neetcode.io/problems/implement-stack-using-queues/question
-
-```js
-class MyStack {
-    constructor() {
-        this.a=[];
-    }
-
-    /**
-     * @param {number} x
-     * @return {void}
-     */
-    push(x) {
-        this.a.push(x);
-    }
-
-    /**
-     * @return {number}
-     */
-    pop() {
-        return this.a.pop();
-    }
-
-    /**
-     * @return {number}
-     */
-    top() {
-        return this.a[this.a.length-1];
-    }
-
-    /**
-     * @return {boolean}
-     */
-    empty() {
-        return this.a.length==0;
-    }
-}
-
-/**
- * Your MyStack object will be instantiated and called as such:
- * var obj = new MyStack()
- * obj.push(x)
- * var param_2 = obj.pop()
- * var param_3 = obj.top()
- * var param_4 = obj.empty()
- */
-````
-
-## Implement Queue using Stacks
-
-https://neetcode.io/problems/implement-queue-using-stacks/question
-
-```js
-class MyQueue {
-  constructor() {
-    this.a = [];
-  }
-
-  /**
-   * @param {number} x
-   * @return {void}
-   */
-  push(x) {
-    this.a.push(x);
-  }
-
-  /**
-   * @return {number}
-   */
-  pop() {
-    return this.a.shift();
-  }
-
-  /**
-   * @return {number}
-   */
-  peek() {
-    return this.a[0];
-  }
-
-  /**
-   * @return {boolean}
-   */
-  empty() {
-    return this.a.length == 0;
-  }
-}
-
-/**
- * Your MyQueue object will be instantiated and called as such:
- * var obj = new MyQueue()
- * obj.push(x)
- * var param_2 = obj.pop()
- * var param_3 = obj.peek()
- * var param_4 = obj.empty()
- */
-```
-
-## Final Prices With a Special Discount in a Shop
-
-https://leetcode.com/problems/final-prices-with-a-special-discount-in-a-shop/description/
-
-```js
-/**
- * @param {number[]} prices
- * @return {number[]}
- */
-const finalPrices = (prices) => {
-  const a = [];
-  for (let i = 0; i < prices.length; i++) {
-    while (a.length && prices[a.at(-1)] >= prices[i]) {
-      const j = a.pop();
-      prices[j] -= prices[i];
-    }
-    a.push(i);
-  }
-  return prices;
-};
-```
-
-## Make the String Great
-
-https://leetcode.com/problems/make-the-string-great/description/
-
-```js
-/**
- * @param {string} s
- * @return {string}
- */
-const makeGood = (s) => {
-  let a = [];
-  for (let i of s) {
-    if (a.length && Math.abs(a.at(-1).charCodeAt(0) - i.charCodeAt(0)) == 32) a.pop();
-    else a.push(i);
-  }
-  return a.join('');
-};
-```
-
-## Minimum String Length After Removing Substrings
-
-https://leetcode.com/problems/minimum-string-length-after-removing-substrings/editorial/
-
-```js
-/**
- * @param {string} s
- * @return {number}
- */
-const minLength = (s) => {
-  let a = [];
-  for (let i of s) {
-    if ((a.length && a.at(-1) + i == 'AB') || a.at(-1) + i == 'CD') a.pop();
-    else a.push(i);
-  }
-  return a.length;
-};
-```
-
-## Clear Digits
-
-https://leetcode.com/problems/clear-digits/description/
-
-```js
-/**
- * @param {string} s
- * @return {string}
- */
-const clearDigits = (s) => {
-  a = [];
-  for (let i of s) {
-    if (/[a-z]/.test(a.at(-1)) && /[0-9]/.test(i)) a.pop();
-    else a.push(i);
-  }
-  return a.join('');
-};
-```
+# Binary Search
 
 ## Binary Search
 
@@ -3256,6 +3698,14 @@ class Solution {
   }
 }
 ```
+
+---
+
+---
+
+---
+
+# Linked List
 
 ## Reverse Linked List
 
@@ -3544,98 +3994,13 @@ class Solution {
 }
 ```
 
-## (suppliment) TreeNode
+---
 
-#### use function
+---
 
-```js
-const TreeNode = (val, left = null, right = null) => ({ val, left, right });
+---
 
-const n = TreeNode(val, left, right);
-
-const n = TreeNode(1, TreeNode(2), TreeNode(3));
-
-const root = TreeNode(1);
-root.left = TreeNode(2);
-root.right = TreeNode(3);
-```
-
-#### use class
-
-```js
-class TreeNode {
-  constructor(val = 0, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
-
-const n = new TreeNode(val, left, right);
-```
-
-#### array to binary tree, using function
-
-```js
-const TreeNode = (val, left = null, right = null) => ({ val, left, right });
-
-const buildTree = (arr) => {
-  if (!arr.length) return null;
-  const root = TreeNode(arr[0]);
-  const queue = [root];
-  let i = 1;
-
-  while (queue.length && i < arr.length) {
-    const node = queue.shift();
-    if (arr[i] != null) {
-      node.left = TreeNode(arr[i]);
-      queue.push(node.left);
-    }
-    i++;
-    if (i < arr.length && arr[i] != null) {
-      node.right = TreeNode(arr[i]);
-      queue.push(node.right);
-    }
-    i++;
-  }
-
-  return root;
-};
-
-const arr = [0, 1, 2, 3, null, null, 6];
-const root = buildTree(arr);
-
-console.log(root);
-console.log(JSON.stringify(root, null, 2));
-```
-
-or without shift()
-
-```js
-const buildTree = (arr) => {
-  if (!arr.length) return null;
-  const root = TreeNode(arr[0]);
-  const queue = [root];
-  let head = 0;
-  let i = 1;
-
-  while (head < queue.length && i < arr.length) {
-    const node = queue[head++];
-    if (arr[i] != null) {
-      node.left = TreeNode(arr[i]);
-      queue.push(node.left);
-    }
-    i++;
-    if (i < arr.length && arr[i] != null) {
-      node.right = TreeNode(arr[i]);
-      queue.push(node.right);
-    }
-    i++;
-  }
-
-  return root;
-};
-```
+# Trees
 
 ## Binary Tree Inorder Traversal
 
@@ -4394,6 +4759,94 @@ const isSymmetric = (root) => {
 };
 ```
 
+---
+
+---
+
+---
+
+# Trie
+
+## Count Prefix and Suffix Pairs I
+
+https://neetcode.io/problems/count-prefix-and-suffix-pairs-i/question
+
+```js
+class Solution {
+  /**
+   * @param {string[]} words
+   * @return {number}
+   */
+  isPrefixAndSuffix(str1, str2) {
+    const n = str1.length;
+    return str2.slice(0, n) == str1 && str2.slice(-n) == str1;
+  }
+
+  countPrefixSuffixPairs(words) {
+    let a = 0;
+    for (let i = 0; i < words.length - 1; i++) {
+      for (let j = i + 1; j < words.length; j++) {
+        a += this.isPrefixAndSuffix(words[i], words[j]) ? 1 : 0;
+      }
+    }
+    return a;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {string[]} words
+   * @return {number}
+   */
+  countPrefixSuffixPairs(words) {
+    const map = new Map();
+    let res = 0;
+    for (const w of words) {
+      const n = w.length;
+      for (let len = 1; len <= n; len++) {
+        const pre = w.slice(0, len);
+        const suf = w.slice(n - len);
+        if (pre == suf && map.has(pre)) {
+          res += map.get(pre);
+        }
+      }
+      map.set(w, (map.get(w) || 0) + 1);
+    }
+    return res;
+  }
+}
+```
+
+## Counting Words With a Given Prefix
+
+https://neetcode.io/problems/counting-words-with-a-given-prefix/question
+
+```js
+class Solution {
+  /**
+   * @param {string[]} words
+   * @param {string} pref
+   * @return {number}
+   */
+  prefixCount(words, pref) {
+    const re = new RegExp('^' + pref);
+    let a = 0;
+    for (let i of words) a = re.test(i) ? a + 1 : a;
+    return a;
+  }
+}
+```
+
+---
+
+---
+
+---
+
+# Heap/Priority Queue
+
 ## Kth Largest Element in a Stream
 
 https://neetcode.io/problems/kth-largest-integer-in-a-stream/question
@@ -4487,6 +4940,256 @@ class Solution {
 }
 ```
 
+---
+
+---
+
+---
+
+# Intervals
+
+## Meeting Rooms
+
+https://neetcode.io/problems/meeting-schedule/question
+
+```js
+/**
+ * Definition of Interval:
+ * class Interval {
+ *   constructor(start, end) {
+ *     this.start = start;
+ *     this.end = end;
+ *   }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {Interval[]} intervals
+   * @returns {boolean}
+   */
+  canAttendMeetings(intervals) {
+    let a = [];
+    for (const { start: s0, end: e0 } of intervals) {
+      for (const [s, e] of a) {
+        if (s0 < e && e0 > s) return false;
+      }
+      a.push([s0, e0]);
+    }
+    return true;
+  }
+}
+```
+
+```js
+/**
+ * Definition of Interval:
+ * class Interval {
+ *   constructor(start, end) {
+ *     this.start = start;
+ *     this.end = end;
+ *   }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {Interval[]} intervals
+   * @returns {boolean}
+   */
+  canAttendMeetings(intervals) {
+    intervals.sort((x1, x2) => x1.start - x2.start);
+    for (let i = 1; i < intervals.length; i++) {
+      if (intervals[i].start < intervals[i - 1].end) return false;
+    }
+    return true;
+  }
+}
+```
+
+---
+
+---
+
+---
+
+# Greedy
+
+## Buy Two Chocolates
+
+https://neetcode.io/problems/buy-two-chocolates/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} prices
+   * @param {number} money
+   * @return {number}
+   */
+  buyChoco(prices, money) {
+    prices.sort((x1, x2) => x1 - x2);
+    const a = prices[0] + prices[1];
+    return money < a ? money : money - a;
+  }
+}
+```
+
+## Lemonade Change
+
+https://neetcode.io/problems/lemonade-change/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} bills
+   * @return {boolean}
+   */
+  lemonadeChange(bills) {
+    let a05 = 0,
+      a10 = 0,
+      a20 = 0;
+    for (let i of bills) {
+      if (i == 5) {
+        a05++;
+      } else if (i == 10) {
+        (a05--, a10++);
+      } else {
+        if (a10 > 0) {
+          (a05--, a10--);
+        } else {
+          a05 -= 3;
+        }
+      }
+      if (a05 < 0) return false;
+    }
+    return true;
+  }
+}
+```
+
+## Minimum Number of Moves to Seat Everyone
+
+https://neetcode.io/problems/minimum-number-of-moves-to-seat-everyone/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} seats
+   * @param {number[]} students
+   * @return {number}
+   */
+  minMovesToSeat(seats, students) {
+    seats.sort((x1, x2) => x1 - x2);
+    students.sort((x1, x2) => x1 - x2);
+    let a = 0;
+    for (let i = 0; i < seats.length; i++) a += Math.abs(seats[i] - students[i]);
+    return a;
+  }
+}
+```
+
+## Maximum Odd Binary Number
+
+https://neetcode.io/problems/maximum-odd-binary-number/question
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {string}
+   */
+  maximumOddBinaryNumber(s) {
+    return s.replaceAll('0', '').slice(1) + s.replaceAll('1', '') + '1';
+  }
+}
+```
+
+## Maximum Nesting Depth of the Parentheses
+
+https://neetcode.io/problems/maximum-nesting-depth-of-the-parentheses/question
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  maxDepth(s) {
+    let a = 0,
+      b = 0;
+    for (let i of [...s]) {
+      if (i == '(') b++;
+      else if (i == ')') b--;
+      a = b > a ? b : a;
+    }
+    return a;
+  }
+}
+```
+
+## Check if One String Swap Can Make Strings Equal
+
+https://leetcode.com/problems/check-if-one-string-swap-can-make-strings-equal/description/
+
+```js
+/**
+ * @param {string} s1
+ * @param {string} s2
+ * @return {boolean}
+ */
+const areAlmostEqual = (s1, s2) => {
+  if (s1 == s2) return true;
+  for (let i1 = 0; i1 < s1.length - 1; i1++) {
+    for (let i2 = i1 + 1; i2 < s1.length; i2++) {
+      let s = [...s1];
+      [s[i1], s[i2]] = [s[i2], s[i1]];
+      if (s.join('') == s2) return true;
+    }
+  }
+  return false;
+};
+```
+
+## Make Two Arrays Equal by Reversing Subarrays
+
+https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays/description/
+
+```js
+/**
+ * @param {number[]} target
+ * @param {number[]} arr
+ * @return {boolean}
+ */
+const canBeEqual = (target, arr) => {
+  return target.sort().join(',') == arr.sort().join(',');
+};
+```
+
+```js
+/**
+ * @param {number[]} target
+ * @param {number[]} arr
+ * @return {boolean}
+ */
+const canBeEqual = (target, arr) => {
+  let a = {};
+  for (let i of target) a[i] = (a[i] ?? 0) + 1;
+  for (let i of arr) {
+    if (!a[i]) return false;
+    a[i]--;
+  }
+  return true;
+};
+```
+
+---
+
+---
+
+---
+
+# Back Tracking
+
 ## Sum of All Subsets XOR Total
 
 https://neetcode.io/problems/sum-of-all-subset-xor-totals/question
@@ -4519,77 +5222,13 @@ class Solution {
 }
 ```
 
-## Count Prefix and Suffix Pairs I
+---
 
-https://neetcode.io/problems/count-prefix-and-suffix-pairs-i/question
+---
 
-```js
-class Solution {
-  /**
-   * @param {string[]} words
-   * @return {number}
-   */
-  isPrefixAndSuffix(str1, str2) {
-    const n = str1.length;
-    return str2.slice(0, n) == str1 && str2.slice(-n) == str1;
-  }
+---
 
-  countPrefixSuffixPairs(words) {
-    let a = 0;
-    for (let i = 0; i < words.length - 1; i++) {
-      for (let j = i + 1; j < words.length; j++) {
-        a += this.isPrefixAndSuffix(words[i], words[j]) ? 1 : 0;
-      }
-    }
-    return a;
-  }
-}
-```
-
-```js
-class Solution {
-  /**
-   * @param {string[]} words
-   * @return {number}
-   */
-  countPrefixSuffixPairs(words) {
-    const map = new Map();
-    let res = 0;
-    for (const w of words) {
-      const n = w.length;
-      for (let len = 1; len <= n; len++) {
-        const pre = w.slice(0, len);
-        const suf = w.slice(n - len);
-        if (pre == suf && map.has(pre)) {
-          res += map.get(pre);
-        }
-      }
-      map.set(w, (map.get(w) || 0) + 1);
-    }
-    return res;
-  }
-}
-```
-
-## Counting Words With a Given Prefix
-
-https://neetcode.io/problems/counting-words-with-a-given-prefix/question
-
-```js
-class Solution {
-  /**
-   * @param {string[]} words
-   * @param {string} pref
-   * @return {number}
-   */
-  prefixCount(words, pref) {
-    const re = new RegExp('^' + pref);
-    let a = 0;
-    for (let i of words) a = re.test(i) ? a + 1 : a;
-    return a;
-  }
-}
-```
+# Graphs
 
 ## Island Perimeter
 
@@ -4764,6 +5403,14 @@ class Solution {
 }
 ```
 
+---
+
+---
+
+---
+
+# 1-D DP
+
 ## Climbing Stairs
 
 https://neetcode.io/problems/climbing-stairs/question
@@ -4874,231 +5521,136 @@ class Solution {
 }
 ```
 
-## Buy Two Chocolates
+---
 
-https://neetcode.io/problems/buy-two-chocolates/question
+---
+
+---
+
+# Bit Manupulation
+
+## Minimum Bit Flips to Convert Number
+
+https://leetcode.com/problems/minimum-bit-flips-to-convert-number/description/
+
+```js
+/**
+ * @param {number} start
+ * @param {number} goal
+ * @return {number}
+ */
+const minBitFlips = (start, goal) => {
+  let a = start ^ goal,
+    b = 0;
+  while (a) [a, b] = [a & (a - 1), b + 1];
+  return b;
+};
+```
+
+## Shuffle the Array
+
+https://leetcode.com/problems/shuffle-the-array/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} n
+ * @return {number[]}
+ */
+const shuffle = (nums, n) => {
+  let a = [];
+  for (let i = 0; i < n; i++) {
+    a.push(nums[i]);
+    a.push(nums[n + i]);
+  }
+  return a;
+};
+```
+
+## Add to Array-Form of Integer
+
+https://leetcode.com/problems/add-to-array-form-of-integer/description/
+
+```js
+/**
+ * @param {number[]} num
+ * @param {number} k
+ * @return {number[]}
+ */
+const addToArrayForm = (num, k) => {
+  const a = BigInt(num.join(''));
+  const b = BigInt(k);
+  return [...String(a + b)].map(Number);
+};
+```
+
+```js
+/**
+ * @param {number[]} num
+ * @param {number} k
+ * @return {number[]}
+ */
+const addToArrayForm = (num, k) => {
+  let i = num.length - 1;
+  while (k > 0 || i >= 0) {
+    if (i >= 0) {
+      k += num[i];
+      num[i] = k % 10;
+      i--;
+    } else {
+      num.unshift(k % 10);
+    }
+    k = (k / 10) | 0;
+  }
+  return num;
+};
+```
+
+## Find the Difference
+
+https://neetcode.io/problems/find-the-difference/question
 
 ```js
 class Solution {
   /**
-   * @param {number[]} prices
-   * @param {number} money
-   * @return {number}
+   * @param {string} s
+   * @param {string} t
+   * @return {character}
    */
-  buyChoco(prices, money) {
-    prices.sort((x1, x2) => x1 - x2);
-    const a = prices[0] + prices[1];
-    return money < a ? money : money - a;
+  findTheDifference(s, t) {
+    let a = {};
+    for (let i of s) a[i] = (a[i] ?? 0) + 1;
+    for (let i of t) {
+      if (!a[i]) return i;
+      a[i]--;
+    }
   }
 }
 ```
 
-## Lemonade Change
+## Power of Two
 
-https://neetcode.io/problems/lemonade-change/question
+https://neetcode.io/problems/power-of-two/question
 
 ```js
 class Solution {
   /**
-   * @param {number[]} bills
+   * @param {number} n
    * @return {boolean}
    */
-  lemonadeChange(bills) {
-    let a05 = 0,
-      a10 = 0,
-      a20 = 0;
-    for (let i of bills) {
-      if (i == 5) {
-        a05++;
-      } else if (i == 10) {
-        (a05--, a10++);
-      } else {
-        if (a10 > 0) {
-          (a05--, a10--);
-        } else {
-          a05 -= 3;
-        }
-      }
-      if (a05 < 0) return false;
-    }
-    return true;
+  isPowerOfTwo(n) {
+    return Number.isInteger(Math.log2(n));
   }
 }
 ```
 
-## Minimum Number of Moves to Seat Everyone
+---
 
-https://neetcode.io/problems/minimum-number-of-moves-to-seat-everyone/question
+---
 
-```js
-class Solution {
-  /**
-   * @param {number[]} seats
-   * @param {number[]} students
-   * @return {number}
-   */
-  minMovesToSeat(seats, students) {
-    seats.sort((x1, x2) => x1 - x2);
-    students.sort((x1, x2) => x1 - x2);
-    let a = 0;
-    for (let i = 0; i < seats.length; i++) a += Math.abs(seats[i] - students[i]);
-    return a;
-  }
-}
-```
+---
 
-## Maximum Odd Binary Number
-
-https://neetcode.io/problems/maximum-odd-binary-number/question
-
-```js
-class Solution {
-  /**
-   * @param {string} s
-   * @return {string}
-   */
-  maximumOddBinaryNumber(s) {
-    return s.replaceAll('0', '').slice(1) + s.replaceAll('1', '') + '1';
-  }
-}
-```
-
-## Maximum Nesting Depth of the Parentheses
-
-https://neetcode.io/problems/maximum-nesting-depth-of-the-parentheses/question
-
-```js
-class Solution {
-  /**
-   * @param {string} s
-   * @return {number}
-   */
-  maxDepth(s) {
-    let a = 0,
-      b = 0;
-    for (let i of [...s]) {
-      if (i == '(') b++;
-      else if (i == ')') b--;
-      a = b > a ? b : a;
-    }
-    return a;
-  }
-}
-```
-
-## Check if One String Swap Can Make Strings Equal
-
-https://leetcode.com/problems/check-if-one-string-swap-can-make-strings-equal/description/
-
-```js
-/**
- * @param {string} s1
- * @param {string} s2
- * @return {boolean}
- */
-const areAlmostEqual = (s1, s2) => {
-  if (s1 == s2) return true;
-  for (let i1 = 0; i1 < s1.length - 1; i1++) {
-    for (let i2 = i1 + 1; i2 < s1.length; i2++) {
-      let s = [...s1];
-      [s[i1], s[i2]] = [s[i2], s[i1]];
-      if (s.join('') == s2) return true;
-    }
-  }
-  return false;
-};
-```
-
-## Make Two Arrays Equal by Reversing Subarrays
-
-https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays/description/
-
-```js
-/**
- * @param {number[]} target
- * @param {number[]} arr
- * @return {boolean}
- */
-const canBeEqual = (target, arr) => {
-  return target.sort().join(',') == arr.sort().join(',');
-};
-```
-
-```js
-/**
- * @param {number[]} target
- * @param {number[]} arr
- * @return {boolean}
- */
-const canBeEqual = (target, arr) => {
-  let a = {};
-  for (let i of target) a[i] = (a[i] ?? 0) + 1;
-  for (let i of arr) {
-    if (!a[i]) return false;
-    a[i]--;
-  }
-  return true;
-};
-```
-
-## Meeting Rooms
-
-https://neetcode.io/problems/meeting-schedule/question
-
-```js
-/**
- * Definition of Interval:
- * class Interval {
- *   constructor(start, end) {
- *     this.start = start;
- *     this.end = end;
- *   }
- * }
- */
-
-class Solution {
-  /**
-   * @param {Interval[]} intervals
-   * @returns {boolean}
-   */
-  canAttendMeetings(intervals) {
-    let a = [];
-    for (const { start: s0, end: e0 } of intervals) {
-      for (const [s, e] of a) {
-        if (s0 < e && e0 > s) return false;
-      }
-      a.push([s0, e0]);
-    }
-    return true;
-  }
-}
-```
-
-```js
-/**
- * Definition of Interval:
- * class Interval {
- *   constructor(start, end) {
- *     this.start = start;
- *     this.end = end;
- *   }
- * }
- */
-
-class Solution {
-  /**
-   * @param {Interval[]} intervals
-   * @returns {boolean}
-   */
-  canAttendMeetings(intervals) {
-    intervals.sort((x1, x2) => x1.start - x2.start);
-    for (let i = 1; i < intervals.length; i++) {
-      if (intervals[i].start < intervals[i - 1].end) return false;
-    }
-    return true;
-  }
-}
-```
+# Math & Geometry
 
 ## Excel Sheet Column Title
 
@@ -5547,424 +6099,6 @@ const maxWidthOfVerticalArea = (points) => {
 };
 ```
 
-## Minimum Bit Flips to Convert Number
-
-https://leetcode.com/problems/minimum-bit-flips-to-convert-number/description/
-
-```js
-/**
- * @param {number} start
- * @param {number} goal
- * @return {number}
- */
-const minBitFlips = (start, goal) => {
-  let a = start ^ goal,
-    b = 0;
-  while (a) [a, b] = [a & (a - 1), b + 1];
-  return b;
-};
-```
-
-## Shuffle the Array
-
-https://leetcode.com/problems/shuffle-the-array/description/
-
-```js
-/**
- * @param {number[]} nums
- * @param {number} n
- * @return {number[]}
- */
-const shuffle = (nums, n) => {
-  let a = [];
-  for (let i = 0; i < n; i++) {
-    a.push(nums[i]);
-    a.push(nums[n + i]);
-  }
-  return a;
-};
-```
-
-## Add to Array-Form of Integer
-
-https://leetcode.com/problems/add-to-array-form-of-integer/description/
-
-```js
-/**
- * @param {number[]} num
- * @param {number} k
- * @return {number[]}
- */
-const addToArrayForm = (num, k) => {
-  const a = BigInt(num.join(''));
-  const b = BigInt(k);
-  return [...String(a + b)].map(Number);
-};
-```
-
-```js
-/**
- * @param {number[]} num
- * @param {number} k
- * @return {number[]}
- */
-const addToArrayForm = (num, k) => {
-  let i = num.length - 1;
-  while (k > 0 || i >= 0) {
-    if (i >= 0) {
-      k += num[i];
-      num[i] = k % 10;
-      i--;
-    } else {
-      num.unshift(k % 10);
-    }
-    k = (k / 10) | 0;
-  }
-  return num;
-};
-```
-
-## Find the Difference
-
-https://neetcode.io/problems/find-the-difference/question
-
-```js
-class Solution {
-  /**
-   * @param {string} s
-   * @param {string} t
-   * @return {character}
-   */
-  findTheDifference(s, t) {
-    let a = {};
-    for (let i of s) a[i] = (a[i] ?? 0) + 1;
-    for (let i of t) {
-      if (!a[i]) return i;
-      a[i]--;
-    }
-  }
-}
-```
-
-## Power of Two
-
-https://neetcode.io/problems/power-of-two/question
-
-```js
-class Solution {
-  /**
-   * @param {number} n
-   * @return {boolean}
-   */
-  isPowerOfTwo(n) {
-    return Number.isInteger(Math.log2(n));
-  }
-}
-```
-
-## Create Hello World Function
-
-https://leetcode.com/problems/create-hello-world-function/description/
-
-```js
-/**
- * @return {Function}
- */
-const createHelloWorld = () => {
-  return () => 'Hello World';
-};
-
-/**
- * const f = createHelloWorld();
- * f(); // "Hello World"
- */
-```
-
-## Counter
-
-https://leetcode.com/problems/counter/description/
-
-```js
-/**
- * @param {number} n
- * @return {Function} counter
- */
-const createCounter = (n) => () => n++;
-
-/**
- * const counter = createCounter(10)
- * counter() // 10
- * counter() // 11
- * counter() // 12
- */
-```
-
-## Counter Ⅱ
-
-https://leetcode.com/problems/counter-ii/description/
-
-```js
-/**
- * @param {integer} init
- * @return { increment: Function, decrement: Function, reset: Function }
- */
-const createCounter = (init) => {
-  let val = init;
-  const increment = () => ++val;
-  const decrement = () => --val;
-  const reset = () => {
-    val = init;
-    return val;
-  };
-
-  return { increment, decrement, reset };
-};
-
-/**
- * const counter = createCounter(5)
- * counter.increment(); // 6
- * counter.reset(); // 5
- * counter.decrement(); // 4
- */
-```
-
-## Apply Transform Over Each Element In Array
-
-https://leetcode.com/problems/apply-transform-over-each-element-in-array/description/
-
-```js
-/**
- * @param {number[]} arr
- * @param {Function} fn
- * @return {number[]}
- */
-const map = (arr, fn) => {
-  let a = [];
-  for (let i = 0; i < arr.length; i++) a[i] = fn(arr[i], i);
-  return a;
-};
-```
-
-## Filter Elements From Array
-
-https://leetcode.com/problems/filter-elements-from-array/description/
-
-```js
-/**
- * @param {number[]} arr
- * @param {Function} fn
- * @return {number[]}
- */
-const filter = (arr, fn) => {
-  let a = [];
-  for (let i = 0; i < arr.length; i++) {
-    if (fn(arr[i], i)) a.push(arr[i]);
-  }
-  return a;
-};
-```
-
-## Array Reduce Transformation
-
-https://leetcode.com/problems/array-reduce-transformation/description/
-
-```js
-/**
- * @param {number[]} nums
- * @param {Function} fn
- * @param {number} init
- * @return {number}
- */
-const reduce = (nums, fn, init) => {
-  let val = init;
-  for (let i of nums) val = fn(val, i);
-  return val;
-};
-```
-
-## Function Composition
-
-https://leetcode.com/problems/function-composition/description/
-
-```js
-/**
- * @param {Function[]} functions
- * @return {Function}
- */
-const compose = (functions) => {
-  return (x) => {
-    for (let fn of functions.reverse()) x = fn(x);
-    return x;
-  };
-};
-
-/**
- * const fn = compose([x => x + 1, x => 2 * x])
- * fn(4) // 9
- */
-```
-
-## Allow One Function Call
-
-https://leetcode.com/problems/allow-one-function-call/description/
-
-```js
-/**
- * @param {Function} fn
- * @return {Function}
- */
-const once = (fn) => {
-  let a = false;
-  return (...args) => {
-    if (a) return undefined;
-    a = true;
-    return fn(...args);
-  };
-};
-
-/**
- * let fn = (a,b,c) => (a + b + c)
- * let onceFn = once(fn)
- *
- * onceFn(1,2,3); // 6
- * onceFn(2,3,6); // returns undefined without calling fn
- */
-```
-
-## Sleep
-
-https://leetcode.com/problems/sleep/description/
-
-```js
-/**
- * @param {number} millis
- * @return {Promise}
- */
-const sleep = (millis) => new Promise((res) => setTimeout(res, millis));
-
-/**
- * let t = Date.now()
- * sleep(100).then(() => console.log(Date.now() - t)) // 100
- */
-```
-
-## Promise Time Limit
-
-https://leetcode.com/problems/promise-time-limit/description/
-
-```js
-/**
- * @param {Function} fn
- * @param {number} t
- * @return {Function}
- */
-const timeLimit =
-  (fn, t) =>
-  (...args) =>
-    Promise.race([fn(...args), new Promise((_, rej) => setTimeout(() => rej('Time Limit Exceeded'), t))]);
-
-/**
- * const limited = timeLimit((t) => new Promise(res => setTimeout(res, t)), 100);
- * limited(150).catch(console.log) // "Time Limit Exceeded" at t=100ms
- */
-```
-
-## Chunk Array
-
-https://leetcode.com/problems/chunk-array/description/
-
-```js
-/**
- * @param {Array} arr
- * @param {number} size
- * @return {Array}
- */
-const chunk = (arr, size) => {
-  let a = [];
-  while (arr.length > 0) a.push(arr.splice(0, size));
-  return a;
-};
-```
-
-## Array Prototype Last
-
-https://leetcode.com/problems/array-prototype-last/description/
-
-```js
-/**
- * @return {null|boolean|number|string|Array|Object}
- */
-Array.prototype.last = function () {
-  if (this.length == 0) return -1;
-  return this.pop();
-};
-
-/**
- * const arr = [1, 2, 3];
- * arr.last(); // 3
- */
-```
-
-## Array Wrapper
-
-https://leetcode.com/problems/array-wrapper/
-
-```js
-/**
- * @param {number[]} nums
- * @return {void}
- */
-var ArrayWrapper = function (nums) {
-  this.nums = nums;
-};
-
-/**
- * @return {number}
- */
-ArrayWrapper.prototype.valueOf = function () {
-  return this.nums.reduce((a, x) => a + x, 0);
-};
-
-/**
- * @return {string}
- */
-ArrayWrapper.prototype.toString = function () {
-  return '[' + String(this.nums) + ']';
-};
-
-/**
- * const obj1 = new ArrayWrapper([1,2]);
- * const obj2 = new ArrayWrapper([3,4]);
- * obj1 + obj2; // 10
- * String(obj1); // "[1,2]"
- * String(obj2); // "[3,4]"
- */
-```
-
-## Generate Fibonacci Sequence
-
-https://leetcode.com/problems/generate-fibonacci-sequence/description/
-
-```js
-/**
- * @return {Generator<number>}
- */
-const fibGenerator = function* () {
-  let a = 0,
-    b = 1;
-  while (true) {
-    yield a;
-    [a, b] = [b, a + b];
-  }
-};
-
-/**
- * const gen = fibGenerator();
- * gen.next().value; // 0
- * gen.next().value; // 1
- */
-```
-
 ---
 
 ---
@@ -5973,9 +6107,9 @@ const fibGenerator = function* () {
 
 # Medium Problems
 
-# javascript
+# Javascript
 
-## Memoriza
+## Memorize
 
 https://leetcode.com/problems/memoize/description/
 
