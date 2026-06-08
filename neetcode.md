@@ -10721,5 +10721,133 @@ const resultsArray = (nums, k) => {
 https://leetcode.com/problems/maximum-sum-of-distinct-subarrays-with-length-k/description/
 
 ```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const maximumSubarraySum = (nums, k) => {
+  let a = {},
+    b = 0,
+    c = 0,
+    d = 0;
+  for (let i of nums.slice(0, k)) {
+    if (!(i in a)) d++;
+    a[i] = (a[i] ?? 0) + 1;
+    b += i;
+  }
+  if (d == k) c = b;
+  for (let i = k; i < nums.length; i++) {
+    const e0 = nums[i - k],
+      e1 = nums[i];
+    b += -e0 + e1;
+    if (!(e1 in a)) d++;
+    a[e1] = (a[e1] ?? 0) + 1;
+    a[e0]--;
+    if (a[e0] == 0) {
+      delete a[e0];
+      d--;
+    }
+    if (d == k) c = b > c ? b : c;
+  }
+  return c;
+};
+```
+
+## Length of Longest Subarray With at Most K Frequency
+
+https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const maxSubarrayLength = (nums, k) => {
+  let a = {},
+    b = 1,
+    l = 0,
+    r = 0;
+  while (r < nums.length) {
+    const c = nums[r];
+    a[c] = (a[c] ?? 0) + 1;
+    while (a[c] > k) a[nums[l++]]--;
+    b = Math.max(r - l + 1, b);
+    r++;
+  }
+  return b;
+};
+```
+
+## Count Subarrays Where Max Element Appears at Least K Times
+
+https://leetcode.com/problems/count-subarrays-where-max-element-appears-at-least-k-times/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const countSubarrays = (nums, k) => {
+  const n = nums.length,
+    a = Math.max(...nums);
+  let b = 0,
+    c = 0,
+    l = 0;
+  for (let r = 0; r < n; r++) {
+    b += nums[r] == a ? 1 : 0;
+    while (b >= k) {
+      c += n - r;
+      b -= nums[l++] == a ? 1 : 0;
+    }
+  }
+  return c;
+};
+```
+
+## Maximum Beauty of an Array After Applying Operation
+
+https://leetcode.com/problems/maximum-beauty-of-an-array-after-applying-operation/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const maximumBeauty = (nums, k) => {
+  let a = {};
+  for (let i of nums) {
+    for (let ii = i - k; ii <= i + k; ii++) a[ii] = (a[ii] ?? 0) + 1;
+  }
+  return Math.max(...Object.values(a));
+};
+```
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const maximumBeauty = (nums, k) => {
+  nums.sort((x1, x2) => x1 - x2);
+  let a = 0,
+    l = 0;
+  for (let r = 0; r < nums.length; r++) {
+    while (nums[r] - nums[l] > 2 * k) l++;
+    a = Math.max(r - l + 1, a);
+  }
+  return a;
+};
+```
+
+## Take K of Each Character From Left and Right
+
+https://leetcode.com/problems/take-k-of-each-character-from-left-and-right/description/
+
+```js
 
 ```
