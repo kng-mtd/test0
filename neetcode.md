@@ -5529,6 +5529,130 @@ class Solution {
 
 # Bit Manupulation
 
+## Single Number
+
+https://neetcode.io/problems/single-number/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  singleNumber(nums) {
+    let a = 0;
+    for (let i of nums) a ^= i;
+    return a;
+  }
+}
+```
+
+## Number of 1 Bits
+
+https://neetcode.io/problems/number-of-one-bits/question
+
+```js
+class Solution {
+  /**
+   * @param {number} n - a positive integer
+   * @return {number}
+   */
+  hammingWeight(n) {
+    let a = 0;
+    while (n) {
+      n &= n - 1;
+      a++;
+    }
+    return a;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number} n - a positive integer
+   * @return {number}
+   */
+  hammingWeight(n) {
+    let a = 0;
+    while (n) {
+      a += n & 1;
+      n >>= 1;
+    }
+    return a;
+  }
+}
+```
+
+## Counting Bits
+
+https://neetcode.io/problems/counting-bits/question
+
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number[]}
+   */
+  countBits(n) {
+    let a = [];
+    for (let i = 0; i <= n; i++) {
+      let b = i,
+        c = 0;
+      while (b) {
+        b &= b - 1;
+        c++;
+      }
+      a.push(c);
+    }
+    return a;
+  }
+}
+```
+
+## Add Binary
+
+https://neetcode.io/problems/add-binary/question
+
+```js
+class Solution {
+  /**
+   * @param {string} a
+   * @param {string} b
+   * @return {string}
+   */
+  addBinary(a, b) {
+    a = Array.from(a).map(Number).reverse();
+    b = Array.from(b).map(Number).reverse();
+    let c = [],
+      d = 0;
+
+    for (let i = 0; i < Math.max(a.length, b.length); i++) {
+      const ai = a[i] ?? 0;
+      const bi = b[i] ?? 0;
+      c[i] = ai ^ bi ^ d;
+      d = ai & bi || ai & d || bi & d;
+    }
+    if (d) c.push(d);
+    return c.reverse().join('');
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {string} a
+   * @param {string} b
+   * @return {string}
+   */
+  addBinary(a, b) {
+    return (BigInt('0b' + a) + BigInt('0b' + b)).toString(2);
+  }
+}
+```
+
 ## Minimum Bit Flips to Convert Number
 
 https://leetcode.com/problems/minimum-bit-flips-to-convert-number/description/
@@ -5545,6 +5669,57 @@ const minBitFlips = (start, goal) => {
   while (a) [a, b] = [a & (a - 1), b + 1];
   return b;
 };
+```
+
+## Reverse Bits
+
+https://neetcode.io/problems/reverse-bits/question
+
+```js
+class Solution {
+  /**
+   * @param {number} n - a positive integer
+   * @return {number} - a positive integer
+   */
+  reverseBits(n) {
+    let a = n.toString(2).padStart(32, '0');
+    a = Array.from(a).reverse().join('');
+    return Number('0b' + a);
+  }
+}
+```
+
+## Missing Number
+
+https://neetcode.io/problems/missing-number/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  missingNumber(nums) {
+    for (let i = 0; i <= nums.length; i++) {
+      if (nums.indexOf(i) == -1) return i;
+    }
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  missingNumber(nums) {
+    let a = 0;
+    for (let i = 1; i <= nums.length; i++) a ^= i;
+    for (let i of nums) a ^= i;
+    return a;
+  }
+}
 ```
 
 ## Shuffle the Array
@@ -5773,6 +5948,40 @@ const largestOddNumber = (num) => {
 };
 ```
 
+## Transpose Matrix
+
+https://neetcode.io/problems/transpose-matrix/question
+
+```js
+class Solution {
+  /**
+   * @param {number[][]} matrix
+   * @return {number[][]}
+   */
+  transpose(matrix) {
+    let a = new Array(matrix[0].length);
+    for (let i = 0; i < a.length; i++) a[i] = [];
+
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[0].length; j++) a[j][i] = matrix[i][j];
+    }
+    return a;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[][]} matrix
+   * @return {number[][]}
+   */
+  transpose(matrix) {
+    return matrix[0].map((_, c) => matrix.map((r) => r[c]));
+  }
+}
+```
+
 ## Image Smoother
 
 https://leetcode.com/problems/image-smoother/description/
@@ -5983,6 +6192,47 @@ const luckyNumbers = (matrix) => {
 };
 ```
 
+## Non-Cyclical Number
+
+https://neetcode.io/problems/non-cyclical-number/question
+
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @return {boolean}
+   */
+  isHappy(n) {
+    let a = [];
+    while (true) {
+      const arr = Array.from(n + '');
+      const b = arr.map((x) => x ** 2).reduce((x, a) => x + a);
+      if (b == 1) return true;
+      if (a.indexOf(b) != -1) return false;
+      a.push(b);
+      n = b;
+    }
+  }
+}
+```
+
+## Plus One
+
+https://neetcode.io/problems/plus-one/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} digits
+   * @return {number[]}
+   */
+  plusOne(digits) {
+    const a = digits.join('') * 1 + 1;
+    return Array.from(a + '').map(Number);
+  }
+}
+```
+
 ## Palindrome Number
 
 https://neetcode.io/problems/palindrome-number/question
@@ -6077,6 +6327,36 @@ const shiftGrid = (grid, k) => {
   for (let i = 0; i < m; i++) a[i] = grid.slice(i * n, i * n + n);
   return a;
 };
+```
+
+## Roman to Integer
+
+https://neetcode.io/problems/roman-to-integer/question
+
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  romanToInt(s) {
+    let a = Array.from(s);
+    let b = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+    let c = 0;
+    while (a.length > 0) {
+      const d = a.pop();
+      c += b[d];
+      if (c >= 500) {
+        b.C = -100;
+      } else if (c >= 50) {
+        b.X = -10;
+      } else if (c >= 5) {
+        b.I = -1;
+      }
+    }
+    return c;
+  }
+}
 ```
 
 ## Widest Vertical Area Between Two Points Containing No Points
@@ -10106,7 +10386,23 @@ const numberOfAlternatingGroups = (colors, k) => {
 https://neetcode.io/problems/longest-substring-without-duplicates/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  lengthOfLongestSubstring(s) {
+    let a = {},
+      l = 0,
+      b = 0;
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] in a) l = Math.max(l, a[s[i]] + 1);
+      a[s[i]] = i;
+      b = Math.max(b, i - l + 1);
+    }
+    return b;
+  }
+}
 ```
 
 ## Longest Repeating Character Replacement
