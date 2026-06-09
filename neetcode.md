@@ -10410,7 +10410,29 @@ class Solution {
 https://neetcode.io/problems/longest-repeating-substring-with-replacement/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @param {number} k
+   * @return {number}
+   */
+  characterReplacement(s, k) {
+    let a = {},
+      l = 0,
+      b = 0,
+      c = 0;
+    for (let r = 0; r < s.length; r++) {
+      a[s[r]] = (a[s[r]] || 0) + 1;
+      b = Math.max(a[s[r]], b);
+      while (r - l + 1 - b > k) {
+        a[s[l]]--;
+        l++;
+      }
+      c = Math.max(r - l + 1, c);
+    }
+    return c;
+  }
+}
 ```
 
 ## Permutation in String
