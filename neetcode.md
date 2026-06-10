@@ -10440,7 +10440,43 @@ class Solution {
 https://neetcode.io/problems/permutation-string/question
 
 ```js
+class Solution {
+  /**
+   * @param {string} s1
+   * @param {string} s2
+   * @return {boolean}
+   */
+  checkInclusion(s1, s2) {
+    const n = s1.length;
+    const a = [...s1].sort().join('');
+    for (let i = 0; i <= s2.length - n; i++) {
+      if ([...s2.slice(i, i + n)].sort().join('') == a) return true;
+    }
+    return false;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {string} s1
+   * @param {string} s2
+   * @return {boolean}
+   */
+  checkInclusion(s1, s2) {
+    const n = s1.length;
+    const a1 = Array(26).fill(0),
+      a2 = Array(26).fill(0);
+    for (const i of s1) a1[i.charCodeAt(0) - 97]++;
+    for (let i = 0; i < s2.length; i++) {
+      a2[s2.charCodeAt(i) - 97]++;
+      if (i >= n) a2[s2.charCodeAt(i - n) - 97]--;
+      if (a1.join() == a2.join()) return true;
+    }
+    return false;
+  }
+}
 ```
 
 ## Frequency of The Most Frequent Element
@@ -10871,5 +10907,50 @@ const maximumBeauty = (nums, k) => {
 https://leetcode.com/problems/take-k-of-each-character-from-left-and-right/description/
 
 ```js
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {number}
+ */
+const takeCharacters = (s, k) => {
+  const n = s.length;
+  let a = { a: 0, b: 0, c: 0 },
+    b = { a: 0, b: 0, c: 0 },
+    c = 0,
+    l = 0,
+    r = 0;
+  for (let i of s) a[i]++;
+  if (a.a < k || a.b < k || a.c < k) return -1;
+  for (let r = 0; r < n; r++) {
+    const d = s[r];
+    b[d]++;
+    while (b[d] > a[d] - k) b[s[l++]]--;
+    c = Math.max(r - l + 1, c);
+  }
+  return n - c;
+};
+```
+
+## Count of Substrings Containing Every Vowel and K Consonants II
+
+https://leetcode.com/problems/count-of-substrings-containing-every-vowel-and-k-consonants-ii/description/
+
+```js
 
 ```
+
+## Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit
+
+https://neetcode.io/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/question
+
+```js
+
+```
+
+---
+
+---
+
+---
+
+# Binary Search
