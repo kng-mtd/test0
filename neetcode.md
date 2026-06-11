@@ -10484,7 +10484,47 @@ class Solution {
 https://neetcode.io/problems/frequency-of-the-most-frequent-element/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  maxFrequency(nums, k) {
+    nums.sort((x1, x2) => x1 - x2);
+    let a = 0,
+      b = 1,
+      l = 0;
+    for (let r = 1; r < nums.length; r++) {
+      a += (nums[r] - nums[r - 1]) * (r - l);
+      while (a > k) a -= nums[r] - nums[l++];
+      b = Math.max(r - l + 1, b);
+    }
+    return b;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  maxFrequency(nums, k) {
+    nums.sort((x1, x2) => x1 - x2);
+    let a = 0,
+      b = 0,
+      l = 0;
+    for (let r = 0; r < nums.length; r++) {
+      a += nums[r];
+      while (nums[r] * (r - l + 1) - a > k) a -= nums[l++];
+      b = Math.max(r - l + 1, b);
+    }
+    return b;
+  }
+}
 ```
 
 ## Fruits into Basket
@@ -10936,7 +10976,33 @@ const takeCharacters = (s, k) => {
 https://leetcode.com/problems/count-of-substrings-containing-every-vowel-and-k-consonants-ii/description/
 
 ```js
-
+/**
+ * @param {string} word
+ * @param {number} k
+ * @return {number}
+ */
+const countOfSubstrings = (word, k) => {
+  const fn = (k) => {
+    if (k < 0) return 0;
+    let a = { a: -1, e: -1, i: -1, o: -1, u: -1 },
+      b = 0,
+      c = 0,
+      l = 0;
+    for (let r = 0; r < word.length; r++) {
+      const d = word[r];
+      if ('aeiou'.includes(d)) a[d] = r;
+      else b++;
+      while (b > k) {
+        if (!'aeiou'.includes(word[l])) b--;
+        l++;
+      }
+      const e = Math.min(a.a, a.e, a.i, a.o, a.u);
+      if (e >= l) c += e - l + 1;
+    }
+    return c;
+  };
+  return fn(k) - fn(k - 1);
+};
 ```
 
 ## Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit
