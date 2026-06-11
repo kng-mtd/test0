@@ -11020,3 +11020,27 @@ https://neetcode.io/problems/longest-continuous-subarray-with-absolute-diff-less
 ---
 
 # Binary Search
+
+## Single Element in a Sorted Array
+
+https://neetcode.io/problems/single-element-in-a-sorted-array/question
+
+```js
+
+```
+
+## Find Peak Element
+
+https://neetcode.io/problems/find-peak-element/question
+
+```js
+
+```
+
+## Successful Pairs of Spells and Potions
+
+https://leetcode.com/problems/successful-pairs-of-spells-and-potions/description/
+
+```js
+
+```
