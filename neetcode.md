@@ -10540,12 +10540,17 @@ class Solution {
   totalFruit(fruits) {
     let a = {},
       b = 0,
+      c = 0,
       l = 0;
     for (let r = 0; r < fruits.length; r++) {
+      c += a[fruits[r]] ? 0 : 1;
       a[fruits[r]] = (a[fruits[r]] ?? 0) + 1;
-      while (Object.keys(a).length > 2) {
+      while (c > 2) {
         a[fruits[l]]--;
-        if (a[fruits[l]] == 0) delete a[fruits[l]];
+        if (a[fruits[l]] == 0) {
+          delete a[fruits[l]];
+          c--;
+        }
         l++;
       }
       b = Math.max(r - l + 1, b);
