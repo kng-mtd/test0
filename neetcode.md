@@ -10532,7 +10532,27 @@ class Solution {
 https://neetcode.io/problems/fruit-into-baskets/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} fruits
+   * @return {number}
+   */
+  totalFruit(fruits) {
+    let a = {},
+      b = 0,
+      l = 0;
+    for (let r = 0; r < fruits.length; r++) {
+      a[fruits[r]] = (a[fruits[r]] ?? 0) + 1;
+      while (Object.keys(a).length > 2) {
+        a[fruits[l]]--;
+        if (a[fruits[l]] == 0) delete a[fruits[l]];
+        l++;
+      }
+      b = Math.max(r - l + 1, b);
+    }
+    return b;
+  }
+}
 ```
 
 ## Maximum Number of Vowels in a Substring of Given Length
