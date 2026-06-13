@@ -10639,7 +10639,26 @@ const minFlips = (s) => {
 https://neetcode.io/problems/minimum-size-subarray-sum/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} target
+   * @param {number[]} nums
+   * @return {number}
+   */
+  minSubArrayLen(target, nums) {
+    let a = Infinity,
+      b = 0,
+      i0 = 0;
+    for (let i = 0; i < nums.length; i++) {
+      b += nums[i];
+      while (b >= target) {
+        a = Math.min(i - i0 + 1, a);
+        b -= nums[i0++];
+      }
+    }
+    return a != Infinity ? a : 0;
+  }
+}
 ```
 
 ## Find K Closest Elements
@@ -11069,3 +11088,80 @@ https://leetcode.com/problems/successful-pairs-of-spells-and-potions/description
 ```js
 
 ```
+
+## Search a 2D Matrix
+
+https://neetcode.io/problems/search-2d-matrix/question
+
+```js
+
+```
+
+## Koko Eating Bananas
+
+https://neetcode.io/problems/eating-bananas/question
+
+```js
+
+```
+
+## Capacity to Ship Packages Within D Days
+
+https://neetcode.io/problems/capacity-to-ship-packages-within-d-days/question
+
+```js
+
+```
+
+## Maximum Candies Allocated to K Children
+
+https://leetcode.com/problems/maximum-candies-allocated-to-k-children/description/
+
+```js
+/**
+ * @param {number[]} candies
+ * @param {number} k
+ * @return {number}
+ */
+const maximumCandies = (candies, k) => {
+  if (candies.reduce((a, x) => a + x, 0) < k) return 0;
+  let l = 1,
+    r = Math.max(...candies);
+  while (l < r) {
+    const m = (l + r + 1) >> 1;
+    [l, r] = candies.reduce((a, x) => a + ((x / m) | 0), 0) >= k ? [m, r] : [l, m - 1];
+  }
+  return l;
+};
+```
+
+## House Robber IV
+
+https://leetcode.com/problems/house-robber-iv/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const minCapability = (nums, k) => {
+  let l = Math.min(...nums),
+    r = Math.max(...nums);
+  const check = (cap) => {
+    let cnt = 0;
+    for (let i = 0; i < nums.length; ) {
+      [cnt, i] = nums[i] <= cap ? [cnt + 1, i + 2] : [cnt, i + 1];
+    }
+    return cnt >= k;
+  };
+
+  while (l < r) {
+    const m = (l + r) >> 1;
+    [l, r] = check(m) ? [l, m] : [m + 1, r];
+  }
+  return l;
+};
+```
+
+##
