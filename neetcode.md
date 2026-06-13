@@ -11179,7 +11179,53 @@ const minimizedMaximum = (n, quantities) => {
     r = Math.max(...quantities);
   while (l < r) {
     const m = (l + r) >> 1;
-    [l, r] = quantities.reduce((a, x) => a + (((x + m - 1) / m) | 0), 0) <= n ? [l, m] : [m + 1, r];
+    [l, r] = quantities.reduce((a, x) => a + (((x + m - 1) / m) | 0), 0) > n ? [m + 1, r] : [l, m];
+  }
+  return l;
+};
+```
+
+## Minimum Limit of Balls in a Bag
+
+https://leetcode.com/problems/minimum-limit-of-balls-in-a-bag/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} maxOperations
+ * @return {number}
+ */
+const minimumSize = (nums, maxOperations) => {
+  let l = 1,
+    r = Math.max(...nums);
+  while (l < r) {
+    const m = (l + r) >> 1;
+    let a = 0;
+    for (let i of nums) a += ((i - 1) / m) | 0;
+    [l, r] = a > maxOperations ? [m + 1, r] : [l, m];
+  }
+  return l;
+};
+```
+
+## Minimum Time to Repair Cars
+
+https://leetcode.com/problems/minimum-time-to-repair-cars/description/
+
+```js
+/**
+ * @param {number[]} ranks
+ * @param {number} cars
+ * @return {number}
+ */
+const repairCars = (ranks, cars) => {
+  let l = 0,
+    r = Math.min(...ranks) * cars ** 2;
+  while (l < r) {
+    const m = Math.floor((l + r) / 2);
+    let a = 0;
+    for (const i of ranks) a += ((m / i) ** 0.5) | 0;
+    [l, r] = a < cars ? [m + 1, r] : [l, m];
   }
   return l;
 };
