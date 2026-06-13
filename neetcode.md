@@ -11164,4 +11164,23 @@ const minCapability = (nums, k) => {
 };
 ```
 
-##
+## Minimized Maximum of Products Distributed to Any Store
+
+https://leetcode.com/problems/minimized-maximum-of-products-distributed-to-any-store/description/
+
+```js
+/**
+ * @param {number} n
+ * @param {number[]} quantities
+ * @return {number}
+ */
+const minimizedMaximum = (n, quantities) => {
+  let l = 1,
+    r = Math.max(...quantities);
+  while (l < r) {
+    const m = (l + r) >> 1;
+    [l, r] = quantities.reduce((a, x) => a + (((x + m - 1) / m) | 0), 0) <= n ? [l, m] : [m + 1, r];
+  }
+  return l;
+};
+```
