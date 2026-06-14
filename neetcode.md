@@ -10666,7 +10666,20 @@ class Solution {
 https://neetcode.io/problems/find-k-closest-elements/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} arr
+   * @param {number} k
+   * @param {number} x
+   * @return {number[]}
+   */
+  findClosestElements(arr, k, x) {
+    return arr
+      .sort((x1, x2) => Math.abs(x1 - x) - Math.abs(x2 - x))
+      .slice(0, k)
+      .sort((x1, x2) => x1 - x2);
+  }
+}
 ```
 
 ## Minimum Operations to Reduce x to Zero
