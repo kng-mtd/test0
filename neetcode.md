@@ -961,6 +961,28 @@ class Solution {
 }
 ```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number[]}
+   */
+  twoSum(nums, target) {
+    let a = [];
+    for (let i = 0; i < nums.length; i++) a.push([nums[i], i]);
+    a.sort((x1, x2) => x1[0] - x2[0]);
+    let l = 0,
+      r = a.length - 1;
+    while (l < r) {
+      const b = a[l][0] + a[r][0];
+      if (b == target) return [a[l][1], a[r][1]];
+      [l, r] = b < target ? [l + 1, r] : [l, r - 1];
+    }
+  }
+}
+```
+
 ## Max Consecutive Ones
 
 https://neetcode.io/problems/max-consecutive-ones/question
@@ -10786,7 +10808,24 @@ const numberOfSubstrings = (s) => {
 https://neetcode.io/problems/binary-subarrays-with-sum/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} goal
+   * @return {number}
+   */
+  numSubarraysWithSum(nums, goal) {
+    let c = new Map([[0, 1]]),
+      a = 0,
+      b = 0;
+    for (let i of nums) {
+      a += i;
+      b += c.get(a - goal) || 0;
+      c.set(a, (c.get(a) || 0) + 1);
+    }
+    return b;
+  }
+}
 ```
 
 ## Count Number of Nice Subarrays
