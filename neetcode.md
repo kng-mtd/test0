@@ -10876,7 +10876,29 @@ const numberOfSubarrays = (nums, k) => {
 https://neetcode.io/problems/subarray-product-less-than-k/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  numSubarrayProductLessThanK(nums, k) {
+    let a = 0,
+      b,
+      l = 0,
+      r = 0;
+    while (l < nums.length) {
+      ((b = nums[l]), (r = l));
+      while (b < k) {
+        a++;
+        r++;
+        b *= nums[r];
+      }
+      l++;
+    }
+    return a;
+  }
+}
 ```
 
 ## Max Consecutive Ones III
@@ -10884,7 +10906,24 @@ https://neetcode.io/problems/subarray-product-less-than-k/question
 https://neetcode.io/problems/max-consecutive-ones-iii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  longestOnes(nums, k) {
+    let a = 0,
+      b = 0,
+      l = 0;
+    for (let r = 0; r < nums.length; r++) {
+      if (nums[r] == 0) b++;
+      while (b > k) b -= nums[l++] == 0 ? 1 : 0;
+      a = Math.max(r - l + 1, a);
+    }
+    return a;
+  }
+}
 ```
 
 ## Find the Power of K-Size Subarrays I
