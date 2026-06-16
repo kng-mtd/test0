@@ -11321,3 +11321,158 @@ const repairCars = (ranks, cars) => {
   return l;
 };
 ```
+
+## Find Minimum in Rotated Sorted Array
+
+https://neetcode.io/problems/find-minimum-in-rotated-sorted-array/question
+
+```js
+
+```
+
+## Search in Rotated Sorted Array
+
+https://neetcode.io/problems/find-target-in-rotated-sorted-array/question
+
+```js
+
+```
+
+## Search in Rotated Sorted Array II
+
+https://neetcode.io/problems/search-in-rotated-sorted-array-ii/question
+
+```js
+
+```
+
+## Time Based Key-Value Store
+
+https://neetcode.io/problems/time-based-key-value-store/question
+
+```js
+
+```
+
+## Find First And Last Position of Element In Sorted Array
+
+https://neetcode.io/problems/find-first-and-last-position-of-element-in-sorted-array/question
+
+```js
+
+```
+
+## Maximum Number of Removable Characters
+
+https://leetcode.com/problems/maximum-number-of-removable-characters/description/
+
+```js
+/**
+ * @param {string} s
+ * @param {string} p
+ * @param {number[]} removable
+ * @return {number}
+ */
+const maximumRemovals = (s, p, removable) => {
+  const a = Array(s.length).fill(Infinity);
+  for (let i = 0; i < removable.length; i++) a[removable[i]] = i;
+  const check = (k) => {
+    let j = 0;
+    for (let i = 0; i < s.length && j < p.length; i++) {
+      if (a[i] < k) continue;
+      if (s[i] == p[j]) j++;
+    }
+    return j == p.length;
+  };
+
+  let l = 0,
+    r = removable.length + 1;
+  while (l < r) {
+    const m = (l + r) >> 1;
+    [l, r] = check(m) ? [m + 1, r] : [l, m];
+  }
+  return l - 1;
+};
+```
+
+## Most Beautiful Item for Each Query
+
+https://leetcode.com/problems/most-beautiful-item-for-each-query/description/
+
+```js
+/**
+ * @param {number[][]} items
+ * @param {number[]} queries
+ * @return {number[]}
+ */
+const maximumBeauty = (items, queries) => {
+  items.sort((x1, x2) => x1[0] - x2[0]);
+  for (let i = 1; i < items.length; i++) items[i][1] = Math.max(items[i][1], items[i - 1][1]);
+  let a = [];
+  for (let i of queries) {
+    let l = 0,
+      r = items.length;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = items[m][0] <= i ? [m + 1, r] : [l, m];
+    }
+    a.push(l ? items[l - 1][1] : 0);
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number[][]} items
+ * @param {number[]} queries
+ * @return {number[]}
+ */
+const maximumBeauty = (items, queries) => {
+  items.sort((x1, x2) => x1[0] - x2[0]);
+  const qs = queries.map((q, i) => [q, i]);
+  qs.sort((x1, x2) => x1[0] - x2[0]);
+  let a = Array(queries.length);
+  let i = 0,
+    b = 0;
+  for (let [q, id] of qs) {
+    while (i < items.length && items[i][0] <= q) b = Math.max(items[i++][1], b);
+    a[id] = b;
+  }
+  return a;
+};
+```
+
+## Random Pick with Weight
+
+https://neetcode.io/problems/random-pick-with-weight/question
+
+```js
+
+```
+
+## Search Suggestions System
+
+https://leetcode.com/problems/search-suggestions-system/description/
+
+```js
+
+```
+
+## Count the Number of Fair Pairs
+
+https://leetcode.com/problems/count-the-number-of-fair-pairs/description/
+
+```js
+
+```
+
+---
+
+---
+
+---
+
+# Linked List
+
+##
