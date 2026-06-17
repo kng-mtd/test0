@@ -11145,7 +11145,33 @@ const countOfSubstrings = (word, k) => {
 https://neetcode.io/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} limit
+   * @return {number}
+   */
+  longestSubarray(nums, limit) {
+    let mi = [],
+      ma = [],
+      a = 0,
+      l = 0;
+    for (let r = 0; r < nums.length; r++) {
+      const b = nums[r];
+      while (mi.length && mi.at(-1) > b) mi.pop();
+      mi.push(b);
+      while (ma.length && ma.at(-1) < b) ma.pop();
+      ma.push(b);
+      while (ma[0] - mi[0] > limit) {
+        if (nums[l] == mi[0]) mi.shift();
+        if (nums[l] == ma[0]) ma.shift();
+        l++;
+      }
+      a = Math.max(r - l + 1, a);
+    }
+    return a;
+  }
+}
 ```
 
 ---
@@ -11456,7 +11482,33 @@ https://neetcode.io/problems/random-pick-with-weight/question
 https://leetcode.com/problems/search-suggestions-system/description/
 
 ```js
+/**
+ * @param {string[]} products
+ * @param {string} searchWord
+ * @return {string[][]}
+ */
+const suggestedProducts = (products, searchWord) => {
+  const n = searchWord.length,
+    m = products.length;
+  products.sort();
+  let a = Array.from({ length: n }, () => Array());
 
+  for (let i = 0; i < n; i++) {
+    let b = searchWord.slice(0, i + 1),
+      l = 0,
+      r = m - 1;
+    while (l < r) {
+      let m = (l + r) >> 1;
+      [l, r] = products[m] < b ? [m + 1, r] : [l, m];
+    }
+    let c = l;
+    while (c < m && a[i].length < 3) {
+      if (products[c].slice(0, i + 1) == b) a[i].push(products[c]);
+      c++;
+    }
+  }
+  return a;
+};
 ```
 
 ## Count the Number of Fair Pairs
@@ -11464,7 +11516,52 @@ https://leetcode.com/problems/search-suggestions-system/description/
 https://leetcode.com/problems/count-the-number-of-fair-pairs/description/
 
 ```js
+/**
+ * @param {number[]} nums
+ * @param {number} lower
+ * @param {number} upper
+ * @return {number}
+ */
+const countFairPairs = (nums, lower, upper) => {
+  const fn = (nums, target, start) => {
+    let l = start,
+      r = nums.length;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = nums[m] < target ? [m + 1, r] : [l, m];
+    }
+    return l;
+  };
 
+  nums.sort((x1, x2) => x1 - x2);
+  let a = 0;
+  for (let i = 0; i < nums.length; i++) {
+    a += fn(nums, upper + 1 - nums[i], i + 1) - fn(nums, lower - nums[i], i + 1);
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} lower
+ * @param {number} upper
+ * @return {number}
+ */
+const countFairPairs = (nums, lower, upper) => {
+  nums.sort((x1, x2) => x1 - x2);
+
+  const fn = (x) => {
+    let a = 0,
+      l = 0,
+      r = nums.length - 1;
+    while (l < r) [l, r, a] = nums[l] + nums[r] < x ? [l + 1, r, a + r - l] : [l, r - 1, a];
+    return a;
+  };
+
+  return fn(upper + 1) - fn(lower);
+};
 ```
 
 ---
