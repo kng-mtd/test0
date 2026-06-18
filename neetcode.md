@@ -11187,7 +11187,21 @@ class Solution {
 https://neetcode.io/problems/single-element-in-a-sorted-array/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  singleNonDuplicate(nums) {
+    let l = 0,
+      r = nums.length - 1;
+    while (l < r) {
+      let m = ((l + r) >> 1) & ~1;
+      [l, r] = nums[m] == nums[m + 1] ? [m + 2, r] : [l, m];
+    }
+    return nums[l];
+  }
+}
 ```
 
 ## Find Peak Element
@@ -11203,7 +11217,26 @@ https://neetcode.io/problems/find-peak-element/question
 https://leetcode.com/problems/successful-pairs-of-spells-and-potions/description/
 
 ```js
-
+/**
+ * @param {number[]} spells
+ * @param {number[]} potions
+ * @param {number} success
+ * @return {number[]}
+ */
+const successfulPairs = (spells, potions, success) => {
+  potions.sort((x1, x2) => x1 - x2);
+  let a = [];
+  for (let i of spells) {
+    let l = 0,
+      r = potions.length;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = potions[m] < success / i ? [m + 1, r] : [l, m];
+    }
+    a.push(potions.length - l);
+  }
+  return a;
+};
 ```
 
 ## Search a 2D Matrix
