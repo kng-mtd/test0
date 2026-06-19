@@ -11209,7 +11209,21 @@ class Solution {
 https://neetcode.io/problems/find-peak-element/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  findPeakElement(nums) {
+    let l = 0,
+      r = nums.length - 1;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = nums[m] < nums[m + 1] ? [m + 1, r] : [l, m];
+    }
+    return l;
+  }
+}
 ```
 
 ## Successful Pairs of Spells and Potions
