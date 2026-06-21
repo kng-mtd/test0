@@ -11258,7 +11258,46 @@ const successfulPairs = (spells, potions, success) => {
 https://neetcode.io/problems/search-2d-matrix/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} matrix
+   * @param {number} target
+   * @return {boolean}
+   */
+  searchMatrix(matrix, target) {
+    const nums = matrix.flat();
+    let l = 0,
+      r = nums.length - 1;
+    while (l <= r) {
+      const m = (l + r) >> 1;
+      if (nums[m] == target) return true;
+      [l, r] = nums[m] < target ? [m + 1, r] : [l, m - 1];
+    }
+    return false;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[][]} matrix
+   * @param {number} target
+   * @return {boolean}
+   */
+  searchMatrix(matrix, target) {
+    const m = matrix.length,
+      n = matrix[0].length;
+    let l = 0,
+      r = m * n - 1;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      const value = matrix[(m / n) | 0][m % n];
+      [l, r] = value < target ? [m + 1, r] : [l, m];
+    }
+    return matrix[(l / n) | 0][l % n] == target;
+  }
+}
 ```
 
 ## Koko Eating Bananas
@@ -11266,7 +11305,22 @@ https://neetcode.io/problems/search-2d-matrix/question
 https://neetcode.io/problems/eating-bananas/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} piles
+   * @param {number} h
+   * @return {number}
+   */
+  minEatingSpeed(piles, h) {
+    let l = 1,
+      r = Math.max(...piles);
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = piles.reduce((a, x) => a + Math.ceil(x / m), 0) > h ? [m + 1, r] : [l, m];
+    }
+    return l;
+  }
+}
 ```
 
 ## Capacity to Ship Packages Within D Days
