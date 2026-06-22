@@ -11702,4 +11702,142 @@ const countFairPairs = (nums, lower, upper) => {
 
 # Linked List
 
-##
+## Merge In Between Linked Lists
+
+https://leetcode.com/problems/merge-in-between-linked-lists/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} list1
+ * @param {number} a
+ * @param {number} b
+ * @param {ListNode} list2
+ * @return {ListNode}
+ */
+const mergeInBetween = (list1, a, b, list2) => {
+  let n1 = list1;
+  for (let i = 0; i < a - 1; i++) n1 = n1.next;
+  let n2 = n1;
+  for (let i = a - 1; i <= b; i++) n2 = n2.next;
+  n1.next = list2;
+  let n3 = list2;
+  while (n3.next) n3 = n3.next;
+  n3.next = n2;
+  return list1;
+};
+```
+
+## Merge Nodes in Between Zeros
+
+https://leetcode.com/problems/merge-nodes-in-between-zeros/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+const mergeNodes = (head) => {
+  const a0 = new ListNode();
+  let a = a0,
+    b = 0,
+    c = head.next;
+  while (c) {
+    if (c.val == 0) {
+      a.next = new ListNode(b);
+      a = a.next;
+      b = 0;
+    } else b += c.val;
+    c = c.next;
+  }
+  return a0.next;
+};
+```
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+const mergeNodes = head=> {
+    let a=head, b=head.next, c=0;
+    while (b) {
+        if (b.val== 0) {
+            a=a.next=b;
+            b.val=c;
+            c=0;
+        else c+=b.val;
+        b=b.next;
+    }
+    a.next = null;
+    return head.next;
+}
+```
+
+## Find the Minimum and Maximum Number of Nodes Between Critical Points
+
+https://leetcode.com/problems/find-the-minimum-and-maximum-number-of-nodes-between-critical-points/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {number[]}
+ */
+const nodesBetweenCriticalPoints = (head) => {
+  let a0,
+    a1,
+    b = head,
+    i = 0,
+    c = Infinity;
+  while (b.next.next) {
+    const x1 = b.val,
+      x2 = b.next.val,
+      x3 = b.next.next.val;
+    if ((x2 > x1 && x2 > x3) || (x2 < x1 && x2 < x3)) {
+      if (a0 == undefined) a0 = a1 = i;
+      else {
+        c = Math.min(i - a1, c);
+        a1 = i;
+      }
+    }
+    b = b.next;
+    i++;
+  }
+  return a0 == a1 ? [-1, -1] : [c, a1 - a0];
+};
+```
+
+## Remove Nodes From Linked List
+
+https://leetcode.com/problems/remove-nodes-from-linked-list/description/
+
+```js
+
+```
