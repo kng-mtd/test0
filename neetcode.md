@@ -11328,7 +11328,28 @@ class Solution {
 https://neetcode.io/problems/capacity-to-ship-packages-within-d-days/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} weights
+   * @param {number} days
+   * @return {number}
+   */
+  shipWithinDays(weights, days) {
+    let l = Math.max(...weights);
+    let r = weights.reduce((a, x) => a + x, 0);
+    while (l < r) {
+      const m = (l + r) >> 1;
+      let a = 0,
+        b = 1;
+      for (let i of weights) {
+        a += i;
+        [a, b] = a > m ? [i, b + 1] : [a, b];
+      }
+      [l, r] = b > days ? [m + 1, r] : [l, m];
+    }
+    return l;
+  }
+}
 ```
 
 ## Maximum Candies Allocated to K Children
@@ -11382,6 +11403,14 @@ const minCapability = (nums, k) => {
 };
 ```
 
+## Minimize the Maximum Difference of Pairs
+
+https://neetcode.io/problems/minimize-the-maximum-difference-of-pairs/question
+
+```js
+
+```
+
 ## Minimized Maximum of Products Distributed to Any Store
 
 https://leetcode.com/problems/minimized-maximum-of-products-distributed-to-any-store/description/
@@ -11397,7 +11426,7 @@ const minimizedMaximum = (n, quantities) => {
     r = Math.max(...quantities);
   while (l < r) {
     const m = (l + r) >> 1;
-    [l, r] = quantities.reduce((a, x) => a + (((x + m - 1) / m) | 0), 0) > n ? [m + 1, r] : [l, m];
+    [l, r] = quantities.reduce((a, x) => a + (((x + m - 1) / m) | 0), 0) <= n ? [l, m] : [m + 1, r];
   }
   return l;
 };
