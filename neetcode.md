@@ -11408,7 +11408,32 @@ const minCapability = (nums, k) => {
 https://neetcode.io/problems/minimize-the-maximum-difference-of-pairs/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} p
+   * @return {number}
+   */
+  minimizeMax(nums, p) {
+    nums.sort((x1, x2) => x1 - x2);
+    let l = 0,
+      r = nums.at(-1) - nums[0];
 
+    const check = (m) => {
+      let cnt = 0;
+      for (let i = 1; i < nums.length; i++) {
+        if (nums[i] - nums[i - 1] <= m) [cnt, i] = [cnt + 1, i + 1];
+      }
+      return cnt >= p;
+    };
+
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = check(m) ? [l, m] : [m + 1, r];
+    }
+    return l;
+  }
+}
 ```
 
 ## Minimized Maximum of Products Distributed to Any Store
