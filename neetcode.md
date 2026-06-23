@@ -3779,16 +3779,15 @@ class Solution {
    * @return {ListNode}
    */
   mergeTwoLists(list1, list2) {
-    let n1 = list1,
-      n2 = list2;
-    let a = new ListNode();
-    let n = a;
-    while (n1 && n2) {
-      [n.next, n1, n2] = n1.val < n2.val ? [n1, n1.next, n2] : [n2, n1, n2.next];
+    const n0 = new ListNode();
+    let n = n0;
+    while (list1 && list2) {
+      if (list1.val < list2.val) [n.next, list1] = [list1, list1.next];
+      else [n.next, list2] = [list2, list2.next];
       n = n.next;
     }
-    n.next = n1 || n2;
-    return a.next;
+    n.next = list1 || list2;
+    return n0.next;
   }
 }
 ```
@@ -3817,8 +3816,7 @@ class Solution {
     let n1 = head,
       n2 = head;
     while (n2 && n2.next) {
-      n1 = n1.next;
-      n2 = n2.next.next;
+      [n1, n2] = [n1.next, n2.next.next];
       if (n1 === n2) return true;
     }
     return false;
@@ -3860,6 +3858,37 @@ class Solution {
 }
 ```
 
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @return {boolean}
+   */
+  isPalindrome(head) {
+    let n1 = head,
+      n2 = head;
+    while (n2 && n2.next) [n1, n2] = [n1.next, n2.next.next];
+    let n = !n2 ? n1 : n1.next;
+    let a = null;
+    while (n) [n.next, a, n] = [a, n, n.next];
+    while (a) {
+      if (a.val != head.val) return false;
+      [head, a] = [head.next, a.next];
+    }
+    return true;
+  }
+}
+```
+
 ## Remove Linked List Elements
 
 https://neetcode.io/problems/remove-linked-list-elements/question
@@ -3888,6 +3917,63 @@ class Solution {
       else a = a.next;
     }
     return head;
+  }
+}
+```
+
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @param {number} val
+   * @return {ListNode}
+   */
+  removeElements(head, val) {
+    const n0 = new ListNode();
+    let n = n0;
+    while (head) {
+      if (head.val != val) n = n.next = head;
+      head = head.next;
+    }
+    n.next = null;
+    return n0.next;
+  }
+}
+```
+
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @param {number} val
+   * @return {ListNode}
+   */
+  removeElements(head, val) {
+    const n0 = new ListNode(0, head);
+    let n = n0;
+    while (n.next) {
+      if (n.next.val == val) n.next = n.next.next;
+      else n = n.next;
+    }
+    return n0.next;
   }
 }
 ```
@@ -4007,7 +4093,7 @@ class Solution {
   getIntersectionNode(headA, headB) {
     let a = headA,
       b = headB;
-    while (a !== b) {
+    while (a != b) {
       a = a ? a.next : headB;
       b = b ? b.next : headA;
     }
