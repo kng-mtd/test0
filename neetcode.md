@@ -4024,13 +4024,13 @@ class Solution {
    * @return {ListNode}
    */
   middleNode(head) {
-    let a = head,
-      b = head;
-    while (b && b.next) {
-      a = a.next;
-      b = b.next.next;
+    let n1 = head,
+      n2 = head;
+    while (n2 && n2.next) {
+      n1 = n1.next;
+      n2 = n2.next.next;
     }
-    return a;
+    return n1;
   }
 }
 ```
@@ -4057,18 +4057,12 @@ class Solution {
    */
   getIntersectionNode(headA, headB) {
     let a = headA;
-    while (a) {
-      a.val = -a.val;
-      a = a.next;
-    }
+    while (a) [a.val, a] = [-a.val, a.next];
     let b = headB,
       c = null;
     while (b && b.val > 0) b = b.next;
     c = b;
-    while (b) {
-      b.val = -b.val;
-      b = b.next;
-    }
+    while (b) [b.val, b] = [-b.val, b.next];
     return c;
   }
 }
@@ -11594,7 +11588,21 @@ const repairCars = (ranks, cars) => {
 https://neetcode.io/problems/find-minimum-in-rotated-sorted-array/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  findMin(nums) {
+    let l = 0,
+      r = nums.length - 1;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = nums[m] > nums[r] ? [m + 1, r] : [l, m];
+    }
+    return nums[l];
+  }
+}
 ```
 
 ## Search in Rotated Sorted Array
@@ -11948,6 +11956,37 @@ const nodesBetweenCriticalPoints = (head) => {
 ## Remove Nodes From Linked List
 
 https://leetcode.com/problems/remove-nodes-from-linked-list/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+const removeNodes = (head) => {
+  let a = null;
+  while (head) [head.next, a, head] = [a, head, head.next];
+  let b = a.val,
+    c = a;
+  while (c && c.next) {
+    if (c.next.val < b) c.next = c.next.next;
+    else [b, c] = [c.next.val, c.next];
+  }
+  let d = null;
+  while (a) [a.next, d, a] = [d, a, a.next];
+  return d;
+};
+```
+
+## Reorder Linked List
+
+https://neetcode.io/problems/reorder-linked-list/question
 
 ```js
 
