@@ -11610,7 +11610,49 @@ class Solution {
 https://neetcode.io/problems/find-target-in-rotated-sorted-array/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number}
+   */
+  search(nums, target) {
+    let l = 0,
+      r = nums.length - 1;
+    if (r == 0) return nums[0] == target ? 0 : -1;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = nums[m] > nums[r] ? [m + 1, r] : [l, m];
+    }
+    [l, r] = l > 0 && nums[0] <= target && nums[l - 1] >= target ? [0, l - 1] : [l, nums.length - 1];
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = nums[m] < target ? [m + 1, r] : [l, m];
+    }
+    return nums[l] == target ? l : -1;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number}
+   */
+  search(nums, target) {
+    let l = 0,
+      r = nums.length - 1;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      if (nums[m] == target) return m;
+      if (nums[l] <= nums[m]) [l, r] = nums[l] <= target && target < nums[m] ? [l, m - 1] : [m + 1, r];
+      else [l, r] = nums[m] < target && target <= nums[r] ? [m + 1, r] : [l, m - 1];
+    }
+    return nums[l] == target ? l : -1;
+  }
+}
 ```
 
 ## Search in Rotated Sorted Array II
@@ -11618,7 +11660,26 @@ https://neetcode.io/problems/find-target-in-rotated-sorted-array/question
 https://neetcode.io/problems/search-in-rotated-sorted-array-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {boolean}
+   */
+  search(nums, target) {
+    let l = 0,
+      r = nums.length - 1;
+    while (l <= r) {
+      const m = (l + r) >> 1;
+      if (nums[m] == target) return true;
+      if (nums[l] == nums[m] && nums[m] == nums[r]) [l, r] = [l + 1, r - 1];
+      else if (nums[l] <= nums[m]) {
+        [l, r] = nums[l] <= target && target < nums[m] ? [l, m - 1] : [m + 1, r];
+      } else [l, r] = nums[m] < target && target <= nums[r] ? [m + 1, r] : [l, m - 1];
+    }
+    return false;
+  }
+}
 ```
 
 ## Time Based Key-Value Store
@@ -11987,6 +12048,22 @@ const removeNodes = (head) => {
 ## Reorder Linked List
 
 https://neetcode.io/problems/reorder-linked-list/question
+
+```js
+
+```
+
+## Maximum Twin Sum of a Linked List
+
+https://neetcode.io/problems/maximum-twin-sum-of-a-linked-list/question
+
+```js
+
+```
+
+## Remove Nth Node From End of List
+
+https://neetcode.io/problems/remove-node-from-end-of-linked-list/question
 
 ```js
 
