@@ -12104,3 +12104,38 @@ https://neetcode.io/problems/remove-node-from-end-of-linked-list/question
 ```js
 
 ```
+
+## Delete Nodes From Linked List Present in Array
+
+https://leetcode.com/problems/delete-nodes-from-linked-list-present-in-array/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {number[]} nums
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+const modifiedList = (nums, head) => {
+  let a0 = new ListNode(),
+    a = a0;
+  const b = new Set(nums);
+  while (head) {
+    if (!b.has(head.val)) {
+      a.next = head;
+      a = a.next;
+    }
+    head = head.next;
+  }
+  a.next = null;
+  return a0.next;
+};
+```
+
+##
