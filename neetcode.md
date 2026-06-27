@@ -12138,4 +12138,123 @@ const modifiedList = (nums, head) => {
 };
 ```
 
-##
+## Swapping Nodes in a Linked List
+
+https://leetcode.com/problems/swapping-nodes-in-a-linked-list/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} k
+ * @return {ListNode}
+ */
+const swapNodes = (head, k) => {
+  let n1 = (n2 = head);
+  for (let i = 1; i < k; i++) n1 = n1.next;
+  let n3 = n1;
+  while (n3.next) [n2, n3] = [n2.next, n3.next];
+  [n1.val, n2.val] = [n2.val, n1.val];
+  return head;
+};
+```
+
+## Copy Linked List with Random Pointer
+
+https://neetcode.io/problems/copy-linked-list-with-random-pointer/question
+
+```js
+
+```
+
+## Design Linked List
+
+https://neetcode.io/problems/design-linked-list/question
+
+```js
+
+```
+
+## Design Browser History
+
+https://neetcode.io/problems/design-browser-history/question
+
+```js
+
+```
+
+## Add Two Numbers
+
+https://neetcode.io/problems/add-two-numbers/question
+
+```js
+
+```
+
+## Add Two Numbers II
+
+https://neetcode.io/problems/add-two-numbers-ii/question
+
+```js
+
+```
+
+## Find the Duplicate Number
+
+https://neetcode.io/problems/find-duplicate-integer/question
+
+```js
+
+```
+
+## Swap Nodes in Pairs
+
+https://leetcode.com/problems/swap-nodes-in-pairs/description/
+
+```js
+
+```
+
+## Sort List
+
+https://leetcode.com/problems/sort-list/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+const sortList = (head) => {
+  if (!head || !head.next) return head;
+  let n1 = head,
+    n2 = head.next;
+  while (n2 && n2.next) [n1, n2] = [n1.next, n2.next.next];
+  const a = n1.next;
+  n1.next = null;
+  return merge(sortList(head), sortList(a));
+};
+
+const merge = (a, b) => {
+  const c = new ListNode();
+  let d = c;
+  while (a && b) {
+    [d.next, a, b] = a.val < b.val ? [a, a.next, b] : [b, a, b.next];
+    d = d.next;
+  }
+  d.next = a || b;
+  return c.next;
+};
+```
