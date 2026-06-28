@@ -11731,7 +11731,28 @@ class TimeMap {
 https://neetcode.io/problems/find-first-and-last-position-of-element-in-sorted-array/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number[]}
+   */
+  searchRange(nums, target) {
+    let l1 = 0,
+      r = nums.length;
+    while (l1 < r) {
+      const m = (l1 + r) >> 1;
+      [l1, r] = nums[m] < target ? [m + 1, r] : [l1, m];
+    }
+    let l2 = l1;
+    r = nums.length;
+    while (l2 < r) {
+      const m = (l2 + r) >> 1;
+      [l2, r] = nums[m] <= target ? [m + 1, r] : [l2, m];
+    }
+    return l1 <= l2 - 1 ? [l1, l2 - 1] : [-1, -1];
+  }
+}
 ```
 
 ## Maximum Number of Removable Characters
@@ -11820,7 +11841,39 @@ const maximumBeauty = (items, queries) => {
 https://neetcode.io/problems/random-pick-with-weight/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} w
+   */
+  constructor(w) {
+    this.p = [];
+    let s = 0;
+    for (const i of w) {
+      s += i;
+      this.p.push(s);
+    }
+    this.total = s;
+  }
+  /**
+   * @return {number}
+   */
+  pickIndex() {
+    const target = 1 + Math.floor(Math.random() * this.total);
+    let l = 0,
+      r = this.p.length - 1;
+    while (l < r) {
+      const m = (l + r) >> 1;
+      [l, r] = this.p[m] < target ? [m + 1, r] : [l, m];
+    }
+    return l;
+  }
+}
 
+/**
+ * Your Solution object will be instantiated and called as such:
+ * var obj = new Solution(w)
+ * var param_1 = obj.pickIndex()
+ */
 ```
 
 ## Search Suggestions System
