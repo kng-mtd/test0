@@ -12271,7 +12271,54 @@ https://neetcode.io/problems/find-duplicate-integer/question
 https://leetcode.com/problems/swap-nodes-in-pairs/description/
 
 ```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+const swapPairs = (head) => {
+  if (!head || !head.next) return head;
+  let n1 = head,
+    n2 = head.next;
+  while (n2) {
+    [n1.val, n2.val] = [n2.val, n1.val];
+    n1 = n1.next.next;
+    if (!n1) break;
+    n2 = n2.next.next;
+  }
+  return head;
+};
+```
 
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+const swapPairs = (head) => {
+  let a0 = new ListNode(0, head),
+    a = a0;
+  while (a.next && a.next.next) {
+    const a1 = a.next,
+      a2 = a.next.next;
+    [a1.next, a2.next, a.next] = [a2.next, a1, a2];
+    a = a1;
+  }
+  return a0.next;
+};
 ```
 
 ## Sort List
