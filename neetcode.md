@@ -12380,3 +12380,79 @@ const merge = (a, b) => {
   return c.next;
 };
 ```
+
+## Partition List
+
+https://leetcode.com/problems/partition-list/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} x
+ * @return {ListNode}
+ */
+const partition = (head, x) => {
+  let n1 = new ListNode(),
+    n10 = n1;
+  let n2 = new ListNode(),
+    n20 = n2;
+  let a = head;
+  while (a) {
+    const a0 = a.next;
+    a.next = null;
+    if (a.val < x) n1 = n1.next = a;
+    else n2 = n2.next = a;
+    a = a0;
+  }
+  n1.next = n20.next;
+  return n10.next;
+};
+```
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} x
+ * @return {ListNode}
+ */
+const partition = (head, x) => {
+  let a0 = new ListNode(0, head),
+    a = a0,
+    c = head;
+  let b0 = new ListNode(),
+    b = b0;
+  while (c) {
+    if (c.val < x) [a, c] = [c, c.next];
+    else {
+      a.next = c.next;
+      b = b.next = c;
+      c = a.next;
+      b.next = null;
+    }
+  }
+  a.next = b0.next;
+  return a0.next;
+};
+```
+
+## Rotate List
+
+https://neetcode.io/problems/rotate-list/question
+
+```js
+
+```
