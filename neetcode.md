@@ -183,7 +183,7 @@ t
 - Kth Largest Element
 - Top K Frequent Elements
 
-## LeetCodeで頻出の見分け方
+### LeetCodeで頻出の見分け方
 
 | 問題文のキーワード          | 解法候補                    |
 | --------------------------- | --------------------------- |
@@ -233,6 +233,28 @@ const fn = (s) => {
   for (let i = 0; i < 26; i++) {
     if (c[i] > 0) a[String.fromCharCode(i + 97)] = c[i];
   }
+  return a;
+};
+```
+
+---
+
+### Merge Sort
+
+```js
+const mergeSort = (arr) => {
+  if (arr.length < 2) return arr;
+  const n = arr.length >> 1;
+  const arr1 = mergeSort(arr.slice(0, n)),
+    arr2 = mergeSort(arr.slice(n));
+  let a = [],
+    i1 = 0,
+    i2 = 0;
+  while (i1 < arr1.length && i2 < arr2.length) {
+    if (arr1[i1] < arr2[i2]) a.push(arr1[i1++]);
+    else a.push(arr2[i2++]);
+  }
+  a.push(...arr1.slice(i1), ...arr2.slice(i2));
   return a;
 };
 ```
