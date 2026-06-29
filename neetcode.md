@@ -12161,7 +12161,40 @@ const removeNodes = (head) => {
 https://neetcode.io/problems/reorder-linked-list/question
 
 ```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @return {void}
+   */
+  reorderList(head) {
+    let n1 = head,
+      n2 = head;
+    while (n2 && n2.next) [n1, n2] = [n1.next, n2.next.next];
+    let a2 = n1.next;
+    n1.next = null;
+
+    let a = null;
+    while (a2) [a2.next, a, a2] = [a, a2, a2.next];
+    a2 = a;
+
+    let a1 = head;
+    while (a2) {
+      const b1 = a1.next,
+        b2 = a2.next;
+      [a1.next, a2.next, a1, a2] = [a2, b1, b1, b2];
+    }
+  }
+}
 ```
 
 ## Maximum Twin Sum of a Linked List
