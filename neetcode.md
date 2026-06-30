@@ -12516,3 +12516,82 @@ https://neetcode.io/problems/rotate-list/question
 ```js
 
 ```
+
+## Reverse Linked List II
+
+https://neetcode.io/problems/reverse-linked-list-ii/question
+
+```js
+
+```
+
+## Design Circular Queue
+
+https://neetcode.io/problems/design-circular-queue/question
+
+```js
+
+```
+
+## Insertion Sort List
+
+https://neetcode.io/problems/insertion-sort-list/question
+
+```js
+
+```
+
+## Split Linked List in Parts
+
+https://leetcode.com/problems/split-linked-list-in-parts/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} k
+ * @return {ListNode[]}
+ */
+const splitListToParts = (head, k) => {
+  let a = head,
+    b = [],
+    n = 0;
+  while (a) [a, n] = [a.next, n + 1];
+  ((a = head), (k1 = k));
+  for (let i = 0; i < k; i++) {
+    const c = Math.ceil(n / k1--);
+    n = n - c;
+    const a0 = a;
+    for (let i = 1; i < c; i++) a = a.next;
+    if (c) {
+      const d = a.next;
+      a.next = null;
+      a = d;
+    }
+    b.push(a0);
+  }
+  return b;
+};
+```
+
+## LRU Cache
+
+https://neetcode.io/problems/lru-cache/question
+
+```js
+
+```
+
+---
+
+---
+
+---
+
+# Trees
