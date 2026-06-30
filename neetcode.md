@@ -12202,7 +12202,34 @@ class Solution {
 https://neetcode.io/problems/maximum-twin-sum-of-a-linked-list/question
 
 ```js
-
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @return {number}
+   */
+  pairSum(head) {
+    let n1 = head,
+      n2 = head;
+    while (n2 && n2.next) [n1, n2] = [n1.next, n2.next.next];
+    let a = null;
+    while (n1) [n1.next, a, n1] = [a, n1, n1.next];
+    let b = 0;
+    while (a) {
+      b = Math.max(head.val + a.val, b);
+      [head, a] = [head.next, a.next];
+    }
+    return b;
+  }
+}
 ```
 
 ## Remove Nth Node From End of List
