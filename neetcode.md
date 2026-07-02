@@ -4414,17 +4414,15 @@ class Solution {
    * @param {TreeNode} root
    * @return {boolean}
    */
-  isBalanced(n) {
+  isBalanced(root) {
     const dfs = (n) => {
-      if (!n) return true;
+      if (!n) return 0;
       const l = dfs(n.left);
-      if (!l) return false;
       const r = dfs(n.right);
-      if (!r) return false;
-      if (Math.abs(l - r) > 1) return false;
+      if (l == -1 || r == -1 || Math.abs(l - r) > 1) return -1;
       return 1 + Math.max(l, r);
     };
-    return dfs(n) > 0;
+    return dfs(root) > -1;
   }
 }
 ```
@@ -12237,7 +12235,65 @@ class Solution {
 https://neetcode.io/problems/remove-node-from-end-of-linked-list/question
 
 ```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @param {number} n
+   * @return {ListNode}
+   */
+  removeNthFromEnd(head, n) {
+    let a = null;
+    while (head) [head.next, a, head] = [a, head, head.next];
+    if (n == 1) a = a.next;
+    else {
+      let b = a;
+      for (let i = 1; i < n - 1; i++) b = b.next;
+      b.next = b.next.next;
+    }
+    let c = null;
+    while (a) [a.next, c, a] = [c, a, a.next];
+    return c;
+  }
+}
+```
+
+```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @param {number} n
+   * @return {ListNode}
+   */
+  removeNthFromEnd(head, n) {
+    let n0 = new ListNode(0, head);
+    let n1 = n0,
+      n2 = n0;
+    for (let i = 0; i <= n; i++) n1 = n1.next;
+    while (n1) [n1, n2] = [n1.next, n2.next];
+    n2.next = n2.next.next;
+    return n0.next;
+  }
+}
 ```
 
 ## Delete Nodes From Linked List Present in Array
@@ -12305,7 +12361,41 @@ const swapNodes = (head, k) => {
 https://neetcode.io/problems/copy-linked-list-with-random-pointer/question
 
 ```js
+// class Node {
+//   constructor(val, next = null, random = null) {
+//       this.val = val;
+//       this.next = next;
+//       this.random = random;
+//   }
+// }
 
+class Solution {
+  /**
+   * @param {Node} head
+   * @return {Node}
+   */
+  copyRandomList(head) {
+    if (!head) return null;
+    let a = head;
+    while (a) {
+      a.next = new Node(a.val, a.next);
+      a = a.next.next;
+    }
+    a = head;
+    while (a) {
+      if (a.random) a.next.random = a.random.next;
+      a = a.next.next;
+    }
+    const b = new Node();
+    let c = b;
+    a = head;
+    while (a) {
+      c = c.next = a.next;
+      a = a.next = a.next.next;
+    }
+    return b.next;
+  }
+}
 ```
 
 ## Design Linked List
