@@ -4449,15 +4449,14 @@ class Solution {
    * @param {TreeNode} q
    * @return {boolean}
    */
-  isSameTree(n1, n2) {
+  isSameTree(p, q) {
     const dfs = (n1, n2) => {
-      if (!n1 && !n2) return true;
-      if (!n1 || !n2) return false;
+      if (!n1 || !n2) return n1 === n2;
       const l = dfs(n1.left, n2.left);
       const r = dfs(n1.right, n2.right);
       return l && r && n1.val == n2.val;
     };
-    return dfs(n1, n2);
+    return dfs(p, q);
   }
 }
 ```
@@ -4480,9 +4479,9 @@ class Solution {
    * @param {TreeNode} q
    * @return {boolean}
    */
-  isSameTree(n1, n2) {
-    if (!n1 || !n2) return n1 === n2;
-    return n1.val == n2.val && this.isSameTree(n1.left, n2.left) && this.isSameTree(n1.right, n2.right);
+  isSameTree(p, q) {
+    if (!p || !q) return p === q;
+    return p.val == q.val && this.isSameTree(p.left, q.left) && this.isSameTree(p.right, q.right);
   }
 }
 ```
@@ -4509,18 +4508,17 @@ class Solution {
    * @param {TreeNode} subRoot
    * @return {boolean}
    */
-  isSubtree(r0, r1) {
-    const isSame = (n1, n2) => {
+  isSubtree(root, subRoot) {
+    const fn = (n1, n2) => {
       if (!n1 || !n2) return n1 === n2;
-      return n1.val === n2.val && isSame(n1.left, n2.left) && isSame(n1.right, n2.right);
+      return n1.val == n2.val && fn(n1.left, n2.left) && fn(n1.right, n2.right);
     };
-
     const dfs = (n) => {
       if (!n) return false;
-      if (isSame(n, r1)) return true;
+      if (fn(n, subRoot)) return true;
       return dfs(n.left) || dfs(n.right);
     };
-    return dfs(r0);
+    return dfs(root);
   }
 }
 ```
