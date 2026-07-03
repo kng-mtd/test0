@@ -12401,7 +12401,167 @@ class Solution {
 https://neetcode.io/problems/design-linked-list/question
 
 ```js
+class ListNode {
+  constructor(val = 0) {
+    this.val = val;
+    this.prev = null;
+    this.next = null;
+  }
+}
 
+class MyLinkedList {
+  constructor() {
+    this.head = new ListNode(); // dummy head
+    this.tail = new ListNode(); // dummy tail
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+    this.size = 0;
+  }
+
+  getNode(index) {
+    if (index < 0 || index >= this.size) return null;
+
+    let cur;
+    if (index < this.size / 2) {
+      cur = this.head.next;
+      while (index--) cur = cur.next;
+    } else {
+      cur = this.tail.prev;
+      for (let i = this.size - 1; i > index; i--) cur = cur.prev;
+    }
+    return cur;
+  }
+
+  get(index) {
+    const node = this.getNode(index);
+    return node ? node.val : -1;
+  }
+
+  addAtHead(val) {
+    this.addAfter(this.head, new ListNode(val));
+  }
+
+  addAtTail(val) {
+    this.addAfter(this.tail.prev, new ListNode(val));
+  }
+
+  addAtIndex(index, val) {
+    if (index < 0 || index > this.size) return;
+
+    const next = index === this.size ? this.tail : this.getNode(index);
+
+    const prev = next.prev;
+    const node = new ListNode(val);
+
+    prev.next = node;
+    node.prev = prev;
+    node.next = next;
+    next.prev = node;
+
+    this.size++;
+  }
+
+  deleteAtIndex(index) {
+    const node = this.getNode(index);
+    if (!node) return;
+
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+
+    this.size--;
+  }
+
+  addAfter(prev, node) {
+    const next = prev.next;
+
+    prev.next = node;
+    node.prev = prev;
+    node.next = next;
+    next.prev = node;
+
+    this.size++;
+  }
+}
+```
+
+```js
+class ListNode {
+  constructor(val = 0, next = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
+
+class MyLinkedList {
+  constructor() {
+    this.head = new ListNode(); // dummy
+    this.size = 0;
+  }
+
+  /**
+   * @param {number} index
+   * @return {ListNode|null}
+   */
+  getPrev(index) {
+    if (index < 0 || index > this.size) return null;
+
+    let cur = this.head;
+    while (index--) cur = cur.next;
+
+    return cur;
+  }
+
+  /**
+   * @param {number} index
+   * @return {number}
+   */
+  get(index) {
+    if (index < 0 || index >= this.size) return -1;
+
+    return this.getPrev(index).next.val;
+  }
+
+  /**
+   * @param {number} val
+   * @return {void}
+   */
+  addAtHead(val) {
+    this.addAtIndex(0, val);
+  }
+
+  /**
+   * @param {number} val
+   * @return {void}
+   */
+  addAtTail(val) {
+    this.addAtIndex(this.size, val);
+  }
+
+  /**
+   * @param {number} index
+   * @param {number} val
+   * @return {void}
+   */
+  addAtIndex(index, val) {
+    const prev = this.getPrev(index);
+    if (!prev) return;
+
+    prev.next = new ListNode(val, prev.next);
+    this.size++;
+  }
+
+  /**
+   * @param {number} index
+   * @return {void}
+   */
+  deleteAtIndex(index) {
+    if (index < 0 || index >= this.size) return;
+
+    const prev = this.getPrev(index);
+    prev.next = prev.next.next;
+    this.size--;
+  }
+}
 ```
 
 ## Design Browser History
