@@ -4544,11 +4544,7 @@ const sortedArrayToBST = (nums) => {
   const dfs = (l, r) => {
     if (l > r) return null;
     const m = (l + r) >> 1;
-    return {
-      val: nums[m],
-      left: dfs(l, m - 1),
-      right: dfs(m + 1, r),
-    };
+    return { val: nums[m], left: dfs(l, m - 1), right: dfs(m + 1, r) };
   };
   return dfs(0, nums.length - 1);
 };
@@ -4576,12 +4572,8 @@ class Solution {
    * @return {TreeNode}
    */
   mergeTrees(root1, root2) {
-    if (!root1) return root2;
-    if (!root2) return root1;
-    root1.val += root2.val;
-    root1.left = this.mergeTrees(root1.left, root2.left);
-    root1.right = this.mergeTrees(root1.right, root2.right);
-    return root1;
+    if (!root1 && !root2) return null;
+    return new TreeNode((root1?.val ?? 0) + (root2?.val ?? 0), this.mergeTrees(root1?.left, root2?.left), this.mergeTrees(root1?.right, root2?.right));
   }
 }
 ```
@@ -4604,11 +4596,9 @@ class Solution {
    * @return {TreeNode}
    */
   mergeTrees(root1, root2) {
-    if (!root1 && !root2) return null;
-    const n = new TreeNode((root1?.val ?? 0) + (root2?.val ?? 0));
-    n.left = this.mergeTrees(root1?.left, root2?.left);
-    n.right = this.mergeTrees(root1?.right, root2?.right);
-    return n;
+    if (!root1) return root2;
+    if (!root2) return root1;
+    return new TreeNode((root1.val += root2.val), this.mergeTrees(root1.left, root2.left), this.mergeTrees(root1.right, root2.right));
   }
 }
 ```
