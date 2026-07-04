@@ -4666,8 +4666,38 @@ class Solution {
       dfs(n.left);
       dfs(n.right);
     };
-    dfs(root, low, high);
+    dfs(root);
     return a;
+  }
+}
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {number} low
+   * @param {number} high
+   * @return {number}
+   */
+  rangeSumBST(root, low, high) {
+    const dfs = (node) => {
+      if (!node) return 0;
+      if (node.val < low) return dfs(node.right);
+      if (node.val > high) return dfs(node.left);
+      return node.val + dfs(node.left) + dfs(node.right);
+    };
+    return dfs(root);
   }
 }
 ```
@@ -4709,6 +4739,31 @@ const leafSimilar = (root1, root2) => {
 };
 ```
 
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root1
+ * @param {TreeNode} root2
+ * @return {boolean}
+ */
+const leafSimilar = (root1, root2) => {
+  const fn = (n) => {
+    if (!n) return '';
+    if (!n.left && !n.right) return n.val + ',';
+    return fn(n.left) + fn(n.right);
+    return a;
+  };
+  return fn(root1) == fn(root2);
+};
+```
+
 ## Evaluate Boolean Binary Tree
 
 https://leetcode.com/problems/evaluate-boolean-binary-tree/description/
@@ -4727,21 +4782,13 @@ https://leetcode.com/problems/evaluate-boolean-binary-tree/description/
  * @return {boolean}
  */
 const evaluateTree = (root) => {
-  const a = [];
   const dfs = (n) => {
-    if (!n) return;
-    dfs(n.left);
-    dfs(n.right);
-    if (n.val == 0 || n.val == 1) {
-      a.push(n.val);
-    } else {
-      const r = a.pop();
-      const l = a.pop();
-      a.push(n.val == 2 ? l || r : l && r);
-    }
+    if (n.val < 2) return !!n.val;
+    const left = dfs(n.left),
+      right = dfs(n.right);
+    return n.val == 2 ? left || right : left && right;
   };
-  dfs(root);
-  return a[0];
+  return dfs(root);
 };
 ```
 
@@ -12559,7 +12606,55 @@ class MyLinkedList {
 https://neetcode.io/problems/design-browser-history/question
 
 ```js
+class Node {
+  constructor(url) {
+    this.url = url;
+    this.prev = null;
+    this.next = null;
+  }
+}
 
+class BrowserHistory {
+  /**
+   * @constructor
+   * @param {string} homepage
+   */
+  constructor(homepage) {
+    this.cur = new Node(homepage);
+  }
+
+  /**
+   * @param {string} url
+   * @return {void}
+   */
+  visit(url) {
+    const node = new Node(url);
+
+    this.cur.next = node;
+    node.prev = this.cur;
+    this.cur = node;
+  }
+
+  /**
+   * @param {number} steps
+   * @return {string}
+   */
+  back(steps) {
+    while (steps-- && this.cur.prev) this.cur = this.cur.prev;
+
+    return this.cur.url;
+  }
+
+  /**
+   * @param {number} steps
+   * @return {string}
+   */
+  forward(steps) {
+    while (steps-- && this.cur.next) this.cur = this.cur.next;
+
+    return this.cur.url;
+  }
+}
 ```
 
 ## Add Two Numbers
