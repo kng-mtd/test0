@@ -4754,13 +4754,12 @@ const leafSimilar = (root1, root2) => {
  * @return {boolean}
  */
 const leafSimilar = (root1, root2) => {
-  const fn = (n) => {
+  const dfs = (n) => {
     if (!n) return '';
     if (!n.left && !n.right) return n.val + ',';
-    return fn(n.left) + fn(n.right);
-    return a;
+    return dfs(n.left) + dfs(n.right);
   };
-  return fn(root1) == fn(root2);
+  return dfs(root1) == dfs(root2);
 };
 ```
 
@@ -4909,7 +4908,7 @@ const isSymmetric = (root) => {
   const dfs = (l, r) => {
     if (!l && !r) return true;
     if (!l || !r) return false;
-    if (l.val !== r.val) return false;
+    if (l.val != r.val) return false;
     return dfs(l.left, r.right) && dfs(l.right, r.left);
   };
   return dfs(root.left, root.right);
@@ -12433,6 +12432,38 @@ class Solution {
 }
 ```
 
+```js
+// class Node {
+//   constructor(val, next = null, random = null) {
+//       this.val = val;
+//       this.next = next;
+//       this.random = random;
+//   }
+// }
+
+class Solution {
+  /**
+   * @param {Node} head
+   * @return {Node}
+   */
+  copyRandomList(head) {
+    let a0 = new Map();
+    a0.set(null, null);
+    let n = head;
+    while (n) {
+      a0.set(n, new Node(n.val));
+      n = n.next;
+    }
+    n = head;
+    while (n) {
+      const a = a0.get(n);
+      [a.next, a.random, n] = [a0.get(n.next), a0.get(n.random), n.next];
+    }
+    return a0.get(head);
+  }
+}
+```
+
 ## Design Linked List
 
 https://neetcode.io/problems/design-linked-list/question
@@ -12662,7 +12693,39 @@ class BrowserHistory {
 https://neetcode.io/problems/add-two-numbers/question
 
 ```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {ListNode} l1
+   * @param {ListNode} l2
+   * @return {ListNode}
+   */
+  addTwoNumbers(l1, l2) {
+    let a0 = l1,
+      a = null,
+      b = 0;
+    while (l1 || l2) {
+      if (!l1) [a.next, l1, l2] = [l2, l2, null];
+      const c = l1.val + (l2 ? l2.val : 0) + b;
+      l1.val = c % 10;
+      b = (c / 10) | 0;
+      a = l1;
+      l1 = l1.next;
+      if (l2) l2 = l2.next;
+    }
+    if (b) a.next = new ListNode(1);
+    return a0;
+  }
+}
 ```
 
 ## Add Two Numbers II
