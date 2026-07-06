@@ -12733,7 +12733,36 @@ class Solution {
 https://neetcode.io/problems/add-two-numbers-ii/question
 
 ```js
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {ListNode} l1
+   * @param {ListNode} l2
+   * @return {ListNode}
+   */
+  addTwoNumbers(l1, l2) {
+    let a1 = 0n,
+      a2 = 0n;
+    while (l1) [a1, l1] = [a1 * 10n + BigInt(l1.val), l1.next];
+    while (l2) [a2, l2] = [a2 * 10n + BigInt(l2.val), l2.next];
+    let a = a1 + a2;
+    if (a == 0n) return new ListNode(0);
+    let b = new ListNode(),
+      c = b;
+    const d = a.toString();
+    for (let i of d) b = b.next = new ListNode(Number(i));
+    return c.next;
+  }
+}
 ```
 
 ## Find the Duplicate Number
