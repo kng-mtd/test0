@@ -13045,3 +13045,50 @@ https://neetcode.io/problems/lru-cache/question
 ---
 
 # Trees
+
+## Create Binary Tree From Descriptions
+
+https://leetcode.com/problems/create-binary-tree-from-descriptions/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number[][]} descriptions
+ * @return {TreeNode}
+ */
+const createBinaryTree = (descriptions) => {
+  let a = {},
+    b = new Set();
+  for (let [p, c, isL] of descriptions) {
+    a[p] ??= new TreeNode(p);
+    a[c] ??= new TreeNode(c);
+    if (isL) a[p].left = a[c];
+    else a[p].right = a[c];
+    b.add(c);
+  }
+  for (let [p] of descriptions) if (!b.has(p)) return a[p];
+};
+```
+
+## Populating Next Right Pointers In Each Node
+
+https://neetcode.io/problems/populating-next-right-pointers-in-each-node/question
+
+```js
+
+```
+
+## Constructing String from Binary Tree
+
+https://leetcode.com/problems/construct-string-from-binary-tree/description/
+
+```js
+
+```
