@@ -12770,7 +12770,32 @@ class Solution {
 https://neetcode.io/problems/find-duplicate-integer/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  findDuplicate(nums) {
+    const a = new Set();
+    for (let i of nums) {
+      if (a.has(i)) return i;
+      a.add(i);
+    }
+  }
+}
+```
 
+```js
+class Solution {
+  findDuplicate(nums) {
+    let a1 = nums[0],
+      a2 = nums[nums[0]];
+    while (a1 != a2) [a1, a2] = [nums[a1], nums[nums[a2]]];
+    a1 = 0;
+    while (a1 != a2) [a1, a2] = [nums[a1], nums[a2]];
+    return a1;
+  }
+}
 ```
 
 ## Swap Nodes in Pairs
