@@ -13120,5 +13120,34 @@ https://neetcode.io/problems/populating-next-right-pointers-in-each-node/questio
 https://leetcode.com/problems/construct-string-from-binary-tree/description/
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {string}
+ */
+const tree2str = (root) => {
+  const dfs = (n) => {
+    if (!n) return '';
+    if (!n.left && !n.right) return n.val + '';
+    if (!n.left) return n.val + '()(' + dfs(n.right) + ')';
+    if (!n.right) return n.val + '(' + dfs(n.left) + ')';
+    return n.val + '(' + dfs(n.left) + ')(' + dfs(n.right) + ')';
+  };
+  return dfs(root);
+};
+```
+
+## Lowest Common Ancestor of a Binary Tree
+
+https://neetcode.io/problems/lowest-common-ancestor-of-a-binary-tree/question
+
+```js
 
 ```
