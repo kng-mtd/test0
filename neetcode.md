@@ -12964,7 +12964,37 @@ const partition = (head, x) => {
 https://neetcode.io/problems/rotate-list/question
 
 ```js
-
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @param {number} k
+   * @return {ListNode}
+   */
+  rotateRight(head, k) {
+    if (!head || !head.next) return head;
+    let a = head,
+      b = 1;
+    while (a.next) [a, b] = [a.next, b + 1];
+    k = b - (k % b); // right rotation
+    //k%=b; // left rotation
+    if (k == 0) return head;
+    a.next = head;
+    a = head;
+    while (--k) a = a.next;
+    const c = a.next;
+    a.next = null;
+    return c;
+  }
+}
 ```
 
 ## Reverse Linked List II
