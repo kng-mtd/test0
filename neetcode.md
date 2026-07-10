@@ -4147,6 +4147,39 @@ class Solution {
    * @return {number[]}
    */
   inorderTraversal(root) {
+    let a = [],
+      b = [];
+    while (root || b.length) {
+      while (root) {
+        b.push(root);
+        root = root.left;
+      }
+      root = b.pop();
+      a.push(root.val);
+      root = root.right;
+    }
+    return a;
+  }
+}
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[]}
+   */
+  inorderTraversal(root) {
     const a = [];
     const dfs = (n) => {
       if (!n) return;
@@ -4181,6 +4214,38 @@ class Solution {
    * @return {number[]}
    */
   preorderTraversal(root) {
+    let a = [],
+      b = [];
+    while (root || b.length) {
+      while (root) {
+        a.push(root.val);
+        b.push(root.right);
+        root = root.left;
+      }
+      root = b.pop();
+    }
+    return a;
+  }
+}
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[]}
+   */
+  preorderTraversal(root) {
     const a = [];
     const dfs = (n) => {
       if (!n) return;
@@ -4197,6 +4262,46 @@ class Solution {
 ## Binary Tree Postorder Traversal
 
 https://neetcode.io/problems/binary-tree-postorder-traversal/question
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[]}
+   */
+  postorderTraversal(root) {
+    let a = [],
+      b = [root],
+      c = [false];
+    while (b.length) {
+      root = b.pop();
+      const d = c.pop();
+      if (root) {
+        if (d) a.push(root.val);
+        else {
+          b.push(root);
+          c.push(true);
+          b.push(root.right);
+          c.push(false);
+          b.push(root.left);
+          c.push(false);
+        }
+      }
+    }
+    return a;
+  }
+}
+```
 
 ```js
 /**
@@ -13002,7 +13107,35 @@ class Solution {
 https://neetcode.io/problems/reverse-linked-list-ii/question
 
 ```js
-
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @param {number} left
+   * @param {number} right
+   * @return {ListNode}
+   */
+  reverseBetween(head, left, right) {
+    if (!head || left == right) return head;
+    const a0 = new ListNode(0, head);
+    let a = a0;
+    for (let i = 1; i < left; i++) a = a.next;
+    let b = a.next;
+    for (let i = left; i < right; i++) {
+      const c = b.next;
+      [b.next, c.next, a.next] = [c.next, a.next, c];
+    }
+    return a0.next;
+  }
+}
 ```
 
 ## Design Circular Queue
@@ -13010,7 +13143,81 @@ https://neetcode.io/problems/reverse-linked-list-ii/question
 https://neetcode.io/problems/design-circular-queue/question
 
 ```js
+class MyCircularQueue {
+  /**
+   * @param {number} k
+   */
+  constructor(k) {
+    this.arr = Array(k);
+    this.k = k;
+    this.f = 0;
+    this.r = -1;
+    this.n = 0;
+  }
 
+  /**
+   * @param {number} value
+   * @return {boolean}
+   */
+  enQueue(value) {
+    if (this.n == this.k) return false;
+    this.r = (this.r + 1) % this.k;
+    this.arr[this.r] = value;
+    this.n++;
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  deQueue() {
+    if (!this.n) return false;
+    this.f = (this.f + 1) % this.k;
+    this.n--;
+    return true;
+  }
+
+  /**
+   * @return {number}
+   */
+  Front() {
+    if (!this.n) return -1;
+    return this.arr[this.f];
+  }
+
+  /**
+   * @return {number}
+   */
+  Rear() {
+    if (!this.n) return -1;
+    return this.arr[this.r];
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isEmpty() {
+    return !this.n;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isFull() {
+    return this.n == this.k;
+  }
+}
+
+/**
+ * Your MyCircularQueue object will be instantiated and called as such:
+ * var obj = new MyCircularQueue(k)
+ * var param_1 = obj.enQueue(value)
+ * var param_2 = obj.deQueue()
+ * var param_3 = obj.Front()
+ * var param_4 = obj.Rear()
+ * var param_5 = obj.isEmpty()
+ * var param_6 = obj.isFull()
+ */
 ```
 
 ## Insertion Sort List
