@@ -13225,7 +13225,35 @@ class MyCircularQueue {
 https://neetcode.io/problems/insertion-sort-list/question
 
 ```js
-
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     constructor(val = 0, next = null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {ListNode} head
+   * @return {ListNode}
+   */
+  insertionSortList(head) {
+    if (!head || !head.next) return head;
+    const a0 = new ListNode();
+    let a = head;
+    while (a) {
+      const b = a.next;
+      let c = a0;
+      while (c.next && c.next.val < a.val) c = c.next;
+      a.next = c.next;
+      c.next = a;
+      a = b;
+    }
+    return a0.next;
+  }
+}
 ```
 
 ## Split Linked List in Parts
@@ -13272,7 +13300,114 @@ const splitListToParts = (head, k) => {
 https://neetcode.io/problems/lru-cache/question
 
 ```js
+class Node {
+  constructor(key, val) {
+    this.key = key;
+    this.val = val;
+    this.prev = null;
+    this.next = null;
+  }
+}
 
+class LRUCache {
+  /**
+   * @param {number} capacity
+   */
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.cache = new Map();
+    this.left = new Node(0, 0); // LRU dummy
+    this.right = new Node(0, 0); // MRU dummy
+    this.left.next = this.right;
+    this.right.prev = this.left;
+  }
+  remove(node) {
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+  }
+
+  insert(node) {
+    node.prev = this.right.prev;
+    node.next = this.right;
+    this.right.prev.next = node;
+    this.right.prev = node;
+  }
+
+  /**
+   * @param {number} key
+   * @return {number}
+   */
+  get(key) {
+    if (!this.cache.has(key)) return -1;
+    const node = this.cache.get(key);
+    this.remove(node);
+    this.insert(node);
+    return node.val;
+  }
+
+  /**
+   * @param {number} key
+   * @param {number} value
+   * @return {void}
+   */
+  put(key, value) {
+    if (this.cache.has(key)) {
+      const node = this.cache.get(key);
+      this.remove(node);
+      node.val = value;
+      this.insert(node);
+      return;
+    }
+
+    const node = new Node(key, value);
+    this.cache.set(key, node);
+    this.insert(node);
+
+    if (this.cache.size > this.capacity) {
+      const lru = this.left.next;
+      this.remove(lru);
+      this.cache.delete(lru.key);
+    }
+  }
+}
+```
+
+```js
+class LRUCache {
+  /**
+   * @param {number} capacity
+   */
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.map = new Map();
+  }
+
+  /**
+   * @param {number} key
+   * @return {number}
+   */
+  get(key) {
+    if (!this.map.has(key)) return -1;
+    const value = this.map.get(key);
+    this.map.delete(key);
+    this.map.set(key, value);
+    return value;
+  }
+
+  /**
+   * @param {number} key
+   * @param {number} value
+   * @return {void}
+   */
+  put(key, value) {
+    if (this.map.has(key)) this.map.delete(key);
+    this.map.set(key, value);
+    if (this.map.size > this.capacity) {
+      const oldest = this.map.keys().next().value;
+      this.map.delete(oldest);
+    }
+  }
+}
 ```
 
 ---
