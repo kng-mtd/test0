@@ -13493,3 +13493,99 @@ https://neetcode.io/problems/lowest-common-ancestor-of-a-binary-tree/question
 ```js
 
 ```
+
+## Lowest Common Ancestor of a Binary Tree III
+
+https://neetcode.io/problems/lowest-common-ancestor-of-a-binary-tree-iii/question
+
+```js
+
+```
+
+## Insert into a Binary Search Tree
+
+https://neetcode.io/problems/insert-into-a-binary-search-tree/question
+
+```js
+
+```
+
+## Lowest Common Ancestor in Binary Search Tree
+
+https://neetcode.io/problems/lowest-common-ancestor-in-binary-search-tree/question
+
+```js
+
+```
+
+## Insert into a Binary Search Tree
+
+https://neetcode.io/problems/insert-into-a-binary-search-tree/question
+
+```js
+
+```
+
+## Delete Node in a BST
+
+https://neetcode.io/problems/delete-node-in-a-bst/question
+
+```js
+
+```
+
+## Binary Tree Level Order Traversal
+
+https://neetcode.io/problems/level-order-traversal-of-binary-tree/question
+
+```js
+
+```
+
+## Binary Tree Right Side View
+
+https://neetcode.io/problems/binary-tree-right-side-view/question
+
+```js
+
+```
+
+## Reverse Odd Levels of Binary Tree
+
+https://leetcode.com/problems/reverse-odd-levels-of-binary-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+const reverseOddLevels = (root) => {
+  let a = [root],
+    b = 0;
+  while (a.length) {
+    if (b & 1) {
+      const c = a.length - 1;
+      for (let i = 0; i < a.length / 2; i++) [a[i].val, a[c - i].val] = [a[c - i].val, a[i].val];
+    }
+    if (!a[0].left) break;
+    let a1 = [];
+    for (let i of a) {
+      a1.push(i.left);
+      a1.push(i.right);
+      // if(i.left) a1.push(i.left);
+      // if(i.right) a1.push(i.right);
+    }
+    a = a1;
+    b++;
+  }
+  return root;
+};
+```
