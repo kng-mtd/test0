@@ -13589,3 +13589,100 @@ const reverseOddLevels = (root) => {
   return root;
 };
 ```
+
+## Minimum Number of Operations to Sort a Binary Tree by Level
+
+https://leetcode.com/problems/minimum-number-of-operations-to-sort-a-binary-tree-by-level/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const minimumOperations = (root) => {
+  let a = 0,
+    b = [root];
+  while (b.length) {
+    a += minSwap(b.map((x) => x.val));
+    let b1 = [];
+    for (const i of b) {
+      if (i.left) b1.push(i.left);
+      if (i.right) b1.push(i.right);
+    }
+    b = b1;
+  }
+  return a;
+};
+
+const minSwap = (arr) => {
+  const sorted = [...arr].sort((x1, x2) => x1 - x2);
+  const pos = new Map();
+  for (let i = 0; i < arr.length; i++) pos.set(arr[i], i);
+  let a = 0;
+  for (let i = 0; i < arr.length; i++) {
+    while (arr[i] !== sorted[i]) {
+      a++;
+      const j = pos.get(sorted[i]);
+      pos.set(arr[i], j);
+      pos.set(arr[j], i);
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+  return a;
+};
+```
+
+## Kth Largest Sum in a Binary Tree
+
+https://leetcode.com/problems/kth-largest-sum-in-a-binary-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number} k
+ * @return {number}
+ */
+const kthLargestLevelSum = (root, k) => {
+  let a = [root],
+    b = 0,
+    c = [];
+  while (b < a.length) {
+    let d = 0,
+      e = a.length - b;
+    for (let i = 0; i < e; i++) {
+      let n = a[b++];
+      d += n.val;
+      if (n.left) a.push(n.left);
+      if (n.right) a.push(n.right);
+    }
+    c.push(d);
+  }
+  if (c.length < k) return -1;
+  c.sort((x1, x2) => x2 - x1);
+  return c[k - 1];
+};
+```
+
+## Cousins in Binary Tree II
+
+https://leetcode.com/problems/cousins-in-binary-tree-ii/description/
+
+```js
+
+```
