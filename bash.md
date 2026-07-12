@@ -2,15 +2,16 @@
 
 ## notes
 
+- prompt
+  echo "export PS1='\[\e[32m\]\w\[\e[0m\]\$ '" >> ~/.bashrc
+
+  echo "export PS1='\[\e[36m\]\w\[\e[0m\]\[\e[33m\]($(git branch --show-current 2>/dev/null))\[\e[0m\]$ '" >> ~/.bashrc
+
 - run default editor
   ctrl+x+e
 
----
-
 - backup .bashrc
   cp .bashrc .bashrc.org
-
----
 
 - open terminal
   gnome-terminal
@@ -78,7 +79,7 @@ sudo gpasswd -d user0 group0
   getent group sudo  
   sudo adduser user0  
   sudo usermod -aG sudo user0  
-  sudo deluser user0  
+  sudo deluser user0
 
 ---
 
@@ -93,6 +94,7 @@ command -v command0/alias/function
 - bash builtin commands
   compgen -b  
   help
+  tldr
 
 | コマンド                                  | 説明                                 |
 | ----------------------------------------- | ------------------------------------ |
@@ -318,7 +320,7 @@ set +x
 ### continue line with \
 
 ```
-command0 ---\  
+command0 ---\
 ---\
 ---
 ```
@@ -1404,7 +1406,7 @@ locale
 ```
 $LANG
 
-export LC_ALL=en_US.UTF-8  
+export LC_ALL=en_US.UTF-8
 export LC_ALL=ja_JP.UTF-8
 
 LC_ALL=en_US.UTF-8 command0
@@ -1446,7 +1448,7 @@ tail file1 file2...
 
 ---
 
-uniq 
+uniq
 
 - -c
 
@@ -1732,7 +1734,8 @@ functions
 #### make csv from text
 
 sed -nE 's/--(re1)--(re2)--(re3)--/\1,\2,\3/p' file.txt > file.csv  
-ex.  
+ex.
+
 - delim : space, 3 columns
 
 ```
@@ -1950,10 +1953,19 @@ systemctl enable service
 
 ## network
 
-hostname
+local(internal) IP
 
-- -i
-- -I
+hostname -I
+
+ip -4 -br addr
+
+(Docker use 172.xxx.xxx.xxx)
+
+---
+
+global(external, public, internet) IP
+
+curl ifconfig.me
 
 ---
 
@@ -1996,7 +2008,7 @@ ftp
 prepare FTP server
 
 ```
-sudo apt install vsftpd  
+sudo apt install vsftpd
 sudo nano /etc/vsftpd.conf
 ```
 
@@ -2011,7 +2023,7 @@ sudo nano /etc/vsftpd.conf
 ```
 sudo adduser ftpuser
 
-sudo systemctl restart vsftpd  
+sudo systemctl restart vsftpd
 sudo systemctl enable vsftpd
 ```
 
@@ -2034,9 +2046,10 @@ ftp> bye
 prepare SFTP server
 
 ```
-sudo apt install vsftpd  
+sudo apt install vsftpd
 sudo nano /etc/vsftpd.conf
 ```
+
 ```
 listen=YES
 listen_ipv6=NO
@@ -2053,6 +2066,7 @@ rsa_cert_file=/etc/ssl/certs/vsftpd.pem
 rsa_private_key_file=/etc/ssl/private/vsftpd.key
 ssl_ciphers=HIGH
 ```
+
 ```
 sudo mkdir -p /etc/ssl/private
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -2199,12 +2213,14 @@ xmllint --xpath 'declare namespace ns="http://example.com"; //ns:item' file.xml
 
 xmllint --xpath '//\*[local-name()="item"]' file.xml
 ```
+
 ```
 use alias
 .bashrc
 alias xpath=xmllint --xpath
 source ~/.bashrc
 ```
+
 xpath
 | 構文 | 意味 |
 | ------- | --------------- |
@@ -2411,8 +2427,6 @@ open-jtalk
 | `tmux source ~/.tmux.conf`  | .tmux.conf の再読込       |
 | `tmux -V`                   | バージョン確認            |
 
-
-
 ## etc
 
 weather
@@ -2420,4 +2434,3 @@ weather
 curl wttr.in
 
 ---
-
