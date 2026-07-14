@@ -13454,7 +13454,73 @@ const createBinaryTree = (descriptions) => {
 https://neetcode.io/problems/populating-next-right-pointers-in-each-node/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class Node {
+ *     constructor(val = 0, left = null, right = null, next = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *         this.next = next;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {Node} root
+   * @return {Node}
+   */
+  connect(root) {
+    if (!root) return null;
+    let q = [root];
+    while (q.length) {
+      const a = q.length;
+      for (let i = 0; i < a; i++) {
+        const n = q.shift();
+        if (i < a - 1) n.next = q[0];
+        if (n.left) q.push(n.left);
+        if (n.right) q.push(n.right);
+      }
+    }
+    return root;
+  }
+}
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * class Node {
+ *     constructor(val = 0, left = null, right = null, next = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *         this.next = next;
+ *     }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {Node} root
+   * @return {Node}
+   */
+  connect(root) {
+    if (!root) return null;
+    let n = root;
+    while (n.left) {
+      let a = n;
+      while (a) {
+        a.left.next = a.right;
+        if (a.next) a.right.next = a.next.left;
+        a = a.next;
+      }
+      n = n.left;
+    }
+    return root;
+  }
+}
 ```
 
 ## Constructing String from Binary Tree
