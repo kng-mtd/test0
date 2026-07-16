@@ -13557,7 +13557,67 @@ const tree2str = (root) => {
 https://neetcode.io/problems/lowest-common-ancestor-of-a-binary-tree/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {TreeNode} p
+   * @param {TreeNode} q
+   * @return {TreeNode}
+   */
+  lowestCommonAncestor(root, p, q) {
+    const dfs = (n, a, b) => {
+      if (!n) return null;
+      b.push(n);
+      if (n === a) return [...b];
+      const l = dfs(n.left, a, b);
+      if (l) return l;
+      const r = dfs(n.right, a, b);
+      if (r) return r;
+      b.pop();
+      return null;
+    };
+    const b1 = dfs(root, p, []);
+    const b2 = dfs(root, q, []);
+    let c = root;
+    for (let i = 0; i < Math.min(b1.length, b2.length); i++) {
+      if (b1[i] !== b2[i]) break;
+      c = b1[i];
+    }
+    return c;
+  }
+}
+```
 
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {TreeNode} p
+   * @param {TreeNode} q
+   * @return {TreeNode}
+   */
+  lowestCommonAncestor(root, p, q) {
+    if (!root || root === p || root === q) return root;
+    const l = this.lowestCommonAncestor(root.left, p, q);
+    const r = this.lowestCommonAncestor(root.right, p, q);
+    if (l && r) return root;
+    return l || r;
+  }
+}
 ```
 
 ## Lowest Common Ancestor of a Binary Tree III
@@ -13565,7 +13625,61 @@ https://neetcode.io/problems/lowest-common-ancestor-of-a-binary-tree/question
 https://neetcode.io/problems/lowest-common-ancestor-of-a-binary-tree-iii/question
 
 ```js
+/**
+ * // Definition for a Node.
+ * function Node(val) {
+ *    this.val = val;
+ *    this.left = null;
+ *    this.right = null;
+ *    this.parent = null;
+ * }
+ */
+class Solution {
+  /**
+   * @param {Node} p
+   * @param {Node} q
+   * @return {Node}
+   */
+  lowestCommonAncestor(p, q) {
+    let a = p,
+      b = q;
+    while (a !== b) {
+      a = a ? a.parent : q;
+      b = b ? b.parent : p;
+    }
+    return a;
+  }
+}
+```
 
+```js
+/**
+ * // Definition for a Node.
+ * function Node(val) {
+ *    this.val = val;
+ *    this.left = null;
+ *    this.right = null;
+ *    this.parent = null;
+ * }
+ */
+class Solution {
+  /**
+   * @param {Node} p
+   * @param {Node} q
+   * @return {Node}
+   */
+  lowestCommonAncestor(p, q) {
+    let a = new Set();
+    while (p) {
+      a.add(p);
+      p = p.parent;
+    }
+    while (q) {
+      if (a.has(q)) return q;
+      q = q.parent;
+    }
+  }
+}
 ```
 
 ## Insert into a Binary Search Tree
@@ -13729,8 +13843,8 @@ const kthLargestLevelSum = (root, k) => {
     b = 0,
     c = [];
   while (b < a.length) {
-    let d = 0,
-      e = a.length - b;
+    let d = 0;
+    const e = a.length - b;
     for (let i = 0; i < e; i++) {
       let n = a[b++];
       d += n.val;
@@ -13750,5 +13864,143 @@ const kthLargestLevelSum = (root, k) => {
 https://leetcode.com/problems/cousins-in-binary-tree-ii/description/
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+const replaceValueInTree = (root) => {
+  let a = [],
+    q = [root];
+  while (q.length) {
+    let b = 0,
+      d = q.length;
+    for (let i = 0; i < d; i++) {
+      const n = q.shift();
+      b += n.val;
+      if (n.left) q.push(n.left);
+      if (n.right) q.push(n.right);
+    }
+    a.push(b);
+  }
+  ((q = [root]), (b = 0), (root.val = 0));
+  while (q.length) {
+    const d = q.length;
+    for (let i = 0; i < d; i++) {
+      const n = q.shift();
+      let c = 0;
+      if (n.left) c += n.left.val;
+      if (n.right) c += n.right.val;
+      if (n.left) {
+        n.left.val = a[b + 1] - c;
+        q.push(n.left);
+      }
+      if (n.right) {
+        n.right.val = a[b + 1] - c;
+        q.push(n.right);
+      }
+    }
+    b++;
+  }
+  return root;
+};
+```
 
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+const replaceValueInTree = (root) => {
+  let a = [],
+    q = [root],
+    i = 0;
+  while (i < q.length) {
+    const d = q.length - i;
+    let b = 0;
+    for (let ii = 0; ii < d; ii++) {
+      const n = q[i++];
+      b += n.val;
+      if (n.left) q.push(n.left);
+      if (n.right) q.push(n.right);
+    }
+    a.push(b);
+  }
+  ((q = [root]), (i = 0));
+  let b = 0;
+  root.val = 0;
+  while (i < q.length) {
+    const d = q.length - i;
+    for (let ii = 0; ii < d; ii++) {
+      const n = q[i++];
+      let c = 0;
+      if (n.left) c += n.left.val;
+      if (n.right) c += n.right.val;
+      if (n.left) {
+        n.left.val = a[b + 1] - c;
+        q.push(n.left);
+      }
+      if (n.right) {
+        n.right.val = a[b + 1] - c;
+        q.push(n.right);
+      }
+    }
+    b++;
+  }
+  return root;
+};
+```
+
+## Linked List in Binary Tree
+
+https://leetcode.com/problems/linked-list-in-binary-tree/description/
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+const isSubPath = (head, root) => {
+  const fn = (list, node) => {
+    if (!list) return true;
+    if (!node) return false;
+    if (list.val !== node.val) return false;
+    return fn(list.next, node.left) || fn(list.next, node.right);
+  };
+
+  if (!root) return false;
+  return fn(head, root) || isSubPath(head, root.left) || isSubPath(head, root.right);
+};
 ```
