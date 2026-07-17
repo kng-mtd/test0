@@ -223,6 +223,14 @@ Yes → DP or Greedy
 
 ---
 
+### 2d Array
+
+```js
+let a = Array(10)
+  .fill()
+  .map((x) => Array(10));
+```
+
 ### Count Lowercase
 
 ```js
