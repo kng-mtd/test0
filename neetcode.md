@@ -14174,3 +14174,59 @@ const findDuplicateSubtrees = (root) => {
   return b;
 };
 ```
+
+## Check Completeness of a Binary Tree
+
+https://neetcode.io/problems/check-completeness-of-a-binary-tree/question
+
+```js
+
+```
+
+## Construct Binary Tree from Inorder and Postorder Traversal
+
+https://neetcode.io/problems/construct-binary-tree-from-inorder-and-postorder-traversal/question
+
+```js
+
+```
+
+## Maximum Width of Binary Tress
+
+https://leetcode.com/problems/maximum-width-of-binary-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const widthOfBinaryTree = (root) => {
+  let a = 0,
+    q = [[root, 0]],
+    b = 0;
+  while (b < q.length) {
+    const size = q.length - b;
+    const offset = q[b][1];
+    let l = 0,
+      r = 0;
+    for (let i = 0; i < size; i++) {
+      let [n, idx] = q[b++];
+      idx -= offset;
+      if (i == 0) l = idx;
+      if (i == size - 1) r = idx;
+      if (n.left) q.push([n.left, idx * 2]);
+      if (n.right) q.push([n.right, idx * 2 + 1]);
+    }
+    a = Math.max(a, r - l + 1);
+  }
+  return a;
+};
+```
