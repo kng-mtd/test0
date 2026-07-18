@@ -13755,7 +13755,69 @@ class Solution {
 https://neetcode.io/problems/insert-into-a-binary-search-tree/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {number} val
+   * @return {TreeNode}
+   */
+  insertIntoBST(root, val) {
+    if (!root) return new TreeNode(val);
+    let n = root;
+    while (n) {
+      if (val < n.val) {
+        if (!n.left) {
+          n.left = new TreeNode(val);
+          break;
+        }
+        n = n.left;
+      } else {
+        if (!n.right) {
+          n.right = new TreeNode(val);
+          break;
+        }
+        n = n.right;
+      }
+    }
+    return root;
+  }
+}
+```
 
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {number} val
+   * @return {TreeNode}
+   */
+  insertIntoBST(root, val) {
+    if (!root) return new TreeNode(val);
+    if (val < root.val) root.left = this.insertIntoBST(root.left, val);
+    else root.right = this.insertIntoBST(root.right, val);
+    return root;
+  }
+}
 ```
 
 ## Delete Node in a BST
@@ -14054,5 +14116,61 @@ const isSubPath = (head, root) => {
 
   if (!root) return false;
   return fn(head, root) || isSubPath(head, root.left) || isSubPath(head, root.right);
+};
+```
+
+## Minimum Time to Collect All Apples in a Tree
+
+https://neetcode.io/problems/minimum-time-to-collect-all-apples-in-a-tree/question
+
+```js
+
+```
+
+## Binary Tree Zigzag Level Order Traversal
+
+https://neetcode.io/problems/binary-tree-zigzag-level-order-traversal/question
+
+```js
+
+```
+
+## Construct Quad Tree
+
+https://neetcode.io/problems/construct-quad-tree/question
+
+```js
+
+```
+
+## Find Duplicate Subtrees
+
+https://leetcode.com/problems/find-duplicate-subtrees/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode[]}
+ */
+const findDuplicateSubtrees = (root) => {
+  let a = {},
+    b = [];
+  const dfs = (n) => {
+    if (!n) return 'null';
+    let c = n.val + ',' + dfs(n.left) + ',' + dfs(n.right);
+    a[c] = (a[c] ?? 0) + 1;
+    if (a[c] == 2) b.push(n);
+    return c;
+  };
+  dfs(root);
+  return b;
 };
 ```
