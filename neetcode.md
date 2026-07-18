@@ -14230,3 +14230,33 @@ const widthOfBinaryTree = (root) => {
   return a;
 };
 ```
+
+## Time Needed to Inform all Employees
+
+https://leetcode.com/problems/time-needed-to-inform-all-employees/description/
+
+```js
+/**
+ * @param {number} n
+ * @param {number} headID
+ * @param {number[]} manager
+ * @param {number[]} informTime
+ * @return {number}
+ */
+const numOfMinutes = function (n, headID, manager, informTime) {
+  let a = Array(n)
+    .fill()
+    .map((x) => Array());
+  for (let i = 0; i < n; i++) {
+    if (manager[i] != -1) a[manager[i]].push(i);
+  }
+  let b = 0,
+    q = [[headID, 0]];
+  while (q.length) {
+    const [i, t] = q.shift();
+    b = Math.max(t, b);
+    for (let c of a[i]) q.push([c, t + informTime[i]]);
+  }
+  return b;
+};
+```
