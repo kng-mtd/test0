@@ -14371,5 +14371,82 @@ const constructFromPrePost = (preorder, postorder) => {
 https://leetcode.com/problems/unique-binary-search-trees/description/
 
 ```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+const numTrees = (n) => {
+  let dp = Array(n + 1).fill(1);
+  for (let i = 2; i <= n; i++) {
+    let a = 0;
+    for (let j = 1; j < i + 1; j++) a += dp[j - 1] * dp[i - j];
+    dp[i] = a;
+  }
+  return dp[n];
+};
+```
 
+## Unique Binary Search Trees Ⅱ
+
+https://leetcode.com/problems/unique-binary-search-trees-ii/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number} n
+ * @return {TreeNode[]}
+ */
+const generateTrees = (n) => {
+  const fn = (l, r) => {
+    if (l > r) return [null];
+    let a = [];
+    for (let i = l; i <= r; i++) {
+      for (let ln of fn(l, i - 1)) {
+        for (let rn of fn(i + 1, r)) a.push(new TreeNode(i, ln, rn));
+      }
+    }
+    return a;
+  };
+  return fn(1, n);
+};
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number} n
+ * @return {TreeNode[]}
+ */
+const generateTrees = (n) => {
+  let b = new Map();
+  const fn = (l, r) => {
+    if (l > r) return [null];
+    const key = `${l},${r}`;
+    if (b.has(key)) return b.get(key);
+    let a = [];
+    for (let i = l; i <= r; i++) {
+      for (let ln of fn(l, i - 1)) {
+        for (const rn of fn(i + 1, r)) a.push(new TreeNode(i, ln, rn));
+      }
+    }
+    b.set(key, a);
+    return a;
+  };
+
+  return fn(1, n);
+};
 ```
