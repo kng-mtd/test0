@@ -14322,3 +14322,54 @@ https://neetcode.io/problems/recover-binary-search-tree/question
 ```js
 
 ```
+
+## Construct Binary Tree from Preorder and Inorder Traversal
+
+https://neetcode.io/problems/binary-tree-from-preorder-and-inorder-traversal/question
+
+```js
+
+```
+
+## Construct Binary Tree from Preorder and Postorder Traversal
+
+https://leetcode.com/problems/construct-binary-tree-from-preorder-and-postorder-traversal/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number[]} preorder
+ * @param {number[]} postorder
+ * @return {TreeNode}
+ */
+const constructFromPrePost = (preorder, postorder) => {
+  const a = new Map();
+  for (let i = 0; i < postorder.length; i++) a.set(postorder[i], i);
+  const dfs = (preL, preR, postL, postR) => {
+    if (preL > preR) return null;
+    const n = new TreeNode(preorder[preL]);
+    if (preL === preR) return n;
+    const idx = a.get(preorder[preL + 1]);
+    const l = idx - postL + 1;
+    n.left = dfs(preL + 1, preL + l, postL, idx);
+    n.right = dfs(preL + l + 1, preR, idx + 1, postR - 1);
+    return n;
+  };
+  return dfs(0, preorder.length - 1, 0, postorder.length - 1);
+};
+```
+
+## Unique Binary Search Trees
+
+https://leetcode.com/problems/unique-binary-search-trees/description/
+
+```js
+
+```
