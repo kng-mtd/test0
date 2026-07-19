@@ -13825,7 +13825,37 @@ class Solution {
 https://neetcode.io/problems/delete-node-in-a-bst/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @param {number} key
+   * @return {TreeNode}
+   */
+  deleteNode(root, key) {
+    if (!root) return root;
+    if (key < root.val) root.left = this.deleteNode(root.left, key);
+    else if (key > root.val) root.right = this.deleteNode(root.right, key);
+    else {
+      if (!root.left) return root.right;
+      else if (!root.right) return root.left;
+      let n = root.right;
+      while (n.left) n = n.left;
+      root.val = n.val;
+      root.right = this.deleteNode(root.right, root.val);
+    }
+    return root;
+  }
+}
 ```
 
 ## Binary Tree Level Order Traversal
@@ -14259,4 +14289,36 @@ const numOfMinutes = function (n, headID, manager, informTime) {
   }
   return b;
 };
+```
+
+## Count Good Nodes in Binary Tree
+
+https://neetcode.io/problems/count-good-nodes-in-binary-tree/question
+
+```js
+
+```
+
+## Valid Binary Search Tree
+
+https://neetcode.io/problems/valid-binary-search-tree/question
+
+```js
+
+```
+
+## Kth Smallest Integer in BST
+
+https://neetcode.io/problems/kth-smallest-integer-in-bst/question
+
+```js
+
+```
+
+## Recover Binary Search Tree
+
+https://neetcode.io/problems/recover-binary-search-tree/question
+
+```js
+
 ```
