@@ -14547,5 +14547,228 @@ https://neetcode.io/problems/house-robber-iii/question
 https://leetcode.com/problems/flip-equivalent-binary-trees/description/
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root1
+ * @param {TreeNode} root2
+ * @return {boolean}
+ */
+const flipEquiv = (root1, root2) => {
+  if (!root1 || !root2) return !root1 && !root2;
+  if (root1.val != root2.val) return false;
+  return (flipEquiv(root1.left, root2.left) && flipEquiv(root1.right, root2.right)) || (flipEquiv(root1.left, root2.right) && flipEquiv(root1.right, root2.left));
+};
+```
+
+## Operations on Tree
+
+https://leetcode.com/problems/operations-on-tree/description/
+
+```js
+/**
+ * @param {number[]} parent
+ */
+const LockingTree = function (parent) {
+  this.parent = parent;
+  this.children = Array(parent.length)
+    .fill()
+    .map((x) => Array());
+  this.locked = Array(parent.length).fill(0);
+  for (let i = 1; i < parent.length; i++) this.children[parent[i]].push(i);
+};
+
+/**
+ * @param {number} num
+ * @param {number} user
+ * @return {boolean}
+ */
+LockingTree.prototype.lock = function (num, user) {
+  if (this.locked[num]) return false;
+  this.locked[num] = user;
+  return true;
+};
+
+/**
+ * @param {number} num
+ * @param {number} user
+ * @return {boolean}
+ */
+LockingTree.prototype.unlock = function (num, user) {
+  if (this.locked[num] != user) return false;
+  this.locked[num] = 0;
+  return true;
+};
+
+/**
+ * @param {number} num
+ * @param {number} user
+ * @return {boolean}
+ */
+LockingTree.prototype.upgrade = function (num, user) {
+  if (this.locked[num]) return false;
+  let p = this.parent[num];
+  while (p !== -1) {
+    if (this.locked[p]) return false;
+    p = this.parent[p];
+  }
+  let found = false;
+  const dfs = (node) => {
+    if (this.locked[node]) {
+      this.locked[node] = 0;
+      found = true;
+    }
+    for (const child of this.children[node]) dfs(child);
+  };
+
+  dfs(num);
+  if (!found) return false;
+  this.locked[num] = user;
+  return true;
+};
+
+/**
+ * Your LockingTree object will be instantiated and called as such:
+ * var obj = new LockingTree(parent)
+ * var param_1 = obj.lock(num,user)
+ * var param_2 = obj.unlock(num,user)
+ * var param_3 = obj.upgrade(num,user)
+ */
+```
+
+## All Possible Full Binary Trees
+
+https://leetcode.com/problems/all-possible-full-binary-trees/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number} n
+ * @return {TreeNode[]}
+ */
+const allPossibleFBT = (n) => {
+  if (n == 1) return [new TreeNode(0)];
+  if (!n & 1) return [];
+  let a = [];
+  for (let l = 1; l < n; l += 2) {
+    const r = n - 1 - l;
+    const leftTrees = allPossibleFBT(l);
+    const rightTrees = allPossibleFBT(r);
+    for (const left of leftTrees) {
+      for (const right of rightTrees) a.push(new TreeNode(0, left, right));
+    }
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number} n
+ * @return {TreeNode[]}
+ */
+const allPossibleFBT = (n) => {
+  let dp = { 0: [], 1: [new TreeNode()] };
+  const fn = (n) => {
+    if (dp[n] != undefined) return dp[n];
+    if (!n & 1) return [];
+    let a = [];
+    for (let l = 1; l < n; l += 2) {
+      const r = n - 1 - l;
+      for (let ln of fn(l)) {
+        for (let rn of fn(r)) a.push(new TreeNode(0, ln, rn));
+      }
+    }
+    dp[n] = a;
+    return a;
+  };
+  return fn(n);
+};
+```
+
+## Find Bottom Left Tree Value
+
+https://leetcode.com/problems/find-bottom-left-tree-value/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const findBottomLeftValue = (root) => {
+  let q = [root],
+    n;
+  while (q.length) {
+    n = q.shift();
+    if (n.right) q.push(n.right);
+    if (n.left) q.push(n.left);
+  }
+  return n.val;
+};
+```
+
+## Trim a Binary Search Tree
+
+https://leetcode.com/problems/trim-a-binary-search-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number} low
+ * @param {number} high
+ * @return {TreeNode}
+ */
+const trimBST = (root, low, high) => {
+  if (!root) return null;
+  if (root.val > high) return trimBST(root.left, low, high);
+  if (root.val < low) return trimBST(root.right, low, high);
+  root.left = trimBST(root.left, low, high);
+  root.right = trimBST(root.right, low, high);
+  return root;
+};
+```
+
+## Binary Search Tree Iterator
+
+https://neetcode.io/problems/binary-search-tree-iterator/question
+
+```js
 
 ```
