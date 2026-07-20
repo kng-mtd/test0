@@ -13863,7 +13863,40 @@ class Solution {
 https://neetcode.io/problems/level-order-traversal-of-binary-tree/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[][]}
+   */
+  levelOrder(root) {
+    if (!root) return [];
+    let a = [],
+      q = [root];
+    while (q.length) {
+      let b = [],
+        q1 = [];
+      for (let i of q) {
+        b.push(i.val);
+        if (i.left) q1.push(i.left);
+        if (i.right) q1.push(i.right);
+      }
+      q = q1;
+      a.push(b);
+    }
+    return a;
+  }
+}
 ```
 
 ## Binary Tree Right Side View
@@ -14386,7 +14419,7 @@ const numTrees = (n) => {
 };
 ```
 
-## Unique Binary Search Trees Ⅱ
+## Unique Binary Search Trees II
 
 https://leetcode.com/problems/unique-binary-search-trees-ii/description/
 
@@ -14449,4 +14482,70 @@ const generateTrees = (n) => {
 
   return fn(1, n);
 };
+```
+
+## Number of Good Leaf Nodes Pairs
+
+https://leetcode.com/problems/number-of-good-leaf-nodes-pairs/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number} distance
+ * @return {number}
+ */
+const countPairs = (root, distance) => {
+  let a = 0;
+  const dfs = (n) => {
+    if (!n) return [];
+    if (!n.left && !n.right) return [1];
+    const left = dfs(n.left);
+    const right = dfs(n.right);
+    for (const l of left) {
+      for (const r of right) a += l + r <= distance ? 1 : 0;
+    }
+    let b = [];
+    for (const d of left) {
+      if (d + 1 <= distance) b.push(d + 1);
+    }
+    for (const d of right) {
+      if (d + 1 <= distance) b.push(d + 1);
+    }
+    return b;
+  };
+  dfs(root);
+  return a;
+};
+```
+
+## Sum Root to Leaf Numbers
+
+https://neetcode.io/problems/sum-root-to-leaf-numbers/question
+
+```js
+
+```
+
+## House Robber III
+
+https://neetcode.io/problems/house-robber-iii/question
+
+```js
+
+```
+
+## Flip Equivalent Binary Trees
+
+https://leetcode.com/problems/flip-equivalent-binary-trees/description/
+
+```js
+
 ```
