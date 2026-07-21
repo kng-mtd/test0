@@ -14803,3 +14803,189 @@ https://neetcode.io/problems/binary-search-tree-iterator/question
 ```js
 
 ```
+
+## Validate Binary Tree Nodes
+
+https://leetcode.com/problems/validate-binary-tree-nodes/description/
+
+```js
+/**
+ * @param {number} n
+ * @param {number[]} leftChild
+ * @param {number[]} rightChild
+ * @return {boolean}
+ */
+const validateBinaryTreeNodes = (n, leftChild, rightChild) => {
+  let a = new Set([...leftChild, ...rightChild]);
+  a.delete(-1);
+  if (a.size == n) return false;
+  let b = -1;
+  for (let i = 0; i < n; i++) {
+    if (!a.has(i)) {
+      b = i;
+      break;
+    }
+  }
+  let c = new Set();
+  const dfs = (i) => {
+    if (i == -1) return true;
+    if (c.has(i)) return false;
+    c.add(i);
+    return dfs(leftChild[i]) && dfs(rightChild[i]);
+  };
+  return dfs(b) && c.size == n;
+};
+```
+
+```js
+/**
+ * @param {number} n
+ * @param {number[]} leftChild
+ * @param {number[]} rightChild
+ * @return {boolean}
+ */
+const validateBinaryTreeNodes = (n, leftChild, rightChild) => {
+  const ind = Array(n).fill(0);
+  for (let i of leftChild) {
+    if (i != -1 && ++ind[i] > 1) return false;
+  }
+  for (let i of rightChild) {
+    if (i != -1 && ++ind[i] > 1) return false;
+  }
+  let a = -1;
+  for (let i = 0; i < n; i++) {
+    if (ind[i] == 0) {
+      if (a !== -1) return false;
+      a = i;
+    }
+  }
+  if (a == -1) return false;
+  const b = new Set([a]);
+  const q = [a];
+
+  while (q.length) {
+    const n = q.shift();
+    for (let c of [leftChild[n], rightChild[n]]) {
+      if (c == -1) continue;
+      if (b.has(c)) return false;
+      b.add(c);
+      q.push(c);
+    }
+  }
+  return b.size == n;
+};
+```
+
+## Find Largest Value in Each Tree Row
+
+https://leetcode.com/problems/find-largest-value-in-each-tree-row/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+const largestValues = (root) => {
+  if (!root) return [];
+  let a = [],
+    q = [root];
+  while (q.length) {
+    let q1 = [];
+    let b = -Infinity;
+    while (q.length) {
+      const n = q.pop();
+      b = Math.max(n.val, b);
+      if (n.left) q1.push(n.left);
+      if (n.right) q1.push(n.right);
+    }
+    a.push(b);
+    q = q1;
+  }
+  return a;
+};
+```
+
+## Pseudo-Palindromic Paths in a Binary Tree
+
+https://leetcode.com/problems/pseudo-palindromic-paths-in-a-binary-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const pseudoPalindromicPaths = (root) => {
+  let a = 0,
+    b = Array(10).fill(0);
+  const dfs = (n) => {
+    if (!n) return;
+    b[n.val]++;
+    if (!n.left && !n.right) {
+      let c = 0;
+      for (let i = 1; i <= 9; i++) c += b[i] & 1 ? 1 : 0;
+      if (c <= 1) a++;
+    } else {
+      dfs(n.left);
+      dfs(n.right);
+    }
+    b[n.val]--;
+  };
+  dfs(root);
+  return a;
+};
+```
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const pseudoPalindromicPaths = (root) => {
+  let a = 0;
+  const dfs = (n, b) => {
+    if (!n) return;
+    b ^= 1 << n.val;
+    if (!n.left && !n.right) {
+      if ((b & (b - 1)) == 0) a++;
+      return;
+    }
+    dfs(n.left, b);
+    dfs(n.right, b);
+  };
+
+  dfs(root, 0);
+  return a;
+};
+```
+
+## Even Odd Tree
+
+https://leetcode.com/problems/even-odd-tree/description/
+
+```js
+
+```
