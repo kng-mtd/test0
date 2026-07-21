@@ -13904,7 +13904,38 @@ class Solution {
 https://neetcode.io/problems/binary-tree-right-side-view/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[]}
+   */
+  rightSideView(root) {
+    if (!root) return [];
+    let a = [],
+      q = [root];
+    while (q.length) {
+      a.push(q.at(-1).val);
+      let q1 = [];
+      for (let i of q) {
+        if (i.left) q1.push(i.left);
+        if (i.right) q1.push(i.right);
+      }
+      q = q1;
+    }
+    return a;
+  }
+}
 ```
 
 ## Reverse Odd Levels of Binary Tree
