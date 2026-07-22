@@ -15013,5 +15013,158 @@ const pseudoPalindromicPaths = (root) => {
 https://leetcode.com/problems/even-odd-tree/description/
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+const isEvenOddTree = (root) => {
+  let a = true,
+    q = [root];
+  while (q.length) {
+    let b = a ? -Infinity : Infinity;
+    let q1 = [];
+    while (q.length) {
+      const n = q.shift();
+      if (a && ((n.val & 1) == 0 || n.val <= b)) return false;
+      else if (!a && ((n.val & 1) == 1 || n.val >= b)) return false;
+      if (n.left) q1.push(n.left);
+      if (n.right) q1.push(n.right);
+      b = n.val;
+    }
+    q = q1;
+    a = !a;
+  }
+  return true;
+};
+```
+
+## Smallest String Starting From Leaf
+
+https://leetcode.com/problems/smallest-string-starting-from-leaf/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {string}
+ */
+const smallestFromLeaf = (root) => {
+  const dfs = (n, a) => {
+    if (!n) return null;
+    a = String.fromCharCode(97 + n.val) + a;
+    if (!n.left && !n.right) return a;
+    const left = dfs(n.left, a);
+    const right = dfs(n.right, a);
+    if (!left) return right;
+    if (!right) return left;
+    return left < right ? left : right;
+  };
+  return dfs(root, '');
+};
+```
+
+## Delete Leaves With a Given Value
+
+https://neetcode.io/problems/delete-leaves-with-a-given-value/question
+
+```js
+
+```
+
+## Delete Nodes And Return Forest
+
+https://leetcode.com/problems/delete-nodes-and-return-forest/editorial/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number[]} to_delete
+ * @return {TreeNode[]}
+ */
+const delNodes = (root, to_delete) => {
+  let a = [];
+  const dfs = (n) => {
+    if (!n) return null;
+    n.left = dfs(n.left);
+    n.right = dfs(n.right);
+    if (to_delete.includes(n.val)) {
+      if (n.left) a.push(n.left);
+      if (n.right) a.push(n.right);
+      return null;
+    }
+    return n;
+  };
+  root = dfs(root);
+  if (root) a.push(root);
+  return a;
+};
+```
+
+## Distribute Coins in Binary Tree
+
+https://leetcode.com/problems/distribute-coins-in-binary-tree/description/
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const distributeCoins = (root) => {
+  let a = 0;
+  const dfs = (n) => {
+    if (!n) return 0;
+    const b = n.val - 1 + dfs(n.left) + dfs(n.right);
+    a += Math.abs(b);
+    return b;
+  };
+  dfs(root);
+  return a;
+};
+```
+
+## Convert Bst to Greater Tree
+
+https://neetcode.io/problems/convert-bst-to-greater-tree/question
+
+```js
+
+```
+
+## Step-By-Step Directions From a Binary Tree Node to Another
+
+https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to-another/description/
+
+```js
 
 ```
