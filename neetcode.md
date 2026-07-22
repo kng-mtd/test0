@@ -14218,7 +14218,33 @@ const isSubPath = (head, root) => {
 https://neetcode.io/problems/minimum-time-to-collect-all-apples-in-a-tree/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @param {boolean[]} hasApple
+   * @return {number}
+   */
+  minTime(n, edges, hasApple) {
+    let a = Array(n)
+      .fill()
+      .map((x) => Array());
+    for (let [p, c] of edges) {
+      a[p].push(c);
+      a[c].push(p);
+    }
+    const dfs = (cur, par) => {
+      let b = 0;
+      for (let i of a[cur]) {
+        if (i == par) continue;
+        let c = dfs(i, cur);
+        if (c || hasApple[i]) b += 2 + c;
+      }
+      return b;
+    };
+    return dfs(0, -1);
+  }
+}
 ```
 
 ## Binary Tree Zigzag Level Order Traversal
