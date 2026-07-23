@@ -15237,7 +15237,43 @@ https://neetcode.io/problems/convert-bst-to-greater-tree/question
 https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to-another/description/
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number} startValue
+ * @param {number} destValue
+ * @return {string}
+ */
+const getDirections = (root, startValue, destValue) => {
+  const dfs = (n, a, b) => {
+    if (!n) return '';
+    if (n.val == b) return a;
+    a.push('L');
+    let c = dfs(n.left, a, b);
+    if (c) return c;
+    a.pop();
+    a.push('R');
+    c = dfs(n.right, a, b);
+    if (c) return c;
+    a.pop();
+    return '';
+  };
+  const a1 = dfs(root, [], startValue);
+  const a2 = dfs(root, [], destValue);
+  i = 0;
+  while (i < Math.min(a1.length, a2.length)) {
+    if (a1[i] != a2[i]) break;
+    i += 1;
+  }
+  return 'U'.repeat(a1.length - i) + a2.slice(i).join('');
+};
 ```
 
 ---
@@ -15247,3 +15283,41 @@ https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to
 ---
 
 # Tries
+
+## Implement Trie (Prefix Tree)
+
+https://neetcode.io/problems/implement-prefix-tree/question
+
+```js
+
+```
+
+## Design Add and Search Word Data Structure
+
+https://neetcode.io/problems/design-word-search-data-structure/question
+
+```js
+
+```
+
+## Remove Sub-Folders from the Filesystem
+
+https://neetcode.io/problems/remove-sub-folders-from-the-filesystem/question
+
+```js
+
+```
+
+## Extra Characters in a String
+
+https://neetcode.io/problems/extra-characters-in-a-string/question
+
+```js
+
+```
+
+---
+
+---
+
+---
