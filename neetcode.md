@@ -5034,7 +5034,7 @@ const isSymmetric = (root) => {
 
 ---
 
-# Trie
+# Tries
 
 ## Count Prefix and Suffix Pairs I
 
@@ -14252,7 +14252,78 @@ class Solution {
 https://neetcode.io/problems/binary-tree-zigzag-level-order-traversal/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[][]}
+   */
+  zigzagLevelOrder(root) {
+    if (!root) return [];
+    let a = [],
+      q = [root],
+      i = 0;
+    while (i < q.length) {
+      let b = [],
+        c = q.length - i;
+      for (let ii = 0; ii < c; ii++) {
+        const n = q[i++];
+        b.push(n.val);
+        if (n.left) q.push(n.left);
+        if (n.right) q.push(n.right);
+      }
+      if (a.length & 1) b.reverse();
+      a.push(b);
+    }
+    return a;
+  }
+}
+```
 
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number[][]}
+   */
+  zigzagLevelOrder(root) {
+    if (!root) return [];
+    let a = [],
+      q = [root];
+    while (q.length) {
+      let b = [],
+        c = q.length;
+      for (let i = 0; i < c; i++) {
+        const n = q.shift();
+        b.push(n.val);
+        if (n.left) q.push(n.left);
+        if (n.right) q.push(n.right);
+      }
+      if (a.length & 1) b.reverse();
+      a.push(b);
+    }
+    return a;
+  }
+}
 ```
 
 ## Construct Quad Tree
@@ -15168,3 +15239,11 @@ https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to
 ```js
 
 ```
+
+---
+
+---
+
+---
+
+# Tries
