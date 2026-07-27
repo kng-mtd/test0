@@ -14331,7 +14331,43 @@ class Solution {
 https://neetcode.io/problems/construct-quad-tree/question
 
 ```js
+/**
+ * // Definition for a QuadTree node.
+ * class Node {
+ *     constructor(val,isLeaf,topLeft,topRight,bottomLeft,bottomRight) {
+ *         this.val = val;
+ *         this.isLeaf = isLeaf;
+ *         this.topLeft = topLeft;
+ *         this.topRight = topRight;
+ *         this.bottomLeft = bottomLeft;
+ *         this.bottomRight = bottomRight;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {Node}
+   */
+  construct(grid) {
+    const dfs = (n, r, c) => {
+      let a = true;
+      for (let i = 0; i < n && a; i++) {
+        for (let j = 0; j < n; j++) {
+          if (grid[r][c] != grid[r + i][c + j]) {
+            a = false;
+            break;
+          }
+        }
+      }
+      if (a) return new Node(grid[r][c] == 1, true);
+      n /= 2;
+      return new Node(true, false, dfs(n, r, c), dfs(n, r, c + n), dfs(n, r + n, c), dfs(n, r + n, c + n));
+    };
+    return dfs(grid.length, 0, 0);
+  }
+}
 ```
 
 ## Find Duplicate Subtrees
@@ -14371,7 +14407,72 @@ const findDuplicateSubtrees = (root) => {
 https://neetcode.io/problems/check-completeness-of-a-binary-tree/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {boolean}
+   */
+  isCompleteTree(root) {
+    let q = [root],
+      i = 0;
+    while (i < q.length) {
+      const n = q[i++];
+      if (n) {
+        q.push(n.left);
+        q.push(n.right);
+      } else {
+        while (i < q.length) {
+          if (q[i++]) return false;
+        }
+      }
+    }
+    return true;
+  }
+}
+```
 
+```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {boolean}
+   */
+  isCompleteTree(root) {
+    let q = [root];
+    while (q.length) {
+      const n = q.shift();
+      if (n) {
+        q.push(n.left);
+        q.push(n.right);
+      } else {
+        while (q.length) {
+          if (q.shift()) return false;
+        }
+      }
+    }
+    return true;
+  }
+}
 ```
 
 ## Construct Binary Tree from Inorder and Postorder Traversal
