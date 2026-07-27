@@ -5108,6 +5108,55 @@ class Solution {
 }
 ```
 
+```js
+class TrieNode {
+  constructor() {
+    this.child = {};
+    this.n = 0;
+  }
+}
+
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  add(w, len) {
+    let a = this.root;
+    for (let i = 0; i < Math.min(w.length, len); i++) {
+      const c = w[i];
+      if (!(c in a.child)) a.child[c] = new TrieNode();
+      a = a.child[c];
+      a.n++;
+    }
+  }
+
+  count(pref) {
+    let a = this.root;
+    for (let c of pref) {
+      if (!(c in a.child)) return 0;
+      a = a.child[c];
+    }
+    return a.n;
+  }
+}
+
+class Solution {
+  /**
+   * @param {string[]} words
+   * @param {string} pref
+   * @return {number}
+   */
+  prefixCount(words, pref) {
+    const tr = new Trie();
+    for (let w of words) {
+      if (w.length >= pref.length) tr.add(w, pref.length);
+    }
+    return tr.count(pref);
+  }
+}
+```
+
 ---
 
 ---
