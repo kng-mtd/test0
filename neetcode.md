@@ -14529,7 +14529,37 @@ class Solution {
 https://neetcode.io/problems/construct-binary-tree-from-inorder-and-postorder-traversal/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {number[]} inorder
+   * @param {number[]} postorder
+   * @return {TreeNode}
+   */
+  buildTree(inorder, postorder) {
+    let a = new Map();
+    for (let i = 0; i < inorder.length; i++) a.set(inorder[i], i);
+    let b = postorder.length - 1;
+    function dfs(l, r) {
+      if (l > r) return null;
+      let root = new TreeNode(postorder[b--]);
+      let m = a.get(root.val);
+      root.right = dfs(m + 1, r);
+      root.left = dfs(l, m - 1);
+      return root;
+    }
+    return dfs(0, inorder.length - 1);
+  }
+}
 ```
 
 ## Maximum Width of Binary Tress
@@ -14607,7 +14637,34 @@ const numOfMinutes = function (n, headID, manager, informTime) {
 https://neetcode.io/problems/count-good-nodes-in-binary-tree/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number}
+   */
+  goodNodes(root) {
+    const dfs = (n, a) => {
+      if (!n) return 0;
+      let b = n.val < a ? 0 : 1;
+      a = Math.max(n.val, a);
+      b += dfs(n.left, a);
+      b += dfs(n.right, a);
+      return b;
+    };
+    return dfs(root, root.val);
+  }
+}
 ```
 
 ## Valid Binary Search Tree
