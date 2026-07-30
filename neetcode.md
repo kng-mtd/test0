@@ -14672,7 +14672,31 @@ class Solution {
 https://neetcode.io/problems/valid-binary-search-tree/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {boolean}
+   */
+  isValidBST(root) {
+    const dfs = (n, l, r) => {
+      if (!n) return true;
+      if (n.val <= l || n.val >= r) return false;
+      return dfs(n.left, l, n.val) && dfs(n.right, n.val, r);
+    };
+    return dfs(root, -Infinity, Infinity);
+  }
+}
 ```
 
 ## Kth Smallest Integer in BST
