@@ -14744,7 +14744,75 @@ class Solution {
 https://neetcode.io/problems/recover-binary-search-tree/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {void} Do not return anything, modify root in-place instead.
+   */
+  recoverTree(root) {
+    const a = [];
+    let n = root,
+      n0 = null,
+      n1 = null,
+      n2 = null;
+    while (a.length || n) {
+      while (n) {
+        a.push(n);
+        n = n.left;
+      }
+      n = a.pop();
+      if (n0 && n0.val > n.val) {
+        if (!n1) n1 = n0;
+        n2 = n;
+      }
+      n0 = n;
+      n = n.right;
+    }
+    [n1.val, n2.val] = [n2.val, n1.val];
+  }
+}
+```
 
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {void} Do not return anything, modify root in-place instead.
+   */
+  recoverTree(root) {
+    let n0 = null,
+      n1 = null,
+      n2 = null;
+    const dfs = (n) => {
+      if (!n) return;
+      dfs(n.left);
+      if (n0 && n0.val > n.val) {
+        if (!n1) n1 = n0;
+        n2 = n;
+      }
+      n0 = n;
+      dfs(n.right);
+    };
+    dfs(root);
+    [n1.val, n2.val] = [n2.val, n1.val];
+  }
+}
 ```
 
 ## Construct Binary Tree from Preorder and Inorder Traversal
