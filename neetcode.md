@@ -14820,7 +14820,39 @@ class Solution {
 https://neetcode.io/problems/binary-tree-from-preorder-and-inorder-traversal/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {number[]} preorder
+   * @param {number[]} inorder
+   * @return {TreeNode}
+   */
+  buildTree(preorder, inorder) {
+    let a = new Map();
+    for (let i = 0; i < inorder.length; i++) a.set(inorder[i], i);
+    const dfs = (preL, preR, inL, inR) => {
+      if (preL > preR) return null;
+      const v = preorder[preL],
+        n = new TreeNode(v),
+        m = a.get(v),
+        l = m - inL;
+      n.left = dfs(preL + 1, preL + l, inL, m - 1);
+      n.right = dfs(preL + l + 1, preR, m + 1, inR);
+      return n;
+    };
+    return dfs(0, preorder.length - 1, 0, inorder.length - 1);
+  }
+}
 ```
 
 ## Construct Binary Tree from Preorder and Postorder Traversal
