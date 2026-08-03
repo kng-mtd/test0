@@ -15022,7 +15022,31 @@ const countPairs = (root, distance) => {
 https://neetcode.io/problems/sum-root-to-leaf-numbers/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number}
+   */
+  sumNumbers(root) {
+    const dfs = (n, a) => {
+      if (!n) return 0;
+      a = a * 10 + n.val;
+      if (!n.left && !n.right) return a;
+      return dfs(n.left, a) + dfs(n.right, a);
+    };
+    return dfs(root, 0);
+  }
+}
 ```
 
 ## House Robber III
