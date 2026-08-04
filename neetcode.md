@@ -15054,7 +15054,31 @@ class Solution {
 https://neetcode.io/problems/house-robber-iii/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number}
+   */
+  rob(root) {
+    const dfs = (n) => {
+      if (!n) return [0, 0];
+      const l = dfs(n.left);
+      const r = dfs(n.right);
+      return [n.val + l[1] + r[1], Math.max(...l) + Math.max(...r)];
+    };
+    return Math.max(...dfs(root));
+  }
+}
 ```
 
 ## Flip Equivalent Binary Trees
