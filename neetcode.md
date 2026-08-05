@@ -15309,7 +15309,56 @@ const trimBST = (root, low, high) => {
 https://neetcode.io/problems/binary-search-tree-iterator/question
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class BSTIterator {
+  /**
+   * @constructor
+   * @param {TreeNode} root
+   */
+  constructor(root) {
+    this.a = [];
+    while (root) {
+      this.a.push(root);
+      root = root.left;
+    }
+  }
 
+  /**
+   * @return {number}
+   */
+  next() {
+    const b = this.a.pop();
+    let c = b.right;
+    while (c) {
+      this.a.push(c);
+      c = c.left;
+    }
+    return b.val;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasNext() {
+    return this.a.length != 0;
+  }
+}
+
+/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * var obj = new BSTIterator(root)
+ * var param_1 = obj.next()
+ * var param_2 = obj.hasNext()
+ */
 ```
 
 ## Validate Binary Tree Nodes
