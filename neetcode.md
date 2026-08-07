@@ -15712,7 +15712,33 @@ const distributeCoins = (root) => {
 https://neetcode.io/problems/convert-bst-to-greater-tree/question
 
 ```js
-
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {TreeNode}
+   */
+  convertBST(root) {
+    let a = 0;
+    const dfs = (n) => {
+      if (!n) return;
+      dfs(n.right);
+      [n.val, a] = [n.val + a, a + n.val];
+      dfs(n.left);
+    };
+    dfs(root);
+    return root;
+  }
+}
 ```
 
 ## Step-By-Step Directions From a Binary Tree Node to Another
