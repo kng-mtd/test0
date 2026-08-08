@@ -16040,3 +16040,35 @@ https://neetcode.io/problems/search-for-word/question
 ```js
 
 ```
+
+## Palindrome Partitioning
+
+https://neetcode.io/problems/palindrome-partitioning/question
+
+```js
+
+```
+
+## Restore IP Addresses
+
+https://neetcode.io/problems/restore-ip-addresses/question
+
+```js
+
+```
+
+## Letter Combinations of a Phone Number
+
+https://neetcode.io/problems/combinations-of-a-phone-number/question
+
+```js
+
+```
+
+## The k-th Lexicographical String of All Happy Strings of Length n
+
+https://leetcode.com/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/description/
+
+```js
+
+```
