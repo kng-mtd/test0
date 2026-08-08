@@ -15798,7 +15798,94 @@ const getDirections = (root, startValue, destValue) => {
 https://neetcode.io/problems/implement-prefix-tree/question
 
 ```js
+class PrefixTree {
+  constructor() {
+    this.str = [];
+  }
 
+  /**
+   * @param {string} word
+   * @return {void}
+   */
+  insert(word) {
+    word += '@';
+    let a = '';
+    for (let i = 0; i < word.length; i++) {
+      a += word[i];
+      if (!this.str.includes(a)) this.str.push(a);
+    }
+  }
+
+  /**
+   * @param {string} word
+   * @return {boolean}
+   */
+  search(word) {
+    return this.str.includes(word + '@');
+  }
+
+  /**
+   * @param {string} prefix
+   * @return {boolean}
+   */
+  startsWith(prefix) {
+    return this.str.includes(prefix);
+  }
+}
+```
+
+```js
+class TrieNode {
+  constructor() {
+    this.child = {};
+    this.end = false;
+  }
+}
+
+class PrefixTree {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  /**
+   * @param {string} word
+   * @return {void}
+   */
+  insert(word) {
+    let n = this.root;
+    for (let c of word) {
+      if (!(c in n.child)) n.child[c] = new TrieNode();
+      n = n.child[c];
+    }
+    n.end = true;
+  }
+
+  /**
+   * @param {string} word
+   * @return {boolean}
+   */
+  search(word) {
+    let n = this.root;
+    for (let c of word) {
+      if (!(c in n.child)) return false;
+      n = n.child[c];
+    }
+    return n.end;
+  }
+
+  /**
+   * @param {string} prefix
+   * @return {boolean}
+   */
+  startsWith(prefix) {
+    let n = this.root;
+    for (let c of prefix) {
+      if (!(c in n.child)) return false;
+      n = n.child[c];
+    }
+    return true;
+  }
+}
 ```
 
 ## Design Add and Search Word Data Structure
