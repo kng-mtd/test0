@@ -16070,5 +16070,47 @@ https://neetcode.io/problems/combinations-of-a-phone-number/question
 https://leetcode.com/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/description/
 
 ```js
+/**
+ * @param {number} n
+ * @param {number} k
+ * @return {string}
+ */
+const getHappyString = (n, k) => {
+  let a = '',
+    b = 'abc',
+    l = 1,
+    r = 3 * 2 ** (n - 1);
+  for (let i = 0; i < n; i++) {
+    let c = l;
+    const d = ((r - l + 1) / b.length) | 0;
+    for (let i of b) {
+      if (k < c + d) {
+        a += i;
+        ((l = c), (r = c + d - 1));
+        b = 'abc'.replace(i, '');
+        break;
+      }
+      c += d;
+    }
+  }
+  return a;
+};
+```
+
+## Matchsticks to Square
+
+https://neetcode.io/problems/matchsticks-to-square/question
+
+```js
 
 ```
+
+## Splitting a String into Descending Consecutive Values
+
+https://leetcode.com/problems/splitting-a-string-into-descending-consecutive-values/description/
+
+```js
+
+```
+
+##
