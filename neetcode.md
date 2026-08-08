@@ -15919,3 +15919,124 @@ https://neetcode.io/problems/extra-characters-in-a-string/question
 ---
 
 # Backtracking
+
+## Subsets
+
+https://neetcode.io/problems/subsets/question
+
+```js
+
+```
+
+## Combination Sum
+
+https://neetcode.io/problems/combination-target-sum/question
+
+```js
+
+```
+
+## Combination Sum II
+
+https://neetcode.io/problems/combination-target-sum-ii/question
+
+```js
+
+```
+
+## Combinations
+
+https://neetcode.io/problems/combinations/question
+
+```js
+
+```
+
+## Permutations
+
+https://neetcode.io/problems/permutations/question
+
+```js
+
+```
+
+## Subsets II
+
+https://neetcode.io/problems/subsets-ii/question
+
+```js
+
+```
+
+## Permutations II
+
+https://neetcode.io/problems/permutations-ii/question
+
+```js
+
+```
+
+## Generate Parentheses
+
+https://neetcode.io/problems/generate-parentheses/question
+
+```js
+
+```
+
+## Letter Tile Possibilities
+
+https://leetcode.com/problems/letter-tile-possibilities/description/
+
+```js
+/**
+ * @param {string} tiles
+ * @return {number}
+ */
+const numTilePossibilities = (tiles) => {
+  let a = new Set(),
+    b = {};
+  for (let i of tiles) b[i] = (b[i] ?? 0) + 1;
+  const dfs = (c) => {
+    for (let i in b) {
+      if (b[i] == 0) continue;
+      a.add(c + i);
+      b[i]--;
+      dfs(c + i);
+      b[i]++;
+    }
+  };
+  dfs('');
+  return a.size;
+};
+```
+
+```js
+/**
+ * @param {string} tiles
+ * @return {number}
+ */
+const numTilePossibilities = (tiles) => {
+  let b = {};
+  for (let i of tiles) b[i] = (b[i] ?? 0) + 1;
+  const dfs = (c) => {
+    let a = 0;
+    for (let i in b) {
+      if (b[i] == 0) continue;
+      b[i]--;
+      a += dfs() + 1;
+      b[i]++;
+    }
+    return a;
+  };
+  return dfs();
+};
+```
+
+## Word Search
+
+https://neetcode.io/problems/search-for-word/question
+
+```js
+
+```
