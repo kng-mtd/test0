@@ -387,16 +387,17 @@ class MinHeap {
   }
 
   pop() {
-    const a = this.heap;
-    if (a.length == 0) return undefined;
-    if (a.length == 1) return a.pop();
+    const a = this.heap,
+      n = a.length - 1;
+    if (n == -1) return undefined;
+    if (n == 0) return a.pop();
     const result = a[0];
     a[0] = a.pop();
     let i = 0;
     while (true) {
       let c = i * 2 + 1;
-      if (c >= a.length) break;
-      if (c + 1 < a.length && a[c + 1] < a[c]) c++;
+      if (c >= n) break;
+      if (c + 1 < n && a[c + 1] < a[c]) c++;
       if (a[i] <= a[c]) break;
       [a[i], a[c]] = [a[c], a[i]];
       i = c;
@@ -5236,6 +5237,52 @@ class KthLargest {
     this.nums.push(val);
     this.nums.sort((x1, x2) => x2 - x1).slice(0, this.k);
     return this.nums[this.k - 1];
+  }
+}
+```
+
+```js
+class KthLargest {
+  /**
+   * @param {number} k
+   * @param {number[]} nums
+   */
+  constructor(k, nums) {
+    this.k = k;
+    this.heap = [];
+    for (let i of nums) this.add(i);
+  }
+
+  /**
+   * @param {number} val
+   * @return {number}
+   */
+  add(val) {
+    this.heap.push(val);
+    let i = this.heap.length - 1;
+    while (i > 0) {
+      const a = this.heap;
+      const p = (i - 1) >> 1;
+      if (a[i] >= a[p]) break;
+      [a[i], a[p]] = [a[p], a[i]];
+      i = p;
+    }
+    if (this.heap.length > this.k) {
+      const a = this.heap,
+        n = a.length - 1;
+      [a[0], a[n]] = [a[n], a[0]];
+      a.pop();
+      let i = 0;
+      while (true) {
+        let c = i * 2 + 1;
+        if (c >= n) break;
+        if (c + 1 < n && a[c + 1] < a[c]) c++;
+        if (a[i] <= a[c]) break;
+        [a[i], a[c]] = [a[c], a[i]];
+        i = c;
+      }
+    }
+    return this.heap[0];
   }
 }
 ```
