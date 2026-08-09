@@ -231,6 +231,8 @@ let a = Array(10)
   .map((x) => Array(10));
 ```
 
+---
+
 ### Count Lowercase
 
 ```js
@@ -365,6 +367,52 @@ const buildTree = (arr) => {
 ---
 
 ### heap class
+
+```js
+class MinHeap {
+  constructor() {
+    this.heap = [];
+  }
+
+  push(x) {
+    const a = this.heap;
+    a.push(x);
+    let i = a.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (a[p] <= a[i]) break;
+      [a[p], a[i]] = [a[i], a[p]];
+      i = p;
+    }
+  }
+
+  pop() {
+    const a = this.heap;
+    if (a.length == 0) return undefined;
+    if (a.length == 1) return a.pop();
+    const result = a[0];
+    a[0] = a.pop();
+    let i = 0;
+    while (true) {
+      let c = i * 2 + 1;
+      if (c >= a.length) break;
+      if (c + 1 < a.length && a[c + 1] < a[c]) c++;
+      if (a[i] <= a[c]) break;
+      [a[i], a[c]] = [a[c], a[i]];
+      i = c;
+    }
+    return result;
+  }
+
+  peek() {
+    return this.heap[0];
+  }
+
+  get size() {
+    return this.heap.length;
+  }
+}
+```
 
 ```js
 class Heap {
