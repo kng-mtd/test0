@@ -15893,7 +15893,55 @@ class PrefixTree {
 https://neetcode.io/problems/design-word-search-data-structure/question
 
 ```js
+class TrieNode {
+  constructor() {
+    this.child = {};
+    this.end = false;
+  }
+}
 
+class WordDictionary {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  /**
+   * @param {string} word
+   * @return {void}
+   */
+  addWord(word) {
+    let n = this.root;
+    for (let c of word) {
+      if (!(c in n.child)) n.child[c] = new TrieNode();
+      n = n.child[c];
+    }
+    n.end = true;
+  }
+
+  /**
+   * @param {string} word
+   * @return {boolean}
+   */
+  search(word) {
+    const dfs = (k, root) => {
+      let n = root;
+      for (let i = k; i < word.length; i++) {
+        const c = word[i];
+        if (c != '.') {
+          if (!(c in n.child)) return false;
+          n = n.child[c];
+        } else {
+          for (let ci of Object.values(n.child)) {
+            if (dfs(i + 1, ci)) return true;
+          }
+          return false;
+        }
+      }
+      return n.end;
+    };
+    return dfs(0, this.root);
+  }
+}
 ```
 
 ## Remove Sub-Folders from the Filesystem
@@ -15911,6 +15959,16 @@ https://neetcode.io/problems/extra-characters-in-a-string/question
 ```js
 
 ```
+
+---
+
+---
+
+---
+
+# Heap/Priority Queue
+
+##
 
 ---
 
@@ -16110,7 +16168,320 @@ https://neetcode.io/problems/matchsticks-to-square/question
 https://leetcode.com/problems/splitting-a-string-into-descending-consecutive-values/description/
 
 ```js
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+const splitString = (s) => {
+  const n = s.length;
+  const dfs = (i, v) => {
+    if (i == n) return true;
+    for (let ii = i; ii < n; ii++) {
+      const a = s.slice(i, ii + 1) - 0;
+      if (a + 1 == v && dfs(ii + 1, a)) return true;
+    }
+    return false;
+  };
+  for (let ii = 0; ii < n - 1; ii++) {
+    const a = s.slice(0, ii + 1) - 0;
+    if (dfs(ii + 1, a)) return true;
+  }
+  return false;
+};
+```
+
+## Construct Smallest Number From DI String
+
+https://leetcode.com/problems/construct-smallest-number-from-di-string/description/
+
+```js
+/**
+ * @param {string} pattern
+ * @return {string}
+ */
+const smallestNumber = (pattern) => {
+  const n = pattern.length;
+  let a = '',
+    b = [];
+  for (let i = 0; i < n + 1; i++) {
+    b.push(i + 1);
+    while (b.length && (i == n || pattern[i] == 'I')) a += b.pop();
+  }
+  return a;
+};
+```
+
+## Find Unique Binary String
+
+https://leetcode.com/problems/find-unique-binary-string/description/
+
+```js
+/**
+ * @param {string[]} nums
+ * @return {string}
+ */
+const findDifferentBinaryString = (nums) => {
+  const n = nums[0].length;
+  for (let i = 0; i < 2 ** n; i++) {
+    const a = i.toString(2).padStart(n, '0');
+    if (!nums.includes(a)) return a;
+  }
+};
+```
+
+## Split a String Into the Max Number of Unique Substrings
+
+https://leetcode.com/problems/split-a-string-into-the-max-number-of-unique-substrings/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const maxUniqueSplit = (s) => {
+  const n = s.length;
+  const dfs = (i, a) => {
+    if (i == n) return 0;
+    let b = 0;
+    for (let ii = i; ii < n; ii++) {
+      const c = s.slice(i, ii + 1);
+      if (a.includes(c)) continue;
+      a.push(c);
+      b = Math.max(dfs(ii + 1, a) + 1, b);
+      a.pop();
+    }
+    return b;
+  };
+  return dfs(0, []);
+};
+```
+
+## Maximun Length of a Concatenated String with Unique Characters
+
+https://leetcode.com/problems/maximum-length-of-a-concatenated-string-with-unique-characters/description/
+
+```js
+/**
+ * @param {string[]} arr
+ * @return {number}
+ */
+const maxLength = (arr) => {
+  let a = [];
+  for (let s of arr) {
+    let mask = 0;
+    for (let c of s) {
+      const bit = 1 << (c.charCodeAt(0) - 97);
+      if (mask & bit) {
+        mask = 0;
+        break;
+      }
+      mask |= bit;
+    }
+    if (mask) a.push([mask, s.length]);
+  }
+  let b = 0;
+  const dfs = (i, mask, l) => {
+    b = Math.max(l, b);
+    for (let ii = i; ii < a.length; ii++) {
+      const [m, n] = a[ii];
+      if (!(mask & m)) dfs(ii + 1, mask | m, l + n);
+    }
+  };
+  dfs(0, 0, 0);
+  return b;
+};
+```
+
+## Partition to K Equal Sum Subsets
+
+https://neetcode.io/problems/partition-to-k-equal-sum-subsets/question
+
+```js
 
 ```
 
-##
+## The Number of Beautiful Subsets
+
+https://leetcode.com/problems/the-number-of-beautiful-subsets/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const beautifulSubsets = (nums, k) => {
+  nums.sort((x1, x2) => x1 - x2);
+  let a = 0,
+    b = new Set();
+  const dfs = (i) => {
+    if (i == nums.length) {
+      a++;
+      return;
+    }
+    dfs(i + 1);
+    const c = nums[i];
+    if (!b.has(c - k)) {
+      b.add(c);
+      dfs(i + 1);
+      b.delete(c);
+    }
+  };
+  dfs(0);
+  return a - 1;
+};
+```
+
+## Different Ways to Add Parentheses
+
+https://leetcode.com/problems/different-ways-to-add-parentheses/description/
+
+```js
+/**
+ * @param {string} expression
+ * @return {number[]}
+ */
+const diffWaysToCompute = (expression) => {
+  const dfs = (s) => {
+    let a = [];
+    for (let i = 0; i < s.length; i++) {
+      const b = s[i];
+      if (b != '+' && b != '-' && b != '*') continue;
+      const l = dfs(s.slice(0, i)),
+        r = dfs(s.slice(i + 1));
+      for (let li of l) {
+        for (let ri of r) {
+          //a.push(eval(li+b+ri));
+          if (b == '+') a.push(li + ri);
+          if (b == '-') a.push(li - ri);
+          if (b == '*') a.push(li * ri);
+        }
+      }
+    }
+
+    if (a.length == 0) a.push(Number(s));
+    return a;
+  };
+  return dfs(expression);
+};
+```
+
+## Construct the Lexicographically Largest Valid Sequence
+
+https://leetcode.com/problems/construct-the-lexicographically-largest-valid-sequence/description/
+
+```js
+/**
+ * @param {number} n
+ * @return {number[]}
+ */
+const constructDistancedSequence = (n) => {
+  let a = Array(2 * n - 1).fill(0),
+    b = Array(n + 1).fill(false);
+  const dfs = (i) => {
+    if (i == a.length) return true;
+    if (a[i]) return dfs(i + 1);
+    for (let ii = n; ii >= 1; ii--) {
+      if (b[ii]) continue;
+      if (ii == 1) {
+        ((a[i] = 1), (b[1] = true));
+        if (dfs(i + 1)) return true;
+        ((a[i] = 0), (b[1] = false));
+      } else {
+        const j = i + ii;
+        if (j >= a.length || a[j]) continue;
+        ((a[i] = ii), (a[j] = ii), (b[ii] = true));
+        if (dfs(i + 1)) return true;
+        ((a[i] = 0), (a[j] = 0), (b[ii] = false));
+      }
+    }
+    return false;
+  };
+
+  dfs(0);
+  return a;
+};
+```
+
+## Count Number of Maximum Bitwise-OR Subsets
+
+https://leetcode.com/problems/count-number-of-maximum-bitwise-or-subsets/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const countMaxOrSubsets = (nums) => {
+  let a = 0,
+    b = 0;
+  for (let i of nums) b |= i;
+  const dfs = (i, mask) => {
+    if (i == nums.length) {
+      if (mask == b) a++;
+      return;
+    }
+    dfs(i + 1, mask);
+    dfs(i + 1, mask | nums[i]);
+  };
+  dfs(0, 0);
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const countMaxOrSubsets = (nums) => {
+  const n = nums.length;
+  let a = 0,
+    b = 0;
+  for (let i of nums) b |= i;
+  const dfs = (i, mask) => {
+    if (mask == b) {
+      a += 2 ** (n - i);
+      return;
+    }
+    if (i == n) return;
+    dfs(i + 1, mask);
+    dfs(i + 1, mask | nums[i]);
+  };
+  dfs(0, 0);
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const countMaxOrSubsets = (nums) => {
+  const n = nums.length;
+  let a = 0,
+    b = 0;
+  for (let i of nums) b |= i;
+  let c = Array(n + 1).fill(0);
+  for (let i = n - 1; i >= 0; i--) c[i] = c[i + 1] | nums[i];
+  const dfs = (i, mask) => {
+    if (mask == b) {
+      a += 2 ** (n - i);
+      return;
+    }
+    if (i == n) return;
+    if ((mask | c[i]) != b) return;
+    dfs(i + 1, mask);
+    dfs(i + 1, mask | nums[i]);
+  };
+  dfs(0, 0);
+  return a;
+};
+```
+
+---
+
+---
+
+---
