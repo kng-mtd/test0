@@ -1,6 +1,6 @@
 # memo
 
-### sub...
+## sub...
 
 | Type        | Contiguous | Order Matters |
 | ----------- | ---------- | ------------- |
@@ -223,7 +223,7 @@ Yes → DP or Greedy
 
 ---
 
-### 2d Array
+## 2d Array
 
 ```js
 let a = Array(10)
@@ -233,7 +233,7 @@ let a = Array(10)
 
 ---
 
-### Count Lowercase
+## Count Lowercase
 
 ```js
 const fn = (s) => {
@@ -249,7 +249,7 @@ const fn = (s) => {
 
 ---
 
-### Merge Sort
+## Merge Sort
 
 ```js
 const mergeSort = (arr) => {
@@ -271,9 +271,9 @@ const mergeSort = (arr) => {
 
 ---
 
-### TreeNode
+## TreeNode
 
-#### use function
+### use function
 
 ```js
 const TreeNode = (val, left = null, right = null) => ({ val, left, right });
@@ -287,7 +287,7 @@ root.left = TreeNode(2);
 root.right = TreeNode(3);
 ```
 
-#### use class
+### use class
 
 ```js
 class TreeNode {
@@ -301,7 +301,7 @@ class TreeNode {
 const n = new TreeNode(val, left, right);
 ```
 
-#### array to binary tree, using function
+### array to binary tree, using function
 
 ```js
 const TreeNode = (val, left = null, right = null) => ({ val, left, right });
@@ -366,12 +366,12 @@ const buildTree = (arr) => {
 
 ---
 
-### heap class
+## heap class
 
 ```js
 class MinHeap {
   constructor(nums) {
-    this.heap = [...nums].sort((x1,x2)=>x1-x2);
+    this.heap = [...nums].sort((x1, x2) => x1 - x2);
   }
 
   set(num) {
@@ -5298,14 +5298,68 @@ class Solution {
    * @return {number}
    */
   lastStoneWeight(stones) {
-    while (stones.length > 1) {
-      stones.sort((x1, x2) => x1 - x2);
-      const x = stones.pop();
-      const y = stones.pop();
-      if (x == y) continue;
-      stones.push(Math.abs(x - y));
+    this.stones = stones;
+    while (this.stones.length > 1) {
+      this.stones.sort((x1, x2) => x1 - x2);
+      const b = this.stones.pop() - this.stones.pop();
+      if (b) this.stones.push(b);
     }
-    return stones[0] || 0;
+    return this.stones[0] ?? 0;
+  }
+}
+```
+
+```js
+class MaxHeap {
+  constructor(nums) {
+    this.heap = [...nums].sort((x1, x2) => x2 - x1);
+  }
+  set(num) {
+    const a = this.heap;
+    a.push(num);
+    let i = a.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (a[p] >= a[i]) break;
+      [a[p], a[i]] = [a[i], a[p]];
+      i = p;
+    }
+  }
+  get() {
+    const a = this.heap,
+      n = a.length - 1;
+    if (n == -1) return undefined;
+    if (n == 0) return a.pop();
+    const b = a[0];
+    a[0] = a.pop();
+    let i = 0;
+    while (true) {
+      let c = i * 2 + 1;
+      if (c >= n) break;
+      if (c + 1 < n && a[c + 1] > a[c]) c++;
+      if (a[c] <= a[i]) break;
+      [a[i], a[c]] = [a[c], a[i]];
+      i = c;
+    }
+    return b;
+  }
+  size() {
+    return this.heap.length;
+  }
+}
+
+class Solution {
+  /**
+   * @param {number[]} stones
+   * @return {number}
+   */
+  lastStoneWeight(stones) {
+    let a = new MaxHeap(stones);
+    while (a.size() > 1) {
+      const b = a.get() - a.get();
+      if (b) a.set(b);
+    }
+    return a.get() ?? 0;
   }
 }
 ```
@@ -5327,6 +5381,61 @@ class Solution {
       gifts[ii] = Math.floor(gifts[ii] ** 0.5);
     }
     return gifts.reduce((a, x) => a + x, 0);
+  }
+}
+```
+
+```js
+class MaxHeap {
+  constructor(nums) {
+    this.heap = [...nums].sort((x1, x2) => x2 - x1);
+  }
+  set(num) {
+    const a = this.heap;
+    a.push(num);
+    let i = a.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (a[p] >= a[i]) break;
+      [a[p], a[i]] = [a[i], a[p]];
+      i = p;
+    }
+  }
+  get() {
+    const a = this.heap,
+      n = a.length - 1;
+    if (n == -1) return undefined;
+    if (n == 0) return a.pop();
+    const b = a[0];
+    a[0] = a.pop();
+    let i = 0;
+    while (true) {
+      let c = i * 2 + 1;
+      if (c >= n) break;
+      if (c + 1 < n && a[c + 1] > a[c]) c++;
+      if (a[c] <= a[i]) break;
+      [a[i], a[c]] = [a[c], a[i]];
+      i = c;
+    }
+    return b;
+  }
+  size() {
+    return this.heap.length;
+  }
+}
+
+class Solution {
+  /**
+   * @param {number[]} gifts
+   * @param {number} k
+   * @return {number}
+   */
+  pickGifts(gifts, k) {
+    let a = new MaxHeap(gifts);
+    for (let i = 0; i < k; i++) a.set((a.get() ** 0.5) | 0);
+    let b = 0;
+    while (a.size()) b += a.get();
+    return b;
   }
 }
 ```
