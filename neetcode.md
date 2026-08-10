@@ -1,5 +1,25 @@
 # memo
 
+## operator ? / ??
+
+| 構文        | 具体例                 | 結果        | 意味                                      |
+| ----------- | ---------------------- | ----------- | ----------------------------------------- |
+| `a ? b : c` | `5 > 3 ? 'yes' : 'no'` | `'yes'`     | 条件`a`が真なら`b`、偽なら`c`             |
+| `a?.[i]`    | `arr?.[i]`             | `a[i]`      | `arr`があれば`arr[2]`                     |
+| `a?.[i]`    | `undefined?.[i]`       | `undefined` | `arr`がなければundefined、エラーにしない  |
+| `a?.b`      | `obj?.key`             | `'obj.key'` | `obj`があれば`key`を取得                  |
+| `a?.b`      | `undefined?.name`      | `undefined` | `obj`がなければundefined、エラーにしない  |
+| `a?.b()`    | `obj?.fn()`            | `'fn()'`    | `obj`があればメソッド実行                 |
+| `a?.b()`    | `undefined?.fn()`      | `undefined` | `obj`がなければ何もしない、エラーにしない |
+| `a?.()`     | `fn?.()`               | `fn()`      | 関数`fn`があれば実行                      |
+| `a?.()`     | `undefined?.()`        | `undefined` | 関数がなければ何もしない                  |
+| `a ?? b`    | `undefined ?? 10`      | `10`        | `undefined`なら`10`                       |
+| `a ?? b`    | `null ?? 10`           | `10`        | `null`なら`10`                            |
+| `a ?? b`    | `0 ?? 10`              | `0`         | `0`はそのまま                             |
+| `a ?? b`    | `'' ?? 'abc'`          | `''`        | 空文字はそのまま                          |
+| `a ??= b`   | `x=val0;x ??= val`     | `x = val0`  | `x`に値があればそのまま                   |
+| `a ??= b`   | `x ??= val`            | `x = val`   | `x`が未定義なら代入                       |
+
 ## sub...
 
 | Type        | Contiguous | Order Matters |
