@@ -370,13 +370,13 @@ const buildTree = (arr) => {
 
 ```js
 class MinHeap {
-  constructor() {
-    this.heap = [];
+  constructor(nums) {
+    this.heap = [...nums].sort((x1,x2)=>x1-x2);
   }
 
-  push(x) {
+  set(num) {
     const a = this.heap;
-    a.push(x);
+    a.push(num);
     let i = a.length - 1;
     while (i > 0) {
       const p = (i - 1) >> 1;
@@ -386,30 +386,30 @@ class MinHeap {
     }
   }
 
-  pop() {
+  get() {
     const a = this.heap,
       n = a.length - 1;
     if (n == -1) return undefined;
     if (n == 0) return a.pop();
-    const result = a[0];
+    const b = a[0];
     a[0] = a.pop();
     let i = 0;
     while (true) {
       let c = i * 2 + 1;
       if (c >= n) break;
       if (c + 1 < n && a[c + 1] < a[c]) c++;
-      if (a[i] <= a[c]) break;
+      if (a[c] >= a[i]) break;
       [a[i], a[c]] = [a[c], a[i]];
       i = c;
     }
-    return result;
+    return b;
   }
 
-  peek() {
+  top() {
     return this.heap[0];
   }
 
-  get size() {
+  size() {
     return this.heap.length;
   }
 }
