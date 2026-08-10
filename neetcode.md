@@ -16044,7 +16044,73 @@ class WordDictionary {
 https://neetcode.io/problems/remove-sub-folders-from-the-filesystem/question
 
 ```js
+class Solution {
+  /**
+   * @param {string[]} folder
+   * @return {string[]}
+   */
+  removeSubfolders(folder) {
+    folder.sort();
+    let a = [folder[0]];
+    for (let s of folder.slice(1)) {
+      const b = a.at(-1);
+      if (s.slice(0, b.length) != b || s[b.length] != '/') a.push(s);
+    }
+    return a;
+  }
+}
+```
 
+```js
+class TrieNode {
+  constructor() {
+    this.child = {};
+    this.end = false;
+  }
+}
+
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+  add(s) {
+    let n = this.root;
+    for (let c of s) {
+      if (!(c in n.child)) n.child[c] = new TrieNode();
+      n = n.child[c];
+    }
+    n.end = true;
+  }
+  search(s) {
+    let n = this.root;
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (!(c in n.child)) return false;
+      n = n.child[c];
+      if (n.end && i < s.length - 1 && s[i + 1] == '/') return true;
+    }
+    return false;
+  }
+}
+
+class Solution {
+  /**
+   * @param {string[]} folder
+   * @return {string[]}
+   */
+  removeSubfolders(folder) {
+    folder.sort();
+    let a = new Trie(),
+      b = [];
+    for (let s of folder) {
+      if (!a.search(s)) {
+        b.push(s);
+        a.add(s);
+      }
+    }
+    return b;
+  }
+}
 ```
 
 ## Extra Characters in a String
