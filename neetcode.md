@@ -16258,7 +16258,70 @@ https://neetcode.io/problems/extra-characters-in-a-string/question
 
 # Heap/Priority Queue
 
-##
+##　K Closest Points to Origin
+https://neetcode.io/problems/k-closest-points-to-origin/question
+
+```js
+
+```
+
+## Kth Largest Element in an Array
+
+https://neetcode.io/problems/kth-largest-element-in-an-array/question
+
+```js
+
+```
+
+## Task Scheduler
+
+https://neetcode.io/problems/task-scheduling/question
+
+```js
+
+```
+
+## Design Twitter
+
+https://neetcode.io/problems/design-twitter-feed/question
+
+```js
+
+```
+
+## Least Number of Unique Integers after K Removals
+
+https://leetcode.com/problems/least-number-of-unique-integers-after-k-removals/description/
+
+```js
+/**
+ * @param {number[]} arr
+ * @param {number} k
+ * @return {number}
+ */
+const findLeastNumOfUniqueInts = (arr, k) => {
+  let a = {};
+  for (let i of arr) a[i] = (a[i] ?? 0) + 1;
+  let b = Object.values(a).sort((x1, x2) => x2 - x1);
+  while (k > 0) {
+    if (--b[b.length - 1] == 0) b.pop();
+    k--;
+  }
+  return b.length;
+};
+```
+
+## Furthest Building You can Reach
+
+https://leetcode.com/problems/furthest-building-you-can-reach/description/
+
+```js
+
+```
+
+## Maximun Subsequence Score
+
+https://leetcode.com/problems/maximum-subsequence-score/description/
 
 ---
 
