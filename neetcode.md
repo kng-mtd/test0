@@ -1,24 +1,24 @@
 # memo
 
-## operator ? / ??
+## operator ? / ?. / ??
 
-| 構文        | 具体例                 | 結果        | 意味                                      |
-| ----------- | ---------------------- | ----------- | ----------------------------------------- |
-| `a ? b : c` | `5 > 3 ? 'yes' : 'no'` | `'yes'`     | 条件`a`が真なら`b`、偽なら`c`             |
-| `a?.[i]`    | `arr?.[i]`             | `a[i]`      | `arr`があれば`arr[2]`                     |
-| `a?.[i]`    | `undefined?.[i]`       | `undefined` | `arr`がなければundefined、エラーにしない  |
-| `a?.b`      | `obj?.key`             | `'obj.key'` | `obj`があれば`key`を取得                  |
-| `a?.b`      | `undefined?.name`      | `undefined` | `obj`がなければundefined、エラーにしない  |
-| `a?.b()`    | `obj?.fn()`            | `'fn()'`    | `obj`があればメソッド実行                 |
-| `a?.b()`    | `undefined?.fn()`      | `undefined` | `obj`がなければ何もしない、エラーにしない |
-| `a?.()`     | `fn?.()`               | `fn()`      | 関数`fn`があれば実行                      |
-| `a?.()`     | `undefined?.()`        | `undefined` | 関数がなければ何もしない                  |
-| `a ?? b`    | `undefined ?? 10`      | `10`        | `undefined`なら`10`                       |
-| `a ?? b`    | `null ?? 10`           | `10`        | `null`なら`10`                            |
-| `a ?? b`    | `0 ?? 10`              | `0`         | `0`はそのまま                             |
-| `a ?? b`    | `'' ?? 'abc'`          | `''`        | 空文字はそのまま                          |
-| `a ??= b`   | `x=val0;x ??= val`     | `x = val0`  | `x`に値があればそのまま                   |
-| `a ??= b`   | `x ??= val`            | `x = val`   | `x`が未定義なら代入                       |
+| 構文        | 具体例                 | 結果         | 意味                                         |
+| ----------- | ---------------------- | ------------ | -------------------------------------------- |
+| `a ? b : c` | `1 > 0 ? 'yes' : 'no'` | `'yes'`      | 条件`a`が真なら`b`、偽なら`c`                |
+| `a?.[i]`    | `arr?.[i]`             | `arr[i]`     | `arr[i]`があれば`arr[i]`                     |
+|             |                        | `undefined`  | `arr[i]`がなければundefined、エラーにしない  |
+| `a?.b`      | `obj?.key`             | `'obj.key'`  | `obj.key`があれば`obj.key`を取得             |
+|             |                        | `undefined`  | `obj`がなければundefined、エラーにしない     |
+| `a?.b()`    | `obj?.fn()`            | `'obj.fn()'` | `obj.fn`があればメソッド`fn`を実行           |
+|             |                        | `undefined`  | `obj.fn`がなければ何もしない、エラーにしない |
+| `a?.()`     | `fn?.()`               | `fn()`       | 関数`fn`があれば実行                         |
+|             |                        | `undefined`  | 関数`fn`がなければ何もしない、エラーにしない |
+| `a ?? b`    | `undefined ?? 1`       | `1`          | `undefined`なら`1`                           |
+|             | `null ?? 1`            | `1`          | `null`なら`1`                                |
+|             | `0 ?? 1`               | `0`          | `0`はそのまま                                |
+|             | `'' ?? 'abc'`          | `''`         | 空文字はそのまま                             |
+| `a ??= b`   | `x=val0;x ??= val`     | `x = val0`   | `x`に値があればそのまま                      |
+|             | `x ??= val`            | `x = val`    | `x`が未定義なら代入                          |
 
 ## sub...
 
@@ -413,7 +413,7 @@ const get = () => {
   while (true) {
     let c = i * 2 + 1;
     if (c >= n) break;
-    if (c + 1 < n && heap[c + 1] < heap[c]) c++;
+    if (heap[c + 1] < heap[c]) c++;
     if (heap[c] >= x) break;
     heap[i] = heap[c];
     i = c;
@@ -440,20 +440,20 @@ class MinHeap {
       a[i] = a[p];
       i = p;
     }
-    a[i] = x;
+    a[i] = num;
   }
 
   get() {
     const a = this.heap,
-      x = a.pop();
-    n = a.length;
+      x = a.pop(),
+      n = a.length;
     if (!n) return x;
     const b = a[0];
     let i = 0;
     while (true) {
       let c = i * 2 + 1;
       if (c >= n) break;
-      if (c + 1 < n && a[c + 1] < a[c]) c++;
+      if (a[c + 1] < a[c]) c++;
       if (a[c] >= x) break;
       a[i] = a[c];
       i = c;
@@ -5309,39 +5309,35 @@ class KthLargest {
   constructor(k, nums) {
     this.k = k;
     this.heap = [];
-    for (let i of nums) this.add(i);
+    for (let x of nums) this.add(x);
   }
 
-  /**
-   * @param {number} val
-   * @return {number}
-   */
-  add(val) {
-    this.heap.push(val);
-    let i = this.heap.length - 1;
-    while (i > 0) {
-      const a = this.heap;
+  add(x) {
+    const a = this.heap;
+    if (a.length === this.k && x <= a[0]) return a[0];
+    let i = a.length;
+    a.push(x);
+    while (i) {
       const p = (i - 1) >> 1;
-      if (a[i] >= a[p]) break;
-      [a[i], a[p]] = [a[p], a[i]];
+      if (a[p] <= x) break;
+      a[i] = a[p];
       i = p;
     }
-    if (this.heap.length > this.k) {
-      const a = this.heap,
-        n = a.length - 1;
-      [a[0], a[n]] = [a[n], a[0]];
-      a.pop();
-      let i = 0;
+    a[i] = x;
+    if (a.length > this.k) {
+      x = a.pop();
+      i = 0;
       while (true) {
         let c = i * 2 + 1;
-        if (c >= n) break;
-        if (c + 1 < n && a[c + 1] < a[c]) c++;
-        if (a[i] <= a[c]) break;
-        [a[i], a[c]] = [a[c], a[i]];
+        if (c >= a.length) break;
+        if (a[c + 1] < a[c]) c++;
+        if (a[c] >= x) break;
+        a[i] = a[c];
         i = c;
       }
+      a[i] = x;
     }
-    return this.heap[0];
+    return a[0];
   }
 }
 ```
@@ -5375,31 +5371,31 @@ class MaxHeap {
   }
   set(num) {
     const a = this.heap;
-    a.push(num);
-    let i = a.length - 1;
+    let i = a.length;
     while (i > 0) {
       const p = (i - 1) >> 1;
-      if (a[p] >= a[i]) break;
-      [a[p], a[i]] = [a[i], a[p]];
+      if (a[p] >= num) break;
+      a[i] = a[p];
       i = p;
     }
+    a[i] = num;
   }
   get() {
     const a = this.heap,
-      n = a.length - 1;
-    if (n == -1) return undefined;
-    if (n == 0) return a.pop();
+      x = a.pop(),
+      n = a.length;
+    if (!n) return x;
     const b = a[0];
-    a[0] = a.pop();
     let i = 0;
     while (true) {
       let c = i * 2 + 1;
       if (c >= n) break;
-      if (c + 1 < n && a[c + 1] > a[c]) c++;
-      if (a[c] <= a[i]) break;
-      [a[i], a[c]] = [a[c], a[i]];
+      if (a[c + 1] > a[c]) c++;
+      if (a[c] <= x) break;
+      a[i] = a[c];
       i = c;
     }
+    a[i] = x;
     return b;
   }
   size() {
@@ -5451,31 +5447,31 @@ class MaxHeap {
   }
   set(num) {
     const a = this.heap;
-    a.push(num);
-    let i = a.length - 1;
+    let i = a.length;
     while (i > 0) {
       const p = (i - 1) >> 1;
-      if (a[p] >= a[i]) break;
-      [a[p], a[i]] = [a[i], a[p]];
+      if (a[p] >= num) break;
+      a[i] = a[p];
       i = p;
     }
+    a[i] = num;
   }
   get() {
     const a = this.heap,
-      n = a.length - 1;
-    if (n == -1) return undefined;
-    if (n == 0) return a.pop();
+      x = a.pop(),
+      n = a.length;
+    if (!n) return x;
     const b = a[0];
-    a[0] = a.pop();
     let i = 0;
     while (true) {
       let c = i * 2 + 1;
       if (c >= n) break;
-      if (c + 1 < n && a[c + 1] > a[c]) c++;
-      if (a[c] <= a[i]) break;
-      [a[i], a[c]] = [a[c], a[i]];
+      if (a[c + 1] > a[c]) c++;
+      if (a[c] <= x) break;
+      a[i] = a[c];
       i = c;
     }
+    a[i] = x;
     return b;
   }
   size() {
