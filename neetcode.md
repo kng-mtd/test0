@@ -386,7 +386,7 @@ const buildTree = (arr) => {
 
 ---
 
-## heap
+## Heap
 
 Min-heap Function
 
@@ -16417,45 +16417,42 @@ const furthestBuilding = (heights, bricks, ladders) => {
 const furthestBuilding = (heights, bricks, ladders) => {
   let heap = [];
 
-  const push = (x) => {
+  const set = (x) => {
     let i = heap.length;
-    heap.push(x);
     while (i > 0) {
       const p = (i - 1) >> 1;
-      if (heap[p] >= x) break;
+      if (heap[p] <= x) break;
       heap[i] = heap[p];
       i = p;
     }
     heap[i] = x;
   };
 
-  const pop = () => {
-    const x = heap[0];
-    const a = heap.pop();
-    if (heap.length) {
-      let i = 0;
-      while (true) {
-        let c = i * 2 + 1;
-        if (c >= heap.length) break;
-        if (c + 1 < heap.length && heap[c + 1] > heap[c]) c++;
-        if (heap[c] <= a) break;
-        heap[i] = heap[c];
-        i = c;
-      }
-      heap[i] = a;
+  const get = () => {
+    const x = heap.pop(),
+      n = heap.length;
+    if (!n) return x;
+    const a = heap[0];
+    let i = 0;
+    while (true) {
+      let c = i * 2 + 1;
+      if (c >= n) break;
+      if (c + 1 < n && heap[c + 1] < heap[c]) c++;
+      if (heap[c] >= x) break;
+      heap[i] = heap[c];
+      i = c;
     }
-    return x;
+    heap[i] = x;
+    return a;
   };
 
   for (let i = 1; i < heights.length; i++) {
     const d = heights[i] - heights[i - 1];
     if (d <= 0) continue;
-    push(d);
-    bricks -= d;
-    if (bricks < 0) {
-      if (ladders == 0) return i - 1;
-      bricks += pop();
-      ladders--;
+    set(d);
+    if (heap.length > ladders) {
+      bricks -= get();
+      if (bricks < 0) return i - 1;
     }
   }
   return heights.length - 1;
@@ -16467,7 +16464,91 @@ const furthestBuilding = (heights, bricks, ladders) => {
 https://leetcode.com/problems/maximum-subsequence-score/description/
 
 ```js
+/**
+ * @param {number[]} nums1
+ * @param {number[]} nums2
+ * @param {number} k
+ * @return {number}
+ */
+const maxScore = (nums1, nums2, k) => {
+  const n = nums1.length;
+  let a = [];
+  for (let i = 0; i < n; i++) a.push([nums1[i], nums2[i]]);
+  a.sort((x1, x2) => x2[0] - x1[0]);
+  let d0 = -Infinity,
+    e = -1;
+  for (let i = 0; i < n; i++) {
+    const b = a[i][1];
+    if (b == e) continue;
+    e = b;
+    let c = 0,
+      d = 0;
+    for (let ii = 0; ii < n && c < k; ii++) {
+      if (a[ii][1] >= b) {
+        c++;
+        d += a[ii][0];
+      }
+    }
+    if (c == k) d0 = Math.max(d * b, d0);
+  }
+  return d0;
+};
+```
 
+```js
+/**
+ * @param {number[]} nums1
+ * @param {number[]} nums2
+ * @param {number} k
+ * @return {number}
+ */
+const maxScore = (nums1, nums2, k) => {
+  const heap = [];
+
+  const set = (x) => {
+    let i = heap.length;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (heap[p] <= x) break;
+      heap[i] = heap[p];
+      i = p;
+    }
+    heap[i] = x;
+  };
+
+  const get = () => {
+    const x = heap.pop(),
+      n = heap.length;
+    if (!n) return x;
+    const a = heap[0];
+    let i = 0;
+    while (true) {
+      let c = i * 2 + 1;
+      if (c >= n) break;
+      if (c + 1 < n && heap[c + 1] < heap[c]) c++;
+      if (heap[c] >= x) break;
+      heap[i] = heap[c];
+      i = c;
+    }
+    heap[i] = x;
+    return a;
+  };
+
+  const n = nums1.length;
+  let a = [];
+  for (let i = 0; i < n; i++) a.push([nums1[i], nums2[i]]);
+  a.sort((x, y) => y[1] - x[1]);
+  let b = 0,
+    c = 0;
+  for (let i = 0; i < n; i++) {
+    const [x, y] = a[i];
+    set(x);
+    b += x;
+    if (heap.length > k) b -= get();
+    if (heap.length == k) c = Math.max(b * y, c);
+  }
+  return c;
+};
 ```
 
 ---
