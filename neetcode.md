@@ -16247,7 +16247,29 @@ class Solution {
 https://neetcode.io/problems/extra-characters-in-a-string/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @param {string[]} dictionary
+   * @return {number}
+   */
+  minExtraChar(s, dictionary) {
+    let dp = Array(s.length + 1).fill(-1);
+    dp[s.length] = 0;
+    const dfs = (i) => {
+      if (dp[i] != -1) return dp[i];
+      let a = 1 + dfs(i + 1);
+      for (let ii = i; ii < s.length; ii++) {
+        if (dictionary.includes(s.slice(i, ii + 1))) {
+          a = Math.min(a, dfs(ii + 1));
+        }
+      }
+      dp[i] = a;
+      return a;
+    };
+    return dfs(0);
+  }
+}
 ```
 
 ---
@@ -16316,7 +16338,89 @@ const findLeastNumOfUniqueInts = (arr, k) => {
 https://leetcode.com/problems/furthest-building-you-can-reach/description/
 
 ```js
+/**
+ * @param {number[]} heights
+ * @param {number} bricks
+ * @param {number} ladders
+ * @return {number}
+ */
+const furthestBuilding = (heights, bricks, ladders) => {
+  let a = [],
+    b = heights[0],
+    i = 1;
+  while (i < heights.length) {
+    const c = heights[i] - b;
+    if (c > 0) {
+      a.push(c);
+      bricks -= c;
+      if (bricks < 0) {
+        if (ladders == 0) return i - 1;
+        ladders--;
+        const ii = a.indexOf(Math.max(...a));
+        bricks += a[ii];
+        a[ii] = 0;
+      }
+    }
+    b = heights[i];
+    i++;
+  }
+  return i - 1;
+};
+```
 
+```js
+/**
+ * @param {number[]} heights
+ * @param {number} bricks
+ * @param {number} ladders
+ * @return {number}
+ */
+const furthestBuilding = (heights, bricks, ladders) => {
+  let heap = [];
+
+  const push = (x) => {
+    let i = heap.length;
+    heap.push(x);
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (heap[p] >= x) break;
+      heap[i] = heap[p];
+      i = p;
+    }
+    heap[i] = x;
+  };
+
+  const pop = () => {
+    const x = heap[0];
+    const a = heap.pop();
+    if (heap.length) {
+      let i = 0;
+      while (true) {
+        let c = i * 2 + 1;
+        if (c >= heap.length) break;
+        if (c + 1 < heap.length && heap[c + 1] > heap[c]) c++;
+        if (heap[c] <= a) break;
+        heap[i] = heap[c];
+        i = c;
+      }
+      heap[i] = a;
+    }
+    return x;
+  };
+
+  for (let i = 1; i < heights.length; i++) {
+    const d = heights[i] - heights[i - 1];
+    if (d <= 0) continue;
+    push(d);
+    bricks -= d;
+    if (bricks < 0) {
+      if (ladders == 0) return i - 1;
+      bricks += pop();
+      ladders--;
+    }
+  }
+  return heights.length - 1;
+};
 ```
 
 ## Maximun Subsequence Score
