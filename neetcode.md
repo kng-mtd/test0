@@ -386,7 +386,44 @@ const buildTree = (arr) => {
 
 ---
 
-## heap class
+## heap
+
+Min-heap Function
+
+```js
+let heap = [];
+
+const set = (x) => {
+  let i = heap.length;
+  while (i > 0) {
+    const p = (i - 1) >> 1;
+    if (heap[p] <= x) break;
+    heap[i] = heap[p];
+    i = p;
+  }
+  heap[i] = x;
+};
+
+const get = () => {
+  const x = heap.pop(),
+    n = heap.length;
+  if (!n) return x;
+  const a = heap[0];
+  let i = 0;
+  while (true) {
+    let c = i * 2 + 1;
+    if (c >= n) break;
+    if (c + 1 < n && heap[c + 1] < heap[c]) c++;
+    if (heap[c] >= x) break;
+    heap[i] = heap[c];
+    i = c;
+  }
+  heap[i] = x;
+  return a;
+};
+```
+
+Min-heap Class
 
 ```js
 class MinHeap {
@@ -396,32 +433,32 @@ class MinHeap {
 
   set(num) {
     const a = this.heap;
-    a.push(num);
-    let i = a.length - 1;
+    let i = a.length;
     while (i > 0) {
       const p = (i - 1) >> 1;
       if (a[p] <= a[i]) break;
-      [a[p], a[i]] = [a[i], a[p]];
+      a[i] = a[p];
       i = p;
     }
+    a[i] = x;
   }
 
   get() {
     const a = this.heap,
-      n = a.length - 1;
-    if (n == -1) return undefined;
-    if (n == 0) return a.pop();
+      x = a.pop();
+    n = a.length;
+    if (!n) return x;
     const b = a[0];
-    a[0] = a.pop();
     let i = 0;
     while (true) {
       let c = i * 2 + 1;
       if (c >= n) break;
       if (c + 1 < n && a[c + 1] < a[c]) c++;
-      if (a[c] >= a[i]) break;
-      [a[i], a[c]] = [a[c], a[i]];
+      if (a[c] >= x) break;
+      a[i] = a[c];
       i = c;
     }
+    a[i] = x;
     return b;
   }
 
@@ -434,6 +471,8 @@ class MinHeap {
   }
 }
 ```
+
+General heap Class
 
 ```js
 class Heap {
@@ -16426,6 +16465,10 @@ const furthestBuilding = (heights, bricks, ladders) => {
 ## Maximun Subsequence Score
 
 https://leetcode.com/problems/maximum-subsequence-score/description/
+
+```js
+
+```
 
 ---
 
