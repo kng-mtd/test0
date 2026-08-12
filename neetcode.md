@@ -16315,11 +16315,27 @@ class Solution {
 
 # Heap/Priority Queue
 
-##　K Closest Points to Origin
+## K Closest Points to Origin
+
 https://neetcode.io/problems/k-closest-points-to-origin/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} points
+   * @param {number} k
+   * @return {number[][]}
+   */
+  kClosest(points, k) {
+    for (let i = 0; i < points.length; i++) {
+      points[i].push(points[i][0] ** 2 + points[i][1] ** 2);
+    }
+    points.sort((x1, x2) => x1[2] - x2[2]);
+    let a = [];
+    for (let i = 0; i < k; i++) a.push([points[i][0], points[i][1]]);
+    return a;
+  }
+}
 ```
 
 ## Kth Largest Element in an Array
@@ -16545,6 +16561,172 @@ const maxScore = (nums1, nums2, k) => {
   }
   return c;
 };
+```
+
+## Single Threaded CPU
+
+https://neetcode.io/problems/single-threaded-cpu/question
+
+```js
+
+```
+
+## Seat Reservation Manager
+
+https://leetcode.com/problems/seat-reservation-manager/description/
+
+```js
+/**
+ * @param {number} n
+ */
+const SeatManager = function (n) {
+  this.a = [];
+  for (let i = 1; i <= n; i++) this.a.push(i);
+};
+
+/**
+ * @return {number}
+ */
+SeatManager.prototype.reserve = function () {
+  const i = this.a.indexOf(Math.min(...this.a));
+  this.a[i] = Infinity;
+  return i + 1;
+};
+
+/**
+ * @param {number} seatNumber
+ * @return {void}
+ */
+SeatManager.prototype.unreserve = function (seatNumber) {
+  this.a[seatNumber - 1] = seatNumber;
+};
+
+/**
+ * Your SeatManager object will be instantiated and called as such:
+ * var obj = new SeatManager(n)
+ * var param_1 = obj.reserve()
+ * obj.unreserve(seatNumber)
+ */
+```
+
+```js
+/**
+ * @param {number} n
+ */
+const SeatManager = function (n) {
+  this.heap = [];
+  for (let i = 1; i <= n; i++) {
+    this.set(i);
+  }
+};
+
+/**
+ * MinHeap push
+ */
+SeatManager.prototype.set = function (x) {
+  const heap = this.heap;
+  let i = heap.length;
+  while (i > 0) {
+    const p = (i - 1) >> 1;
+    if (heap[p] <= x) break;
+    heap[i] = heap[p];
+    i = p;
+  }
+  heap[i] = x;
+};
+
+/**
+ * MinHeap pop
+ */
+SeatManager.prototype.get = function () {
+  const heap = this.heap,
+    x = heap.pop(),
+    n = heap.length;
+  if (!n) return x;
+  const a = heap[0];
+  let i = 0;
+  while (true) {
+    let c = i * 2 + 1;
+    if (c >= n) break;
+    if (heap[c + 1] < heap[c]) c++;
+    if (heap[c] >= x) break;
+    heap[i] = heap[c];
+    i = c;
+  }
+  heap[i] = x;
+  return a;
+};
+
+/**
+ * @return {number}
+ */
+SeatManager.prototype.reserve = function () {
+  return this.get();
+};
+
+/**
+ * @param {number} seatNumber
+ * @return {void}
+ */
+SeatManager.prototype.unreserve = function (seatNumber) {
+  this.set(seatNumber);
+};
+```
+
+## Process Tasks Using Servers
+
+https://leetcode.com/problems/process-tasks-using-servers/description/
+
+```js
+
+```
+
+## Find the Kth Largest Integer in the Array
+
+https://leetcode.com/problems/find-the-kth-largest-integer-in-the-array/description/
+
+```js
+/**
+ * @param {string[]} nums
+ * @param {number} k
+ * @return {string}
+ */
+const kthLargestNumber = (nums, k) => {
+  nums.sort((x1, x2) => (BigInt(x2) > BigInt(x1) ? 1 : -1));
+  return nums[k - 1];
+};
+```
+
+## Reorganize String
+
+https://neetcode.io/problems/reorganize-string/question
+
+```js
+
+```
+
+## Longest Happy String
+
+https://neetcode.io/problems/longest-happy-string/question
+
+```js
+
+```
+
+## Car Pooling
+
+https://neetcode.io/problems/car-pooling/question
+
+```js
+
+```
+
+## Range Sum of Sorted Subarray Sums
+
+https://leetcode.com/problems/range-sum-of-sorted-subarray-sums/description/
+
+```js
+
 ```
 
 ---
