@@ -431,16 +431,16 @@ class MinHeap {
     this.heap = [...nums].sort((x1, x2) => x1 - x2);
   }
 
-  set(num) {
+  set(x) {
     const a = this.heap;
     let i = a.length;
     while (i > 0) {
       const p = (i - 1) >> 1;
-      if (a[p] <= a[i]) break;
+      if (a[p] <= x) break;
       a[i] = a[p];
       i = p;
     }
-    a[i] = num;
+    a[i] = x;
   }
 
   get() {
@@ -16343,7 +16343,53 @@ class Solution {
 https://neetcode.io/problems/kth-largest-element-in-an-array/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  findKthLargest(nums, k) {
+    return nums.sort((x1, x2) => x2 - x1)[k - 1];
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  findKthLargest(nums, k) {
+    const a = [];
+    for (let x of nums) {
+      let i = a.length;
+      while (i) {
+        const p = (i - 1) >> 1;
+        if (a[p] <= x) break;
+        a[i] = a[p];
+        i = p;
+      }
+      a[i] = x;
+      if (a.length > k) {
+        const x = a.pop();
+        let i = 0;
+        while (true) {
+          let c = i * 2 + 1;
+          if (c >= a.length) break;
+          if (a[c + 1] < a[c]) c++;
+          if (a[c] >= x) break;
+          a[i] = a[c];
+          i = c;
+        }
+        a[i] = x;
+      }
+    }
+    return a[0];
+  }
+}
 ```
 
 ## Task Scheduler
@@ -16678,7 +16724,104 @@ SeatManager.prototype.unreserve = function (seatNumber) {
 https://leetcode.com/problems/process-tasks-using-servers/description/
 
 ```js
+/**
+ * @param {number[]} servers
+ * @param {number[]} tasks
+ * @return {number[]}
+ */
+const assignTasks = (servers, tasks) => {
+  const n = servers.length;
+  let a = [],
+    b = [];
+  for (let i = 0; i < n; i++) a[i] = [i, servers[i]];
+  a.sort((x1, x2) => x1[1] - x2[1]);
+  let a0 = [],
+    a1 = Array(n).fill(0);
+  for (let i = 0; i < n; i++) a0[i] = a[i][0];
+  let c = 0,
+    d = 0;
+  while (d < tasks.length) {
+    c = Math.max(c, d);
+    let e = false;
+    for (let i = 0; i < n; i++) {
+      if (a1[i] <= c) {
+        b.push(a0[i]);
+        a1[i] = c + tasks[d];
+        d++;
+        e = true;
+        break;
+      }
+    }
+    if (!e) c = Math.min(...a1);
+  }
+  return b;
+};
+```
 
+```js
+/**
+ * @param {number[]} servers
+ * @param {number[]} tasks
+ * @return {number[]}
+ */
+const assignTasks = (servers, tasks) => {
+  const n = servers.length;
+  let free = [],
+    busy = [],
+    ans = [];
+
+  const freeLess = (a, b) => a[0] < b[0] || (a[0] == b[0] && a[1] < b[1]);
+  const busyLess = (a, b) => a[0] < b[0] || (a[0] == b[0] && (a[1] < b[1] || (a[1] == b[1] && a[2] < b[2])));
+
+  const set = (heap, x, less) => {
+    let i = heap.length;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (!less(x, heap[p])) break;
+      heap[i] = heap[p];
+      i = p;
+    }
+    heap[i] = x;
+  };
+
+  const get = (heap, less) => {
+    const x = heap.pop(),
+      n = heap.length;
+    if (!n) return x;
+    const a = heap[0];
+    let i = 0;
+    while (true) {
+      let c = i * 2 + 1;
+      if (c >= n) break;
+      if (c + 1 < n && less(heap[c + 1], heap[c])) c++;
+      if (!less(heap[c], x)) break;
+      heap[i] = heap[c];
+      i = c;
+    }
+    heap[i] = x;
+    return a;
+  };
+  for (let i = 0; i < n; i++) set(free, [servers[i], i], freeLess);
+  let time = 0;
+  for (let i = 0; i < tasks.length; i++) {
+    time = Math.max(time, i);
+    while (busy.length && busy[0][0] <= time) {
+      const [end, weight, index] = get(busy, busyLess);
+      set(free, [weight, index], freeLess);
+    }
+    if (!free.length) {
+      time = busy[0][0];
+      while (busy.length && busy[0][0] <= time) {
+        const [end, weight, index] = get(busy, busyLess);
+        set(free, [weight, index], freeLess);
+      }
+    }
+    const [weight, index] = get(free, freeLess);
+    ans.push(index);
+    set(busy, [time + tasks[i], weight, index], busyLess);
+  }
+  return ans;
+};
 ```
 
 ## Find the Kth Largest Integer in the Array
@@ -16726,7 +16869,25 @@ https://neetcode.io/problems/car-pooling/question
 https://leetcode.com/problems/range-sum-of-sorted-subarray-sums/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @param {number} n
+ * @param {number} left
+ * @param {number} right
+ * @return {number}
+ */
+const rangeSum = (nums, n, left, right) => {
+  let a = [];
+  for (let i = 0; i < n; i++) {
+    let b = 0;
+    for (let ii = i; ii < n; ii++) {
+      b += nums[ii];
+      a.push(b);
+    }
+  }
+  a.sort((x1, x2) => x1 - x2);
+  return a.slice(left - 1, right).reduce((a, x) => (a + x) % (1e9 + 7));
+};
 ```
 
 ---
