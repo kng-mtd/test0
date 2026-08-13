@@ -5523,6 +5523,46 @@ class Solution {
 
 ---
 
+# Back Tracking
+
+## Sum of All Subsets XOR Total
+
+https://neetcode.io/problems/sum-of-all-subset-xor-totals/question
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  subsetXORSum(nums) {
+    let a = 0;
+    for (let i of nums) a |= i;
+    return a << (nums.length - 1);
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  subsetXORSum(nums) {
+    const dfs = (i, x) => (i == nums.length ? x : dfs(i + 1, x ^ nums[i]) + dfs(i + 1, x));
+
+    return dfs(0, 0);
+  }
+}
+```
+
+---
+
+---
+
+---
+
 # Intervals
 
 ## Meeting Rooms
@@ -5757,46 +5797,6 @@ const canBeEqual = (target, arr) => {
   }
   return true;
 };
-```
-
----
-
----
-
----
-
-# Back Tracking
-
-## Sum of All Subsets XOR Total
-
-https://neetcode.io/problems/sum-of-all-subset-xor-totals/question
-
-```js
-class Solution {
-  /**
-   * @param {number[]} nums
-   * @return {number}
-   */
-  subsetXORSum(nums) {
-    let a = 0;
-    for (let i of nums) a |= i;
-    return a << (nums.length - 1);
-  }
-}
-```
-
-```js
-class Solution {
-  /**
-   * @param {number[]} nums
-   * @return {number}
-   */
-  subsetXORSum(nums) {
-    const dfs = (i, x) => (i == nums.length ? x : dfs(i + 1, x ^ nums[i]) + dfs(i + 1, x));
-
-    return dfs(0, 0);
-  }
-}
 ```
 
 ---
@@ -17399,6 +17399,14 @@ const countMaxOrSubsets = (nums) => {
   return a;
 };
 ```
+
+---
+
+---
+
+---
+
+# Intervals
 
 ---
 
