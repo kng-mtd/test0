@@ -5586,35 +5586,6 @@ class Solution {
    * @returns {boolean}
    */
   canAttendMeetings(intervals) {
-    let a = [];
-    for (const { start: s0, end: e0 } of intervals) {
-      for (const [s, e] of a) {
-        if (s0 < e && e0 > s) return false;
-      }
-      a.push([s0, e0]);
-    }
-    return true;
-  }
-}
-```
-
-```js
-/**
- * Definition of Interval:
- * class Interval {
- *   constructor(start, end) {
- *     this.start = start;
- *     this.end = end;
- *   }
- * }
- */
-
-class Solution {
-  /**
-   * @param {Interval[]} intervals
-   * @returns {boolean}
-   */
-  canAttendMeetings(intervals) {
     intervals.sort((x1, x2) => x1.start - x2.start);
     for (let i = 1; i < intervals.length; i++) {
       if (intervals[i].start < intervals[i - 1].end) return false;
@@ -16397,7 +16368,23 @@ class Solution {
 https://neetcode.io/problems/task-scheduling/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {character[]} tasks
+   * @param {number} n
+   * @return {number}
+   */
+  leastInterval(tasks, n) {
+    let a = {};
+    for (let i of tasks) a[i] = (a[i] ?? 0) + 1;
+    let b = Object.values(a).sort((x1, x2) => x2 - x1);
+    const c = b[0] - 1;
+    let d = c * n,
+      i = 1;
+    while (d > 0 && i < b.length) d -= Math.min(c, b[i++]);
+    return d + tasks.length;
+  }
+}
 ```
 
 ## Design Twitter
@@ -17407,6 +17394,8 @@ const countMaxOrSubsets = (nums) => {
 ---
 
 # Intervals
+
+##
 
 ---
 
