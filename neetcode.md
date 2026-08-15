@@ -16392,7 +16392,53 @@ class Solution {
 https://neetcode.io/problems/design-twitter-feed/question
 
 ```js
+class Twitter {
+  constructor() {
+    this.twt = [];
+    this.flw = [];
+  }
 
+  /**
+   * @param {number} userId
+   * @param {number} tweetId
+   * @return {void}
+   */
+  postTweet(userId, tweetId) {
+    this.twt.push([userId, tweetId]);
+  }
+
+  /**
+   * @param {number} userId
+   * @return {number[]}
+   */
+  getNewsFeed(userId) {
+    const a = [],
+      b = this.flw[userId];
+    for (let i = this.twt.length - 1; i >= 0 && a.length < 10; i--) {
+      const [uid, tid] = this.twt[i];
+      if (uid == userId || b?.has(uid)) a.push(tid);
+    }
+    return a;
+  }
+
+  /**
+   * @param {number} followerId
+   * @param {number} followeeId
+   * @return {void}
+   */
+  follow(followerId, followeeId) {
+    (this.flw[followerId] ??= new Set()).add(followeeId);
+  }
+
+  /**
+   * @param {number} followerId
+   * @param {number} followeeId
+   * @return {void}
+   */
+  unfollow(followerId, followeeId) {
+    this.flw[followerId]?.delete(followeeId);
+  }
+}
 ```
 
 ## Least Number of Unique Integers after K Removals
@@ -17395,7 +17441,103 @@ const countMaxOrSubsets = (nums) => {
 
 # Intervals
 
-##
+## Insert Interval
+
+https://neetcode.io/problems/insert-new-interval/question
+
+```js
+
+```
+
+## Merge Intervals
+
+https://neetcode.io/problems/merge-intervals/question
+
+```js
+
+```
+
+## Non-overlapping Intervals
+
+https://neetcode.io/problems/non-overlapping-intervals/question
+
+```js
+
+```
+
+## Interval List Intersections
+
+https://neetcode.io/problems/interval-list-intersections/question
+
+```js
+
+```
+
+## Meeting Rooms II
+
+https://neetcode.io/problems/meeting-schedule-ii/question
+
+```js
+
+```
+
+## Divide Intervals Into Minimum Number of Groups
+
+https://leetcode.com/problems/divide-intervals-into-minimum-number-of-groups/description/
+
+```js
+/**
+ * @param {number[][]} intervals
+ * @return {number}
+ */
+const minGroups = (intervals) => {
+  let l = [],
+    r = [];
+  for (let x of intervals) {
+    l.push(x[0]);
+    r.push(x[1]);
+  }
+  l.sort((x1, x2) => x1 - x2);
+  r.sort((x1, x2) => x1 - x2);
+  let a = 0,
+    b = 0,
+    i1 = 0,
+    i2 = 0;
+  while (i1 < l.length) {
+    if (l[i1] <= r[i2]) {
+      (i1++, b++);
+    } else {
+      (i2++, b--);
+    }
+    a = Math.max(b, a);
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number[][]} intervals
+ * @return {number}
+ */
+const minGroups = (intervals) => {
+  let a = Array(1e6 + 2).fill(0);
+  for (let x of intervals) {
+    a[x[0]]++;
+    a[x[1] + 1]--;
+  }
+  for (let i = 1; i < a.length; i++) a[i] += a[i - 1];
+  return Math.max(...a);
+};
+```
+
+## Remove Covered Intervals
+
+https://leetcode.com/problems/remove-covered-intervals/description/
+
+```js
+
+```
 
 ---
 
