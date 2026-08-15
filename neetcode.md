@@ -17536,6 +17536,83 @@ const minGroups = (intervals) => {
 https://leetcode.com/problems/remove-covered-intervals/description/
 
 ```js
+/**
+ * @param {number[][]} intervals
+ * @return {number}
+ */
+const removeCoveredIntervals = (intervals) => {
+  intervals.sort((x1, x2) => x1[0] - x2[0] || x2[1] - x1[1]);
+  let a = 0,
+    r0 = 0;
+  for (let [l, r] of intervals) {
+    if (r > r0) {
+      a++;
+      r0 = r;
+    }
+  }
+  return a;
+};
+```
+
+## Minimum Number of Arrows to Burst Baloons
+
+https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/description/
+
+```js
+/**
+ * @param {number[][]} points
+ * @return {number}
+ */
+const findMinArrowShots = (points) => {
+  points.sort((x1, x2) => x1[1] - x2[1]);
+  let a = 1,
+    r0 = points[0][1];
+  for (let [l, r] of points.slice(1)) {
+    if (l <= r0) continue;
+    a++;
+    r0 = r;
+  }
+  return a;
+};
+```
+
+## The Number of the Smallest Unoccupied Chair
+
+https://leetcode.com/problems/the-number-of-the-smallest-unoccupied-chair/description/
+
+```js
+
+```
+
+## Check if Grid can be Cut into Sections
+
+https://leetcode.com/problems/check-if-grid-can-be-cut-into-sections/description/
+
+```js
+
+```
+
+## My Calendar I
+
+https://neetcode.io/problems/my-calendar-i/question
+
+```js
+
+```
+
+## My Calendar II
+
+https://leetcode.com/problems/my-calendar-ii/description/
+
+```js
+
+```
+
+## Count Days Without Meetings
+
+https://leetcode.com/problems/count-days-without-meetings/description/
+
+```js
 
 ```
 
