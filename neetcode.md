@@ -17523,14 +17523,8 @@ https://leetcode.com/problems/divide-intervals-into-minimum-number-of-groups/des
  * @return {number}
  */
 const minGroups = (intervals) => {
-  let l = [],
-    r = [];
-  for (let x of intervals) {
-    l.push(x[0]);
-    r.push(x[1]);
-  }
-  l.sort((x1, x2) => x1 - x2);
-  r.sort((x1, x2) => x1 - x2);
+  let l = intervals.map((x) => x[0]).sort((x1, x2) => x1 - x2);
+  let r = intervals.map((x) => x[1]).sort((x1, x2) => x1 - x2);
   let a = 0,
     b = 0,
     i1 = 0,
@@ -17613,7 +17607,22 @@ const findMinArrowShots = (points) => {
 https://leetcode.com/problems/the-number-of-the-smallest-unoccupied-chair/description/
 
 ```js
-
+/**
+ * @param {number[][]} times
+ * @param {number} targetFriend
+ * @return {number}
+ */
+const smallestChair = (times, targetFriend) => {
+  times = times.map((x, i) => [x[0], x[1], i]).sort((x1, x2) => x1[0] - x2[0]);
+  const n = times.length;
+  let a = Array(n).fill(0);
+  for (let [l, r, i] of times) {
+    let ii = 0;
+    while (a[ii] > l) ii++;
+    if (i == targetFriend) return ii;
+    a[ii] = r;
+  }
+};
 ```
 
 ## Check if Grid can be Cut into Sections
@@ -17621,7 +17630,33 @@ https://leetcode.com/problems/the-number-of-the-smallest-unoccupied-chair/descri
 https://leetcode.com/problems/check-if-grid-can-be-cut-into-sections/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @param {number[][]} rectangles
+ * @return {boolean}
+ */
+const checkValidCuts = (n, rectangles) => {
+  let x = rectangles.map((x) => [x[0], x[2]]).sort((x1, x2) => x1[0] - x2[0]);
+  let y = rectangles.map((x) => [x[1], x[3]]).sort((x1, x2) => x1[0] - x2[0]);
+  let a = 0,
+    b = x[0][1];
+  for (let [l, r] of x.slice(1)) {
+    if (l >= b) {
+      a++;
+      if (a == 2) return true;
+      b = r;
+    } else b = Math.max(r, b);
+  }
+  ((a = 0), (b = y[0][1]));
+  for (let [l, r] of y.slice(1)) {
+    if (l >= b) {
+      a++;
+      if (a == 2) return true;
+      b = r;
+    } else b = Math.max(r, b);
+  }
+  return false;
+};
 ```
 
 ## My Calendar I
