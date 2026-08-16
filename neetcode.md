@@ -16647,7 +16647,39 @@ const maxScore = (nums1, nums2, k) => {
 https://neetcode.io/problems/single-threaded-cpu/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} tasks
+   * @return {number[]}
+   */
+  getOrder(tasks) {
+    const n = tasks.length;
+    let a = [];
+    for (let i = 0; i < n; i++) a.push([i, tasks[i][0], tasks[i][1]]);
+    a.sort((x1, x2) => x2[1] - x1[1]);
+    let b = [],
+      t = a.at(-1)[1],
+      q = [],
+      qid = [];
+    while (b.length < n) {
+      while (a.length && a.at(-1)[1] <= t) {
+        const c = a.pop();
+        qid.push(c[0]);
+        q.push(c[2]);
+      }
+      const c = Math.min(...q);
+      if (c == Infinity) {
+        t = a.at(-1)[1];
+        continue;
+      }
+      const i = q.indexOf(c);
+      b.push(qid[i]);
+      t += q[i];
+      q[i] = Infinity;
+    }
+    return b;
+  }
+}
 ```
 
 ## Seat Reservation Manager
@@ -17621,3 +17653,5 @@ https://leetcode.com/problems/count-days-without-meetings/description/
 ---
 
 ---
+
+# Greedy
