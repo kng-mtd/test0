@@ -16910,7 +16910,29 @@ const kthLargestNumber = (nums, k) => {
 https://neetcode.io/problems/reorganize-string/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {string}
+   */
+  reorganizeString(s) {
+    let a = {},
+      b = [];
+    for (let i of s) a[i] = (a[i] ?? 0) + 1;
+    for (let i in a) b.push([a[i], i]);
+    b.sort((x1, x2) => x2[0] - x1[0]);
+    s = '';
+    for (let [n, c] of b) s += c.repeat(n);
+    a = [];
+    let i = 0;
+    for (let ii = 0; ii < s.length; ii += 2) a[ii] = s[i++];
+    for (let ii = 1; ii < s.length; ii += 2) {
+      if (a[ii - 1] == s[i]) return '';
+      a[ii] = s[i++];
+    }
+    return a.join('');
+  }
+}
 ```
 
 ## Longest Happy String
