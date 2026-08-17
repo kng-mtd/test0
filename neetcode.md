@@ -17694,7 +17694,32 @@ https://neetcode.io/problems/my-calendar-i/question
 https://leetcode.com/problems/my-calendar-ii/description/
 
 ```js
+const MyCalendarTwo = function () {
+  this.a = [];
+  this.b = [];
+};
 
+/**
+ * @param {number} startTime
+ * @param {number} endTime
+ * @return {boolean}
+ */
+MyCalendarTwo.prototype.book = function (startTime, endTime) {
+  for (let [l, r] of this.b) if (l < endTime && startTime < r) return false;
+  for (let [l, r] of this.a) {
+    if (l < endTime && startTime < r) {
+      this.b.push([Math.max(l, startTime), Math.min(r, endTime)]);
+    }
+  }
+  this.a.push([startTime, endTime]);
+  return true;
+};
+
+/**
+ * Your MyCalendarTwo object will be instantiated and called as such:
+ * var obj = new MyCalendarTwo()
+ * var param_1 = obj.book(startTime,endTime)
+ */
 ```
 
 ## Count Days Without Meetings
@@ -17702,7 +17727,23 @@ https://leetcode.com/problems/my-calendar-ii/description/
 https://leetcode.com/problems/count-days-without-meetings/description/
 
 ```js
-
+/**
+ * @param {number} days
+ * @param {number[][]} meetings
+ * @return {number}
+ */
+const countDays = (days, meetings) => {
+  meetings.sort((x1, x2) => x1[0] - x2[0]);
+  let a = 0,
+    r0 = 1,
+    i = 1;
+  for (let [l, r] of meetings) {
+    if (l > i) a += l - i;
+    r0 = Math.max(r, r0);
+    i = r0 + 1;
+  }
+  return a + days - r0;
+};
 ```
 
 ---
