@@ -5708,7 +5708,7 @@ class Solution {
     for (let i of [...s]) {
       if (i == '(') b++;
       else if (i == ')') b--;
-      a = b > a ? b : a;
+      a = Math.max(b, a);
     }
     return a;
   }
@@ -5727,14 +5727,14 @@ https://leetcode.com/problems/check-if-one-string-swap-can-make-strings-equal/de
  */
 const areAlmostEqual = (s1, s2) => {
   if (s1 == s2) return true;
-  for (let i1 = 0; i1 < s1.length - 1; i1++) {
-    for (let i2 = i1 + 1; i2 < s1.length; i2++) {
-      let s = [...s1];
-      [s[i1], s[i2]] = [s[i2], s[i1]];
-      if (s.join('') == s2) return true;
+  let a = [];
+  for (let i = 0; i < s1.length; i++) {
+    if (s1[i] != s2[i]) {
+      a.push(i);
+      if (a.length > 2) return false;
     }
   }
-  return false;
+  return a.length == 2 && s1[a[0]] == s2[a[1]] && s1[a[1]] == s2[a[0]];
 };
 ```
 
@@ -16940,7 +16940,37 @@ class Solution {
 https://neetcode.io/problems/longest-happy-string/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} a
+   * @param {number} b
+   * @param {number} c
+   * @return {string}
+   */
+  longestDiverseString(a, b, c) {
+    let d = [
+        ['a', a],
+        ['b', b],
+        ['c', c],
+      ],
+      e = '';
+    while (true) {
+      d.sort((x1, x2) => x2[1] - x1[1]);
+      let [d0, d1] = d[0];
+      if (!d1) break;
+      const n = e.length;
+      if (n >= 2 && e[n - 2] == d0 && e[n - 1] == d0) {
+        if (!d[1][1]) break;
+        e += d[1][0];
+        d[1][1]--;
+      } else {
+        e += d0;
+        d[0][1]--;
+      }
+    }
+    return e;
+  }
+}
 ```
 
 ## Car Pooling
@@ -17753,3 +17783,11 @@ const countDays = (days, meetings) => {
 ---
 
 # Greedy
+
+## Minimum Operations to Make Binary Array Elements Equal to One I
+
+https://leetcode.com/problems/minimum-operations-to-make-binary-array-elements-equal-to-one-i/description/
+
+```js
+
+```
