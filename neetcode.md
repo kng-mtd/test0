@@ -16978,7 +16978,22 @@ class Solution {
 https://neetcode.io/problems/car-pooling/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} trips
+   * @param {number} capacity
+   * @return {boolean}
+   */
+  carPooling(trips, capacity) {
+    let a = Array(1001).fill(0);
+    for (let [i0, i1, i2] of trips) {
+      a[i1] += i0;
+      a[i2] -= i0;
+    }
+    for (let i = 1; i < a.length; i++) a[i] = a[i - 1] + a[i];
+    return Math.max(...a) <= capacity;
+  }
+}
 ```
 
 ## Range Sum of Sorted Subarray Sums
