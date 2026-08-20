@@ -17035,7 +17035,70 @@ const rangeSum = (nums, n, left, right) => {
 https://neetcode.io/problems/subsets/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  subsets(nums) {
+    let a = [[]];
+    for (let i of nums) {
+      const b = a.length;
+      for (let ii = 0; ii < b; ii++) {
+        a.push([...a[ii], i]);
+      }
+    }
+    return a;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  subsets(nums) {
+    const n = nums.length;
+    let a = Array(2 ** n)
+      .fill()
+      .map((x) => []);
+    for (let i = 0; i < 2 ** n; i++) {
+      const b = i.toString(2).padStart(n, 0);
+      for (let ii = 0; ii < n; ii++) {
+        if (+b[ii]) a[i].push(nums[ii]);
+      }
+    }
+    return a;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  subsets(nums) {
+    let a = [],
+      b = [];
+    const n = nums.length;
+    const dfs = (i) => {
+      if (i == n) {
+        a.push([...b]);
+        return;
+      }
+      b.push(nums[i]);
+      dfs(i + 1);
+      b.pop(); //backtracking
+      dfs(i + 1);
+    };
+    dfs(0);
+    return a;
+  }
+}
 ```
 
 ## Combination Sum
