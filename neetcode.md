@@ -17867,5 +17867,158 @@ const countDays = (days, meetings) => {
 https://leetcode.com/problems/minimum-operations-to-make-binary-array-elements-equal-to-one-i/description/
 
 ```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const minOperations = (nums) => {
+  let a = 0;
+  for (let i = 0; i < nums.length - 2; i++) {
+    if (nums[i]) continue;
+    a++;
+    [nums[i], nums[i + 1], nums[i + 2]] = [1, 1 - nums[i + 1], 1 - nums[i + 2]];
+  }
+  return !nums.at(-1) || !nums.at(-2) ? -1 : a;
+};
+```
+
+## Buildings With an Ocean View
+
+https://neetcode.io/problems/buildings-with-an-ocean-view/question
+
+```js
+
+```
+
+## Minimum Length of String After Operations
+
+https://leetcode.com/problems/minimum-length-of-string-after-operations/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minimumLength = (s) => {
+  let a = {},
+    b = 0;
+  for (let c of s) a[c] = (a[c] ?? 0) + 1;
+  for (let i of Object.values(a)) b += i % 2 ? 1 : 2;
+  return b;
+};
+```
+
+## Construct K Palindrome Strings
+
+https://leetcode.com/problems/construct-k-palindrome-strings/description/
+
+```js
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {boolean}
+ */
+const canConstruct = (s, k) => {
+  if (s.length < k) return false;
+  let a = {},
+    b = 0;
+  for (let i of s) a[i] = (a[i] ?? 0) + 1;
+  for (let i of Object.values(a)) b += i % 2 ? 1 : 0;
+  return b <= k;
+};
+```
+
+## Separate Black and White Balls
+
+https://leetcode.com/problems/separate-black-and-white-balls/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minimumSteps = (s) => {
+  let a = 0,
+    b = [...s].map(Number);
+  for (let i = 0; i < b.length - 1; i++) {
+    if (!b[i]) continue;
+    for (let ii = i + 1; ii < b.length; ii++) {
+      if (b[ii]) continue;
+      a++;
+      [b[ii - 1], b[ii]] = [0, 1];
+      i--;
+      break;
+    }
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minimumSteps = (s) => {
+  let a = 0,
+    b = 0;
+  for (let i = s.length - 1; i >= 0; i--) {
+    if (s[i] == '0') a++;
+    else b += a;
+  }
+  return b;
+};
+```
+
+## Minimum Increment to Make Array Unique
+
+https://leetcode.com/problems/minimum-increment-to-make-array-unique/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const minIncrementForUnique = (nums) => {
+  nums.sort((x1, x2) => x1 - x2);
+  let a = 0;
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] > nums[i - 1]) continue;
+    a += nums[i - 1] - nums[i] + 1;
+    nums[i] = nums[i - 1] + 1;
+  }
+  return a;
+};
+```
+
+## Maximum Subarray
+
+https://neetcode.io/problems/maximum-subarray/question
+
+```js
+
+```
+
+## Maximum Absolute Sum of Any Subarray
+
+https://leetcode.com/problems/maximum-absolute-sum-of-any-subarray/description/
+
+```js
+
+```
+
+## Maximum Sum Circular Subarray
+
+https://neetcode.io/problems/maximum-sum-circular-subarray/question
+
+```js
+
+```
+
+## Minimum Swaps to Group All 1's Together II
+
+https://leetcode.com/problems/minimum-swaps-to-group-all-1s-together-ii/description/
+
+```js
 
 ```
