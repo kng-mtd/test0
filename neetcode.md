@@ -18009,23 +18009,21 @@ https://leetcode.com/problems/maximum-absolute-sum-of-any-subarray/description/
  * @return {number}
  */
 const maxAbsoluteSum = (nums) => {
-  let a = nums[0],
-    b = a;
+  let a1 = nums[0],
+    b1 = a1,
+    a2 = a1,
+    b2 = a2;
   for (let i = 1; i < nums.length; i++) {
-    let c = a + nums[i];
-    if (nums[i] > c) a = nums[i];
-    else a = c;
-    b = Math.max(a, b);
+    let c1 = a1 + nums[i],
+      c2 = a2 + nums[i];
+    if (nums[i] > c1) a1 = nums[i];
+    else a1 = c1;
+    b1 = Math.max(a1, b1);
+    if (nums[i] < c2) a2 = nums[i];
+    else a2 = c2;
+    b2 = Math.min(a2, b2);
   }
-  const b0 = b;
-  ((a = nums[0]), (b = a));
-  for (let i = 1; i < nums.length; i++) {
-    let c = a + nums[i];
-    if (nums[i] < c) a = nums[i];
-    else a = c;
-    b = Math.min(a, b);
-  }
-  return Math.max(b0, -b);
+  return Math.max(b1, -b2);
 };
 ```
 
@@ -18040,6 +18038,52 @@ https://neetcode.io/problems/maximum-sum-circular-subarray/question
 ## Minimum Swaps to Group All 1's Together II
 
 https://leetcode.com/problems/minimum-swaps-to-group-all-1s-together-ii/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const minSwaps = (nums) => {
+  const n = nums.length,
+    a = nums.reduce((a, x) => a + x, 0);
+  let b = nums.slice(0, a).reduce((a, x) => a + x, 0),
+    b0 = b;
+  for (let i = a; i < n + a - 1; i++) {
+    b += nums[i % n] - nums[(i - a) % n];
+    b0 = Math.max(b, b0);
+  }
+  return a - b0;
+};
+```
+
+## Longest Turbulent Subarray
+
+https://neetcode.io/problems/longest-turbulent-subarray/question
+
+```js
+
+```
+
+## Jump Game
+
+https://neetcode.io/problems/jump-game/question
+
+```js
+
+```
+
+## Jump Game II
+
+https://neetcode.io/problems/jump-game-ii/question
+
+```js
+
+```
+
+## Jump Game VII
+
+https://neetcode.io/problems/jump-game-vii/question
 
 ```js
 
