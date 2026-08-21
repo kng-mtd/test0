@@ -18004,7 +18004,29 @@ https://neetcode.io/problems/maximum-subarray/question
 https://leetcode.com/problems/maximum-absolute-sum-of-any-subarray/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const maxAbsoluteSum = (nums) => {
+  let a = nums[0],
+    b = a;
+  for (let i = 1; i < nums.length; i++) {
+    let c = a + nums[i];
+    if (nums[i] > c) a = nums[i];
+    else a = c;
+    b = Math.max(a, b);
+  }
+  const b0 = b;
+  ((a = nums[0]), (b = a));
+  for (let i = 1; i < nums.length; i++) {
+    let c = a + nums[i];
+    if (nums[i] < c) a = nums[i];
+    else a = c;
+    b = Math.min(a, b);
+  }
+  return Math.max(b0, -b);
+};
 ```
 
 ## Maximum Sum Circular Subarray
