@@ -18140,3 +18140,87 @@ https://neetcode.io/problems/jump-game-vii/question
 ```js
 
 ```
+
+## Gas Station
+
+https://neetcode.io/problems/gas-station/question
+
+```js
+
+```
+
+## Hand of Straights
+
+https://neetcode.io/problems/hand-of-straights/question
+
+```js
+
+```
+
+## Minimum Number of Changes to Make Binary String Beautiful
+
+https://leetcode.com/problems/minimum-number-of-changes-to-make-binary-string-beautiful/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minChanges = (s) => {
+  let a = 0;
+  for (let i = 0; i < s.length; i += 2) if (s[i] != s[i + 1]) a++;
+  return a;
+};
+```
+
+## Minimize Maximum of Array
+
+https://leetcode.com/problems/minimize-maximum-of-array/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const minimizeArrayValue = (nums) => {
+  let a = 0,
+    b = 0;
+  for (let i = 0; i < nums.length; i++) {
+    a += nums[i];
+    b = Math.max(Math.ceil(a / (i + 1)), b);
+  }
+  return b;
+};
+```
+
+## Maximize Y-Sum by Picking a Triplet of Distinct X-Values
+
+https://neetcode.io/problems/maximize-ysum-by-picking-a-triplet-of-distinct-xvalues/question
+
+```js
+
+```
+
+## Minimum Difference Between Largest and Smallest Value in Three Moves
+
+https://leetcode.com/problems/minimum-difference-between-largest-and-smallest-value-in-three-moves/description/
+
+```js
+
+```
+
+## Maximum Total Importance of Roads
+
+https://leetcode.com/problems/maximum-total-importance-of-roads/description/
+
+```js
+
+```
+
+## Minimum Number of Pushes to Type Word II
+
+https://leetcode.com/problems/minimum-number-of-pushes-to-type-word-ii/description/
+
+```js
+
+```
