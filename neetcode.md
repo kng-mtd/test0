@@ -18206,7 +18206,16 @@ https://neetcode.io/problems/maximize-ysum-by-picking-a-triplet-of-distinct-xval
 https://leetcode.com/problems/minimum-difference-between-largest-and-smallest-value-in-three-moves/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const minDifference = (nums) => {
+  const n = nums.length;
+  if (n < 5) return 0;
+  nums.sort((x1, x2) => x1 - x2);
+  return Math.min(nums[n - 4] - nums[0], nums[n - 3] - nums[1], nums[n - 2] - nums[2], nums[n - 1] - nums[3]);
+};
 ```
 
 ## Maximum Total Importance of Roads
@@ -18214,12 +18223,95 @@ https://leetcode.com/problems/minimum-difference-between-largest-and-smallest-va
 https://leetcode.com/problems/maximum-total-importance-of-roads/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @param {number[][]} roads
+ * @return {number}
+ */
+const maximumImportance = (n, roads) => {
+  let a = Array(n).fill(0);
+  for (let [i1, i2] of roads) {
+    (a[i1]++, a[i2]++);
+  }
+  a.sort((x1, x2) => x1 - x2);
+  let b = 0;
+  for (let i = 0; i < n; i++) b += a[i] * (i + 1);
+  return b;
+};
 ```
 
 ## Minimum Number of Pushes to Type Word II
 
 https://leetcode.com/problems/minimum-number-of-pushes-to-type-word-ii/description/
+
+```js
+/**
+ * @param {string} word
+ * @return {number}
+ */
+const minimumPushes = (word) => {
+  let a = {};
+  for (let i of [...word]) a[i] = (a[i] ?? 0) + 1;
+  let b = Object.values(a).sort((x1, x2) => x1 - x2);
+  let c = 0,
+    d = 0;
+  while (b.length) {
+    c += b.pop() * ((d >> 3) + 1);
+    d++;
+  }
+  return c;
+};
+```
+
+```js
+/**
+ * @param {string} word
+ * @return {number}
+ */
+const minimumPushes = (word) => {
+  const a = {};
+  for (let i of word) a[i] = (a[i] ?? 0) + 1;
+  return Object.values(a)
+    .sort((x1, x2) => x2 - x1)
+    .reduce((a, x, i) => a + x * ((i >> 3) + 1), 0);
+};
+```
+
+## Dota2 Senate
+
+https://neetcode.io/problems/dota2-senate/question
+
+```js
+
+```
+
+## Maximum Points You Can Obtain From Cards
+
+https://neetcode.io/problems/maximum-points-you-can-obtain-from-cards/question
+
+```js
+
+```
+
+## Merge Triplets to Form Target
+
+https://neetcode.io/problems/merge-triplets-to-form-target/question
+
+```js
+
+```
+
+## Partition Labels
+
+https://neetcode.io/problems/partition-labels/question
+
+```js
+
+```
+
+## Valid Parenthesis String
+
+https://neetcode.io/problems/valid-parenthesis-string/question
 
 ```js
 
