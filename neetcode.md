@@ -17166,7 +17166,33 @@ class Solution {
 https://neetcode.io/problems/combination-target-sum-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} candidates
+   * @param {number} target
+   * @return {number[][]}
+   */
+  combinationSum2(candidates, target) {
+    let a = [],
+      b = [];
+    const n = candidates.length;
+    candidates.sort();
+    const dfs = (i, c) => {
+      if (c == target) {
+        a.push([...b]);
+        return;
+      }
+      if (i >= n || c > target) return;
+      b.push(candidates[i]);
+      dfs(i + 1, c + candidates[i]);
+      b.pop();
+      while (candidates[i] == candidates[i + 1]) i++;
+      dfs(i + 1, c);
+    };
+    dfs(0, 0);
+    return a;
+  }
+}
 ```
 
 ## Combinations
