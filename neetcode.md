@@ -18342,3 +18342,35 @@ https://neetcode.io/problems/valid-parenthesis-string/question
 ```js
 
 ```
+
+## Check if a Parentheses String Can Be Valid
+
+https://leetcode.com/problems/check-if-a-parentheses-string-can-be-valid/description/
+
+```js
+
+```
+
+## Eliminate Maximum Number of Monsters
+
+https://leetcode.com/problems/eliminate-maximum-number-of-monsters/description/
+
+```js
+
+```
+
+## Two City Scheduling
+
+https://neetcode.io/problems/two-city-scheduling/question
+
+```js
+
+```
+
+## Maximum Length of Pair Chain
+
+https://leetcode.com/problems/maximum-length-of-pair-chain/description/
+
+```js
+
+```
