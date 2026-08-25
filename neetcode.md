@@ -18371,7 +18371,66 @@ https://neetcode.io/problems/valid-parenthesis-string/question
 https://leetcode.com/problems/check-if-a-parentheses-string-can-be-valid/description/
 
 ```js
+/**
+ * @param {string} s
+ * @param {string} locked
+ * @return {boolean}
+ */
+const canBeValid = (s, locked) => {
+  const n = s.length;
+  if (n % 2) return false;
+  let a = 0,
+    b = 0;
+  for (let i = 0; i < n; i++) {
+    if (locked[i] == '0') {
+      a++;
+      continue;
+    }
+    b += s[i] == '(' ? 1 : -1;
+    if (b < 0) {
+      if (a < 1) return false;
+      b++;
+      a--;
+    }
+  }
+  ((a = 0), (b = 0));
+  for (let i = n - 1; i >= 0; i--) {
+    if (locked[i] == '0') {
+      a++;
+      continue;
+    }
+    b += s[i] == ')' ? 1 : -1;
+    if (b < 0) {
+      if (a < 1) return false;
+      b++;
+      a--;
+    }
+  }
+  return true;
+};
+```
 
+```js
+/**
+ * @param {string} s
+ * @param {string} locked
+ * @return {boolean}
+ */
+const canBeValid = (s, locked) => {
+  const n = s.length;
+  if (n % 2) return false;
+  let a = 0;
+  for (let i = 0; i < n; i++) {
+    a += locked[i] == '0' || s[i] == '(' ? 1 : -1;
+    if (a < 0) return false;
+  }
+  a = 0;
+  for (let i = n - 1; i >= 0; i--) {
+    a += locked[i] == '0' || s[i] == ')' ? 1 : -1;
+    if (a < 0) return false;
+  }
+  return true;
+};
 ```
 
 ## Eliminate Maximum Number of Monsters
