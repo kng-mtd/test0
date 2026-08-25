@@ -17200,7 +17200,30 @@ class Solution {
 https://neetcode.io/problems/combinations/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number} k
+   * @return {number[][]}
+   */
+  combine(n, k) {
+    let a = [],
+      b = [];
+    const dfs = (i) => {
+      if (b.length == k) {
+        a.push([...b]);
+        return;
+      }
+      for (let ii = i; ii <= n; ii++) {
+        b.push(ii);
+        dfs(ii + 1, b);
+        b.pop();
+      }
+    };
+    dfs(1);
+    return a;
+  }
+}
 ```
 
 ## Permutations
