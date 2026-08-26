@@ -17231,7 +17231,78 @@ class Solution {
 https://neetcode.io/problems/permutations/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  permute(nums) {
+    let a = [[nums[0]]];
+    for (let i of nums.slice(1)) {
+      let b = [];
+      for (let ai of a) {
+        for (let ii = 0; ii <= ai.length; ii++) {
+          b.push([...ai.slice(0, ii), i, ...ai.slice(ii)]);
+        }
+      }
+      a = b;
+    }
+    return a;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  permute(nums) {
+    const n = nums.length;
+    let a = [],
+      b = [];
+    const dfs = () => {
+      if (b.length == n) {
+        a.push([...b]);
+        return;
+      }
+      for (let i of nums) {
+        if (b.includes(i)) continue;
+        b.push(i);
+        dfs();
+        b.pop();
+      }
+    };
+    dfs();
+    return a;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  permute(nums) {
+    let a = [];
+    const dfs = (i) => {
+      if (i == nums.length) {
+        a.push([...nums]);
+        return;
+      }
+      for (let j = i; j < nums.length; j++) {
+        [nums[i], nums[j]] = [nums[j], nums[i]];
+        dfs(i + 1);
+        [nums[i], nums[j]] = [nums[j], nums[i]];
+      }
+    };
+    dfs(0);
+    return a;
+  }
+}
 ```
 
 ## Subsets II
@@ -18438,7 +18509,19 @@ const canBeValid = (s, locked) => {
 https://leetcode.com/problems/eliminate-maximum-number-of-monsters/description/
 
 ```js
-
+/**
+ * @param {number[]} dist
+ * @param {number[]} speed
+ * @return {number}
+ */
+const eliminateMaximum = (dist, speed) => {
+  const n = dist.length;
+  let a = Array(n);
+  for (let i = 0; i < n; i++) a[i] = Math.ceil(dist[i] / speed[i]);
+  a.sort((x1, x2) => x1 - x2);
+  for (let i = a[0] | 0; i < n; i++) if (a[i] <= i) return i;
+  return n;
+};
 ```
 
 ## Two City Scheduling
@@ -18452,6 +18535,52 @@ https://neetcode.io/problems/two-city-scheduling/question
 ## Maximum Length of Pair Chain
 
 https://leetcode.com/problems/maximum-length-of-pair-chain/description/
+
+```js
+/**
+ * @param {number[][]} pairs
+ * @return {number}
+ */
+const findLongestChain = (pairs) => {
+  pairs.sort((x1, x2) => x1[1] - x2[1]);
+  let a = 0,
+    b = -Infinity;
+  for (let [l, r] of pairs) {
+    if (l <= b) continue;
+    a++;
+    b = r;
+  }
+  return a;
+};
+```
+
+## Best Sightseeing Pair
+
+https://leetcode.com/problems/best-sightseeing-pair/description/
+
+```js
+
+```
+
+## Make Lexicographically Smallest Array by Swapping Elements
+
+https://leetcode.com/problems/make-lexicographically-smallest-array-by-swapping-elements/description/
+
+```js
+
+```
+
+## Minimum Deletions to Make Charavter Frequencies Unique
+
+https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/description/
+
+```js
+
+```
+
+## Minimum Deletions to Make String Balanced
+
+https://leetcode.com/problems/minimum-deletions-to-make-string-balanced/description/
 
 ```js
 
