@@ -17310,7 +17310,31 @@ class Solution {
 https://neetcode.io/problems/subsets-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  subsetsWithDup(nums) {
+    let a = [],
+      b = [];
+    const n = nums.length;
+    nums.sort();
+    const dfs = (i) => {
+      if (i == n) {
+        a.push([...b]);
+        return;
+      }
+      b.push(nums[i]);
+      dfs(i + 1);
+      b.pop();
+      while (nums[i] == nums[i + 1]) i++;
+      dfs(i + 1);
+    };
+    dfs(0);
+    return a;
+  }
+}
 ```
 
 ## Permutations II
