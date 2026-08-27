@@ -5705,7 +5705,7 @@ class Solution {
   maxDepth(s) {
     let a = 0,
       b = 0;
-    for (let i of [...s]) {
+    for (let i of s) {
       if (i == '(') b++;
       else if (i == ')') b--;
       a = Math.max(b, a);
@@ -18395,7 +18395,7 @@ https://leetcode.com/problems/minimum-number-of-pushes-to-type-word-ii/descripti
  */
 const minimumPushes = (word) => {
   let a = {};
-  for (let i of [...word]) a[i] = (a[i] ?? 0) + 1;
+  for (let i of word) a[i] = (a[i] ?? 0) + 1;
   let b = Object.values(a).sort((x1, x2) => x1 - x2);
   let c = 0,
     d = 0;
@@ -18583,7 +18583,19 @@ const findLongestChain = (pairs) => {
 https://leetcode.com/problems/best-sightseeing-pair/description/
 
 ```js
-
+/**
+ * @param {number[]} values
+ * @return {number}
+ */
+const maxScoreSightseeingPair = (values) => {
+  let a = 0,
+    b = values[0];
+  for (let i = 1; i < values.length; i++) {
+    a = Math.max(b + values[i] - i, a);
+    b = Math.max(values[i] + i, b);
+  }
+  return a;
+};
 ```
 
 ## Make Lexicographically Smallest Array by Swapping Elements
@@ -18591,7 +18603,24 @@ https://leetcode.com/problems/best-sightseeing-pair/description/
 https://leetcode.com/problems/make-lexicographically-smallest-array-by-swapping-elements/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @param {number} limit
+ * @return {number[]}
+ */
+const lexicographicallySmallestArray = (nums, limit) => {
+  const n = nums.length;
+  let a = nums.map((v, i) => [v, i]).sort((x1, x2) => x1[0] - x2[0]);
+  for (let i1 = 0; i1 < n; ) {
+    let i2 = i1 + 1;
+    while (i2 < n && a[i2][0] - a[i2 - 1][0] <= limit) i2++;
+    let b = a.slice(i1, i2);
+    let c = b.map((x) => x[1]).sort((x1, x2) => x1 - x2);
+    for (let i = 0; i < b.length; i++) nums[c[i]] = b[i][0];
+    i1 = i2;
+  }
+  return nums;
+};
 ```
 
 ## Minimum Deletions to Make Charavter Frequencies Unique
@@ -18599,12 +18628,72 @@ https://leetcode.com/problems/make-lexicographically-smallest-array-by-swapping-
 https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/description/
 
 ```js
-
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minDeletions = (s) => {
+  let a = {};
+  for (let i of s) a[i] = (a[i] ?? 0) + 1;
+  let b = Object.values(a).sort((x1, x2) => x2 - x1),
+    c = 0;
+  for (let i = 1; i < b.length; i++) {
+    while (b[i] && b[i - 1] <= b[i]) {
+      b[i]--;
+      c++;
+    }
+  }
+  return c;
+};
 ```
 
 ## Minimum Deletions to Make String Balanced
 
 https://leetcode.com/problems/minimum-deletions-to-make-string-balanced/description/
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const minimumDeletions = (s) => {
+  let a = 0,
+    b = 0;
+  for (let i of s) {
+    if (i == 'b') b++;
+    else a = Math.min(b, a + 1);
+  }
+  return a;
+};
+```
+
+## Remove Colored Pieces if Both Neighbors are the Same Color
+
+https://leetcode.com/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/description/
+
+```js
+
+```
+
+## Maximum Score From Removing Substrings
+
+https://leetcode.com/problems/maximum-score-from-removing-substrings/description/
+
+```js
+
+```
+
+## Maximum Element After Decreasing and Rearranging
+
+https://leetcode.com/problems/maximum-element-after-decreasing-and-rearranging/description/
+
+```js
+
+```
+
+## Number of Laser Beams in a Bank
+
+https://leetcode.com/problems/number-of-laser-beams-in-a-bank/description/
 
 ```js
 
