@@ -17342,7 +17342,35 @@ class Solution {
 https://neetcode.io/problems/permutations-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[][]}
+   */
+  permuteUnique(nums) {
+    let a = [],
+      b = [],
+      c = {};
+    const n = nums.length;
+    for (let i of nums) c[i] = (c[i] ?? 0) + 1;
+    const dfs = () => {
+      if (b.length == n) {
+        a.push([...b]);
+        return;
+      }
+      for (let i in c) {
+        if (!c[i]) continue;
+        b.push(+i);
+        c[i] -= 1;
+        dfs();
+        c[i] += 1;
+        b.pop();
+      }
+    };
+    dfs();
+    return a;
+  }
+}
 ```
 
 ## Generate Parentheses
@@ -18672,7 +18700,32 @@ const minimumDeletions = (s) => {
 https://leetcode.com/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/description/
 
 ```js
+/**
+ * @param {string} colors
+ * @return {boolean}
+ */
+const winnerOfGame = (colors) => {
+  const a = colors.split('B');
+  const b = colors.split('A');
+  const a1 = a.reduce((a, x) => a + Math.max(x.length - 2, 0), 0);
+  const b1 = b.reduce((a, x) => a + Math.max(x.length - 2, 0), 0);
+  return a1 > b1;
+};
+```
 
+```js
+/**
+ * @param {string} colors
+ * @return {boolean}
+ */
+const winnerOfGame = (colors) => {
+  let a = 0,
+    b = 0;
+  for (let i = 1; i < colors.length - 1; i++) {
+    if (colors[i - 1] == colors[i] && colors[i] == colors[i + 1]) colors[i] == 'A' ? a++ : b++;
+  }
+  return a > b;
+};
 ```
 
 ## Maximum Score From Removing Substrings
