@@ -17378,7 +17378,25 @@ class Solution {
 https://neetcode.io/problems/generate-parentheses/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @return {string[]}
+   */
+  generateParenthesis(n) {
+    let a = [];
+    const dfs = (b, l, r) => {
+      if (l == 0 && r == 0) {
+        a.push(b + ')');
+        return;
+      }
+      if (l > 0) dfs(b + '(', l - 1, r);
+      if (r >= l) dfs(b + ')', l, r - 1);
+    };
+    dfs('(', n - 1, n - 1);
+    return a;
+  }
+}
 ```
 
 ## Letter Tile Possibilities
@@ -17435,7 +17453,33 @@ const numTilePossibilities = (tiles) => {
 https://neetcode.io/problems/search-for-word/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {character[][]} board
+   * @param {string} word
+   * @return {boolean}
+   */
+  exist(board, word) {
+    const r = board.length - 1,
+      c = board[0].length - 1,
+      l = word.length;
+    let a = [];
+    const dfs = (y, x, i) => {
+      if (i == l) return true;
+      if (y < 0 || x < 0 || y > r || x > c || word[i] != board[y][x] || a.includes(y + ',' + x)) return false;
+      a.push(y + ',' + x);
+      const b = dfs(y + 1, x, i + 1) || dfs(y - 1, x, i + 1) || dfs(y, x + 1, i + 1) || dfs(y, x - 1, i + 1);
+      a.pop();
+      return b;
+    };
+    for (let y = 0; y <= r; y++) {
+      for (let x = 0; x <= c; x++) {
+        if (dfs(y, x, 0)) return true;
+      }
+    }
+    return false;
+  }
+}
 ```
 
 ## Palindrome Partitioning
@@ -17443,7 +17487,38 @@ https://neetcode.io/problems/search-for-word/question
 https://neetcode.io/problems/palindrome-partitioning/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {string[][]}
+   */
+  partition(s) {
+    const n = s.length;
+    let a = [],
+      b = [];
+    const dfs = (i) => {
+      if (i == n) {
+        a.push([...b]);
+        return;
+      }
+      for (let ii = i; ii < n; ii++) {
+        if (!this.fn(s, i, ii)) continue;
+        b.push(s.slice(i, ii + 1));
+        dfs(ii + 1);
+        b.pop();
+      }
+    };
+    dfs(0);
+    return a;
+  }
+  fn(s, l, r) {
+    while (l < r) {
+      if (s[l] != s[r]) return false;
+      (l++, r--);
+    }
+    return true;
+  }
+}
 ```
 
 ## Restore IP Addresses
