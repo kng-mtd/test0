@@ -18808,7 +18808,34 @@ const winnerOfGame = (colors) => {
 https://leetcode.com/problems/maximum-score-from-removing-substrings/description/
 
 ```js
+/**
+ * @param {string} s
+ * @param {number} x
+ * @param {number} y
+ * @return {number}
+ */
+const maximumGain = (s, x, y) => {
+  let a = 0;
+  const fn = (s, c1, c2, d) => {
+    let c = [];
+    for (let i of s) {
+      if (i == c2 && c.at(-1) == c1) {
+        c.pop();
+        a += d;
+      } else c.push(i);
+    }
+    return c;
+  };
 
+  if (x >= y) {
+    s = fn(s, 'a', 'b', x);
+    s = fn(s, 'b', 'a', y);
+  } else {
+    s = fn(s, 'b', 'a', y);
+    s = fn(s, 'a', 'b', x);
+  }
+  return a;
+};
 ```
 
 ## Maximum Element After Decreasing and Rearranging
@@ -18816,12 +18843,82 @@ https://leetcode.com/problems/maximum-score-from-removing-substrings/description
 https://leetcode.com/problems/maximum-element-after-decreasing-and-rearranging/description/
 
 ```js
-
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+const maximumElementAfterDecrementingAndRearranging = (arr) => {
+  arr.sort((x1, x2) => x1 - x2);
+  let a = 1;
+  for (let i = 1; i < arr.length; i++) a = Math.min(a + 1, arr[i]);
+  return a;
+};
 ```
 
 ## Number of Laser Beams in a Bank
 
 https://leetcode.com/problems/number-of-laser-beams-in-a-bank/description/
+
+```js
+/**
+ * @param {string[]} bank
+ * @return {number}
+ */
+const numberOfBeams = (bank) => {
+  let a = bank.map((x) => x.replaceAll('0', '').length).filter((x) => x != 0);
+  if (a.lenght == 0) return 0;
+  let b = 0;
+  for (let i = 1; i < a.length; i++) b += a[i - 1] * a[i];
+  return b;
+};
+```
+
+```js
+/**
+ * @param {string[]} bank
+ * @return {number}
+ */
+const numberOfBeams = (bank) => {
+  let a = 0,
+    b = 0;
+  for (const i of bank) {
+    const n = [...i].filter((x) => x == '1').length;
+    if (n) {
+      b += a * n;
+      a = n;
+    }
+  }
+  return b;
+};
+```
+
+## Reveal Cards In Increasing Order
+
+https://leetcode.com/problems/reveal-cards-in-increasing-order/description/
+
+```js
+
+```
+
+## Construct String With Repeat Limit
+
+https://leetcode.com/problems/construct-string-with-repeat-limit/description/
+
+```js
+
+```
+
+## Find Valid Matrix Given Row and Column Sums
+
+https://leetcode.com/problems/find-valid-matrix-given-row-and-column-sums/description/
+
+```js
+
+```
+
+## Score After Flipping Matrix
+
+https://leetcode.com/problems/score-after-flipping-matrix/description/
 
 ```js
 
