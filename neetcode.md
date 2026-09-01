@@ -17526,7 +17526,29 @@ class Solution {
 https://neetcode.io/problems/restore-ip-addresses/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {string[]}
+   */
+  restoreIpAddresses(s) {
+    const n = s.length;
+    if (n > 12) return [];
+    let a = [];
+    const dfs = (i, b, c) => {
+      if (b > 4) return;
+      if (b == 4 && i == n) {
+        a.push(c.slice(0, -1));
+        return;
+      }
+      for (let ii = i; ii < Math.min(i + 3, n); ii++) {
+        if (s.slice(i, ii + 1) - 0 < 256 && (i == ii || s[i] != '0')) dfs(ii + 1, b + 1, c + s.slice(i, ii + 1) + '.');
+      }
+    };
+    dfs(0, 0, '');
+    return a;
+  }
+}
 ```
 
 ## Letter Combinations of a Phone Number
