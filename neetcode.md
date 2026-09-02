@@ -18963,7 +18963,61 @@ const deckRevealedIncreasing = (deck) => {
 https://leetcode.com/problems/construct-string-with-repeat-limit/description/
 
 ```js
+/**
+ * @param {string} s
+ * @param {number} repeatLimit
+ * @return {string}
+ */
+const repeatLimitedString = (s, repeatLimit) => {
+  let a = {};
+  for (let i of s) a[i] = (a[i] ?? 0) + 1;
+  let b = Object.entries(a).sort().reverse();
+  let c = '',
+    i = 0;
+  while (i < b.length) {
+    if (b[i][1] > repeatLimit) {
+      c += b[i][0].repeat(repeatLimit);
+      b[i][1] -= repeatLimit;
+      let i1 = i + 1;
+      while (i1 < b.length && b[i1][1] == 0) i1++;
+      if (i1 == b.length) break;
+      c += b[i1][0];
+      b[i1][1]--;
+    } else {
+      c += b[i1][0].repeat(b[i][1]);
+      b[i][1] = 0;
+      i++;
+    }
+  }
+  return c;
+};
+```
 
+```js
+/**
+ * @param {string} s
+ * @param {number} repeatLimit
+ * @return {string}
+ */
+const repeatLimitedString = (s, repeatLimit) => {
+  const a = Array(26).fill(0);
+  for (let i of s) a[i.charCodeAt() - 97]++;
+  let c = '';
+  for (let i = 25; i >= 0; i--) {
+    while (a[i]) {
+      const n = Math.min(a[i], repeatLimit);
+      c += String.fromCharCode(i + 97).repeat(n);
+      a[i] -= n;
+      if (!a[i]) break;
+      let i1 = i - 1;
+      while (i1 >= 0 && !a[j]) i1--;
+      if (i1 < 0) return c;
+      c += String.fromCharCode(i1 + 97);
+      a[i1]--;
+    }
+  }
+  return c;
+};
 ```
 
 ## Find Valid Matrix Given Row and Column Sums
@@ -18971,7 +19025,25 @@ https://leetcode.com/problems/construct-string-with-repeat-limit/description/
 https://leetcode.com/problems/find-valid-matrix-given-row-and-column-sums/description/
 
 ```js
-
+/**
+ * @param {number[]} rowSum
+ * @param {number[]} colSum
+ * @return {number[][]}
+ */
+const restoreMatrix = (rowSum, colSum) => {
+  const l = rowSum.length,
+    m = colSum.length;
+  const a = Array(l)
+    .fill()
+    .map(() => Array(m).fill(0));
+  for (let i = 0; i < l; i++) {
+    for (let j = 0; j < m; j++) {
+      const b = Math.min(rowSum[i], colSum[j]);
+      ((a[i][j] = b), (rowSum[i] -= b), (colSum[j] -= b));
+    }
+  }
+  return a;
+};
 ```
 
 ## Score After Flipping Matrix
