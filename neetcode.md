@@ -19051,5 +19051,51 @@ const restoreMatrix = (rowSum, colSum) => {
 https://leetcode.com/problems/score-after-flipping-matrix/description/
 
 ```js
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+const matrixScore = (grid) => {
+  const l = grid.length,
+    m = grid[0].length;
+  let a = l;
+  for (let j = 1; j < m; j++) {
+    let b = 0;
+    for (let i = 0; i < l; i++) b += grid[i][j] == grid[i][0];
+    a = a * 2 + Math.max(b, l - b);
+  }
+  return a;
+};
+```
+
+## Maximum Matrix Sum
+
+https://leetcode.com/problems/maximum-matrix-sum/description/
+
+```js
+
+```
+
+## Shortest Subarray to be Removed to Make Array Sorted
+
+https://leetcode.com/problems/shortest-subarray-to-be-removed-to-make-array-sorted/description/
+
+```js
+
+```
+
+## Max Chunks To Make Sorted
+
+https://leetcode.com/problems/max-chunks-to-make-sorted/description/
+
+```js
+
+```
+
+## Next Permutation
+
+https://neetcode.io/problems/next-permutation/question
+
+```js
 
 ```
