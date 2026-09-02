@@ -17556,7 +17556,26 @@ class Solution {
 https://neetcode.io/problems/combinations-of-a-phone-number/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} digits
+   * @return {string[]}
+   */
+  letterCombinations(digits) {
+    if (!digits) return [];
+    let a = [];
+    const b = { 2: 'abc', 3: 'def', 4: 'ghi', 5: 'jkl', 6: 'mno', 7: 'pqrs', 8: 'tuv', 9: 'wxyz' };
+    const dfs = (i, c) => {
+      if (c.length == digits.length) {
+        a.push(c);
+        return;
+      }
+      for (let d of b[digits[i]]) dfs(i + 1, c + d);
+    };
+    dfs(0, '');
+    return a;
+  }
+}
 ```
 
 ## The k-th Lexicographical String of All Happy Strings of Length n
@@ -18903,7 +18922,7 @@ const numberOfBeams = (bank) => {
 const numberOfBeams = (bank) => {
   let a = 0,
     b = 0;
-  for (const i of bank) {
+  for (let i of bank) {
     const n = [...i].filter((x) => x == '1').length;
     if (n) {
       b += a * n;
@@ -18919,7 +18938,24 @@ const numberOfBeams = (bank) => {
 https://leetcode.com/problems/reveal-cards-in-increasing-order/description/
 
 ```js
-
+/**
+ * @param {number[]} deck
+ * @return {number[]}
+ */
+const deckRevealedIncreasing = (deck) => {
+  const n = deck.length;
+  let a = [...Array(n)].map((x, i) => i);
+  let b = [];
+  while (true) {
+    b.push(a.shift());
+    if (!a.length) break;
+    a.push(a.shift());
+  }
+  deck.sort((x1, x2) => x1 - x2);
+  let c = [];
+  for (let i = 0; i < n; i++) c[b[i]] = deck[i];
+  return c;
+};
 ```
 
 ## Construct String With Repeat Limit
