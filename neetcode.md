@@ -17615,7 +17615,31 @@ const getHappyString = (n, k) => {
 https://neetcode.io/problems/matchsticks-to-square/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} matchsticks
+   * @return {boolean}
+   */
+  makesquare(matchsticks) {
+    const a = matchsticks.reduce((a, x) => a + x, 0);
+    if (!a % 4) return false;
+    const n = matchsticks.length;
+    let b = Array(4).fill(0);
+    matchsticks.sort((x1, x2) => x2 - x1);
+    const dfs = (i) => {
+      if (i == n) return true;
+      for (let ii = 0; ii < 4; ii++) {
+        if (b[ii] + matchsticks[i] <= a / 4) {
+          b[ii] += matchsticks[i];
+          if (dfs(i + 1)) return true;
+          b[ii] -= matchsticks[i];
+        }
+      }
+      return false;
+    };
+    return dfs(0);
+  }
+}
 ```
 
 ## Splitting a String into Descending Consecutive Values
