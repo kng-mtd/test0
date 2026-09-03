@@ -19097,7 +19097,29 @@ const matrixScore = (grid) => {
 https://leetcode.com/problems/maximum-matrix-sum/description/
 
 ```js
-
+/**
+ * @param {number[][]} matrix
+ * @return {number}
+ */
+const maxMatrixSum = (matrix) => {
+  const l = matrix.length;
+  m = matrix[0].length;
+  let a = 0,
+    b = Infinity,
+    c1 = 0;
+  for (let i = 0; i < l; i++) {
+    let c2 = 0;
+    for (let j = 0; j < m; j++) {
+      const d = matrix[i][j],
+        e = Math.abs(d);
+      a += e;
+      b = e < b ? e : b;
+      if (d < 0) c2++;
+    }
+    if (c2 % 2 != 0) c1++;
+  }
+  return c1 % 2 == 0 ? a : a - b * 2;
+};
 ```
 
 ## Shortest Subarray to be Removed to Make Array Sorted
