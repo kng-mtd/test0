@@ -17776,7 +17776,35 @@ const maxLength = (arr) => {
 https://neetcode.io/problems/partition-to-k-equal-sum-subsets/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {boolean}
+   */
+  canPartitionKSubsets(nums, k) {
+    const a = nums.reduce((a, x) => a + x, 0);
+    if (a % k) return false;
+    const n = nums.length,
+      c = a / k;
+    nums.sort((x1, x2) => x2 - x1);
+    if (nums[0] > c) return false;
+    let b = Array(k).fill(0);
+    const dfs = (i) => {
+      if (i == n) return true;
+      for (let ii = 0; ii < k; ii++) {
+        if (b[ii] + nums[i] <= c) {
+          b[ii] += nums[i];
+          if (dfs(i + 1)) return true;
+          b[ii] -= nums[i];
+        }
+        if (b[ii] == 0) break;
+      }
+      return false;
+    };
+    return dfs(0);
+  }
+}
 ```
 
 ## The Number of Beautiful Subsets
