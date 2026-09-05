@@ -19155,7 +19155,27 @@ const maxMatrixSum = (matrix) => {
 https://leetcode.com/problems/shortest-subarray-to-be-removed-to-make-array-sorted/description/
 
 ```js
-
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+const findLengthOfShortestSubarray = (arr) => {
+  const n = arr.length - 1;
+  let l = 0,
+    r = n;
+  while (l < n && arr[l + 1] >= arr[l]) l++;
+  if (l == n) return 0;
+  while (r > 0 && arr[r - 1] <= arr[r]) r--;
+  let a = Math.min(n - l, r),
+    i = 0;
+  while (i <= l && r <= n) {
+    if (arr[i] <= arr[r]) {
+      a = Math.min(r - i - 1, a);
+      i++;
+    } else r++;
+  }
+  return a;
+};
 ```
 
 ## Max Chunks To Make Sorted
@@ -19169,6 +19189,30 @@ https://leetcode.com/problems/max-chunks-to-make-sorted/description/
 ## Next Permutation
 
 https://neetcode.io/problems/next-permutation/question
+
+```js
+
+```
+
+## Maximum Swap
+
+https://leetcode.com/problems/maximum-swap/description/
+
+```js
+
+```
+
+## Maximal Score After Applying K Operations
+
+https://leetcode.com/problems/maximal-score-after-applying-k-operations/description/
+
+```js
+
+```
+
+## Maximum Frequency After Subarray Operation
+
+https://neetcode.io/problems/maximum-frequency-after-subarray-operation/question
 
 ```js
 
