@@ -19265,7 +19265,24 @@ https://neetcode.io/problems/next-permutation/question
 https://leetcode.com/problems/maximum-swap/description/
 
 ```js
-
+/**
+ * @param {number} num
+ * @return {number}
+ */
+const maximumSwap = (num) => {
+  let a = (num + '').split('').map(Number);
+  const n = a.length;
+  for (let i = 0; i < n; i++) {
+    if (a[i] == 9) continue;
+    let b = 0,
+      i0 = n;
+    for (let ii = n - 1; ii > i; ii--) if (a[ii] > b) [b, i0] = [a[ii], ii];
+    if (b <= a[i]) continue;
+    [a[i], a[i0]] = [a[i0], a[i]];
+    break;
+  }
+  return +a.map(String).join('');
+};
 ```
 
 ## Maximal Score After Applying K Operations
@@ -19273,7 +19290,24 @@ https://leetcode.com/problems/maximum-swap/description/
 https://leetcode.com/problems/maximal-score-after-applying-k-operations/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+const maxKelements = (nums, k) => {
+  nums.sort((x1, x2) => x2 - x1);
+  let a = 0,
+    i1 = 0,
+    i2 = 0,
+    b = [];
+  while (k--) {
+    const c = i1 < nums.length && (i2 == b.length || nums[i1] >= b[i2]) ? nums[i1++] : b[i2++];
+    a += c;
+    b.push(Math.ceil(c / 3));
+  }
+  return a;
+};
 ```
 
 ## Maximum Frequency After Subarray Operation
@@ -19283,3 +19317,13 @@ https://neetcode.io/problems/maximum-frequency-after-subarray-operation/question
 ```js
 
 ```
+
+---
+
+---
+
+---
+
+# Graphs
+
+##
