@@ -18000,7 +18000,47 @@ const countMaxOrSubsets = (nums) => {
 https://neetcode.io/problems/insert-new-interval/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} intervals
+   * @param {number[]} newInterval
+   * @return {number[][]}
+   */
+  insert(intervals, newInterval) {
+    let a = [],
+      i = 0,
+      n = intervals.length;
+    while (i < n && intervals[i][1] < newInterval[0]) a.push(intervals[i++]);
+    while (i < n && intervals[i][0] <= newInterval[1]) {
+      newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+      newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+      i++;
+    }
+    a.push(newInterval);
+    while (i < n) a.push(intervals[i++]);
+    return a;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[][]} intervals
+   * @param {number[]} newInterval
+   * @return {number[][]}
+   */
+  insert(intervals, newInterval) {
+    intervals.push(newInterval);
+    intervals.sort((x1, x2) => x1[0] - x2[0]);
+    let a = [intervals[0]];
+    for (let [l, r] of intervals.slice(1)) {
+      if (a.at(-1)[1] < l) a.push([l, r]);
+      else a.at(-1)[1] = Math.max(a.at(-1)[1], r);
+    }
+    return a;
+  }
+}
 ```
 
 ## Merge Intervals
@@ -18008,7 +18048,21 @@ https://neetcode.io/problems/insert-new-interval/question
 https://neetcode.io/problems/merge-intervals/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} intervals
+   * @return {number[][]}
+   */
+  merge(intervals) {
+    intervals.sort((x1, x2) => x1[0] - x2[0]);
+    let a = [intervals[0]];
+    for (let [l, r] of intervals.slice(1)) {
+      if (a.at(-1)[1] < l) a.push([l, r]);
+      else a.at(-1)[1] = Math.max(a.at(-1)[1], r);
+    }
+    return a;
+  }
+}
 ```
 
 ## Non-overlapping Intervals
@@ -19183,7 +19237,19 @@ const findLengthOfShortestSubarray = (arr) => {
 https://leetcode.com/problems/max-chunks-to-make-sorted/description/
 
 ```js
-
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+const maxChunksToSorted = (arr) => {
+  let a = 0,
+    b = -1;
+  for (let i = 0; i < arr.length; i++) {
+    b = Math.max(arr[i], b);
+    if (b == i) a++;
+  }
+  return a;
+};
 ```
 
 ## Next Permutation
