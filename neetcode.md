@@ -5784,33 +5784,6 @@ https://neetcode.io/problems/island-perimeter/question
 
 ```js
 class Solution {
-    /**
-     * @param {number[][]} grid
-     * @return {number}
-     */
-    islandPerimeter(grid) {
-        const x=grid[0].length+2;
-        const y=grid.length+2;
-        let a=[Array(x).fill(0)];
-        for(let i=0;i<y-2;i++) a.push([0,...grid[i],0]);
-        a.push(Array(x).fill(0));
-        let b=0;
-        for(let i=1;i<y-1;i++){
-            for(let j=1;j<x-1;j++){
-                if(a[i][j]==1){
-                    if(a[i][j-1]==0) b++;
-                    if(a[i][j+1]==0) b++;
-                    if(a[i-1][j]==0) b++;
-                    if(a[i+1][j]==0) b++;
-                }
-            }
-        }
-        return b;
-}
-```
-
-```js
-class Solution {
   /**
    * @param {number[][]} grid
    * @return {number}
@@ -5820,10 +5793,10 @@ class Solution {
       b = 0;
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[0].length; j++) {
-        if (grid[i][j] == 1) {
+        if (grid[i][j]) {
           a++;
-          if (i > 0 && grid[i - 1][j] == 1) b++;
-          if (j > 0 && grid[i][j - 1] == 1) b++;
+          if (i > 0 && grid[i - 1][j]) b++;
+          if (j > 0 && grid[i][j - 1]) b++;
         }
       }
     }
@@ -18070,7 +18043,25 @@ class Solution {
 https://neetcode.io/problems/non-overlapping-intervals/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} intervals
+   * @return {number}
+   */
+  eraseOverlapIntervals(intervals) {
+    intervals.sort((x1, x2) => x1[0] - x2[0]);
+    let a = 0,
+      b = intervals[0][1];
+    for (let [l, r] of intervals.slice(1)) {
+      if (l >= b) b = r;
+      else {
+        a++;
+        b = Math.min(r, b);
+      }
+    }
+    return a;
+  }
+}
 ```
 
 ## Interval List Intersections
@@ -19326,4 +19317,34 @@ https://neetcode.io/problems/maximum-frequency-after-subarray-operation/question
 
 # Graphs
 
-##
+## Count Servers that Communicate
+
+https://neetcode.io/problems/count-servers-that-communicate/question
+
+```js
+
+```
+
+## Find Champion II
+
+https://leetcode.com/problems/find-champion-ii/description/
+
+```js
+
+```
+
+## Number of Islands
+
+https://neetcode.io/problems/count-number-of-islands/question
+
+```js
+
+```
+
+## Max Area of Island
+
+https://neetcode.io/problems/max-area-of-island/question
+
+```js
+
+```
