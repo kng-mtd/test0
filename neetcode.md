@@ -18069,7 +18069,28 @@ class Solution {
 https://neetcode.io/problems/interval-list-intersections/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} firstList
+   * @param {number[][]} secondList
+   * @return {number[][]}
+   */
+  intervalIntersection(firstList, secondList) {
+    let a = [],
+      i1 = 0,
+      i2 = 0;
+    while (i1 < firstList.length && i2 < secondList.length) {
+      const [l1, r1] = firstList[i1],
+        [l2, r2] = secondList[i2];
+      const l = Math.max(l1, l2),
+        r = Math.min(r1, r2);
+      if (l <= r) a.push([l, r]);
+      if (r1 < r2) i1++;
+      else i2++;
+    }
+    return a;
+  }
+}
 ```
 
 ## Meeting Rooms II
