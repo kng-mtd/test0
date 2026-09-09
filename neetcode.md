@@ -19414,7 +19414,23 @@ https://neetcode.io/problems/count-servers-that-communicate/question
 https://leetcode.com/problems/find-champion-ii/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @param {number[][]} edges
+ * @return {number}
+ */
+const findChampion = (n, edges) => {
+  let a = Array(n).fill(0);
+  for (let [u, v] of edges) a[v]++;
+  let b = -1;
+  for (let i = 0; i < n; i++) {
+    if (a[i] == 0) {
+      if (b != -1) return -1;
+      b = i;
+    }
+  }
+  return b;
+};
 ```
 
 ## Number of Islands
@@ -19428,6 +19444,73 @@ https://neetcode.io/problems/count-number-of-islands/question
 ## Max Area of Island
 
 https://neetcode.io/problems/max-area-of-island/question
+
+```js
+
+```
+
+## Maximum Number of Fish in a Grid
+
+https://leetcode.com/problems/maximum-number-of-fish-in-a-grid/description/
+
+```js
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+const findMaxFish = (grid) => {
+  const m = grid.length,
+    n = grid[0].length;
+  let a0 = 0,
+    a;
+  const dfs = (y, x) => {
+    if (y < 0 || x < 0 || y >= m || x >= n) return;
+    if (!grid[y][x]) return;
+    a += grid[y][x];
+    grid[y][x] = 0;
+    dfs(y + 1, x);
+    dfs(y - 1, x);
+    dfs(y, x + 1);
+    dfs(y, x - 1);
+  };
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      a = 0;
+      if (grid[i][j]) dfs(i, j);
+      a0 = Math.max(a, a0);
+    }
+  }
+  return a0;
+};
+```
+
+## Clone Graph
+
+https://neetcode.io/problems/clone-graph/question
+
+```js
+
+```
+
+## Islands and Treasure
+
+https://neetcode.io/problems/islands-and-treasure/question
+
+```js
+
+```
+
+## Rotting Fruit
+
+https://neetcode.io/problems/rotting-fruit/question
+
+```js
+
+```
+
+## Count Sub Islands
+
+https://leetcode.com/problems/count-sub-islands/description/
 
 ```js
 
