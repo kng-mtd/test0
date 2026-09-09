@@ -18098,7 +18098,70 @@ class Solution {
 https://neetcode.io/problems/meeting-schedule-ii/question
 
 ```js
+/**
+ * Definition of Interval:
+ * class Interval {
+ *   constructor(start, end) {
+ *     this.start = start;
+ *     this.end = end;
+ *   }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {Interval[]} intervals
+   * @returns {number}
+   */
+  minMeetingRooms(intervals) {
+    let a = Array(1e5 + 1).fill(0);
+    for (let x of intervals) {
+      a[x.start]++;
+      a[x.end]--;
+    }
+    for (let i = 1; i < a.length; i++) a[i] += a[i - 1];
+    return Math.max(...a);
+  }
+}
+```
+
+```js
+/**
+ * Definition of Interval:
+ * class Interval {
+ *   constructor(start, end) {
+ *     this.start = start;
+ *     this.end = end;
+ *   }
+ * }
+ */
+
+class Solution {
+  /**
+   * @param {Interval[]} intervals
+   * @returns {number}
+   */
+  minMeetingRooms(intervals) {
+    let l = [],
+      r = [];
+    for (let x of intervals) {
+      l.push(x.start);
+      r.push(x.end);
+    }
+    l.sort((x1, x2) => x1 - x2);
+    r.sort((x1, x2) => x1 - x2);
+    let a = 0,
+      b = 0,
+      i1 = 0,
+      i2 = 0;
+    while (i1 < l.length) {
+      if (l[i1] < r[i2]) (i1++, b++);
+      else (i2++, b--);
+      a = Math.max(b, a);
+    }
+    return a;
+  }
+}
 ```
 
 ## Divide Intervals Into Minimum Number of Groups
