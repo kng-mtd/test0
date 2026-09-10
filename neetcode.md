@@ -18315,7 +18315,24 @@ const checkValidCuts = (n, rectangles) => {
 https://neetcode.io/problems/my-calendar-i/question
 
 ```js
+class MyCalendar {
+  constructor() {
+    this.a = [];
+  }
 
+  /**
+   * @param {number} startTime
+   * @param {number} endTime
+   * @return {boolean}
+   */
+  book(startTime, endTime) {
+    for (let [l, r] of this.a) {
+      if (r > startTime && l < endTime) return false;
+    }
+    this.a.push([startTime, endTime]);
+    return true;
+  }
+}
 ```
 
 ## My Calendar II
