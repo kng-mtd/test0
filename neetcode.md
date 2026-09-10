@@ -19530,5 +19530,67 @@ https://neetcode.io/problems/rotting-fruit/question
 https://leetcode.com/problems/count-sub-islands/description/
 
 ```js
+/**
+ * @param {number[][]} grid1
+ * @param {number[][]} grid2
+ * @return {number}
+ */
+const countSubIslands = (grid1, grid2) => {
+  const m = grid1.length,
+    n = grid1[0].length;
+  let a = 0,
+    b;
+  const dfs = (y, x) => {
+    if (y < 0 || x < 0 || y >= m || x >= n) return;
+    if (grid2[y][x] != 1) return;
+    if (grid1[y][x] != 1) b = 0;
+    grid2[y][x] = 0;
+    dfs(y + 1, x);
+    dfs(y - 1, x);
+    dfs(y, x + 1);
+    dfs(y, x - 1);
+  };
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (grid2[i][j] == 1 && grid1[i][j] == 1) {
+        b = 1;
+        dfs(i, j);
+        a += b;
+      }
+    }
+  }
+  return a;
+};
+```
+
+## Pacific Atlantic Water Flow
+
+https://neetcode.io/problems/pacific-atlantic-water-flow/question
+
+```js
+
+```
+
+## Surrounded Regions
+
+https://neetcode.io/problems/surrounded-regions/question
+
+```js
+
+```
+
+## Reorder Routes to Make All Paths Lead to the City Zero
+
+https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/description/
+
+```js
+
+```
+
+## Snakes and Ladders
+
+https://leetcode.com/problems/snakes-and-ladders/description/
+
+```js
 
 ```
