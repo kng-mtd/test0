@@ -18425,7 +18425,22 @@ const minOperations = (nums) => {
 https://neetcode.io/problems/buildings-with-an-ocean-view/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} heights
+   * @return {number[]}
+   */
+  findBuildings(heights) {
+    let a = [],
+      b = 0;
+    for (let i = heights.length - 1; i >= 0; i--) {
+      if (heights[i] <= b) continue;
+      a.unshift(i);
+      b = heights[i];
+    }
+    return a;
+  }
+}
 ```
 
 ## Minimum Length of String After Operations
