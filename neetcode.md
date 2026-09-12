@@ -5872,23 +5872,17 @@ class Solution {
     const n = image[0].length;
     const org = image[sr][sc];
     if (org == color) return image;
-    let vst = Array.from({ length: m }, () => Array(n).fill(false));
-    let que = [];
-
-    const bfs = (y, x) => {
+    const dfs = (y, x) => {
+      if (y < 0 || x < 0 || y >= m || x >= n) return;
+      if (image[y][x] != org) return;
       image[y][x] = color;
-      vst[y][x] = true;
-      que.push([y, x]);
+      dfs(y + 1, x);
+      dfs(y - 1, x);
+      dfs(y, x + 1);
+      dfs(y, x - 1);
     };
 
-    bfs(sr, sc);
-    while (que.length) {
-      const [y, x] = que.pop();
-      if (y > 0 && !vst[y - 1][x] && image[y - 1][x] == org) bfs(y - 1, x);
-      if (y < m - 1 && !vst[y + 1][x] && image[y + 1][x] == org) bfs(y + 1, x);
-      if (x > 0 && !vst[y][x - 1] && image[y][x - 1] == org) bfs(y, x - 1);
-      if (x < n - 1 && !vst[y][x + 1] && image[y][x + 1] == org) bfs(y, x + 1);
-    }
+    dfs(sr, sc);
     return image;
   }
 }
@@ -5904,21 +5898,30 @@ class Solution {
    * @return {number[][]}
    */
   floodFill(image, sr, sc, color) {
-    const m = image.length;
-    const n = image[0].length;
-    const org = image[sr][sc];
+    const m = image.length,
+      n = image[0].length,
+      org = image[sr][sc];
     if (org == color) return image;
-    const dfs = (y, x) => {
-      if (y < 0 || x < 0 || y >= m || x >= n) return;
-      if (image[y][x] != org) return;
-      image[y][x] = color;
-      dfs(y + 1, x);
-      dfs(y - 1, x);
-      dfs(y, x + 1);
-      dfs(y, x - 1);
-    };
-
-    dfs(sr, sc);
+    let q = [[sr, sc]];
+    image[sr][sc] = color;
+    while (q.length) {
+      let q0 = [];
+      for (const [y, x] of q) {
+        for (const [dy, dx] of [
+          [-1, 0],
+          [0, -1],
+          [1, 0],
+          [0, 1],
+        ]) {
+          const y1 = y + dy,
+            x1 = x + dx;
+          if (y1 < 0 || y1 >= m || x1 < 0 || x1 >= n || image[y1][x1] != org) continue;
+          image[y1][x1] = color;
+          q0.push([y1, x1]);
+        }
+      }
+      q = q0;
+    }
     return image;
   }
 }
@@ -18549,7 +18552,23 @@ const minIncrementForUnique = (nums) => {
 https://neetcode.io/problems/maximum-subarray/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  maxSubArray(nums) {
+    let a = nums[0],
+      b = a;
+    for (let i = 1; i < nums.length; i++) {
+      let c = a + nums[i];
+      if (nums[i] > c) a = nums[i];
+      else a = c;
+      b = Math.max(a, b);
+    }
+    return b;
+  }
+}
 ```
 
 ## Maximum Absolute Sum of Any Subarray
@@ -19470,7 +19489,74 @@ const findChampion = (n, edges) => {
 https://neetcode.io/problems/count-number-of-islands/question
 
 ```js
+class Solution {
+  /**
+   * @param {character[][]} grid
+   * @return {number}
+   */
+  numIslands(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let a = 0;
+    const dfs = (y, x) => {
+      if (y < 0 || x < 0 || y >= m || x >= n) return;
+      if (grid[y][x] == '0') return;
+      grid[y][x] = '0';
+      dfs(y + 1, x);
+      dfs(y - 1, x);
+      dfs(y, x + 1);
+      dfs(y, x - 1);
+    };
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == '1') (a++, dfs(i, j));
+      }
+    }
+    return a;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {character[][]} grid
+   * @return {number}
+   */
+  numIslands(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let a = 0;
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == '0') continue;
+        a++;
+        let q = [[i, j]];
+        grid[i][j] = '0';
+        while (q.length) {
+          let q0 = [];
+          for (const [y, x] of q) {
+            for (const [dy, dx] of [
+              [-1, 0],
+              [0, -1],
+              [1, 0],
+              [0, 1],
+            ]) {
+              const y1 = y + dy,
+                x1 = x + dx;
+              if (y1 < 0 || y1 >= m || x1 < 0 || x1 >= n || grid[y1][x1] == '0') continue;
+              grid[y1][x1] = '0';
+              q0.push([y1, x1]);
+            }
+          }
+          q = q0;
+        }
+      }
+    }
+
+    return a;
+  }
+}
 ```
 
 ## Max Area of Island
