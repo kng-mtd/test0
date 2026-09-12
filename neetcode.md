@@ -19685,7 +19685,34 @@ https://neetcode.io/problems/surrounded-regions/question
 https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @param {number[][]} connections
+ * @return {number}
+ */
+const minReorder = (n, connections) => {
+  let a = Array(n)
+      .fill()
+      .map((x) => []),
+    b = Array(n).fill(false),
+    c = 0;
+  for (let [i1, i2] of connections) {
+    a[i1].push(-i2);
+    a[i2].push(i1);
+  }
+  const dfs = (i) => {
+    b[i] = true;
+    for (let ii of a[i]) {
+      const d = ii < 0;
+      if (d) ii = -ii;
+      if (b[ii]) continue;
+      if (d) c++;
+      dfs(ii);
+    }
+  };
+  dfs(0);
+  return c;
+};
 ```
 
 ## Snakes and Ladders
@@ -19693,5 +19720,38 @@ https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-
 https://leetcode.com/problems/snakes-and-ladders/description/
 
 ```js
-
+/**
+ * @param {number[][]} board
+ * @return {number}
+ */
+const snakesAndLadders = (board) => {
+  const n = board.length;
+  board.reverse();
+  let a = [0];
+  for (let i = 0; i < n; i++) {
+    if (i % 2 == 0) a = [...a, ...board[i]];
+    else a = [...a, ...board[i].reverse()];
+  }
+  let q = [1],
+    vst = Array(n ** 2 + 1).fill(false),
+    b = 1;
+  vst[1] = true;
+  while (q.length) {
+    let q0 = [];
+    while (q.length) {
+      const i = q.pop();
+      for (let ii = i + 1; ii <= i + 6; ii++) {
+        const c = a[ii] == -1 ? ii : a[ii];
+        if (c == n ** 2) return b;
+        if (!vst[c]) {
+          vst[c] = true;
+          q0.push(c);
+        }
+      }
+    }
+    q = q0;
+    b++;
+  }
+  return -1;
+};
 ```
