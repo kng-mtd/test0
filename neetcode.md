@@ -19755,3 +19755,35 @@ const snakesAndLadders = (board) => {
   return -1;
 };
 ```
+
+## Open The Lock
+
+https://neetcode.io/problems/open-the-lock/question
+
+```js
+
+```
+
+## Find Eventual Safe States
+
+https://leetcode.com/problems/find-eventual-safe-states/description/
+
+```js
+
+```
+
+## Course Schedule
+
+https://neetcode.io/problems/course-schedule/question
+
+```js
+
+```
+
+## Course Schedule II
+
+https://neetcode.io/problems/course-schedule-ii/question
+
+```js
+
+```
