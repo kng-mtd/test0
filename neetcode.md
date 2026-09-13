@@ -18604,7 +18604,27 @@ const maxAbsoluteSum = (nums) => {
 https://neetcode.io/problems/maximum-sum-circular-subarray/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  maxSubarraySumCircular(nums) {
+    let a = nums[0],
+      b = a,
+      c = a,
+      d = a,
+      e = a;
+    for (let i = 1; i < nums.length; i++) {
+      a = Math.min(nums[i], a + nums[i]);
+      b = Math.min(b, a);
+      c = Math.max(nums[i], c + nums[i]);
+      d = Math.max(d, c);
+      e += nums[i];
+    }
+    return e == b ? d : Math.max(d, e - b);
+  }
+}
 ```
 
 ## Minimum Swaps to Group All 1's Together II
@@ -19770,6 +19790,27 @@ https://leetcode.com/problems/find-eventual-safe-states/description/
 
 ```js
 
+```
+
+```js
+/**
+ * @param {number[][]} graph
+ * @return {number[]}
+ */
+const eventualSafeNodes = (graph) => {
+  const n = graph.length;
+  let vst = Array(n).fill(0),
+    a = [];
+  const dfs = (i) => {
+    if (vst[i]) return vst[i] == 2;
+    vst[i] = 1;
+    for (let ii of graph[i]) if (!dfs(ii)) return false;
+    vst[i] = 2;
+    return true;
+  };
+  for (let i = 0; i < n; i++) if (dfs(i)) a.push(i);
+  return a;
+};
 ```
 
 ## Course Schedule
