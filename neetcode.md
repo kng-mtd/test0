@@ -18654,7 +18654,23 @@ const minSwaps = (nums) => {
 https://neetcode.io/problems/longest-turbulent-subarray/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} arr
+   * @return {number}
+   */
+  maxTurbulenceSize(arr) {
+    let a = 1,
+      a0 = 1;
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] == arr[i - 1]) a = 1;
+      else if (i == 1 || (arr[i - 1] - arr[i - 2]) * (arr[i] - arr[i - 1]) < 0) a++;
+      else a = 2;
+      a0 = Math.max(a, a0);
+    }
+    return a0;
+  }
+}
 ```
 
 ## Jump Game
@@ -19789,10 +19805,6 @@ https://neetcode.io/problems/open-the-lock/question
 https://leetcode.com/problems/find-eventual-safe-states/description/
 
 ```js
-
-```
-
-```js
 /**
  * @param {number[][]} graph
  * @return {number[]}
@@ -19824,6 +19836,46 @@ https://neetcode.io/problems/course-schedule/question
 ## Course Schedule II
 
 https://neetcode.io/problems/course-schedule-ii/question
+
+```js
+
+```
+
+## Graph Valid Tree
+
+https://neetcode.io/problems/valid-tree/question
+
+```js
+
+```
+
+## Course Schedule IV
+
+https://neetcode.io/problems/course-schedule-iv/question
+
+```js
+
+```
+
+## Check if Move is Legal
+
+https://leetcode.com/problems/check-if-move-is-legal/description/
+
+```js
+
+```
+
+## Shortest Bridge
+
+https://neetcode.io/problems/shortest-bridge/question
+
+```js
+
+```
+
+## Shortest Path in Binary Matrix
+
+https://neetcode.io/problems/shortest-path-in-binary-matrix/question
 
 ```js
 
