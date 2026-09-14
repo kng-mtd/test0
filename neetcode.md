@@ -19862,7 +19862,37 @@ https://neetcode.io/problems/course-schedule-iv/question
 https://leetcode.com/problems/check-if-move-is-legal/description/
 
 ```js
-
+/**
+ * @param {character[][]} board
+ * @param {number} rMove
+ * @param {number} cMove
+ * @param {character} color
+ * @return {boolean}
+ */
+const checkMove = (board, rMove, cMove, color) => {
+  const n = 8;
+  const dirs = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+  ];
+  const a = color == 'B' ? 'W' : 'B';
+  for (let [dy, dx] of dirs) {
+    let y = rMove + dy,
+      x = cMove + dx,
+      b = 0;
+    while (y >= 0 && y < n && x >= 0 && x < n && board[y][x] == a) {
+      ((y += dy), (x += dx), b++);
+    }
+    if (b > 0 && y >= 0 && y < n && x >= 0 && x < n && board[y][x] == color) return true;
+  }
+  return false;
+};
 ```
 
 ## Shortest Bridge
@@ -19876,6 +19906,38 @@ https://neetcode.io/problems/shortest-bridge/question
 ## Shortest Path in Binary Matrix
 
 https://neetcode.io/problems/shortest-path-in-binary-matrix/question
+
+```js
+
+```
+
+## Number of Connected Components in an Undirected Graph
+
+https://neetcode.io/problems/count-connected-components/question
+
+```js
+
+```
+
+## Redundant Connection
+
+https://neetcode.io/problems/redundant-connection/question
+
+```js
+
+```
+
+## Accounts Merge
+
+https://neetcode.io/problems/accounts-merge/question
+
+```js
+
+```
+
+## Find Closest Node to Given Two Nodes
+
+https://leetcode.com/problems/find-closest-node-to-given-two-nodes/description/
 
 ```js
 
