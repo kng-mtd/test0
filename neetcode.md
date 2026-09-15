@@ -18678,7 +18678,20 @@ class Solution {
 https://neetcode.io/problems/jump-game/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {boolean}
+   */
+  canJump(nums) {
+    let a = 0;
+    for (let i = 0; i < nums.length; i++) {
+      if (i > a) return false;
+      a = Math.max(a, i + nums[i]);
+    }
+    return true;
+  }
+}
 ```
 
 ## Jump Game II
