@@ -18699,7 +18699,24 @@ class Solution {
 https://neetcode.io/problems/jump-game-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  jump(nums) {
+    let a = 0,
+      l = 0,
+      r = 0;
+    while (r < nums.length - 1) {
+      let b = 0;
+      for (let i = l; i <= r; i++) b = Math.max(i + nums[i], b);
+      [l, r] = [r + 1, b];
+      a++;
+    }
+    return a;
+  }
+}
 ```
 
 ## Jump Game VII
