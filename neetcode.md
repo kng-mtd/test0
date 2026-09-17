@@ -18724,7 +18724,32 @@ class Solution {
 https://neetcode.io/problems/jump-game-vii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @param {number} minJump
+   * @param {number} maxJump
+   * @return {boolean}
+   */
+  canReach(s, minJump, maxJump) {
+    const n = s.length;
+    let a = 0,
+      q = [0];
+    while (q.length) {
+      const i = q.shift(),
+        l = Math.max(i + minJump, a + 1),
+        r = Math.min(i + maxJump, n - 1);
+      for (let ii = l; ii <= r; ii++) {
+        if (s[ii] == '0') {
+          if (ii == n - 1) return true;
+          q.push(ii);
+        }
+      }
+      a = Math.max(r, a);
+    }
+    return false;
+  }
+}
 ```
 
 ## Gas Station
