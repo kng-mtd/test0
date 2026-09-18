@@ -18757,7 +18757,29 @@ class Solution {
 https://neetcode.io/problems/gas-station/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} gas
+   * @param {number[]} cost
+   * @return {number}
+   */
+  canCompleteCircuit(gas, cost) {
+    const n = gas.length;
+    let a = 0,
+      l = 0,
+      r = 0;
+    while (l < n) {
+      if (r - l == n) return l;
+      a += gas[r % n] - cost[r % n];
+      while (a < 0) {
+        a += -gas[l] + cost[l];
+        l++;
+      }
+      r++;
+    }
+    return -1;
+  }
+}
 ```
 
 ## Hand of Straights
