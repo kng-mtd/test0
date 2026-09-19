@@ -20206,3 +20206,35 @@ const closestMeetingNode = (edges, node1, node2) => {
   return a;
 };
 ```
+
+## As Far from Land as Possible
+
+https://leetcode.com/problems/as-far-from-land-as-possible/description/
+
+```js
+
+```
+
+## Shortest Path with Alternating Colors
+
+https://leetcode.com/problems/shortest-path-with-alternating-colors/description/
+
+```js
+
+```
+
+## Minimun Fuel Cost to Report to the Capital
+
+https://leetcode.com/problems/minimum-fuel-cost-to-report-to-the-capital/description/
+
+```js
+
+```
+
+## Minimum Score of a Path between Two Cities
+
+https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/description/
+
+```js
+
+```
