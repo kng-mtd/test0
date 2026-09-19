@@ -203,7 +203,7 @@ t
 - Kth Largest Element
 - Top K Frequent Elements
 
-### LeetCodeで頻出の見分け方
+### LeetCodeの見分け方　配列
 
 | 問題文のキーワード          | 解法候補                    |
 | --------------------------- | --------------------------- |
@@ -216,8 +216,6 @@ t
 | top k                       | Heap                        |
 | minimum feasible value      | Binary Search on Answer     |
 | maximum/minimum ending at i | DP                          |
-
-配列問題では、まず次の順で考えるとかなりの問題を分類できます。
 
 ```
 連続区間？
@@ -239,6 +237,70 @@ Yes → Sliding Window
 最適解？
 ↓
 Yes → DP or Greedy
+```
+
+### LeetCodeの見分け方　グラフ
+
+| 問題文のキーワード                      | 解法候補              |
+| --------------------------------------- | --------------------- |
+| **connected / connectivity**            | DFS, BFS, Union-Find  |
+| **connected components**                | DFS, BFS, Union-Find  |
+| **same group / same component**         | Union-Find            |
+| **union / merge groups**                | Union-Find            |
+| **cycle / redundant connection**        | Union-Find, DFS       |
+| **can reach / reachable**               | DFS, BFS              |
+| **all paths**                           | DFS                   |
+| **island / region / area**              | DFS, BFS              |
+| **shortest path**                       | BFS                   |
+| **minimum number of steps**             | BFS                   |
+| **level / layer**                       | BFS                   |
+| **multi-source**                        | Multi-source BFS      |
+| **weighted shortest path**              | Dijkstra              |
+| **negative edge**                       | Bellman-Ford          |
+| **dependency / prerequisite**           | Topological Sort      |
+| **course schedule / ordering**          | Topological Sort      |
+| **directed cycle**                      | DFS, Topological Sort |
+| **indegree**                            | Topological Sort      |
+| **bipartite / two colors**              | BFS, DFS              |
+| **color / alternate colors**            | BFS, DFS              |
+| **minimum spanning tree**               | Kruskal, Prim         |
+| **connect all nodes with minimum cost** | MST                   |
+| **minimum cost to connect**             | Kruskal, Prim         |
+| **ancestor / subtree**                  | DFS                   |
+| **tree diameter**                       | DFS, BFS              |
+| **tree depth / height**                 | DFS, BFS              |
+| **clone graph**                         | DFS, BFS              |
+
+```
+「最短距離」？
+      ↓ Yes
+     BFS
+
+「到達できるか？」
+      ↓
+DFS / BFS
+
+「連結成分を全部調べる？」
+      ↓
+DFS / BFS
+
+「辺を追加していって、
+同じグループか判定する？」
+      ↓
+Union-Find
+
+「この辺を追加するとcycle？」
+      ↓
+Union-Find
+
+「依存関係・順序？」
+      ↓
+DFS / BFS
+（Topological Sort）
+
+「重み付き最短経路？」
+      ↓
+Dijkstra など
 ```
 
 ---
@@ -265,6 +327,82 @@ const fn = (s) => {
   }
   return a;
 };
+```
+
+---
+
+## Union find
+
+```js
+const union = (n, e) => {
+  let a = Array(n)
+    .fill()
+    .map((_, i) => i);
+  let b = Array(n).fill(1);
+
+  for (let [i1, i2] of e) {
+    let c1 = a[i1],
+      c2 = a[i2];
+    if (c1 == c2) continue;
+    if (b[c1] < b[c2]) [c1, c2] = [c2, c1];
+    for (let i = 0; i < n; i++) if (a[i] == c2) a[i] = c1;
+    b[c1] += b[c2];
+    b[c2] = 0;
+  }
+
+  for (let i = 0; i < n; i++) console.log([i, a[i], b[i]]);
+};
+
+((n = 8),
+  (e = [
+    [0, 1],
+    [2, 3],
+    [1, 2],
+    [4, 5],
+    [5, 6],
+    [1, 2],
+  ]));
+union(n, e);
+```
+
+```js
+const unionFind = (n, e) => {
+  let a = Array(n)
+    .fill()
+    .map((_, i) => i);
+  let b = Array(n).fill(1);
+  const find = (i) => {
+    while (a[i] != i) {
+      a[i] = a[a[i]];
+      i = a[i];
+    }
+    return i;
+  };
+
+  for (let [i1, i2] of e) {
+    ((i1 = find(i1)), (i2 = find(i2)));
+    if (i1 == i2) continue;
+    if (b[i1] < b[i2]) [i1, i2] = [i2, i1];
+    a[i2] = i1;
+    b[i1] += b[i2];
+  }
+
+  for (let i = 0; i < n; i++) {
+    const ii = find(i);
+    console.log([i, ii, b[ii]]);
+  }
+};
+
+((n = 8),
+  (e = [
+    [0, 1],
+    [2, 3],
+    [1, 2],
+    [4, 5],
+    [5, 6],
+    [1, 2],
+  ]));
+unionFind(n, e);
 ```
 
 ---
@@ -20037,5 +20175,34 @@ https://neetcode.io/problems/accounts-merge/question
 https://leetcode.com/problems/find-closest-node-to-given-two-nodes/description/
 
 ```js
+/**
+ * @param {number[]} edges
+ * @param {number} node1
+ * @param {number} node2
+ * @return {number}
+ */
+const closestMeetingNode = (edges, node1, node2) => {
+  const n = edges.length;
+  const fn = (i) => {
+    let d = Array(n).fill(-1),
+      x = 0;
+    while (i != -1 && d[i] == -1) {
+      d[i] = x++;
+      i = edges[i];
+    }
+    return d;
+  };
 
+  let d1 = fn(node1),
+    d2 = fn(node2);
+  let a = -1,
+    b = Infinity;
+  for (let i = 0; i < n; i++) {
+    if (d1[i] != -1 && d2[i] != -1) {
+      let d = Math.max(d1[i], d2[i]);
+      if (d < b) [a, b] = [i, d];
+    }
+  }
+  return a;
+};
 ```
