@@ -18787,7 +18787,27 @@ class Solution {
 https://neetcode.io/problems/hand-of-straights/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} hand
+   * @param {number} groupSize
+   * @return {boolean}
+   */
+  isNStraightHand(hand, groupSize) {
+    if (hand.length % groupSize) return false;
+    let a = [];
+    for (let i of hand) a[i] = (a[i] ?? 0) + 1;
+    for (let i = 0; i < a.length; i++) {
+      while (a[i]) {
+        for (let ii = i; ii < i + groupSize; ii++) {
+          if (!a[ii]) return false;
+          a[ii]--;
+        }
+      }
+    }
+    return true;
+  }
+}
 ```
 
 ## Minimum Number of Changes to Make Binary String Beautiful
