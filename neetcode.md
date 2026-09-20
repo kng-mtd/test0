@@ -18989,7 +18989,20 @@ const minimizeArrayValue = (nums) => {
 https://neetcode.io/problems/maximize-ysum-by-picking-a-triplet-of-distinct-xvalues/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} x
+   * @param {number[]} y
+   * @return {number}
+   */
+  maxSumDistinctTriplet(x, y) {
+    let a = [];
+    for (let i = 0; i < x.length; i++) a[x[i]] = Math.max(y[i], a[x[i]] ?? 0);
+    a.sort((x1, x2) => x2 - x1);
+    if (!a[2]) return -1;
+    return a[0] + a[1] + a[2];
+  }
+}
 ```
 
 ## Minimum Difference Between Largest and Smallest Value in Three Moves
@@ -20212,7 +20225,43 @@ const closestMeetingNode = (edges, node1, node2) => {
 https://leetcode.com/problems/as-far-from-land-as-possible/description/
 
 ```js
-
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+const maxDistance = (grid) => {
+  const n = grid.length;
+  const a = grid.flat().reduce((a, x) => a + x);
+  if (a == 0 || a == n ** 2) return -1;
+  let q = [];
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) if (grid[i][j] == 1) q.push([i, j]);
+  }
+  let b = -1;
+  const d = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+  ];
+  while (q.length) {
+    b++;
+    let q0 = [];
+    for (let [y0, x0] of q) {
+      for (let [dy, dx] of d) {
+        const x = x0 + dx,
+          y = y0 + dy;
+        if (x < 0 || x >= n || y < 0 || y >= n) continue;
+        if (grid[y][x] == 0) {
+          q0.push([y, x]);
+          grid[y][x] = 1;
+        }
+      }
+    }
+    q = q0;
+  }
+  return b;
+};
 ```
 
 ## Shortest Path with Alternating Colors
@@ -20220,7 +20269,54 @@ https://leetcode.com/problems/as-far-from-land-as-possible/description/
 https://leetcode.com/problems/shortest-path-with-alternating-colors/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @param {number[][]} redEdges
+ * @param {number[][]} blueEdges
+ * @return {number[]}
+ */
+const shortestAlternatingPaths = (n, redEdges, blueEdges) => {
+  let a1 = Array(n)
+      .fill()
+      .map((x) => []),
+    a2 = Array(n)
+      .fill()
+      .map((x) => []);
+  for (let [i1, i2] of redEdges) if (i2) a1[i1].push(i2);
+  for (let [i1, i2] of blueEdges) if (i2) a2[i1].push(i2);
+  let v1 = Array(n).fill(false),
+    v2 = Array(n).fill(false);
+  ((v1[0] = true), (v2[0] = true));
+  let b = Array(n).fill(-1);
+  b[0] = 0;
+  let q1 = [0],
+    q2 = [0];
+  let c = 0;
+  while (q1.length || q2.length) {
+    c++;
+    let q10 = [],
+      q20 = [];
+    for (let i of q1) {
+      for (let ii of a2[i]) {
+        if (v2[ii]) continue;
+        v2[ii] = true;
+        if (b[ii] == -1) b[ii] = c;
+        q20.push(ii);
+      }
+    }
+    for (let i of q2) {
+      for (let ii of a1[i]) {
+        if (v1[ii]) continue;
+        v1[ii] = true;
+        if (b[ii] == -1) b[ii] = c;
+        q10.push(ii);
+      }
+    }
+    q1 = q10;
+    q2 = q20;
+  }
+  return b;
+};
 ```
 
 ## Minimun Fuel Cost to Report to the Capital
@@ -20228,12 +20324,161 @@ https://leetcode.com/problems/shortest-path-with-alternating-colors/description/
 https://leetcode.com/problems/minimum-fuel-cost-to-report-to-the-capital/description/
 
 ```js
-
+/**
+ * @param {number[][]} roads
+ * @param {number} seats
+ * @return {number}
+ */
+const minimumFuelCost = (roads, seats) => {
+  const n = roads.length + 1;
+  let a = Array(n)
+    .fill()
+    .map((x) => []);
+  for (let [i1, i2] of roads) {
+    a[i1].push(i2);
+    a[i2].push(i1);
+  }
+  let p = Array(n).fill(-1);
+  let q = [0];
+  for (let i of q) {
+    for (let ii of a[i]) {
+      if (ii == p[i]) continue;
+      p[ii] = i;
+      q.push(ii);
+    }
+  }
+  let c = Array(n).fill(1);
+  let d = 0;
+  for (let i = q.length - 1; i > 0; i--) {
+    let e = q[i];
+    d += Math.ceil(c[e] / seats);
+    c[p[e]] += c[e];
+  }
+  return d;
+};
 ```
 
 ## Minimum Score of a Path between Two Cities
 
 https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/description/
+
+```js
+/**
+ * @param {number} n
+ * @param {number[][]} roads
+ * @return {number}
+ */
+const minScore = (n, roads) => {
+  let a = Array(n + 1)
+    .fill()
+    .map((x) => []);
+  for (let [i1, i2, d] of roads) {
+    a[i1].push([i2, d]);
+    a[i2].push([i1, d]);
+  }
+  let q = [1],
+    vst = Array(n + 1).fill(false);
+  vst[1] = true;
+  let b = Infinity;
+  while (q.length) {
+    let q0 = [];
+    for (let i of q) {
+      for (let [ii, d] of a[i]) {
+        b = Math.min(b, d);
+        if (vst[ii]) continue;
+        vst[ii] = true;
+        q0.push(ii);
+      }
+    }
+    q = q0;
+  }
+  return b;
+};
+```
+
+## Number of Closed Islands
+
+https://leetcode.com/problems/number-of-closed-islands/description/
+
+```js
+
+```
+
+## Number of Enclaves
+
+https://neetcode.io/problems/number-of-enclaves/question
+
+```js
+
+```
+
+## Regions Cut By Slashes
+
+https://leetcode.com/problems/regions-cut-by-slashes/description/
+
+```js
+/**
+ * @param {string[]} grid
+ * @return {number}
+ */
+const regionsBySlashes = (grid) => {
+  const n = grid.length;
+  const p = Array(n * n * 4)
+    .fill()
+    .map((_, i) => i);
+
+  const find = (x) => {
+    while (x != p[x]) {
+      p[x] = p[p[x]];
+      x = p[x];
+    }
+    return x;
+  };
+
+  const union = (x, y) => {
+    x = find(x);
+    y = find(y);
+    if (x != y) p[y] = x;
+  };
+
+  const id = (i, j, k) => (i * n + j) * 4 + k;
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      const c = grid[i][j];
+      if (c == ' ') {
+        union(id(i, j, 0), id(i, j, 1));
+        union(id(i, j, 1), id(i, j, 2));
+        union(id(i, j, 2), id(i, j, 3));
+      } else if (c == '/') {
+        union(id(i, j, 0), id(i, j, 3));
+        union(id(i, j, 1), id(i, j, 2));
+      } else {
+        union(id(i, j, 0), id(i, j, 1));
+        union(id(i, j, 2), id(i, j, 3));
+      }
+      if (i > 0) union(id(i, j, 0), id(i - 1, j, 2));
+      if (j > 0) union(id(i, j, 3), id(i, j - 1, 1));
+    }
+  }
+
+  let a = 0;
+  for (let i = 0; i < p.length; i++) if (find(i) == i) a++;
+  return a;
+};
+```
+
+## Minimum Number of Vertices to Reach all Nodes
+
+https://leetcode.com/problems/minimum-number-of-vertices-to-reach-all-nodes/description/
+
+```js
+
+```
+
+## Is Graph Bipartite
+
+https://leetcode.com/problems/is-graph-bipartite/description/
 
 ```js
 
