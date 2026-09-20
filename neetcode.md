@@ -20401,12 +20401,123 @@ const minScore = (n, roads) => {
 https://leetcode.com/problems/number-of-closed-islands/description/
 
 ```js
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+const closedIsland = (grid) => {
+  const m = grid.length,
+    n = grid[0].length;
+  let a = 0,
+    b;
 
+  const dfs = (y, x) => {
+    if (y < 0 || y >= m || x < 0 || x >= n) {
+      b = true;
+      return;
+    }
+    if (grid[y][x]) return;
+    grid[y][x] = 1;
+    dfs(y - 1, x);
+    dfs(y + 1, x);
+    dfs(y, x - 1);
+    dfs(y, x + 1);
+  };
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (grid[i][j]) continue;
+      a++;
+      b = false;
+      dfs(i, j);
+      if (b) a--;
+    }
+  }
+  return a;
+};
+```
+
+```js
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+const closedIsland = (grid) => {
+  const m = grid.length,
+    n = grid[0].length;
+
+  const dfs = (y, x) => {
+    if (y < 0 || y >= m || x < 0 || x >= n || grid[y][x]) return;
+    grid[y][x] = 1;
+    dfs(y - 1, x);
+    dfs(y + 1, x);
+    dfs(y, x - 1);
+    dfs(y, x + 1);
+  };
+
+  for (let i = 0; i < m; i++) {
+    dfs(i, 0);
+    dfs(i, n - 1);
+  }
+  for (let j = 0; j < n; j++) {
+    dfs(0, j);
+    dfs(m - 1, j);
+  }
+  let a = 0;
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (grid[i][j]) continue;
+      a++;
+      dfs(i, j);
+    }
+  }
+  return a;
+};
 ```
 
 ## Number of Enclaves
 
 https://neetcode.io/problems/number-of-enclaves/question
+
+```js
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  numEnclaves(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+
+    const dfs = (y, x) => {
+      if (y < 0 || y >= m || x < 0 || x >= n || !grid[y][x]) return;
+      grid[y][x] = 0;
+      dfs(y - 1, x);
+      dfs(y + 1, x);
+      dfs(y, x - 1);
+      dfs(y, x + 1);
+    };
+
+    for (let i = 0; i < m; i++) {
+      if (grid[i][0]) dfs(i, 0);
+      if (grid[i][n - 1]) dfs(i, n - 1);
+    }
+    for (let j = 0; j < n; j++) {
+      if (grid[0][j]) dfs(0, j);
+      if (grid[m - 1][j]) dfs(m - 1, j);
+    }
+    return grid.flat().reduce((a, x) => a + x);
+  }
+}
+```
+
+## Number of Provinces
+
+https://neetcode.io/problems/number-of-provinces/question
+
+```js
+
+```
 
 ```js
 
@@ -20473,12 +20584,73 @@ const regionsBySlashes = (grid) => {
 https://leetcode.com/problems/minimum-number-of-vertices-to-reach-all-nodes/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @param {number[][]} edges
+ * @return {number[]}
+ */
+const findSmallestSetOfVertices = (n, edges) => {
+  let a = Array(n).fill(true);
+  for (let [i1, i2] of edges) a[i2] = false;
+  let b = [];
+  for (let i = 0; i < n; i++) if (a[i]) b.push(i);
+  return b;
+};
 ```
 
 ## Is Graph Bipartite
 
 https://leetcode.com/problems/is-graph-bipartite/description/
+
+```js
+/**
+ * @param {number[][]} graph
+ * @return {boolean}
+ */
+const isBipartite = (graph) => {
+  let a = [];
+  const dfs = (i, c) => {
+    a[i] = c;
+    for (let ii of graph[i]) {
+      if (a[ii] == c) return false;
+      if (a[ii] == undefined && !dfs(ii, 1 - c)) return false;
+    }
+    return true;
+  };
+  for (let i = 0; i < graph.length; i++) {
+    if (a[i] == undefined && !dfs(i, 0)) return false;
+  }
+  return true;
+};
+```
+
+## Count the Number of Complete Components
+
+https://leetcode.com/problems/count-the-number-of-complete-components/description/
+
+```js
+
+```
+
+## Evaluate Division
+
+https://neetcode.io/problems/evaluate-division/question
+
+```js
+
+```
+
+## Detonate the Maximum Bombs
+
+https://leetcode.com/problems/detonate-the-maximum-bombs/description/
+
+```js
+
+```
+
+## Find All Possible Recipes from Given Supplies
+
+https://leetcode.com/problems/find-all-possible-recipes-from-given-supplies/description/
 
 ```js
 
