@@ -20655,3 +20655,139 @@ https://leetcode.com/problems/find-all-possible-recipes-from-given-supplies/desc
 ```js
 
 ```
+
+## Shortest Distance After Road Addition Queries I
+
+https://leetcode.com/problems/shortest-distance-after-road-addition-queries-i/description/
+
+```js
+
+```
+
+## Minimum Height Trees
+
+https://neetcode.io/problems/minimum-height-trees/question
+
+```js
+
+```
+
+## Path with Maximum Gold
+
+https://leetcode.com/problems/path-with-maximum-gold/description/
+
+```js
+
+```
+
+## Most Profitable Path in a Tree
+
+https://leetcode.com/problems/most-profitable-path-in-a-tree/description/
+
+```js
+/**
+ * @param {number[][]} edges
+ * @param {number} bob
+ * @param {number[]} amount
+ * @return {number}
+ */
+const mostProfitablePath = (edges, bob, amount) => {
+  const n = amount.length;
+  let a = Array(n)
+    .fill()
+    .map(() => []);
+  for (let [i1, i2] of edges) {
+    a[i1].push(i2);
+    a[i2].push(i1);
+  }
+
+  let p = Array(n).fill(-1),
+    q = [0];
+  for (let k = 0; k < q.length; k++) {
+    let i = q[k];
+    for (let ii of a[i]) {
+      if (ii == p[i]) continue;
+      p[ii] = i;
+      q.push(ii);
+    }
+  }
+
+  let b = Array(n).fill(Infinity);
+  let i = bob,
+    t = 0;
+  while (i != -1) {
+    b[i] = t++;
+    i = p[i];
+  }
+
+  let d = -Infinity;
+  let e = [[0, -1, 0, 0]];
+  while (e.length) {
+    let [i, pi, t, v] = e.pop();
+    if (t < b[i]) v += amount[i];
+    else if (t == b[i]) v += amount[i] / 2;
+    let c = true;
+    for (let ii of a[i]) {
+      if (ii == pi) continue;
+      c = false;
+      e.push([ii, i, t + 1, v]);
+    }
+    if (c) d = Math.max(v, d);
+  }
+  return d;
+};
+```
+
+```js
+/**
+ * @param {number[][]} edges
+ * @param {number} bob
+ * @param {number[]} amount
+ * @return {number}
+ */
+const mostProfitablePath = (edges, bob, amount) => {
+  const n = amount.length;
+  let a = Array(n)
+    .fill()
+    .map(() => []);
+  for (let [i1, i2] of edges) {
+    a[i1].push(i2);
+    a[i2].push(i1);
+  }
+  let b = Array(n).fill(Infinity);
+
+  const dfs1 = (i, p, t) => {
+    if (i == 0) {
+      b[i] = t;
+      return true;
+    }
+    for (let ii of a[i]) {
+      if (ii != p && dfs1(ii, i, t + 1)) {
+        b[i] = t;
+        return true;
+      }
+    }
+    return false;
+  };
+
+  dfs1(bob, -1, 0);
+
+  let d = -Infinity;
+
+  const dfs2 = (i, p, t, v) => {
+    if (t < b[i]) v += amount[i];
+    else if (t == b[i]) v += amount[i] / 2;
+    let c = true;
+    for (let ii of a[i]) {
+      if (ii != p) {
+        c = false;
+        dfs2(ii, i, t + 1, v);
+      }
+    }
+    if (c) d = Math.max(v, d);
+  };
+
+  dfs2(0, -1, 0, 0);
+  return d;
+};
+```
