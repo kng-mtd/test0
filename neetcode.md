@@ -19086,7 +19086,25 @@ const minimumPushes = (word) => {
 https://neetcode.io/problems/dota2-senate/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} senate
+   * @return {string}
+   */
+  predictPartyVictory(senate) {
+    const n = senate.length,
+      r = [],
+      d = [];
+    for (let i = 0; i < n; i++) (senate[i] == 'R' ? r : d).push(i);
+    while (r.length && d.length) {
+      const ri = r.shift(),
+        di = d.shift();
+      if (ri < di) r.push(ri + n);
+      else d.push(di + n);
+    }
+    return r.length ? 'Radiant' : 'Dire';
+  }
+}
 ```
 
 ## Maximum Points You Can Obtain From Cards
@@ -20629,7 +20647,42 @@ const isBipartite = (graph) => {
 https://leetcode.com/problems/count-the-number-of-complete-components/description/
 
 ```js
+/**
+ * @param {number} n
+ * @param {number[][]} edges
+ * @return {number}
+ */
+const countCompleteComponents = (n, edges) => {
+  let a = Array(n)
+    .fill()
+    .map((x) => []);
+  for (let [i1, i2] of edges) {
+    a[i1].push(i2);
+    a[i2].push(i1);
+  }
+  let b = 0,
+    vst = Array(n).fill(false);
 
+  const dfs = (i) => {
+    if (vst[i]) return [0, 0];
+    vst[i] = true;
+    let k = 1,
+      e = a[i].length;
+    for (let ii of a[i]) {
+      let [k0, e0] = dfs(ii);
+      k += k0;
+      e += e0;
+    }
+    return [k, e];
+  };
+
+  for (let i = 0; i < n; i++) {
+    if (vst[i]) continue;
+    let [k, e] = dfs(i);
+    if (e == k * (k - 1)) b++;
+  }
+  return b;
+};
 ```
 
 ## Evaluate Division
@@ -20645,7 +20698,38 @@ https://neetcode.io/problems/evaluate-division/question
 https://leetcode.com/problems/detonate-the-maximum-bombs/description/
 
 ```js
-
+/**
+ * @param {number[][]} bombs
+ * @return {number}
+ */
+const maximumDetonation = (bombs) => {
+  const n = bombs.length,
+    a = Array(n)
+      .fill()
+      .map((x) => []);
+  for (let i1 = 0; i1 < n - 1; i1++) {
+    for (let i2 = i1 + 1; i2 < n; i2++) {
+      const [x1, y1, r1] = bombs[i1],
+        [x2, y2, r2] = bombs[i2];
+      const r = (x1 - x2) ** 2 + (y1 - y2) ** 2;
+      if (r <= r1 ** 2) a[i1].push(i2);
+      if (r <= r2 ** 2) a[i2].push(i1);
+    }
+  }
+  const dfs = (i, vst) => {
+    if (vst[i]) return 0;
+    vst[i] = true;
+    let b = 1;
+    for (let ii of a[i]) b += dfs(ii, vst);
+    return b;
+  };
+  let c = 0;
+  for (let i = 0; i < n; i++) {
+    let vst = [];
+    c = Math.max(dfs(i, vst), c);
+  }
+  return c;
+};
 ```
 
 ## Find All Possible Recipes from Given Supplies
@@ -20653,7 +20737,65 @@ https://leetcode.com/problems/detonate-the-maximum-bombs/description/
 https://leetcode.com/problems/find-all-possible-recipes-from-given-supplies/description/
 
 ```js
+/**
+ * @param {string[]} recipes
+ * @param {string[][]} ingredients
+ * @param {string[]} supplies
+ * @return {string[]}
+ */
+const findAllRecipes = (recipes, ingredients, supplies) => {
+  const n = recipes.length;
+  let a = [];
+  for (let i = 0; i < n; i++) a[i] = new Set(ingredients[i]);
+  let b = new Set(supplies),
+    c = [];
+  let d = true;
+  while (d) {
+    d = false;
+    for (let i = 0; i < n; i++) {
+      const e = recipes[i];
+      if (!e) continue;
+      if (a[i].difference(b).size == 0) {
+        b.add(e);
+        c.push(e);
+        recipes[i] = '';
+        d = true;
+      }
+    }
+  }
+  return c;
+};
+```
 
+```js
+/**
+ * @param {string[]} recipes
+ * @param {string[][]} ingredients
+ * @param {string[]} supplies
+ * @return {string[]}
+ */
+const findAllRecipes = (recipes, ingredients, supplies) => {
+  let a = {},
+    b = {},
+    c = [];
+  for (let i = 0; i < recipes.length; i++) a[recipes[i]] = ingredients[i];
+  for (let i of supplies) b[i] = true;
+
+  const dfs = (i, vst) => {
+    if (b[i]) return true;
+    if (vst[i]) return false;
+    if (a[i] == undefined) return false;
+    vst[i] = true;
+    for (let ii of a[i]) if (!dfs(ii, vst)) return false;
+    b[i] = true;
+    return true;
+  };
+
+  for (let i of recipes) {
+    if (dfs(i, {})) c.push(i);
+  }
+  return c;
+};
 ```
 
 ## Shortest Distance After Road Addition Queries I
