@@ -20803,7 +20803,39 @@ const findAllRecipes = (recipes, ingredients, supplies) => {
 https://leetcode.com/problems/shortest-distance-after-road-addition-queries-i/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @param {number[][]} queries
+ * @return {number[]}
+ */
+const shortestDistanceAfterQueries = (n, queries) => {
+  let a = Array(n)
+    .fill()
+    .map(() => []);
+  for (let i = 0; i < n - 1; i++) a[i].push(i + 1);
+  let b = [];
+  for (let [i1, i2] of queries) {
+    a[i1].push(i2);
+    let d = Array(n).fill(-1),
+      q = [0];
+    d[0] = 0;
+    while (q.length) {
+      let q0 = [];
+      while (q.length) {
+        const i = q.pop();
+        for (let ii of a[i]) {
+          if (d[ii] == -1) {
+            d[ii] = d[i] + 1;
+            q0.push(ii);
+          }
+        }
+      }
+      q = q0;
+    }
+    b.push(d[n - 1]);
+  }
+  return b;
+};
 ```
 
 ## Minimum Height Trees
@@ -20819,7 +20851,28 @@ https://neetcode.io/problems/minimum-height-trees/question
 https://leetcode.com/problems/path-with-maximum-gold/description/
 
 ```js
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+const getMaximumGold = (grid) => {
+  const m = grid.length,
+    n = grid[0].length;
+  const dfs = (y, x) => {
+    if (y < 0 || y >= m || x < 0 || x >= n || !grid[y][x]) return 0;
+    let a = grid[y][x];
+    grid[y][x] = 0;
+    let b = Math.max(dfs(y - 1, x), dfs(y + 1, x), dfs(y, x - 1), dfs(y, x + 1));
+    grid[y][x] = a;
+    return a + b;
+  };
 
+  let b = 0;
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) if (grid[i][j]) b = Math.max(b, dfs(i, j));
+  }
+  return b;
+};
 ```
 
 ## Most Profitable Path in a Tree
