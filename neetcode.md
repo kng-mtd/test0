@@ -19112,7 +19112,45 @@ class Solution {
 https://neetcode.io/problems/maximum-points-you-can-obtain-from-cards/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} cardPoints
+   * @param {number} k
+   * @return {number}
+   */
+  maxScore(cardPoints, k) {
+    let n = cardPoints.length,
+      w = n - k,
+      a = 0;
+    for (let i = 0; i < w; i++) a += cardPoints[i];
+    let b = a;
+    for (let i = w; i < n; i++) {
+      a += cardPoints[i] - cardPoints[i - w];
+      b = Math.min(b, a);
+    }
+    return cardPoints.reduce((a, x) => a + x) - b;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} cardPoints
+   * @param {number} k
+   * @return {number}
+   */
+  maxScore(cardPoints, k) {
+    let a = cardPoints.slice(0, k).reduce((a, x) => a + x);
+    let b = a;
+    for (let i = 0; i < k; i++) {
+      a -= cardPoints[k - 1 - i];
+      a += cardPoints[cardPoints.length - 1 - i];
+      b = Math.max(b, a);
+    }
+    return b;
+  }
+}
 ```
 
 ## Merge Triplets to Form Target
@@ -20869,7 +20907,7 @@ const getMaximumGold = (grid) => {
 
   let b = 0;
   for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) if (grid[i][j]) b = Math.max(b, dfs(i, j));
+    for (let j = 0; j < n; j++) if (grid[i][j]) b = Math.max(dfs(i, j), b);
   }
   return b;
 };
@@ -20985,4 +21023,76 @@ const mostProfitablePath = (edges, bob, amount) => {
   dfs2(0, -1, 0, 0);
   return d;
 };
+```
+
+---
+
+---
+
+---
+
+# 1-D DP
+
+## House Robber
+
+https://neetcode.io/problems/house-robber/question
+
+```js
+
+```
+
+## House Robber II
+
+https://neetcode.io/problems/house-robber-ii/question
+
+```js
+
+```
+
+## Longest Palindromic Substring
+
+https://neetcode.io/problems/longest-palindromic-substring/question
+
+```js
+
+```
+
+## Palindromic Substrings
+
+https://neetcode.io/problems/palindromic-substrings/question
+
+```js
+
+```
+
+## Decode Ways
+
+https://neetcode.io/problems/decode-ways/question
+
+```js
+
+```
+
+## Coin Change
+
+https://neetcode.io/problems/coin-change/question
+
+```js
+
+```
+
+## Maximum Product Subarray
+
+https://neetcode.io/problems/maximum-product-subarray/question
+
+```js
+
+```
+
+## Word Break
+
+https://neetcode.io/problems/word-break/question
+
+```js
+
 ```
