@@ -19158,7 +19158,46 @@ class Solution {
 https://neetcode.io/problems/merge-triplets-to-form-target/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} triplets
+   * @param {number[]} target
+   * @return {boolean}
+   */
+  mergeTriplets(triplets, target) {
+    let a = [false, false, false];
+    for (let i of triplets) {
+      if (i[0] <= target[0] && i[1] <= target[1] && i[2] <= target[2]) {
+        for (let ii = 0; ii < 3; ii++) if (i[ii] == target[ii]) a[ii] = true;
+      }
+    }
+    return !!(a[0] && a[1] && a[2]);
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[][]} triplets
+   * @param {number[]} target
+   * @return {boolean}
+   */
+  mergeTriplets(triplets, target) {
+    let a = [];
+    for (let i of triplets) {
+      if (i[0] > target[0] || i[1] > target[1] || i[2] > target[2]) continue;
+      let b = 0;
+      b += i[0] == target[0];
+      b += (i[1] == target[1]) * 2;
+      b += (i[2] == target[2]) * 4;
+      a.push(b);
+    }
+    let b = 0;
+    for (let i of a) b |= i;
+    return b == 7;
+  }
+}
 ```
 
 ## Partition Labels
