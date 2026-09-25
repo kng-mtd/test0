@@ -19205,7 +19205,30 @@ class Solution {
 https://neetcode.io/problems/partition-labels/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number[]}
+   */
+  partitionLabels(s) {
+    let a = {},
+      b = [];
+    for (let i of s) a[i] = (a[i] ?? 0) + 1;
+    let c = {},
+      d = 0;
+    for (let i of s) {
+      c[i] = (c[i] ?? a[i]) - 1;
+      d++;
+      if (c[i]) continue;
+      delete c[i];
+      if (!Object.keys(c).length) {
+        b.push(d);
+        d = 0;
+      }
+    }
+    return b;
+  }
+}
 ```
 
 ## Valid Parenthesis String
@@ -21131,6 +21154,70 @@ https://neetcode.io/problems/maximum-product-subarray/question
 ## Word Break
 
 https://neetcode.io/problems/word-break/question
+
+```js
+
+```
+
+## Longest Increasing Subsequence
+
+https://neetcode.io/problems/longest-increasing-subsequence/question
+
+```js
+
+```
+
+## Partition Equal Subset Sum
+
+https://neetcode.io/problems/partition-equal-subset-sum/question
+
+```js
+
+```
+
+## Triangle
+
+https://neetcode.io/problems/triangle/question
+
+```js
+
+```
+
+## Delete and Earn
+
+https://leetcode.com/problems/delete-and-earn/description/
+
+```js
+
+```
+
+## Filling Bookcase Shelves
+
+https://leetcode.com/problems/filling-bookcase-shelves/description/
+
+```js
+
+```
+
+## Combination Sum IV
+
+https://neetcode.io/problems/combination-sum-iv/question
+
+```js
+
+```
+
+## Perfect Squares
+
+https://neetcode.io/problems/perfect-squares/question
+
+```js
+
+```
+
+## Check if There is a Valid Partition for the Array
+
+https://leetcode.com/problems/check-if-there-is-a-valid-partition-for-the-array/description/
 
 ```js
 
