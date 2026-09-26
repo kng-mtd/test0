@@ -19236,7 +19236,24 @@ class Solution {
 https://neetcode.io/problems/valid-parenthesis-string/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {boolean}
+   */
+  checkValidString(s) {
+    let a = 0,
+      b = 0;
+    for (let i of s) {
+      if (i == '(') [a, b] = [a + 1, b + 1];
+      else if (i == ')') [a, b] = [a - 1, b - 1];
+      else [a, b] = [a - 1, b + 1];
+      if (b < 0) return false;
+      a = Math.max(a, 0);
+    }
+    return a == 0;
+  }
+}
 ```
 
 ## Check if a Parentheses String Can Be Valid
