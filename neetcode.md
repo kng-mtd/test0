@@ -6085,9 +6085,12 @@ class Solution {
    */
   climbStairs(n) {
     if (n == 1) return 1;
-    let dp = [];
-    ((dp[0] = 1), (dp[1] = 1));
-    for (let i = 2; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2];
+    let dp = Array(n + 1).fill(0);
+    dp[0] = 1;
+    for (let i = 0; i < n; i++) {
+      dp[i + 1] += dp[i];
+      dp[i + 2] += dp[i];
+    }
     return dp[n];
   }
 }
@@ -6120,8 +6123,9 @@ class Solution {
    */
   minCostClimbingStairs(cost) {
     const n = cost.length;
-    let dp = [];
-    ((dp[0] = 0), (dp[1] = 0));
+    let dp = Array(n + 1).fill(Infinity);
+    dp[0] = 0;
+    dp[1] = 0;
     for (let i = 2; i <= n; i++) {
       dp[i] = Math.min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
     }
@@ -6158,9 +6162,14 @@ class Solution {
    * @return {number}
    */
   tribonacci(n) {
-    let dp = [];
-    ((dp[0] = 0), (dp[1] = 1), (dp[2] = 1));
-    for (let i = 3; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+    if (n == 0) return 0;
+    let dp = Array(n + 1).fill(0);
+    dp[1] = 1;
+    for (let i = 0; i < n; i++) {
+      dp[i + 1] += dp[i];
+      dp[i + 2] += dp[i];
+      dp[i + 3] += dp[i];
+    }
     return dp[n];
   }
 }
@@ -19348,7 +19357,20 @@ const eliminateMaximum = (dist, speed) => {
 https://neetcode.io/problems/two-city-scheduling/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} costs
+   * @return {number}
+   */
+  twoCitySchedCost(costs) {
+    const n = costs.length / 2;
+    costs.sort((x1, x2) => x1[0] - x1[1] - (x2[0] - x2[1]));
+    let a = 0;
+    for (let i = 0; i < n; i++) a += costs[i][0];
+    for (let i = n; i < costs.length; i++) a += costs[i][1];
+    return a;
+  }
+}
 ```
 
 ## Maximum Length of Pair Chain
@@ -21205,7 +21227,19 @@ https://neetcode.io/problems/triangle/question
 https://leetcode.com/problems/delete-and-earn/description/
 
 ```js
-
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const deleteAndEarn = (nums) => {
+  const b = Math.max(...nums);
+  let a = Array(b + 1).fill(0);
+  for (let i of nums) a[i] += i;
+  let c1 = 0,
+    c2 = 0;
+  for (let i = 0; i <= b; i++) [c1, c2] = [Math.max(c2 + a[i], c1), c1];
+  return c1;
+};
 ```
 
 ## Filling Bookcase Shelves
@@ -21213,7 +21247,27 @@ https://leetcode.com/problems/delete-and-earn/description/
 https://leetcode.com/problems/filling-bookcase-shelves/description/
 
 ```js
-
+/**
+ * @param {number[][]} books
+ * @param {number} shelfWidth
+ * @return {number}
+ */
+const minHeightShelves = (books, shelfWidth) => {
+  const n = books.length;
+  let dp = Array(n + 1).fill(Infinity);
+  dp[0] = 0;
+  for (let i = 0; i < n; i++) {
+    let w = 0,
+      h = 0;
+    for (let ii = i; ii >= 0; ii--) {
+      w += books[ii][0];
+      if (w > shelfWidth) break;
+      h = Math.max(h, books[ii][1]);
+      dp[i + 1] = Math.min(dp[i + 1], dp[ii] + h);
+    }
+  }
+  return dp[n];
+};
 ```
 
 ## Combination Sum IV
@@ -21235,6 +21289,85 @@ https://neetcode.io/problems/perfect-squares/question
 ## Check if There is a Valid Partition for the Array
 
 https://leetcode.com/problems/check-if-there-is-a-valid-partition-for-the-array/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+const validPartition = (nums) => {
+  const n = nums.length;
+  let dp = Array(n + 1).fill(false);
+  dp[0] = true;
+  for (let i = 0; i < n; i++) {
+    if (!dp[i]) continue;
+    dp[i + 2] ||= nums[i] == nums[i + 1];
+    dp[i + 3] ||= nums[i] == nums[i + 1] && nums[i] == nums[i + 2];
+    dp[i + 3] ||= nums[i] == nums[i + 1] - 1 && nums[i] == nums[i + 2] - 2;
+  }
+  return dp[n];
+};
+```
+
+## Maximum Subarray Min Product
+
+https://leetcode.com/problems/maximum-subarray-min-product/description/
+
+```js
+
+```
+
+## Minimum Cost For Tickets
+
+https://neetcode.io/problems/minimum-cost-for-tickets/question
+
+```js
+
+```
+
+## Integer Break
+
+https://neetcode.io/problems/integer-break/question
+
+```js
+
+```
+
+## Number of Longest Increasing Subsequence
+
+https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/
+
+```js
+
+```
+
+## Uncrossed Lines
+
+https://leetcode.com/problems/uncrossed-lines/description/
+
+```js
+
+```
+
+## Solving Questions with Brainpower
+
+https://leetcode.com/problems/solving-questions-with-brainpower/description/
+
+```js
+
+```
+
+## Count Ways To Build Good Strings
+
+https://leetcode.com/problems/count-ways-to-build-good-strings/description/
+
+```js
+
+```
+
+## Ugly Number II
+
+https://leetcode.com/problems/ugly-number-ii/description/
 
 ```js
 
