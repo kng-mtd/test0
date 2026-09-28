@@ -712,7 +712,7 @@ https://leetcode.com/problems/create-hello-world-function/description/
  * @return {Function}
  */
 const createHelloWorld = () => {
-  return () => 'Hello World';
+  return () => "Hello World";
 };
 
 /**
@@ -902,7 +902,10 @@ https://leetcode.com/problems/promise-time-limit/description/
 const timeLimit =
   (fn, t) =>
   (...args) =>
-    Promise.race([fn(...args), new Promise((_, rej) => setTimeout(() => rej('Time Limit Exceeded'), t))]);
+    Promise.race([
+      fn(...args),
+      new Promise((_, rej) => setTimeout(() => rej("Time Limit Exceeded"), t)),
+    ]);
 
 /**
  * const limited = timeLimit((t) => new Promise(res => setTimeout(res, t)), 100);
@@ -970,7 +973,7 @@ ArrayWrapper.prototype.valueOf = function () {
  * @return {string}
  */
 ArrayWrapper.prototype.toString = function () {
-  return '[' + String(this.nums) + ']';
+  return "[" + String(this.nums) + "]";
 };
 
 /**
@@ -1060,8 +1063,8 @@ class Solution {
    */
   isAnagram(s, t) {
     if (s.length != t.length) return false;
-    const c1 = s.split('').sort();
-    const c2 = t.split('').sort();
+    const c1 = s.split("").sort();
+    const c2 = t.split("").sort();
 
     for (let i = 0; i < s.length; i++) if (c1[i] != c2[i]) return false;
     return true;
@@ -1144,7 +1147,8 @@ class Solution {
    */
   scoreOfString(s) {
     let a = 0;
-    for (let i = 1; i < s.length; i++) a += Math.abs(s.charCodeAt(i - 1) - s.charCodeAt(i));
+    for (let i = 1; i < s.length; i++)
+      a += Math.abs(s.charCodeAt(i - 1) - s.charCodeAt(i));
     return a;
   }
 }
@@ -1163,12 +1167,12 @@ class Solution {
   lengthOfLastWord(s) {
     let i1 = s.length - 1;
     while (i1 > -1) {
-      if (s[i1] != ' ') break;
+      if (s[i1] != " ") break;
       i1--;
     }
     let i2 = i1 - 1;
     while (i2 > -1) {
-      if (s[i2] == ' ') break;
+      if (s[i2] == " ") break;
       i2--;
     }
     return i1 - i2;
@@ -1210,9 +1214,11 @@ class Solution {
   twoSum(nums, target) {
     const a = target - Math.min(...nums);
     let b = [];
-    for (let i = 0; i < nums.length; i++) if (nums[i] <= a) b.push([nums[i], i]);
+    for (let i = 0; i < nums.length; i++)
+      if (nums[i] <= a) b.push([nums[i], i]);
     for (let i = 0; i < b.length; i++) {
-      for (let j = i + 1; j < b.length; j++) if (b[i][0] + b[j][0] == target) return [b[i][1], b[j][1]];
+      for (let j = i + 1; j < b.length; j++)
+        if (b[i][0] + b[j][0] == target) return [b[i][1], b[j][1]];
     }
   }
 }
@@ -1270,9 +1276,9 @@ class Solution {
    * @return {number}
    */
   findMaxConsecutiveOnes(nums) {
-    let a = nums.map(String).join('');
-    let b = '';
-    while (a.includes(b)) b += '1';
+    let a = nums.map(String).join("");
+    let b = "";
+    while (a.includes(b)) b += "1";
     return b.length - 1;
   }
 }
@@ -1312,7 +1318,7 @@ class Solution {
     for (let i = 0; i < strs.length; i++) {
       while (s != strs[i].slice(0, n)) {
         n--;
-        if (n == 0) return '';
+        if (n == 0) return "";
         s = s.slice(0, n);
       }
     }
@@ -1332,10 +1338,10 @@ class Solution {
    * @return {string[]}
    */
   stringMatching(words) {
-    let a = words.join('-');
+    let a = words.join("-");
     let b = [];
     for (let s of words) {
-      if (a.length - a.replaceAll(s, '').length > s.length) b.push(s);
+      if (a.length - a.replaceAll(s, "").length > s.length) b.push(s);
     }
     return b;
   }
@@ -1399,9 +1405,9 @@ class Solution {
   numUniqueEmails(emails) {
     let a = new Set();
     for (let s of emails) {
-      let [b, c] = s.split('@');
-      b = b.split('+')[0].replaceAll('.', '');
-      a.add(b + '@' + c);
+      let [b, c] = s.split("@");
+      b = b.split("+")[0].replaceAll(".", "");
+      a.add(b + "@" + c);
     }
     return a.size;
   }
@@ -1430,7 +1436,9 @@ class Solution {
       a2[t[i]] ??= [];
       a2[t[i]].push(i);
     }
-    return Object.values(a1).sort().join('') == Object.values(a2).sort().join('');
+    return (
+      Object.values(a1).sort().join("") == Object.values(a2).sort().join("")
+    );
   }
 }
 ```
@@ -1660,11 +1668,12 @@ class Solution {
    */
   kthDistinct(arr, k) {
     let a = {};
-    for (let i = 0; i < arr.length; i++) a[arr[i]] = a[arr[i]] ? Infinity : i + 1;
+    for (let i = 0; i < arr.length; i++)
+      a[arr[i]] = a[arr[i]] ? Infinity : i + 1;
     const b = Object.entries(a);
-    if (b.length < k) return '';
+    if (b.length < k) return "";
     const c = b.sort((x1, x2) => x1[1] - x2[1])[k - 1];
-    if (c[1] == Infinity) return '';
+    if (c[1] == Infinity) return "";
     return c[0];
   }
 }
@@ -1686,7 +1695,7 @@ class Solution {
         if (k == 0) return i;
       }
     }
-    return '';
+    return "";
   }
 }
 ```
@@ -1860,11 +1869,11 @@ class Solution {
       o = 0,
       n = 0;
     for (let i of text) {
-      if (i == 'b') b++;
-      else if (i == 'a') a++;
-      else if (i == 'l') l++;
-      else if (i == 'o') o++;
-      else if (i == 'n') n++;
+      if (i == "b") b++;
+      else if (i == "a") a++;
+      else if (i == "l") l++;
+      else if (i == "o") o++;
+      else if (i == "n") n++;
     }
     return Math.min(b, a, l >> 1, o >> 1, n);
   }
@@ -1884,7 +1893,7 @@ class Solution {
    */
   wordPattern(pattern, s) {
     const a = [...pattern];
-    const b = s.split(' ');
+    const b = s.split(" ");
     if (a.length != b.length) return false;
     let c1 = Object.create(null);
     let c2 = Object.create(null);
@@ -1908,7 +1917,7 @@ class Solution {
    */
   wordPattern(pattern, s) {
     const a = [...pattern];
-    const b = s.split(' ');
+    const b = s.split(" ");
     if (a.length != b.length) return false;
     if (new Set(a).size != new Set(b).size) return false;
     let c = {};
@@ -2189,7 +2198,8 @@ class Solution {
     };
 
     let a = [];
-    for (let i = 0; i <= rowIndex; i++) a.push((fact(rowIndex) / fact(i) / fact(rowIndex - i)) | 0);
+    for (let i = 0; i <= rowIndex; i++)
+      a.push((fact(rowIndex) / fact(i) / fact(rowIndex - i)) | 0);
     return a;
   }
 }
@@ -2320,7 +2330,7 @@ class Solution {
    * @return {string}
    */
   largestGoodInteger(num) {
-    let a = '';
+    let a = "";
     for (let i = 2; i < num.length; i++) {
       if (num[i - 2] == num[i] && num[i - 1] == num[i]) {
         a = num[i] > a ? num[i] : a;
@@ -2378,7 +2388,7 @@ https://leetcode.com/problems/circular-sentence/description/
  * @return {boolean}
  */
 const isCircularSentence = (sentence) => {
-  let a = sentence.split(' ');
+  let a = sentence.split(" ");
   if (a[0][0] != a.at(-1).at(-1)) return false;
   for (let i = 1; i < a.length; i++) {
     if (a[i - 1].at(-1) != a[i][0]) return false;
@@ -2401,9 +2411,9 @@ class Solution {
     let a = 0,
       b = 0,
       c = 0;
-    for (let i of s) a = i == '1' ? a + 1 : a;
+    for (let i of s) a = i == "1" ? a + 1 : a;
     for (let i of s.slice(0, -1)) {
-      if (i == '0') b++;
+      if (i == "0") b++;
       else a--;
       c = a + b > c ? a + b : c;
     }
@@ -2426,11 +2436,11 @@ class Solution {
     let x = 0,
       y = 0;
     let a = new Set();
-    a.add(x + ',' + y);
+    a.add(x + "," + y);
     for (let i of Array.from(path)) {
-      x = i == 'W' ? x - 1 : i == 'E' ? x + 1 : x;
-      y = i == 'N' ? y - 1 : i == 'S' ? y + 1 : y;
-      a.add(x + ',' + y);
+      x = i == "W" ? x - 1 : i == "E" ? x + 1 : x;
+      y = i == "N" ? y - 1 : i == "S" ? y + 1 : y;
+      a.add(x + "," + y);
     }
     return !(path.length + 1 == a.size);
   }
@@ -2474,7 +2484,7 @@ class Solution {
    */
   makeEqual(words) {
     let a = {};
-    for (let i of words.join('')) a[i] = (a[i] ?? 0) + 1;
+    for (let i of words.join("")) a[i] = (a[i] ?? 0) + 1;
     return Object.values(a).every((x) => x % words.length == 0);
   }
 }
@@ -2636,11 +2646,11 @@ https://leetcode.com/problems/find-common-characters/description/
 const commonChars = (words) => {
   let a = [];
   let b = Infinity,
-    c = '';
+    c = "";
   for (let s of words) [b, c] = s.length < b ? [s.length, s] : [b, c];
   for (let i of c) {
     if (words.every((x) => x.includes(i))) {
-      words = words.map((x) => x.replace(i, ''));
+      words = words.map((x) => x.replace(i, ""));
       console.log(i, words);
       a.push(i);
     }
@@ -2894,7 +2904,7 @@ https://leetcode.com/problems/uncommon-words-from-two-sentences/description/
  */
 const uncommonFromSentences = (s1, s2) => {
   let a = {};
-  for (let i of [...s1.split(' '), ...s2.split(' ')]) a[i] = (a[i] ?? 0) + 1;
+  for (let i of [...s1.split(" "), ...s2.split(" ")]) a[i] = (a[i] ?? 0) + 1;
   let b = [];
   for (let i in a) if (a[i] == 1) b.push(i);
   return b;
@@ -2949,8 +2959,8 @@ class Solution {
   minOperations(logs) {
     let a = 0;
     for (let i of logs) {
-      if (i == '../') a = a > 0 ? a - 1 : a;
-      else if (i != './') a++;
+      if (i == "../") a = a > 0 ? a - 1 : a;
+      else if (i != "./") a++;
     }
     return a;
   }
@@ -2972,11 +2982,11 @@ class Solution {
     for (let i = 0; i < operations.length; i++) {
       const b = operations[i];
       const c = a.length;
-      if (b == '+') {
+      if (b == "+") {
         a.push(a[c - 1] * 1 + a[c - 2] * 1);
-      } else if (b == 'D') {
+      } else if (b == "D") {
         a.push(a[c - 1] * 2);
-      } else if (b == 'C') {
+      } else if (b == "C") {
         a.pop();
       } else {
         a.push(+b);
@@ -3000,7 +3010,7 @@ class Solution {
   isValid(s) {
     let n = s.length;
     while (true) {
-      const s1 = s.replace('()', '').replace('[]', '').replace('{}', '');
+      const s1 = s.replace("()", "").replace("[]", "").replace("{}", "");
       const n1 = s1.length;
       if (n1 == 0) return true;
       else if (n == n1) return false;
@@ -3023,14 +3033,14 @@ class Solution {
     for (let i = 1; i < s.length; i++) {
       const b = s[i],
         c = a[a.length - 1];
-      if (b == ')') {
-        if (c == '(') a.pop();
+      if (b == ")") {
+        if (c == "(") a.pop();
         else return false;
-      } else if (b == ']') {
-        if (c == '[') a.pop();
+      } else if (b == "]") {
+        if (c == "[") a.pop();
         else return false;
-      } else if (b == '}') {
-        if (c == '{') a.pop();
+      } else if (b == "}") {
+        if (c == "{") a.pop();
         else return false;
       } else a.push(b);
     }
@@ -3173,10 +3183,11 @@ https://leetcode.com/problems/make-the-string-great/description/
 const makeGood = (s) => {
   let a = [];
   for (let i of s) {
-    if (a.length && Math.abs(a.at(-1).charCodeAt(0) - i.charCodeAt(0)) == 32) a.pop();
+    if (a.length && Math.abs(a.at(-1).charCodeAt(0) - i.charCodeAt(0)) == 32)
+      a.pop();
     else a.push(i);
   }
-  return a.join('');
+  return a.join("");
 };
 ```
 
@@ -3192,7 +3203,7 @@ https://leetcode.com/problems/minimum-string-length-after-removing-substrings/ed
 const minLength = (s) => {
   let a = [];
   for (let i of s) {
-    if ((a.length && a.at(-1) + i == 'AB') || a.at(-1) + i == 'CD') a.pop();
+    if ((a.length && a.at(-1) + i == "AB") || a.at(-1) + i == "CD") a.pop();
     else a.push(i);
   }
   return a.length;
@@ -3214,7 +3225,7 @@ const clearDigits = (s) => {
     if (/[a-z]/.test(a.at(-1)) && /[0-9]/.test(i)) a.pop();
     else a.push(i);
   }
-  return a.join('');
+  return a.join("");
 };
 ```
 
@@ -3254,7 +3265,7 @@ class Solution {
    */
   isPalindrome(s) {
     const re = /[^a-z0-9]/g;
-    const ss = s.toLowerCase().replace(re, '');
+    const ss = s.toLowerCase().replace(re, "");
     let l = 0,
       r = ss.length - 1;
     while (l < r) if (ss[l++] != ss[r--]) return false;
@@ -3293,7 +3304,10 @@ class Solution {
       r = s.length - 1;
     while (l < r) {
       if (s[l] != s[r]) {
-        return this.isPalindrome(s.slice(l, r)) || this.isPalindrome(s.slice(l + 1, r + 1));
+        return (
+          this.isPalindrome(s.slice(l, r)) ||
+          this.isPalindrome(s.slice(l + 1, r + 1))
+        );
       }
       l++;
       r--;
@@ -3322,10 +3336,10 @@ class Solution {
         if (word[i1] != abbr[i2]) return false;
         (i1++, i2++);
       } else {
-        if (abbr[i2] == '0') return false;
+        if (abbr[i2] == "0") return false;
         let a = 0;
         while (i2 < abbr.length && !isNaN(abbr[i2])) {
-          a = a * 10 + (abbr[i2] - '0');
+          a = a * 10 + (abbr[i2] - "0");
           i2++;
         }
         i1 += a;
@@ -3349,7 +3363,7 @@ class Solution {
    */
   mergeAlternately(word1, word2) {
     const n = Math.min(word1.length, word2.length);
-    let c = '';
+    let c = "";
     for (let i = 0; i < n; i++) c += word1[i] + word2[i];
     c += word1.slice(n) + word2.slice(n);
     return c;
@@ -3508,7 +3522,7 @@ const firstPalindrome = (words) => {
       if (i1 >= i2) return s;
     }
   }
-  return '';
+  return "";
 };
 ```
 
@@ -3564,9 +3578,9 @@ https://leetcode.com/problems/reverse-words-in-a-string-iii/description/
  */
 const reverseWords = (s) => {
   return s
-    .split(' ')
-    .map((x) => x.split('').reverse().join(''))
-    .join(' ');
+    .split(" ")
+    .map((x) => x.split("").reverse().join(""))
+    .join(" ");
 };
 ```
 
@@ -3584,14 +3598,14 @@ const backspaceCompare = (s, t) => {
   let a = [],
     b = [];
   for (let i of s) {
-    if (i == '##') a.pop();
+    if (i == "##") a.pop();
     else a.push(i);
   }
   for (let i of t) {
-    if (i == '##') b.pop();
+    if (i == "##") b.pop();
     else b.push(i);
   }
-  return a.join('') == b.join('');
+  return a.join("") == b.join("");
 };
 ```
 
@@ -3603,8 +3617,8 @@ const backspaceCompare = (s, t) => {
  */
 const fn = (str) => {
   const a = [];
-  for (let i of str) i == '##' ? a.pop() : a.push(i);
-  return a.join('');
+  for (let i of str) i == "##" ? a.pop() : a.push(i);
+  return a.join("");
 };
 
 const backspaceCompare = (s, t) => fn(s) == fn(t);
@@ -3621,7 +3635,7 @@ https://leetcode.com/problems/check-if-two-string-arrays-are-equivalent/descript
  * @return {boolean}
  */
 const arrayStringsAreEqual = (word1, word2) => {
-  return word1.join('') == word2.join('');
+  return word1.join("") == word2.join("");
 };
 ```
 
@@ -3713,10 +3727,10 @@ class Solution {
    * @return {number}
    */
   minimumRecolors(blocks, k) {
-    let a = blocks.slice(0, k).replaceAll('B', '').length;
+    let a = blocks.slice(0, k).replaceAll("B", "").length;
     let a0 = a;
     for (let i = k; i < blocks.length; i++) {
-      a = a - (blocks[i - k] == 'W' ? 1 : 0) + (blocks[i] == 'W' ? 1 : 0);
+      a = a - (blocks[i - k] == "W" ? 1 : 0) + (blocks[i] == "W" ? 1 : 0);
       a0 = a < a0 ? a : a0;
     }
     return a0;
@@ -4840,7 +4854,11 @@ class Solution {
    */
   isSameTree(p, q) {
     if (!p || !q) return p === q;
-    return p.val == q.val && this.isSameTree(p.left, q.left) && this.isSameTree(p.right, q.right);
+    return (
+      p.val == q.val &&
+      this.isSameTree(p.left, q.left) &&
+      this.isSameTree(p.right, q.right)
+    );
   }
 }
 ```
@@ -4932,7 +4950,11 @@ class Solution {
    */
   mergeTrees(root1, root2) {
     if (!root1 && !root2) return null;
-    return new TreeNode((root1?.val ?? 0) + (root2?.val ?? 0), this.mergeTrees(root1?.left, root2?.left), this.mergeTrees(root1?.right, root2?.right));
+    return new TreeNode(
+      (root1?.val ?? 0) + (root2?.val ?? 0),
+      this.mergeTrees(root1?.left, root2?.left),
+      this.mergeTrees(root1?.right, root2?.right),
+    );
   }
 }
 ```
@@ -4957,7 +4979,11 @@ class Solution {
   mergeTrees(root1, root2) {
     if (!root1) return root2;
     if (!root2) return root1;
-    return new TreeNode((root1.val += root2.val), this.mergeTrees(root1.left, root2.left), this.mergeTrees(root1.right, root2.right));
+    return new TreeNode(
+      (root1.val += root2.val),
+      this.mergeTrees(root1.left, root2.left),
+      this.mergeTrees(root1.right, root2.right),
+    );
   }
 }
 ```
@@ -5094,7 +5120,7 @@ const leafSimilar = (root1, root2) => {
   fn(root1, a1);
   const a2 = [];
   fn(root2, a2);
-  return a1.join(',') == a2.join(',');
+  return a1.join(",") == a2.join(",");
 };
 ```
 
@@ -5114,8 +5140,8 @@ const leafSimilar = (root1, root2) => {
  */
 const leafSimilar = (root1, root2) => {
   const dfs = (n) => {
-    if (!n) return '';
-    if (!n.left && !n.right) return n.val + ',';
+    if (!n) return "";
+    if (!n.left && !n.right) return n.val + ",";
     return dfs(n.left) + dfs(n.right);
   };
   return dfs(root1) == dfs(root2);
@@ -5246,7 +5272,7 @@ const isSymmetric = (root) => {
   let a2 = [];
   dfs2(root.right);
 
-  return a1.join(',') == a2.join(',');
+  return a1.join(",") == a2.join(",");
 };
 ```
 
@@ -5346,7 +5372,7 @@ class Solution {
    * @return {number}
    */
   prefixCount(words, pref) {
-    const re = new RegExp('^' + pref);
+    const re = new RegExp("^" + pref);
     let a = 0;
     for (let i of words) a = re.test(i) ? a + 1 : a;
     return a;
@@ -5688,7 +5714,8 @@ class Solution {
    * @return {number}
    */
   subsetXORSum(nums) {
-    const dfs = (i, x) => (i == nums.length ? x : dfs(i + 1, x ^ nums[i]) + dfs(i + 1, x));
+    const dfs = (i, x) =>
+      i == nums.length ? x : dfs(i + 1, x ^ nums[i]) + dfs(i + 1, x);
 
     return dfs(0, 0);
   }
@@ -5808,7 +5835,8 @@ class Solution {
     seats.sort((x1, x2) => x1 - x2);
     students.sort((x1, x2) => x1 - x2);
     let a = 0;
-    for (let i = 0; i < seats.length; i++) a += Math.abs(seats[i] - students[i]);
+    for (let i = 0; i < seats.length; i++)
+      a += Math.abs(seats[i] - students[i]);
     return a;
   }
 }
@@ -5825,7 +5853,7 @@ class Solution {
    * @return {string}
    */
   maximumOddBinaryNumber(s) {
-    return s.replaceAll('0', '').slice(1) + s.replaceAll('1', '') + '1';
+    return s.replaceAll("0", "").slice(1) + s.replaceAll("1", "") + "1";
   }
 }
 ```
@@ -5844,8 +5872,8 @@ class Solution {
     let a = 0,
       b = 0;
     for (let i of s) {
-      if (i == '(') b++;
-      else if (i == ')') b--;
+      if (i == "(") b++;
+      else if (i == ")") b--;
       a = Math.max(b, a);
     }
     return a;
@@ -5887,7 +5915,7 @@ https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays/descr
  * @return {boolean}
  */
 const canBeEqual = (target, arr) => {
-  return target.sort().join(',') == arr.sort().join(',');
+  return target.sort().join(",") == arr.sort().join(",");
 };
 ```
 
@@ -5958,9 +5986,9 @@ class Solution {
     let a = {};
     for (let i = 0; i < 26; i++) a[order[i]] = String.fromCharCode(97 + i);
     //console.log(a);
-    let b0 = '';
+    let b0 = "";
     for (let i of words) {
-      let b = '';
+      let b = "";
       for (let j of i) b += a[j];
       if (b < b0) return false;
       b0 = b;
@@ -6053,7 +6081,8 @@ class Solution {
         ]) {
           const y1 = y + dy,
             x1 = x + dx;
-          if (y1 < 0 || y1 >= m || x1 < 0 || x1 >= n || image[y1][x1] != org) continue;
+          if (y1 < 0 || y1 >= m || x1 < 0 || x1 >= n || image[y1][x1] != org)
+            continue;
           image[y1][x1] = color;
           q0.push([y1, x1]);
         }
@@ -6306,7 +6335,7 @@ class Solution {
       d = ai & bi || ai & d || bi & d;
     }
     if (d) c.push(d);
-    return c.reverse().join('');
+    return c.reverse().join("");
   }
 }
 ```
@@ -6319,7 +6348,7 @@ class Solution {
    * @return {string}
    */
   addBinary(a, b) {
-    return (BigInt('0b' + a) + BigInt('0b' + b)).toString(2);
+    return (BigInt("0b" + a) + BigInt("0b" + b)).toString(2);
   }
 }
 ```
@@ -6353,9 +6382,9 @@ class Solution {
    * @return {number} - a positive integer
    */
   reverseBits(n) {
-    let a = n.toString(2).padStart(32, '0');
-    a = Array.from(a).reverse().join('');
-    return Number('0b' + a);
+    let a = n.toString(2).padStart(32, "0");
+    a = Array.from(a).reverse().join("");
+    return Number("0b" + a);
   }
 }
 ```
@@ -6424,7 +6453,7 @@ https://leetcode.com/problems/add-to-array-form-of-integer/description/
  * @return {number[]}
  */
 const addToArrayForm = (num, k) => {
-  const a = BigInt(num.join(''));
+  const a = BigInt(num.join(""));
   const b = BigInt(k);
   return [...String(a + b)].map(Number);
 };
@@ -6510,7 +6539,7 @@ class Solution {
    */
   convertToTitle(columnNumber) {
     let n = columnNumber;
-    let a = '';
+    let a = "";
     while (n > 0) {
       n--;
       a = String.fromCharCode((n % 26) + 65) + a;
@@ -6539,7 +6568,7 @@ class Solution {
     while (true) {
       a++;
       b = str2.slice(0, str2.length / a);
-      if (str1.split(b).join('') == '' || b == '') return b;
+      if (str1.split(b).join("") == "" || b == "") return b;
     }
   }
 }
@@ -6672,7 +6701,8 @@ const imageSmoother = (img) => {
         c = 0;
       for (let ii = -1; ii <= 1; ii++) {
         for (let jj = -1; jj <= 1; jj++) {
-          if (i + ii < 0 || i + ii > m - 1 || j + jj < 0 || j + jj > n - 1) continue;
+          if (i + ii < 0 || i + ii > m - 1 || j + jj < 0 || j + jj > n - 1)
+            continue;
           b += img[i + ii][j + jj];
           c++;
         }
@@ -6876,7 +6906,7 @@ class Solution {
   isHappy(n) {
     let a = [];
     while (true) {
-      const arr = Array.from(n + '');
+      const arr = Array.from(n + "");
       const b = arr.map((x) => x ** 2).reduce((x, a) => x + a);
       if (b == 1) return true;
       if (a.indexOf(b) != -1) return false;
@@ -6898,8 +6928,8 @@ class Solution {
    * @return {number[]}
    */
   plusOne(digits) {
-    const a = digits.join('') * 1 + 1;
-    return Array.from(a + '').map(Number);
+    const a = digits.join("") * 1 + 1;
+    return Array.from(a + "").map(Number);
   }
 }
 ```
@@ -6916,7 +6946,7 @@ class Solution {
    */
   isPalindrome(x) {
     if (x < 0) return false;
-    return [...(x + '')].reverse().join('') == x + '';
+    return [...(x + "")].reverse().join("") == x + "";
   }
 }
 ```
@@ -7222,8 +7252,13 @@ https://leetcode.com/problems/check-if-object-instance-of-class/description/
  * @return {boolean}
  */
 const checkIfInstanceOf = (obj, fn) => {
-  if (obj == null || typeof fn !== 'function') return false;
-  for (let p = Object.getPrototypeOf(Object(obj)); p; p = Object.getPrototypeOf(p)) if (p === fn.prototype) return true;
+  if (obj == null || typeof fn !== "function") return false;
+  for (
+    let p = Object.getPrototypeOf(Object(obj));
+    p;
+    p = Object.getPrototypeOf(p)
+  )
+    if (p === fn.prototype) return true;
   return false;
 };
 
@@ -7375,7 +7410,7 @@ class Solution {
   groupAnagrams(strs) {
     let a = {};
     for (let s of strs) {
-      const b = [...s].sort().join('');
+      const b = [...s].sort().join("");
       a[b] ??= [];
       a[b].push(s);
     }
@@ -7459,7 +7494,8 @@ class Solution {
     while (a) {
       a = false;
       for (let i = 1; i < nums.length; i++) {
-        if (nums[i] < nums[i - 1]) [nums[i - 1], nums[i], a] = [nums[i], nums[i - 1], true];
+        if (nums[i] < nums[i - 1])
+          [nums[i - 1], nums[i], a] = [nums[i], nums[i - 1], true];
       }
     }
     return nums;
@@ -7509,9 +7545,9 @@ class Solution {
    */
   customSortString(order, s) {
     let a = {};
-    for (let i of s) a[i] = (a[i] ?? '') + i;
-    let b = '';
-    for (let i of order) if (a[i]) [b, a[i]] = [b + a[i], ''];
+    for (let i of s) a[i] = (a[i] ?? "") + i;
+    let b = "";
+    for (let i of order) if (a[i]) [b, a[i]] = [b + a[i], ""];
     for (let i in a) b += a[i];
     return b;
   }
@@ -7528,7 +7564,7 @@ class Solution {
   customSortString(order, s) {
     const a = {};
     for (let i of s) a[i] = (a[i] ?? 0) + 1;
-    let b = '';
+    let b = "";
     for (let i of order) {
       while (a[i] > 0) {
         b += i;
@@ -7579,8 +7615,8 @@ class Solution {
    * @returns {string}
    */
   encode(strs) {
-    let a = '';
-    for (let i of strs) a += i.length + '!' + i;
+    let a = "";
+    for (let i of strs) a += i.length + "!" + i;
     return a;
   }
 
@@ -7591,7 +7627,7 @@ class Solution {
   decode(str) {
     let a = [];
     while (str.length > 0) {
-      const b = str.indexOf('!');
+      const b = str.indexOf("!");
       const c = +str.slice(0, b);
       str = str.slice(b + 1);
       a.push(str.slice(0, c));
@@ -7653,7 +7689,8 @@ class Solution {
   mostVisitedPattern(username, timestamp, website) {
     const n = username.length;
     let arr = [];
-    for (let i = 0; i < n; i++) arr.push([timestamp[i], username[i], website[i]]);
+    for (let i = 0; i < n; i++)
+      arr.push([timestamp[i], username[i], website[i]]);
     arr.sort((x1, x2) => {
       if (x1[1] == x2[1]) return x1[0] - x2[0];
       return x1[1] < x2[1] ? -1 : 1;
@@ -7675,7 +7712,7 @@ class Solution {
       for (let x = 0; x < d; x++) {
         for (let y = x + 1; y < d; y++) {
           for (let z = y + 1; z < d; z++) {
-            const k = b[x] + '!' + b[y] + '!' + b[z];
+            const k = b[x] + "!" + b[y] + "!" + b[z];
             if (!c.has(k)) {
               c.add(k);
               a[k] = (a[k] || 0) + 1;
@@ -7693,7 +7730,7 @@ class Solution {
         f = a[k];
       }
     }
-    return e.split('!');
+    return e.split("!");
   }
 }
 ```
@@ -7765,7 +7802,7 @@ const minOperations = (boxes) => {
   for (let i = 0; i < n; i++) {
     let b = 0;
     for (let j = 0; j < n; j++) {
-      if (boxes[j] == '0') continue;
+      if (boxes[j] == "0") continue;
       b += Math.abs(i - j);
     }
     a.push(b);
@@ -7786,13 +7823,13 @@ const minOperations = (boxes) => {
     c = 0;
   for (let i = 0; i < n; i++) {
     a[i] += c;
-    b += boxes[i] == '1';
+    b += boxes[i] == "1";
     c += b;
   }
   ((b = 0), (c = 0));
   for (let i = n - 1; i >= 0; i--) {
     a[i] += c;
-    b += boxes[i] == '1';
+    b += boxes[i] == "1";
     c += b;
   }
   return a;
@@ -7817,9 +7854,10 @@ class Solution {
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
         const v = board[r][c];
-        if (v == '.') continue;
+        if (v == ".") continue;
         const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
-        if (row[r].includes(v) || col[c].includes(v) || box[b].includes(v)) return false;
+        if (row[r].includes(v) || col[c].includes(v) || box[b].includes(v))
+          return false;
 
         row[r].push(v);
         col[c].push(v);
@@ -7845,9 +7883,10 @@ class Solution {
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
         const v = board[r][c];
-        if (v == '.') continue;
+        if (v == ".") continue;
         const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
-        if (row[r].includes(v) || col[c].includes(v) || box[b].includes(v)) return false;
+        if (row[r].includes(v) || col[c].includes(v) || box[b].includes(v))
+          return false;
 
         row[r].push(v);
         col[c].push(v);
@@ -7873,7 +7912,7 @@ class Solution {
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
         const v = board[r][c];
-        if (v == '.') continue;
+        if (v == ".") continue;
         const i = +v;
         const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
         if (row[r][i] || col[c][i] || box[b][i]) return false;
@@ -7902,7 +7941,7 @@ class Solution {
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
         const v = board[r][c];
-        if (v == '.') continue;
+        if (v == ".") continue;
         const i = +v;
         const bit = 1 << i;
         const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
@@ -7984,7 +8023,7 @@ let id = 0;
 const encode = (longUrl) => {
   id++;
   ids.set(id.toString(), longUrl);
-  return 'http://tinyurl.com/' + id;
+  return "http://tinyurl.com/" + id;
 };
 
 /**
@@ -7994,7 +8033,7 @@ const encode = (longUrl) => {
  * @return {string}
  */
 const decode = (shortUrl) => {
-  const id = shortUrl.split('/').pop();
+  const id = shortUrl.split("/").pop();
   return ids.get(id);
 };
 
@@ -8339,7 +8378,7 @@ const minSwaps = (s) => {
   let a = 0,
     b = 0;
   for (let i of s) {
-    if (i == '[') a++;
+    if (i == "[") a++;
     else {
       if (a > 0) a--;
       else [a, b] = [a + 1, b + 1];
@@ -8413,7 +8452,7 @@ const maxProduct = (s) => {
     dfs(i + 1, a, b);
   };
 
-  dfs(0, '', '');
+  dfs(0, "", "");
   return c;
 };
 ```
@@ -8514,8 +8553,8 @@ class Solution {
       nums
         .map(String)
         .sort((x1, x2) => (x2 + x1 > x1 + x2 ? 1 : x2 + x1 < x1 + x2 ? -1 : 0))
-        .join('')
-        .replace(/^0+/, '') || '0'
+        .join("")
+        .replace(/^0+/, "") || "0"
     );
   }
 }
@@ -8555,20 +8594,20 @@ https://leetcode.com/problems/push-dominoes/description/
  * @return {string}
  */
 const pushDominoes = (dominoes) => {
-  let a = [...('L' + dominoes + 'R')],
+  let a = [...("L" + dominoes + "R")],
     i1 = 0;
   for (let i = 1; i < a.length; i++) {
-    if (a[i] == '.') continue;
-    else if (a[i] == 'R') {
-      if (a[i1] == 'R') while (i1 < i) a[i1++] = 'R';
-    } else if (a[i1] == 'L') while (i1 < i) a[i1++] = 'L';
+    if (a[i] == ".") continue;
+    else if (a[i] == "R") {
+      if (a[i1] == "R") while (i1 < i) a[i1++] = "R";
+    } else if (a[i1] == "L") while (i1 < i) a[i1++] = "L";
     else {
       let i2 = i;
-      while (i1 < i2) [a[i1++], a[i2--]] = ['R', 'L'];
+      while (i1 < i2) [a[i1++], a[i2--]] = ["R", "L"];
     }
     i1 = i;
   }
-  return a.slice(1, -1).join('');
+  return a.slice(1, -1).join("");
 };
 ```
 
@@ -8578,22 +8617,22 @@ const pushDominoes = (dominoes) => {
  * @return {string}
  */
 const pushDominoes = (dominoes) => {
-  let a = [...('L' + dominoes + 'R')];
+  let a = [...("L" + dominoes + "R")];
   let i = 0;
   for (let j = 1; j < a.length; j++) {
-    if (a[j] == '.') continue;
+    if (a[j] == ".") continue;
     if (j - i > 1) {
       if (a[i] == a[j]) {
         for (let k = i + 1; k < j; k++) a[k] = a[i];
-      } else if (a[i] == 'R' && a[j] == 'L') {
+      } else if (a[i] == "R" && a[j] == "L") {
         let l = i + 1,
           r = j - 1;
-        while (l < r) [a[l++], a[r--]] = ['R', 'L'];
+        while (l < r) [a[l++], a[r--]] = ["R", "L"];
       }
     }
     i = j;
   }
-  return a.slice(1, -1).join('');
+  return a.slice(1, -1).join("");
 };
 ```
 
@@ -8677,7 +8716,8 @@ https://leetcode.com/problems/check-if-a-string-contains-all-binary-codes-of-siz
  */
 const hasAllCodes = (s, k) => {
   let a = Array(2 ** k).fill(false);
-  for (let i = 0; i <= s.length - k; i++) a[parseInt(s.slice(i, i + k), 2)] = true;
+  for (let i = 0; i <= s.length - k; i++)
+    a[parseInt(s.slice(i, i + k), 2)] = true;
   return !a.includes(false);
 };
 ```
@@ -8765,8 +8805,9 @@ const shiftingLetters = (s, shifts) => {
       a[i] += a[i] < 0 ? 26 : 0;
     }
   }
-  for (let i = 0; i < a.length; i++) a[i] = String.fromCharCode((a[i] % 26) + 97);
-  return a.join('');
+  for (let i = 0; i < a.length; i++)
+    a[i] = String.fromCharCode((a[i] % 26) + 97);
+  return a.join("");
 };
 ```
 
@@ -8791,7 +8832,7 @@ const shiftingLetters = (s, shifts) => {
     d += d < 0 ? 26 : 0;
     c.push(String.fromCharCode(d + 97));
   }
-  return c.join('');
+  return c.join("");
 };
 ```
 
@@ -8979,7 +9020,7 @@ UndergroundSystem.prototype.checkIn = function (id, stationName, t) {
 UndergroundSystem.prototype.checkOut = function (id, stationName, t) {
   const [startStation, startTime] = this.checkin.get(id);
 
-  const key = startStation + '-' + stationName;
+  const key = startStation + "-" + stationName;
 
   const time = t - startTime;
 
@@ -8999,8 +9040,11 @@ UndergroundSystem.prototype.checkOut = function (id, stationName, t) {
  * @param {string} endStation
  * @return {number}
  */
-UndergroundSystem.prototype.getAverageTime = function (startStation, endStation) {
-  const [total, count] = this.routes.get(startStation + '-' + endStation);
+UndergroundSystem.prototype.getAverageTime = function (
+  startStation,
+  endStation,
+) {
+  const [total, count] = this.routes.get(startStation + "-" + endStation);
 
   return total / count;
 };
@@ -9028,7 +9072,7 @@ const bestClosingTime = (customers) => {
     b = 0,
     c = 0;
   for (let i = 0; i < customers.length; i++) {
-    c = customers[i] == 'Y' ? c - 1 : c + 1;
+    c = customers[i] == "Y" ? c - 1 : c + 1;
     [a, b] = c < b ? [i, c] : [a, b];
   }
   return a + 1;
@@ -9141,7 +9185,7 @@ FoodRatings.prototype.changeRating = function (food, newRating) {
  * @return {string}
  */
 FoodRatings.prototype.highestRated = function (cuisine) {
-  let a = '',
+  let a = "",
     b = -1;
   for (let i of this.cuisine[cuisine]) {
     const c = this.food[i].rating;
@@ -9373,7 +9417,7 @@ const frequencySort = (s) => {
   for (let i of s) a[i] = (a[i] ?? 0) + 1;
   let b = Object.entries(a);
   b.sort((x1, x2) => x2[1] - x1[1]);
-  let c = '';
+  let c = "";
   for (let [k, v] of b) {
     for (let i = 0; i < v; i++) c += k;
   }
@@ -9394,7 +9438,7 @@ https://leetcode.com/problems/sort-the-jumbled-numbers/description/
 const sortJumbled = (mapping, nums) => {
   const fn = (n) => {
     if (n == 0) return mapping[0];
-    let a = '';
+    let a = "";
     while (n > 0) [a, n] = [mapping[n % 10] + a, (n / 10) | 0];
     return +a;
   };
@@ -9460,15 +9504,15 @@ class Solution {
       b = [],
       c = [...s];
     for (let i = 0; i < c.length; i++) {
-      if (c[i] == '(') a.push(i);
-      else if (c[i] == ')') {
+      if (c[i] == "(") a.push(i);
+      else if (c[i] == ")") {
         if (a.length) a.pop();
         else b.push(i);
       }
     }
-    for (let i of a) c[i] = '';
-    for (let i of b) c[i] = '';
-    return c.join('');
+    for (let i of a) c[i] = "";
+    for (let i of b) c[i] = "";
+    return c.join("");
   }
 }
 ```
@@ -9589,12 +9633,12 @@ https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/descr
 const longestCommonPrefix = (arr1, arr2) => {
   const a = new Set();
   for (let i of arr1) {
-    const b = i + '';
+    const b = i + "";
     for (let j = 1; j <= b.length; j++) a.add(b.slice(0, j));
   }
   let c = 0;
   for (let i of arr2) {
-    const b = i + '';
+    const b = i + "";
     for (let j = 1; j <= b.length; j++) {
       if (a.has(b.slice(0, j))) c = j > c ? j : c;
     }
@@ -9625,48 +9669,48 @@ const countUnguarded = (m, n, guards, walls) => {
 
       let x = x0,
         y = y0;
-      if (g.has(y + ',' + x) || w.has(y + ',' + x)) continue;
+      if (g.has(y + "," + x) || w.has(y + "," + x)) continue;
 
       while (x > 0) {
         x--;
-        if (g.has(y + ',' + x)) {
+        if (g.has(y + "," + x)) {
           b = true;
           break;
         }
-        if (w.has(y + ',' + x)) break;
+        if (w.has(y + "," + x)) break;
       }
       if (b) continue;
 
       x = x0;
       while (x < n - 1) {
         x++;
-        if (g.has(y + ',' + x)) {
+        if (g.has(y + "," + x)) {
           b = true;
           break;
         }
-        if (w.has(y + ',' + x)) break;
+        if (w.has(y + "," + x)) break;
       }
       if (b) continue;
 
       x = x0;
       while (y > 0) {
         y--;
-        if (g.has(y + ',' + x)) {
+        if (g.has(y + "," + x)) {
           b = true;
           break;
         }
-        if (w.has(y + ',' + x)) break;
+        if (w.has(y + "," + x)) break;
       }
       if (b) continue;
 
       y = y0;
       while (y < m - 1) {
         y++;
-        if (g.has(y + ',' + x)) {
+        if (g.has(y + "," + x)) {
           b = true;
           break;
         }
-        if (w.has(y + ',' + x)) break;
+        if (w.has(y + "," + x)) break;
       }
       if (b) continue;
 
@@ -9691,36 +9735,36 @@ const countUnguarded = (m, n, guards, walls) => {
   for (let [y0, x0] of guards) {
     let x = x0,
       y = y0;
-    g.add(y + ',' + x);
+    g.add(y + "," + x);
     while (x > 0) {
       x--;
-      if (w.has(y + ',' + x)) break;
-      g.add(y + ',' + x);
+      if (w.has(y + "," + x)) break;
+      g.add(y + "," + x);
     }
     x = x0;
     while (x < n - 1) {
       x++;
-      if (w.has(y + ',' + x)) break;
-      g.add(y + ',' + x);
+      if (w.has(y + "," + x)) break;
+      g.add(y + "," + x);
     }
     x = x0;
     while (y > 0) {
       y--;
-      if (w.has(y + ',' + x)) break;
-      g.add(y + ',' + x);
+      if (w.has(y + "," + x)) break;
+      g.add(y + "," + x);
     }
     y = y0;
     while (y < m - 1) {
       y++;
-      if (w.has(y + ',' + x)) break;
-      g.add(y + ',' + x);
+      if (w.has(y + "," + x)) break;
+      g.add(y + "," + x);
     }
   }
   let b = g.union(w);
   let a = 0;
   for (let y = 0; y < m; y++) {
     for (let x = 0; x < n; x++) {
-      if (!b.has(y + ',' + x)) a++;
+      if (!b.has(y + "," + x)) a++;
     }
   }
   return a;
@@ -9837,10 +9881,10 @@ class Solution {
   evalRPN(tokens) {
     let a = [];
     for (let i of tokens) {
-      if (i == '+') a.push(a.pop() + a.pop());
-      else if (i == '-') a.push(-a.pop() + a.pop());
-      else if (i == '*') a.push(a.pop() * a.pop());
-      else if (i == '/') {
+      if (i == "+") a.push(a.pop() + a.pop());
+      else if (i == "-") a.push(-a.pop() + a.pop());
+      else if (i == "*") a.push(a.pop() * a.pop());
+      else if (i == "/") {
         const b = a.pop(),
           c = a.pop();
         a.push((c / b) | 0);
@@ -9863,10 +9907,10 @@ https://leetcode.com/problems/removing-stars-from-a-string/description/
 const removeStars = (s) => {
   let a = [];
   for (let i of s) {
-    if (i == '*') a.pop();
+    if (i == "*") a.pop();
     else a.push(i);
   }
-  return a.join('');
+  return a.join("");
 };
 ```
 
@@ -10016,13 +10060,13 @@ class Solution {
    */
   simplifyPath(path) {
     let a = [];
-    for (let i of path.split('/')) {
-      if (i == '' || i == '.') continue;
-      if (i == '..') {
+    for (let i of path.split("/")) {
+      if (i == "" || i == ".") continue;
+      if (i == "..") {
         if (a.length) a.pop();
       } else a.push(i);
     }
-    return '/' + a.join('/');
+    return "/" + a.join("/");
   }
 }
 ```
@@ -10040,16 +10084,16 @@ class Solution {
   decodeString(s) {
     let a = [],
       b = [],
-      c = '',
+      c = "",
       k = 0;
     for (const i of s) {
       if (/\d/.test(i)) k = k * 10 + +i;
-      else if (i == '[') {
+      else if (i == "[") {
         a.push(k);
         b.push(c);
         k = 0;
-        c = '';
-      } else if (i == ']') {
+        c = "";
+      } else if (i == "]") {
         const k0 = a.pop(),
           c0 = b.pop();
         c = c0 + c.repeat(k0);
@@ -10071,7 +10115,7 @@ https://leetcode.com/problems/remove-k-digits/description/
  * @return {string}
  */
 const removeKdigits = (num, k) => {
-  if (num.length == k) return '0';
+  if (num.length == k) return "0";
   let a = [];
   for (let i of num) {
     while (k > 0 && a.length && a.at(-1) > i) {
@@ -10081,7 +10125,7 @@ const removeKdigits = (num, k) => {
     a.push(i);
   }
   if (k) a = a.slice(0, -k);
-  return a.join('').replace(/^0+/, '') || '0';
+  return a.join("").replace(/^0+/, "") || "0";
 };
 ```
 
@@ -10110,7 +10154,7 @@ class Solution {
       if (!b) continue;
       a = a.slice(0, -k);
     }
-    return a.join('');
+    return a.join("");
   }
 }
 ```
@@ -10129,7 +10173,7 @@ class Solution {
       else a.push([i, 1]);
       if (a.at(-1)[1] == k) a.pop();
     }
-    let b = '';
+    let b = "";
     for (let [i, c] of a) b += i.repeat(c);
     return b;
   }
@@ -10147,12 +10191,12 @@ https://leetcode.com/problems/reverse-substrings-between-each-pair-of-parenthese
  */
 const reverseParentheses = (s) => {
   let a = [],
-    c = '';
+    c = "";
   for (let i of s) {
-    if (i == '(') {
+    if (i == "(") {
       a.push(c);
-      c = '';
-    } else if (i == ')') c = a.pop() + c.split('').reverse().join('');
+      c = "";
+    } else if (i == ")") c = a.pop() + c.split("").reverse().join("");
     else c += i;
   }
   return c;
@@ -10169,8 +10213,8 @@ const reverseParentheses = (s) => {
   let a = Array(n);
   let b = [];
   for (let i = 0; i < n; i++) {
-    if (s[i] == '(') b.push(i);
-    else if (s[i] === ')') {
+    if (s[i] == "(") b.push(i);
+    else if (s[i] === ")") {
       const j = b.pop();
       a[i] = j;
       a[j] = i;
@@ -10180,11 +10224,11 @@ const reverseParentheses = (s) => {
     i = 0,
     d = 1;
   while (i < n) {
-    if (s[i] == '(' || s[i] == ')') [i, d] = [a[i], -d];
+    if (s[i] == "(" || s[i] == ")") [i, d] = [a[i], -d];
     else c.push(s[i]);
     i += d;
   }
-  return c.join('');
+  return c.join("");
 };
 ```
 
@@ -10201,8 +10245,8 @@ const minAddToMakeValid = (s) => {
   let l = 0,
     r = 0;
   for (let i of s) {
-    if (i == '(') l++;
-    else if (i == ')') {
+    if (i == "(") l++;
+    else if (i == ")") {
       if (l > 0) l--;
       else r++;
     }
@@ -10245,7 +10289,7 @@ class Solution {
    * @return {number}
    */
   calculate(s) {
-    s = s.replaceAll(' ', '');
+    s = s.replaceAll(" ", "");
     let a = [],
       b = 0;
     for (let i of s) {
@@ -10259,17 +10303,17 @@ class Solution {
     a.push(b);
     b = [];
     for (let i = 0; i < a.length; i++) {
-      if (a[i] == '*') {
+      if (a[i] == "*") {
         b.push(b.pop() * a[i + 1]);
         i++;
-      } else if (a[i] == '/') {
+      } else if (a[i] == "/") {
         b.push((b.pop() / a[i + 1]) | 0);
         i++;
       } else b.push(a[i]);
     }
     let c = b[0];
     for (let i = 1; i < b.length; i += 2) {
-      c += b[i] == '+' ? b[i + 1] : -b[i + 1];
+      c += b[i] == "+" ? b[i + 1] : -b[i + 1];
     }
     return c;
   }
@@ -10440,10 +10484,10 @@ https://leetcode.com/problems/adding-spaces-to-a-string/description/
  * @return {string}
  */
 const addSpaces = (s, spaces) => {
-  let a = '',
+  let a = "",
     i0 = 0;
   for (let i of spaces) {
-    a += s.slice(i0, i) + ' ';
+    a += s.slice(i0, i) + " ";
     i0 = i;
   }
   return a + s.slice(i0);
@@ -10472,7 +10516,7 @@ class Solution {
       }
       chars[i2++] = a;
       if (b > 1) {
-        for (let i of b + '') chars[i2++] = i;
+        for (let i of b + "") chars[i2++] = i;
       }
     }
     chars.length = i2;
@@ -10568,27 +10612,27 @@ class Solution {
     const sp = new Set(ap);
     const sn = new Set(an);
 
-    if (z > 2) a.add('0,0,0');
+    if (z > 2) a.add("0,0,0");
     if (z > 0) {
       for (let p of ap) {
-        if (sn.has(-p)) a.add(-p + ',' + p + ',0');
+        if (sn.has(-p)) a.add(-p + "," + p + ",0");
       }
     }
 
     for (let i = 0; i < ap.length - 1; i++) {
       for (let j = i + 1; j < ap.length; j++) {
         const n = -ap[i] - ap[j];
-        if (sn.has(n)) a.add([ap[i], ap[j], n].sort().join(','));
+        if (sn.has(n)) a.add([ap[i], ap[j], n].sort().join(","));
       }
     }
     for (let i = 0; i < an.length - 1; i++) {
       for (let j = i + 1; j < an.length; j++) {
         const p = -an[i] - an[j];
-        if (sp.has(p)) a.add([an[i], an[j], p].sort().join(','));
+        if (sp.has(p)) a.add([an[i], an[j], p].sort().join(","));
       }
     }
 
-    return [...a].map((x) => x.split(',').map(Number));
+    return [...a].map((x) => x.split(",").map(Number));
   }
 }
 ```
@@ -10751,7 +10795,8 @@ https://leetcode.com/problems/array-with-elements-not-equal-to-average-of-neighb
 const rearrangeArray = (nums) => {
   const n = nums.length;
   nums.sort((x1, x2) => x1 - x2);
-  for (let i = 1; i < n - 1; i += 2) [nums[i], nums[i + 1]] = [nums[i + 1], nums[i]];
+  for (let i = 1; i < n - 1; i += 2)
+    [nums[i], nums[i + 1]] = [nums[i + 1], nums[i]];
   return nums;
 };
 ```
@@ -10956,8 +11001,8 @@ https://leetcode.com/problems/sentence-similarity-iii/description/
  */
 const areSentencesSimilar = (sentence1, sentence2) => {
   if (sentence1 == sentence2) return true;
-  let s1 = sentence1.split(' '),
-    s2 = sentence2.split(' ');
+  let s1 = sentence1.split(" "),
+    s2 = sentence2.split(" ");
   if (s1.length < s2.length) [s1, s2] = [s2, s1];
   let a = 0;
   while (s1[a] == s2[a]) a++;
@@ -11119,9 +11164,9 @@ class Solution {
    */
   checkInclusion(s1, s2) {
     const n = s1.length;
-    const a = [...s1].sort().join('');
+    const a = [...s1].sort().join("");
     for (let i = 0; i <= s2.length - n; i++) {
-      if ([...s2.slice(i, i + n)].sort().join('') == a) return true;
+      if ([...s2.slice(i, i + n)].sort().join("") == a) return true;
     }
     return false;
   }
@@ -11774,10 +11819,10 @@ const countOfSubstrings = (word, k) => {
       l = 0;
     for (let r = 0; r < word.length; r++) {
       const d = word[r];
-      if ('aeiou'.includes(d)) a[d] = r;
+      if ("aeiou".includes(d)) a[d] = r;
       else b++;
       while (b > k) {
-        if (!'aeiou'.includes(word[l])) b--;
+        if (!"aeiou".includes(word[l])) b--;
         l++;
       }
       const e = Math.min(a.a, a.e, a.i, a.o, a.u);
@@ -11965,7 +12010,10 @@ class Solution {
       r = Math.max(...piles);
     while (l < r) {
       const m = (l + r) >> 1;
-      [l, r] = piles.reduce((a, x) => a + Math.ceil(x / m), 0) > h ? [m + 1, r] : [l, m];
+      [l, r] =
+        piles.reduce((a, x) => a + Math.ceil(x / m), 0) > h
+          ? [m + 1, r]
+          : [l, m];
     }
     return l;
   }
@@ -12017,7 +12065,8 @@ const maximumCandies = (candies, k) => {
     r = Math.max(...candies);
   while (l < r) {
     const m = (l + r + 1) >> 1;
-    [l, r] = candies.reduce((a, x) => a + ((x / m) | 0), 0) >= k ? [m, r] : [l, m - 1];
+    [l, r] =
+      candies.reduce((a, x) => a + ((x / m) | 0), 0) >= k ? [m, r] : [l, m - 1];
   }
   return l;
 };
@@ -12100,7 +12149,10 @@ const minimizedMaximum = (n, quantities) => {
     r = Math.max(...quantities);
   while (l < r) {
     const m = (l + r) >> 1;
-    [l, r] = quantities.reduce((a, x) => a + (((x + m - 1) / m) | 0), 0) <= n ? [l, m] : [m + 1, r];
+    [l, r] =
+      quantities.reduce((a, x) => a + (((x + m - 1) / m) | 0), 0) <= n
+        ? [l, m]
+        : [m + 1, r];
   }
   return l;
 };
@@ -12193,7 +12245,10 @@ class Solution {
       const m = (l + r) >> 1;
       [l, r] = nums[m] > nums[r] ? [m + 1, r] : [l, m];
     }
-    [l, r] = l > 0 && nums[0] <= target && nums[l - 1] >= target ? [0, l - 1] : [l, nums.length - 1];
+    [l, r] =
+      l > 0 && nums[0] <= target && nums[l - 1] >= target
+        ? [0, l - 1]
+        : [l, nums.length - 1];
     while (l < r) {
       const m = (l + r) >> 1;
       [l, r] = nums[m] < target ? [m + 1, r] : [l, m];
@@ -12216,8 +12271,12 @@ class Solution {
     while (l < r) {
       const m = (l + r) >> 1;
       if (nums[m] == target) return m;
-      if (nums[l] <= nums[m]) [l, r] = nums[l] <= target && target < nums[m] ? [l, m - 1] : [m + 1, r];
-      else [l, r] = nums[m] < target && target <= nums[r] ? [m + 1, r] : [l, m - 1];
+      if (nums[l] <= nums[m])
+        [l, r] =
+          nums[l] <= target && target < nums[m] ? [l, m - 1] : [m + 1, r];
+      else
+        [l, r] =
+          nums[m] < target && target <= nums[r] ? [m + 1, r] : [l, m - 1];
     }
     return nums[l] == target ? l : -1;
   }
@@ -12243,8 +12302,11 @@ class Solution {
       if (nums[m] == target) return true;
       if (nums[l] == nums[m] && nums[m] == nums[r]) [l, r] = [l + 1, r - 1];
       else if (nums[l] <= nums[m]) {
-        [l, r] = nums[l] <= target && target < nums[m] ? [l, m - 1] : [m + 1, r];
-      } else [l, r] = nums[m] < target && target <= nums[r] ? [m + 1, r] : [l, m - 1];
+        [l, r] =
+          nums[l] <= target && target < nums[m] ? [l, m - 1] : [m + 1, r];
+      } else
+        [l, r] =
+          nums[m] < target && target <= nums[r] ? [m + 1, r] : [l, m - 1];
     }
     return false;
   }
@@ -12278,9 +12340,9 @@ class TimeMap {
    * @return {string}
    */
   get(key, timestamp) {
-    if (!this.keyStore.has(key)) return '';
+    if (!this.keyStore.has(key)) return "";
     const arr = this.keyStore.get(key) || [];
-    let a = '',
+    let a = "",
       l = 0,
       r = arr.length - 1;
     while (l <= r) {
@@ -12369,7 +12431,8 @@ https://leetcode.com/problems/most-beautiful-item-for-each-query/description/
  */
 const maximumBeauty = (items, queries) => {
   items.sort((x1, x2) => x1[0] - x2[0]);
-  for (let i = 1; i < items.length; i++) items[i][1] = Math.max(items[i][1], items[i - 1][1]);
+  for (let i = 1; i < items.length; i++)
+    items[i][1] = Math.max(items[i][1], items[i - 1][1]);
   let a = [];
   for (let i of queries) {
     let l = 0,
@@ -12504,7 +12567,8 @@ const countFairPairs = (nums, lower, upper) => {
   nums.sort((x1, x2) => x1 - x2);
   let a = 0;
   for (let i = 0; i < nums.length; i++) {
-    a += fn(nums, upper + 1 - nums[i], i + 1) - fn(nums, lower - nums[i], i + 1);
+    a +=
+      fn(nums, upper + 1 - nums[i], i + 1) - fn(nums, lower - nums[i], i + 1);
   }
   return a;
 };
@@ -12524,7 +12588,8 @@ const countFairPairs = (nums, lower, upper) => {
     let a = 0,
       l = 0,
       r = nums.length - 1;
-    while (l < r) [l, r, a] = nums[l] + nums[r] < x ? [l + 1, r, a + r - l] : [l, r - 1, a];
+    while (l < r)
+      [l, r, a] = nums[l] + nums[r] < x ? [l + 1, r, a + r - l] : [l, r - 1, a];
     return a;
   };
 
@@ -13952,11 +14017,11 @@ https://leetcode.com/problems/construct-string-from-binary-tree/description/
  */
 const tree2str = (root) => {
   const dfs = (n) => {
-    if (!n) return '';
-    if (!n.left && !n.right) return n.val + '';
-    if (!n.left) return n.val + '()(' + dfs(n.right) + ')';
-    if (!n.right) return n.val + '(' + dfs(n.left) + ')';
-    return n.val + '(' + dfs(n.left) + ')(' + dfs(n.right) + ')';
+    if (!n) return "";
+    if (!n.left && !n.right) return n.val + "";
+    if (!n.left) return n.val + "()(" + dfs(n.right) + ")";
+    if (!n.right) return n.val + "(" + dfs(n.left) + ")";
+    return n.val + "(" + dfs(n.left) + ")(" + dfs(n.right) + ")";
   };
   return dfs(root);
 };
@@ -14145,8 +14210,10 @@ class Solution {
    * @return {TreeNode}
    */
   lowestCommonAncestor(root, p, q) {
-    if (p.val < root.val && q.val < root.val) return this.lowestCommonAncestor(root.left, p, q);
-    if (p.val > root.val && q.val > root.val) return this.lowestCommonAncestor(root.right, p, q);
+    if (p.val < root.val && q.val < root.val)
+      return this.lowestCommonAncestor(root.left, p, q);
+    if (p.val > root.val && q.val > root.val)
+      return this.lowestCommonAncestor(root.right, p, q);
     return root;
   }
 }
@@ -14363,7 +14430,8 @@ const reverseOddLevels = (root) => {
   while (a.length) {
     if (b & 1) {
       const c = a.length - 1;
-      for (let i = 0; i < a.length / 2; i++) [a[i].val, a[c - i].val] = [a[c - i].val, a[i].val];
+      for (let i = 0; i < a.length / 2; i++)
+        [a[i].val, a[c - i].val] = [a[c - i].val, a[i].val];
     }
     if (!a[0].left) break;
     let a1 = [];
@@ -14611,7 +14679,9 @@ const isSubPath = (head, root) => {
   };
 
   if (!root) return false;
-  return fn(head, root) || isSubPath(head, root.left) || isSubPath(head, root.right);
+  return (
+    fn(head, root) || isSubPath(head, root.left) || isSubPath(head, root.right)
+  );
 };
 ```
 
@@ -14765,7 +14835,14 @@ class Solution {
       }
       if (a) return new Node(grid[r][c] == 1, true);
       n /= 2;
-      return new Node(true, false, dfs(n, r, c), dfs(n, r, c + n), dfs(n, r + n, c), dfs(n, r + n, c + n));
+      return new Node(
+        true,
+        false,
+        dfs(n, r, c),
+        dfs(n, r, c + n),
+        dfs(n, r + n, c),
+        dfs(n, r + n, c + n),
+      );
     };
     return dfs(grid.length, 0, 0);
   }
@@ -14793,8 +14870,8 @@ const findDuplicateSubtrees = (root) => {
   let a = {},
     b = [];
   const dfs = (n) => {
-    if (!n) return 'null';
-    let c = n.val + ',' + dfs(n.left) + ',' + dfs(n.right);
+    if (!n) return "null";
+    let c = n.val + "," + dfs(n.left) + "," + dfs(n.right);
     a[c] = (a[c] ?? 0) + 1;
     if (a[c] == 2) b.push(n);
     return c;
@@ -15455,7 +15532,11 @@ https://leetcode.com/problems/flip-equivalent-binary-trees/description/
 const flipEquiv = (root1, root2) => {
   if (!root1 || !root2) return !root1 && !root2;
   if (root1.val != root2.val) return false;
-  return (flipEquiv(root1.left, root2.left) && flipEquiv(root1.right, root2.right)) || (flipEquiv(root1.left, root2.right) && flipEquiv(root1.right, root2.left));
+  return (
+    (flipEquiv(root1.left, root2.left) &&
+      flipEquiv(root1.right, root2.right)) ||
+    (flipEquiv(root1.left, root2.right) && flipEquiv(root1.right, root2.left))
+  );
 };
 ```
 
@@ -15958,7 +16039,7 @@ const smallestFromLeaf = (root) => {
     if (!right) return left;
     return left < right ? left : right;
   };
-  return dfs(root, '');
+  return dfs(root, "");
 };
 ```
 
@@ -16115,17 +16196,17 @@ https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to
  */
 const getDirections = (root, startValue, destValue) => {
   const dfs = (n, a, b) => {
-    if (!n) return '';
+    if (!n) return "";
     if (n.val == b) return a;
-    a.push('L');
+    a.push("L");
     let c = dfs(n.left, a, b);
     if (c) return c;
     a.pop();
-    a.push('R');
+    a.push("R");
     c = dfs(n.right, a, b);
     if (c) return c;
     a.pop();
-    return '';
+    return "";
   };
   const a1 = dfs(root, [], startValue);
   const a2 = dfs(root, [], destValue);
@@ -16134,7 +16215,7 @@ const getDirections = (root, startValue, destValue) => {
     if (a1[i] != a2[i]) break;
     i += 1;
   }
-  return 'U'.repeat(a1.length - i) + a2.slice(i).join('');
+  return "U".repeat(a1.length - i) + a2.slice(i).join("");
 };
 ```
 
@@ -16161,8 +16242,8 @@ class PrefixTree {
    * @return {void}
    */
   insert(word) {
-    word += '@';
-    let a = '';
+    word += "@";
+    let a = "";
     for (let i = 0; i < word.length; i++) {
       a += word[i];
       if (!this.str.includes(a)) this.str.push(a);
@@ -16174,7 +16255,7 @@ class PrefixTree {
    * @return {boolean}
    */
   search(word) {
-    return this.str.includes(word + '@');
+    return this.str.includes(word + "@");
   }
 
   /**
@@ -16280,7 +16361,7 @@ class WordDictionary {
       let n = root;
       for (let i = k; i < word.length; i++) {
         const c = word[i];
-        if (c != '.') {
+        if (c != ".") {
           if (!(c in n.child)) return false;
           n = n.child[c];
         } else {
@@ -16312,7 +16393,7 @@ class Solution {
     let a = [folder[0]];
     for (let s of folder.slice(1)) {
       const b = a.at(-1);
-      if (s.slice(0, b.length) != b || s[b.length] != '/') a.push(s);
+      if (s.slice(0, b.length) != b || s[b.length] != "/") a.push(s);
     }
     return a;
   }
@@ -16345,7 +16426,7 @@ class Trie {
       const c = s[i];
       if (!(c in n.child)) return false;
       n = n.child[c];
-      if (n.end && i < s.length - 1 && s[i + 1] == '/') return true;
+      if (n.end && i < s.length - 1 && s[i + 1] == "/") return true;
     }
     return false;
   }
@@ -16959,7 +17040,9 @@ const assignTasks = (servers, tasks) => {
     ans = [];
 
   const freeLess = (a, b) => a[0] < b[0] || (a[0] == b[0] && a[1] < b[1]);
-  const busyLess = (a, b) => a[0] < b[0] || (a[0] == b[0] && (a[1] < b[1] || (a[1] == b[1] && a[2] < b[2])));
+  const busyLess = (a, b) =>
+    a[0] < b[0] ||
+    (a[0] == b[0] && (a[1] < b[1] || (a[1] == b[1] && a[2] < b[2])));
 
   const set = (heap, x, less) => {
     let i = heap.length;
@@ -17044,16 +17127,16 @@ class Solution {
     for (let i of s) a[i] = (a[i] ?? 0) + 1;
     for (let i in a) b.push([a[i], i]);
     b.sort((x1, x2) => x2[0] - x1[0]);
-    s = '';
+    s = "";
     for (let [n, c] of b) s += c.repeat(n);
     a = [];
     let i = 0;
     for (let ii = 0; ii < s.length; ii += 2) a[ii] = s[i++];
     for (let ii = 1; ii < s.length; ii += 2) {
-      if (a[ii - 1] == s[i]) return '';
+      if (a[ii - 1] == s[i]) return "";
       a[ii] = s[i++];
     }
-    return a.join('');
+    return a.join("");
   }
 }
 ```
@@ -17072,11 +17155,11 @@ class Solution {
    */
   longestDiverseString(a, b, c) {
     let d = [
-        ['a', a],
-        ['b', b],
-        ['c', c],
+        ["a", a],
+        ["b", b],
+        ["c", c],
       ],
-      e = '';
+      e = "";
     while (true) {
       d.sort((x1, x2) => x2[1] - x1[1]);
       let [d0, d1] = d[0];
@@ -17510,13 +17593,13 @@ class Solution {
     let a = [];
     const dfs = (b, l, r) => {
       if (l == 0 && r == 0) {
-        a.push(b + ')');
+        a.push(b + ")");
         return;
       }
-      if (l > 0) dfs(b + '(', l - 1, r);
-      if (r >= l) dfs(b + ')', l, r - 1);
+      if (l > 0) dfs(b + "(", l - 1, r);
+      if (r >= l) dfs(b + ")", l, r - 1);
     };
-    dfs('(', n - 1, n - 1);
+    dfs("(", n - 1, n - 1);
     return a;
   }
 }
@@ -17544,7 +17627,7 @@ const numTilePossibilities = (tiles) => {
       b[i]++;
     }
   };
-  dfs('');
+  dfs("");
   return a.size;
 };
 ```
@@ -17589,9 +17672,21 @@ class Solution {
     let a = [];
     const dfs = (y, x, i) => {
       if (i == l) return true;
-      if (y < 0 || x < 0 || y > r || x > c || word[i] != board[y][x] || a.includes(y + ',' + x)) return false;
-      a.push(y + ',' + x);
-      const b = dfs(y + 1, x, i + 1) || dfs(y - 1, x, i + 1) || dfs(y, x + 1, i + 1) || dfs(y, x - 1, i + 1);
+      if (
+        y < 0 ||
+        x < 0 ||
+        y > r ||
+        x > c ||
+        word[i] != board[y][x] ||
+        a.includes(y + "," + x)
+      )
+        return false;
+      a.push(y + "," + x);
+      const b =
+        dfs(y + 1, x, i + 1) ||
+        dfs(y - 1, x, i + 1) ||
+        dfs(y, x + 1, i + 1) ||
+        dfs(y, x - 1, i + 1);
       a.pop();
       return b;
     };
@@ -17665,10 +17760,11 @@ class Solution {
         return;
       }
       for (let ii = i; ii < Math.min(i + 3, n); ii++) {
-        if (s.slice(i, ii + 1) - 0 < 256 && (i == ii || s[i] != '0')) dfs(ii + 1, b + 1, c + s.slice(i, ii + 1) + '.');
+        if (s.slice(i, ii + 1) - 0 < 256 && (i == ii || s[i] != "0"))
+          dfs(ii + 1, b + 1, c + s.slice(i, ii + 1) + ".");
       }
     };
-    dfs(0, 0, '');
+    dfs(0, 0, "");
     return a;
   }
 }
@@ -17687,7 +17783,16 @@ class Solution {
   letterCombinations(digits) {
     if (!digits) return [];
     let a = [];
-    const b = { 2: 'abc', 3: 'def', 4: 'ghi', 5: 'jkl', 6: 'mno', 7: 'pqrs', 8: 'tuv', 9: 'wxyz' };
+    const b = {
+      2: "abc",
+      3: "def",
+      4: "ghi",
+      5: "jkl",
+      6: "mno",
+      7: "pqrs",
+      8: "tuv",
+      9: "wxyz",
+    };
     const dfs = (i, c) => {
       if (c.length == digits.length) {
         a.push(c);
@@ -17695,7 +17800,7 @@ class Solution {
       }
       for (let d of b[digits[i]]) dfs(i + 1, c + d);
     };
-    dfs(0, '');
+    dfs(0, "");
     return a;
   }
 }
@@ -17712,8 +17817,8 @@ https://leetcode.com/problems/the-k-th-lexicographical-string-of-all-happy-strin
  * @return {string}
  */
 const getHappyString = (n, k) => {
-  let a = '',
-    b = 'abc',
+  let a = "",
+    b = "abc",
     l = 1,
     r = 3 * 2 ** (n - 1);
   for (let i = 0; i < n; i++) {
@@ -17723,7 +17828,7 @@ const getHappyString = (n, k) => {
       if (k < c + d) {
         a += i;
         ((l = c), (r = c + d - 1));
-        b = 'abc'.replace(i, '');
+        b = "abc".replace(i, "");
         break;
       }
       c += d;
@@ -17803,11 +17908,11 @@ https://leetcode.com/problems/construct-smallest-number-from-di-string/descripti
  */
 const smallestNumber = (pattern) => {
   const n = pattern.length;
-  let a = '',
+  let a = "",
     b = [];
   for (let i = 0; i < n + 1; i++) {
     b.push(i + 1);
-    while (b.length && (i == n || pattern[i] == 'I')) a += b.pop();
+    while (b.length && (i == n || pattern[i] == "I")) a += b.pop();
   }
   return a;
 };
@@ -17825,7 +17930,7 @@ https://leetcode.com/problems/find-unique-binary-string/description/
 const findDifferentBinaryString = (nums) => {
   const n = nums[0].length;
   for (let i = 0; i < 2 ** n; i++) {
-    const a = i.toString(2).padStart(n, '0');
+    const a = i.toString(2).padStart(n, "0");
     if (!nums.includes(a)) return a;
   }
 };
@@ -17976,15 +18081,15 @@ const diffWaysToCompute = (expression) => {
     let a = [];
     for (let i = 0; i < s.length; i++) {
       const b = s[i];
-      if (b != '+' && b != '-' && b != '*') continue;
+      if (b != "+" && b != "-" && b != "*") continue;
       const l = dfs(s.slice(0, i)),
         r = dfs(s.slice(i + 1));
       for (let li of l) {
         for (let ri of r) {
           //a.push(eval(li+b+ri));
-          if (b == '+') a.push(li + ri);
-          if (b == '-') a.push(li - ri);
-          if (b == '*') a.push(li * ri);
+          if (b == "+") a.push(li + ri);
+          if (b == "-") a.push(li - ri);
+          if (b == "*") a.push(li * ri);
         }
       }
     }
@@ -18666,7 +18771,7 @@ const minimumSteps = (s) => {
   let a = 0,
     b = 0;
   for (let i = s.length - 1; i >= 0; i--) {
-    if (s[i] == '0') a++;
+    if (s[i] == "0") a++;
     else b += a;
   }
   return b;
@@ -18811,7 +18916,8 @@ class Solution {
       a0 = 1;
     for (let i = 1; i < arr.length; i++) {
       if (arr[i] == arr[i - 1]) a = 1;
-      else if (i == 1 || (arr[i - 1] - arr[i - 2]) * (arr[i] - arr[i - 1]) < 0) a++;
+      else if (i == 1 || (arr[i - 1] - arr[i - 2]) * (arr[i] - arr[i - 1]) < 0)
+        a++;
       else a = 2;
       a0 = Math.max(a, a0);
     }
@@ -18887,7 +18993,7 @@ class Solution {
         l = Math.max(i + minJump, a + 1),
         r = Math.min(i + maxJump, n - 1);
       for (let ii = l; ii <= r; ii++) {
-        if (s[ii] == '0') {
+        if (s[ii] == "0") {
           if (ii == n - 1) return true;
           q.push(ii);
         }
@@ -19027,7 +19133,12 @@ const minDifference = (nums) => {
   const n = nums.length;
   if (n < 5) return 0;
   nums.sort((x1, x2) => x1 - x2);
-  return Math.min(nums[n - 4] - nums[0], nums[n - 3] - nums[1], nums[n - 2] - nums[2], nums[n - 1] - nums[3]);
+  return Math.min(
+    nums[n - 4] - nums[0],
+    nums[n - 3] - nums[1],
+    nums[n - 2] - nums[2],
+    nums[n - 1] - nums[3],
+  );
 };
 ```
 
@@ -19104,14 +19215,14 @@ class Solution {
     const n = senate.length,
       r = [],
       d = [];
-    for (let i = 0; i < n; i++) (senate[i] == 'R' ? r : d).push(i);
+    for (let i = 0; i < n; i++) (senate[i] == "R" ? r : d).push(i);
     while (r.length && d.length) {
       const ri = r.shift(),
         di = d.shift();
       if (ri < di) r.push(ri + n);
       else d.push(di + n);
     }
-    return r.length ? 'Radiant' : 'Dire';
+    return r.length ? "Radiant" : "Dire";
   }
 }
 ```
@@ -19254,8 +19365,8 @@ class Solution {
     let a = 0,
       b = 0;
     for (let i of s) {
-      if (i == '(') [a, b] = [a + 1, b + 1];
-      else if (i == ')') [a, b] = [a - 1, b - 1];
+      if (i == "(") [a, b] = [a + 1, b + 1];
+      else if (i == ")") [a, b] = [a - 1, b - 1];
       else [a, b] = [a - 1, b + 1];
       if (b < 0) return false;
       a = Math.max(a, 0);
@@ -19281,11 +19392,11 @@ const canBeValid = (s, locked) => {
   let a = 0,
     b = 0;
   for (let i = 0; i < n; i++) {
-    if (locked[i] == '0') {
+    if (locked[i] == "0") {
       a++;
       continue;
     }
-    b += s[i] == '(' ? 1 : -1;
+    b += s[i] == "(" ? 1 : -1;
     if (b < 0) {
       if (a < 1) return false;
       b++;
@@ -19294,11 +19405,11 @@ const canBeValid = (s, locked) => {
   }
   ((a = 0), (b = 0));
   for (let i = n - 1; i >= 0; i--) {
-    if (locked[i] == '0') {
+    if (locked[i] == "0") {
       a++;
       continue;
     }
-    b += s[i] == ')' ? 1 : -1;
+    b += s[i] == ")" ? 1 : -1;
     if (b < 0) {
       if (a < 1) return false;
       b++;
@@ -19320,12 +19431,12 @@ const canBeValid = (s, locked) => {
   if (n % 2) return false;
   let a = 0;
   for (let i = 0; i < n; i++) {
-    a += locked[i] == '0' || s[i] == '(' ? 1 : -1;
+    a += locked[i] == "0" || s[i] == "(" ? 1 : -1;
     if (a < 0) return false;
   }
   a = 0;
   for (let i = n - 1; i >= 0; i--) {
-    a += locked[i] == '0' || s[i] == ')' ? 1 : -1;
+    a += locked[i] == "0" || s[i] == ")" ? 1 : -1;
     if (a < 0) return false;
   }
   return true;
@@ -19477,7 +19588,7 @@ const minimumDeletions = (s) => {
   let a = 0,
     b = 0;
   for (let i of s) {
-    if (i == 'b') b++;
+    if (i == "b") b++;
     else a = Math.min(b, a + 1);
   }
   return a;
@@ -19494,8 +19605,8 @@ https://leetcode.com/problems/remove-colored-pieces-if-both-neighbors-are-the-sa
  * @return {boolean}
  */
 const winnerOfGame = (colors) => {
-  const a = colors.split('B');
-  const b = colors.split('A');
+  const a = colors.split("B");
+  const b = colors.split("A");
   const a1 = a.reduce((a, x) => a + Math.max(x.length - 2, 0), 0);
   const b1 = b.reduce((a, x) => a + Math.max(x.length - 2, 0), 0);
   return a1 > b1;
@@ -19511,7 +19622,8 @@ const winnerOfGame = (colors) => {
   let a = 0,
     b = 0;
   for (let i = 1; i < colors.length - 1; i++) {
-    if (colors[i - 1] == colors[i] && colors[i] == colors[i + 1]) colors[i] == 'A' ? a++ : b++;
+    if (colors[i - 1] == colors[i] && colors[i] == colors[i + 1])
+      colors[i] == "A" ? a++ : b++;
   }
   return a > b;
 };
@@ -19542,11 +19654,11 @@ const maximumGain = (s, x, y) => {
   };
 
   if (x >= y) {
-    s = fn(s, 'a', 'b', x);
-    s = fn(s, 'b', 'a', y);
+    s = fn(s, "a", "b", x);
+    s = fn(s, "b", "a", y);
   } else {
-    s = fn(s, 'b', 'a', y);
-    s = fn(s, 'a', 'b', x);
+    s = fn(s, "b", "a", y);
+    s = fn(s, "a", "b", x);
   }
   return a;
 };
@@ -19579,7 +19691,7 @@ https://leetcode.com/problems/number-of-laser-beams-in-a-bank/description/
  * @return {number}
  */
 const numberOfBeams = (bank) => {
-  let a = bank.map((x) => x.replaceAll('0', '').length).filter((x) => x != 0);
+  let a = bank.map((x) => x.replaceAll("0", "").length).filter((x) => x != 0);
   if (a.lenght == 0) return 0;
   let b = 0;
   for (let i = 1; i < a.length; i++) b += a[i - 1] * a[i];
@@ -19596,7 +19708,7 @@ const numberOfBeams = (bank) => {
   let a = 0,
     b = 0;
   for (let i of bank) {
-    const n = [...i].filter((x) => x == '1').length;
+    const n = [...i].filter((x) => x == "1").length;
     if (n) {
       b += a * n;
       a = n;
@@ -19645,7 +19757,7 @@ const repeatLimitedString = (s, repeatLimit) => {
   let a = {};
   for (let i of s) a[i] = (a[i] ?? 0) + 1;
   let b = Object.entries(a).sort().reverse();
-  let c = '',
+  let c = "",
     i = 0;
   while (i < b.length) {
     if (b[i][1] > repeatLimit) {
@@ -19675,7 +19787,7 @@ const repeatLimitedString = (s, repeatLimit) => {
 const repeatLimitedString = (s, repeatLimit) => {
   const a = Array(26).fill(0);
   for (let i of s) a[i.charCodeAt() - 97]++;
-  let c = '';
+  let c = "";
   for (let i = 25; i >= 0; i--) {
     while (a[i]) {
       const n = Math.min(a[i], repeatLimit);
@@ -19824,7 +19936,27 @@ const maxChunksToSorted = (arr) => {
 https://neetcode.io/problems/next-permutation/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {void} Do not return anything, modify nums in-place instead.
+   */
+  nextPermutation(nums) {
+    const n = nums.length - 1;
+    let i1 = n - 1,
+      i2 = n;
+    while (i1 >= 0 && nums[i1] >= nums[i1 + 1]) i1--;
+    if (i1 >= 0) {
+      while (nums[i2] <= nums[i1]) i2--;
+      [nums[i1], nums[i2]] = [nums[i2], nums[i1]];
+    }
+    (i1++, (i2 = n));
+    while (i1 < i2) {
+      [nums[i1], nums[i2]] = [nums[i2], nums[i1]];
+      (i1++, i2--);
+    }
+  }
+}
 ```
 
 ## Maximum Swap
@@ -19837,7 +19969,7 @@ https://leetcode.com/problems/maximum-swap/description/
  * @return {number}
  */
 const maximumSwap = (num) => {
-  let a = (num + '').split('').map(Number);
+  let a = (num + "").split("").map(Number);
   const n = a.length;
   for (let i = 0; i < n; i++) {
     if (a[i] == 9) continue;
@@ -19848,7 +19980,7 @@ const maximumSwap = (num) => {
     [a[i], a[i0]] = [a[i0], a[i]];
     break;
   }
-  return +a.map(String).join('');
+  return +a.map(String).join("");
 };
 ```
 
@@ -19869,7 +20001,10 @@ const maxKelements = (nums, k) => {
     i2 = 0,
     b = [];
   while (k--) {
-    const c = i1 < nums.length && (i2 == b.length || nums[i1] >= b[i2]) ? nums[i1++] : b[i2++];
+    const c =
+      i1 < nums.length && (i2 == b.length || nums[i1] >= b[i2])
+        ? nums[i1++]
+        : b[i2++];
     a += c;
     b.push(Math.ceil(c / 3));
   }
@@ -19941,8 +20076,8 @@ class Solution {
     let a = 0;
     const dfs = (y, x) => {
       if (y < 0 || x < 0 || y >= m || x >= n) return;
-      if (grid[y][x] == '0') return;
-      grid[y][x] = '0';
+      if (grid[y][x] == "0") return;
+      grid[y][x] = "0";
       dfs(y + 1, x);
       dfs(y - 1, x);
       dfs(y, x + 1);
@@ -19950,7 +20085,7 @@ class Solution {
     };
     for (let i = 0; i < m; i++) {
       for (let j = 0; j < n; j++) {
-        if (grid[i][j] == '1') (a++, dfs(i, j));
+        if (grid[i][j] == "1") (a++, dfs(i, j));
       }
     }
     return a;
@@ -19970,10 +20105,10 @@ class Solution {
     let a = 0;
     for (let i = 0; i < m; i++) {
       for (let j = 0; j < n; j++) {
-        if (grid[i][j] == '0') continue;
+        if (grid[i][j] == "0") continue;
         a++;
         let q = [[i, j]];
-        grid[i][j] = '0';
+        grid[i][j] = "0";
         while (q.length) {
           let q0 = [];
           for (const [y, x] of q) {
@@ -19985,8 +20120,9 @@ class Solution {
             ]) {
               const y1 = y + dy,
                 x1 = x + dx;
-              if (y1 < 0 || y1 >= m || x1 < 0 || x1 >= n || grid[y1][x1] == '0') continue;
-              grid[y1][x1] = '0';
+              if (y1 < 0 || y1 >= m || x1 < 0 || x1 >= n || grid[y1][x1] == "0")
+                continue;
+              grid[y1][x1] = "0";
               q0.push([y1, x1]);
             }
           }
@@ -20286,7 +20422,7 @@ const checkMove = (board, rMove, cMove, color) => {
     [1, 0],
     [1, 1],
   ];
-  const a = color == 'B' ? 'W' : 'B';
+  const a = color == "B" ? "W" : "B";
   for (let [dy, dx] of dirs) {
     let y = rMove + dy,
       x = cMove + dx,
@@ -20294,7 +20430,8 @@ const checkMove = (board, rMove, cMove, color) => {
     while (y >= 0 && y < n && x >= 0 && x < n && board[y][x] == a) {
       ((y += dy), (x += dx), b++);
     }
-    if (b > 0 && y >= 0 && y < n && x >= 0 && x < n && board[y][x] == color) return true;
+    if (b > 0 && y >= 0 && y < n && x >= 0 && x < n && board[y][x] == color)
+      return true;
   }
   return false;
 };
@@ -20714,11 +20851,11 @@ const regionsBySlashes = (grid) => {
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n; j++) {
       const c = grid[i][j];
-      if (c == ' ') {
+      if (c == " ") {
         union(id(i, j, 0), id(i, j, 1));
         union(id(i, j, 1), id(i, j, 2));
         union(id(i, j, 2), id(i, j, 3));
-      } else if (c == '/') {
+      } else if (c == "/") {
         union(id(i, j, 0), id(i, j, 3));
         union(id(i, j, 1), id(i, j, 2));
       } else {
@@ -20897,7 +21034,7 @@ const findAllRecipes = (recipes, ingredients, supplies) => {
       if (a[i].difference(b).size == 0) {
         b.add(e);
         c.push(e);
-        recipes[i] = '';
+        recipes[i] = "";
         d = true;
       }
     }
@@ -21001,7 +21138,12 @@ const getMaximumGold = (grid) => {
     if (y < 0 || y >= m || x < 0 || x >= n || !grid[y][x]) return 0;
     let a = grid[y][x];
     grid[y][x] = 0;
-    let b = Math.max(dfs(y - 1, x), dfs(y + 1, x), dfs(y, x - 1), dfs(y, x + 1));
+    let b = Math.max(
+      dfs(y - 1, x),
+      dfs(y + 1, x),
+      dfs(y, x - 1),
+      dfs(y, x + 1),
+    );
     grid[y][x] = a;
     return a + b;
   };
@@ -21314,7 +21456,50 @@ const validPartition = (nums) => {
 https://leetcode.com/problems/maximum-subarray-min-product/description/
 
 ```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const maxSumMinProduct = (nums) => {
+  const n = nums.length;
+  let a = 0n;
+  for (let i = 0; i < n; i++) {
+    const c = BigInt(nums[i]);
+    let b = c,
+      ii = i - 1;
+    while (ii >= 0 && nums[ii] >= nums[i]) b += BigInt(nums[ii--]);
+    ii = i + 1;
+    while (ii < n && nums[ii] >= nums[i]) b += BigInt(nums[ii++]);
+    a = a > b * c ? a : b * c;
+  }
+  return Number(a % 1000000007n);
+};
+```
 
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const maxSumMinProduct = (nums) => {
+  const n = nums.length;
+  let a = 0n,
+    s = [0n],
+    q = [];
+  for (let i = 0; i < n; i++) s.push(s[i] + BigInt(nums[i]));
+  for (let i = 0; i <= n; i++) {
+    const x = i < n ? nums[i] : 0;
+    while (q.length && nums[q.at(-1)] > x) {
+      const ii = q.pop();
+      const l = q.length ? q.at(-1) + 1 : 0;
+      const r = i - 1;
+      const b = BigInt(nums[ii]) * (s[r + 1] - s[l]);
+      a = a > b ? a : b;
+    }
+    q.push(i);
+  }
+  return Number(a % 1000000007n);
+};
 ```
 
 ## Minimum Cost For Tickets
