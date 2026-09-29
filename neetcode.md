@@ -20096,7 +20096,28 @@ const maxKelements = (nums, k) => {
 https://neetcode.io/problems/maximum-frequency-after-subarray-operation/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  maxFrequency(nums, k) {
+    const a = nums.filter((x) => x == k).length;
+    let b = a;
+    for (let i = 1; i <= 50; i++) {
+      if (i == k) continue;
+      let c = 0;
+      for (let ii of nums) {
+        if (ii == i) c++;
+        else if (ii == k) c--;
+        c = Math.max(0, c);
+        b = Math.max(a + c, b);
+      }
+    }
+    return b;
+  }
+}
 ```
 
 ---
@@ -21707,3 +21728,91 @@ https://leetcode.com/problems/ugly-number-ii/description/
 ```js
 
 ```
+
+## New 21 Game
+
+https://neetcode.io/problems/new-21-game/question
+
+```js
+
+```
+
+## Best Team with no Conflicts
+
+https://leetcode.com/problems/best-team-with-no-conflicts/description/
+
+```js
+
+```
+
+## Longest String Chain
+
+https://leetcode.com/problems/longest-string-chain/description/
+
+```js
+
+```
+
+## Knight Dialer
+
+https://leetcode.com/problems/knight-dialer/description/
+
+```js
+
+```
+
+## Partition Array for Maximum Sum
+
+https://leetcode.com/problems/partition-array-for-maximum-sum/description/
+
+```js
+
+```
+
+## Largest Divisible Subset
+
+https://neetcode.io/problems/largest-divisible-subset/question
+
+```js
+
+```
+
+---
+
+---
+
+---
+
+# 2-D DP
+
+##
+
+---
+
+---
+
+---
+
+# Bit manupulation
+
+##
+
+---
+
+---
+
+---
+
+# Advanced Graphs
+
+##
+
+---
+
+---
+
+---
+
+# Math & Geometry
+
+##
