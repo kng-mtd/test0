@@ -1112,7 +1112,7 @@ class Solution {
 }
 ```
 
-## Contains Duplicate
+## Contains Duplicate -75
 
 https://neetcode.io/problems/duplicate-integer/question
 
@@ -1129,7 +1129,7 @@ class Solution {
 }
 ```
 
-## Valid Anagram
+## Valid Anagram -75
 
 https://neetcode.io/problems/is-anagram/question
 
@@ -1279,7 +1279,7 @@ class Solution {
 }
 ```
 
-## Two Sum
+## Two Sum -75
 
 https://neetcode.io/problems/two-integer-sum/question
 
@@ -3076,7 +3076,7 @@ class Solution {
 }
 ```
 
-## Valid Parentheses
+## Valid Parentheses -75
 
 https://neetcode.io/problems/validate-parentheses/question
 
@@ -3332,7 +3332,7 @@ class Solution {
 }
 ```
 
-## Valid Palindrome
+## Valid Palindrome -75
 
 https://neetcode.io/problems/is-palindrome/question
 
@@ -3772,7 +3772,7 @@ class Solution {
 }
 ```
 
-## Best Time to Buy and Sell Stock
+## Best Time to Buy and Sell Stock -75
 
 https://neetcode.io/problems/buy-and-sell-crypto/question
 
@@ -4098,7 +4098,7 @@ class Solution {
 
 # Linked List
 
-## Reverse Linked List
+## Reverse Linked List -75
 
 https://neetcode.io/problems/reverse-a-linked-list/question
 
@@ -4126,7 +4126,7 @@ class Solution {
 }
 ```
 
-## Merge Two Sorted Linked Lists
+## Merge Two Sorted Linked Lists -75
 
 https://neetcode.io/problems/merge-two-sorted-linked-lists/question
 
@@ -4161,7 +4161,7 @@ class Solution {
 }
 ```
 
-## Linked List Cycle Detection
+## Linked List Cycle Detection -75
 
 https://neetcode.io/problems/linked-list-cycle-detection/question
 
@@ -4712,7 +4712,7 @@ class Solution {
 }
 ```
 
-## Invert Binary Tree
+## Invert Binary Tree -75
 
 https://neetcode.io/problems/invert-a-binary-tree/question
 
@@ -4746,7 +4746,7 @@ class Solution {
 }
 ```
 
-## Maximum Depth of Binary Tree
+## Maximum Depth of Binary Tree -75
 
 https://neetcode.io/problems/depth-of-binary-tree/question
 
@@ -4879,7 +4879,7 @@ class Solution {
 }
 ```
 
-## Same Binary Tree
+## Same Binary Tree -75
 
 https://neetcode.io/problems/same-binary-tree/question
 
@@ -4942,7 +4942,7 @@ class Solution {
 }
 ```
 
-## Subtree of Another Tree
+## Subtree of Another Tree -75
 
 https://neetcode.io/problems/subtree-of-a-binary-tree/question
 
@@ -5809,7 +5809,7 @@ class Solution {
 
 # Intervals
 
-## Meeting Rooms
+## Meeting Rooms -75
 
 https://neetcode.io/problems/meeting-schedule/question
 
@@ -6181,7 +6181,7 @@ class Solution {
 
 # 1-D DP
 
-## Climbing Stairs
+## Climbing Stairs -75
 
 https://neetcode.io/problems/climbing-stairs/question
 
@@ -6326,7 +6326,7 @@ class Solution {
 }
 ```
 
-## Number of 1 Bits
+## Number of 1 Bits -75
 
 https://neetcode.io/problems/number-of-one-bits/question
 
@@ -6364,7 +6364,7 @@ class Solution {
 }
 ```
 
-## Counting Bits
+## Counting Bits -75
 
 https://neetcode.io/problems/counting-bits/question
 
@@ -6450,7 +6450,7 @@ const minBitFlips = (start, goal) => {
 };
 ```
 
-## Reverse Bits
+## Reverse Bits -75
 
 https://neetcode.io/problems/reverse-bits/question
 
@@ -6468,7 +6468,7 @@ class Solution {
 }
 ```
 
-## Missing Number
+## Missing Number -75
 
 https://neetcode.io/problems/missing-number/question
 
@@ -7476,7 +7476,7 @@ class Solution {
 }
 ```
 
-## Group Anagrams
+## Group Anagrams -75
 
 https://neetcode.io/problems/anagram-groups/question
 
@@ -7661,7 +7661,7 @@ class Solution {
 }
 ```
 
-## Top K Frequent Elements
+## Top K Frequent Elements -75
 
 https://neetcode.io/problems/top-k-elements-in-list/question
 
@@ -7683,7 +7683,7 @@ class Solution {
 }
 ```
 
-## Encode and Decode Strings
+## Encode and Decode Strings -75
 
 https://neetcode.io/problems/string-encode-and-decode/question
 
@@ -7814,7 +7814,7 @@ class Solution {
 }
 ```
 
-## Products of Array Except Self
+## Products of Array Except Self -75
 
 https://neetcode.io/problems/products-of-array-discluding-self/question
 
@@ -8036,7 +8036,7 @@ class Solution {
 }
 ```
 
-## Longest Consecutive Sequence
+## Longest Consecutive Sequence -75
 
 https://neetcode.io/problems/longest-consecutive-sequence/question
 
@@ -10668,7 +10668,7 @@ class Solution {
 }
 ```
 
-## 3Sum
+## 3Sum -75
 
 https://neetcode.io/problems/three-integer-sum/question
 
@@ -10806,7 +10806,7 @@ class Solution {
 }
 ```
 
-## Container With Most Water
+## Container with most Water -75
 
 https://neetcode.io/problems/max-water-container/question
 
@@ -11176,7 +11176,7 @@ const numberOfAlternatingGroups = (colors, k) => {
 };
 ```
 
-## Longest Substring Without Repeating Characters
+## Longest Substring Without Repeating Characters -75
 
 https://neetcode.io/problems/longest-substring-without-duplicates/question
 
@@ -11200,7 +11200,7 @@ class Solution {
 }
 ```
 
-## Longest Repeating Character Replacement
+## Longest Repeating Character Replacement -75
 
 https://neetcode.io/problems/longest-repeating-substring-with-replacement/question
 
@@ -12283,7 +12283,7 @@ const repairCars = (ranks, cars) => {
 };
 ```
 
-## Find Minimum in Rotated Sorted Array
+## Find Minimum in Rotated Sorted Array -75
 
 https://neetcode.io/problems/find-minimum-in-rotated-sorted-array/question
 
@@ -12305,7 +12305,7 @@ class Solution {
 }
 ```
 
-## Search in Rotated Sorted Array
+## Search in Rotated Sorted Array -75
 
 https://neetcode.io/problems/find-target-in-rotated-sorted-array/question
 
@@ -12847,7 +12847,7 @@ const removeNodes = (head) => {
 };
 ```
 
-## Reorder Linked List
+## Reorder Linked List -75
 
 https://neetcode.io/problems/reorder-linked-list/question
 
@@ -12923,7 +12923,7 @@ class Solution {
 }
 ```
 
-## Remove Nth Node From End of List
+## Remove Nth Node From End of List -75
 
 https://neetcode.io/problems/remove-node-from-end-of-linked-list/question
 
@@ -14236,7 +14236,7 @@ class Solution {
 }
 ```
 
-## Lowest Common Ancestor in Binary Search Tree
+## Lowest Common Ancestor in Binary Search Tree -75
 
 https://neetcode.io/problems/lowest-common-ancestor-in-binary-search-tree/question
 
@@ -14406,7 +14406,7 @@ class Solution {
 }
 ```
 
-## Binary Tree Level Order Traversal
+## Binary Tree Level Order Traversal -75
 
 https://neetcode.io/problems/level-order-traversal-of-binary-tree/question
 
@@ -15033,7 +15033,7 @@ class Solution {
 }
 ```
 
-## Construct Binary Tree from Inorder and Postorder Traversal
+## Construct Binary Tree from Inorder and Postorder Traversal -75
 
 https://neetcode.io/problems/construct-binary-tree-from-inorder-and-postorder-traversal/question
 
@@ -15176,7 +15176,7 @@ class Solution {
 }
 ```
 
-## Valid Binary Search Tree
+## Validate Binary Search Tree -75
 
 https://neetcode.io/problems/valid-binary-search-tree/question
 
@@ -15208,7 +15208,7 @@ class Solution {
 }
 ```
 
-## Kth Smallest Integer in BST
+## Kth Smallest Integer in BST -75
 
 https://neetcode.io/problems/kth-smallest-integer-in-bst/question
 
@@ -16306,7 +16306,7 @@ const getDirections = (root, startValue, destValue) => {
 
 # Tries
 
-## Implement Trie (Prefix Tree)
+## Implement Trie (Prefix Tree) -75
 
 https://neetcode.io/problems/implement-prefix-tree/question
 
@@ -16401,7 +16401,7 @@ class PrefixTree {
 }
 ```
 
-## Design Add and Search Word Data Structure
+## Design Add and Search Word Data Structure -75
 
 https://neetcode.io/problems/design-word-search-data-structure/question
 
@@ -17386,7 +17386,7 @@ class Solution {
 }
 ```
 
-## Combination Sum
+## Combination Sum -75
 
 https://neetcode.io/problems/combination-target-sum/question
 
@@ -17733,7 +17733,7 @@ const numTilePossibilities = (tiles) => {
 };
 ```
 
-## Word Search
+## Word Search -75
 
 https://neetcode.io/problems/search-for-word/question
 
@@ -18302,7 +18302,7 @@ const countMaxOrSubsets = (nums) => {
 
 # Intervals
 
-## Insert Interval
+## Insert Interval -75
 
 https://neetcode.io/problems/insert-new-interval/question
 
@@ -18350,7 +18350,7 @@ class Solution {
 }
 ```
 
-## Merge Intervals
+## Merge Intervals -75
 
 https://neetcode.io/problems/merge-intervals/question
 
@@ -18372,7 +18372,7 @@ class Solution {
 }
 ```
 
-## Non-overlapping Intervals
+## Non overlapping Intervals -75
 
 https://neetcode.io/problems/non-overlapping-intervals/question
 
@@ -18427,7 +18427,7 @@ class Solution {
 }
 ```
 
-## Meeting Rooms II
+## Meeting Rooms II -75
 
 https://neetcode.io/problems/meeting-schedule-ii/question
 
@@ -18878,7 +18878,7 @@ const minIncrementForUnique = (nums) => {
 };
 ```
 
-## Maximum Subarray
+## Maximum Subarray -75
 
 https://neetcode.io/problems/maximum-subarray/question
 
@@ -19005,7 +19005,7 @@ class Solution {
 }
 ```
 
-## Jump Game
+## Jump Game -75
 
 https://neetcode.io/problems/jump-game/question
 
@@ -20160,7 +20160,7 @@ const findChampion = (n, edges) => {
 };
 ```
 
-## Number of Islands
+## Number of Islands -75
 
 https://neetcode.io/problems/count-number-of-islands/question
 
@@ -20279,7 +20279,7 @@ const findMaxFish = (grid) => {
 };
 ```
 
-## Clone Graph
+## Clone Graph -75
 
 https://neetcode.io/problems/clone-graph/question
 
@@ -20341,7 +20341,7 @@ const countSubIslands = (grid1, grid2) => {
 };
 ```
 
-## Pacific Atlantic Water Flow
+## Pacific Atlantic Water Flow -75
 
 https://neetcode.io/problems/pacific-atlantic-water-flow/question
 
@@ -20466,7 +20466,7 @@ const eventualSafeNodes = (graph) => {
 };
 ```
 
-## Course Schedule
+## Course Schedule -75
 
 https://neetcode.io/problems/course-schedule/question
 
@@ -20482,7 +20482,7 @@ https://neetcode.io/problems/course-schedule-ii/question
 
 ```
 
-## Graph Valid Tree
+## Graph Valid Tree -75
 
 https://neetcode.io/problems/valid-tree/question
 
@@ -20553,7 +20553,7 @@ https://neetcode.io/problems/shortest-path-in-binary-matrix/question
 
 ```
 
-## Number of Connected Components in an Undirected Graph
+## Number of Connected Components in an Undirected Graph -75
 
 https://neetcode.io/problems/count-connected-components/question
 
@@ -21376,7 +21376,7 @@ const mostProfitablePath = (edges, bob, amount) => {
 
 # 1-D DP
 
-## House Robber
+## House Robber -75
 
 https://neetcode.io/problems/house-robber/question
 
@@ -21384,7 +21384,7 @@ https://neetcode.io/problems/house-robber/question
 
 ```
 
-## House Robber II
+## House Robber II -75
 
 https://neetcode.io/problems/house-robber-ii/question
 
@@ -21392,7 +21392,7 @@ https://neetcode.io/problems/house-robber-ii/question
 
 ```
 
-## Longest Palindromic Substring
+## Longest Palindromic Substring -75
 
 https://neetcode.io/problems/longest-palindromic-substring/question
 
@@ -21400,7 +21400,7 @@ https://neetcode.io/problems/longest-palindromic-substring/question
 
 ```
 
-## Palindromic Substrings
+## Palindromic Substrings -75
 
 https://neetcode.io/problems/palindromic-substrings/question
 
@@ -21408,7 +21408,7 @@ https://neetcode.io/problems/palindromic-substrings/question
 
 ```
 
-## Decode Ways
+## Decode Ways -75
 
 https://neetcode.io/problems/decode-ways/question
 
@@ -21416,7 +21416,7 @@ https://neetcode.io/problems/decode-ways/question
 
 ```
 
-## Coin Change
+## Coin Change -75
 
 https://neetcode.io/problems/coin-change/question
 
@@ -21424,7 +21424,7 @@ https://neetcode.io/problems/coin-change/question
 
 ```
 
-## Maximum Product Subarray
+## Maximum Product Subarray -75
 
 https://neetcode.io/problems/maximum-product-subarray/question
 
@@ -21432,7 +21432,7 @@ https://neetcode.io/problems/maximum-product-subarray/question
 
 ```
 
-## Word Break
+## Word Break -75
 
 https://neetcode.io/problems/word-break/question
 
@@ -21440,7 +21440,7 @@ https://neetcode.io/problems/word-break/question
 
 ```
 
-## Longest Increasing Subsequence
+## Longest Increasing Subsequence -75
 
 https://neetcode.io/problems/longest-increasing-subsequence/question
 
@@ -21816,3 +21816,67 @@ https://neetcode.io/problems/largest-divisible-subset/question
 # Math & Geometry
 
 ##
+
+---
+
+---
+
+---
+
+# High Problems -75
+
+## Sliding Window - Minimum Window Substring -75
+
+https://neetcode.io/problems/minimum-window-with-characters/question
+
+```js
+
+```
+
+## Linked List - Merge K Sorted Linked Lists -75
+
+https://neetcode.io/problems/merge-k-sorted-linked-lists/question
+
+```js
+
+```
+
+## Trees - Binary Tree Maximum Path Sum -75
+
+https://neetcode.io/problems/binary-tree-maximum-path-sum/question
+
+```js
+
+```
+
+## Trees - Serialize and Deserialize Binary Tree -75
+
+https://neetcode.io/problems/serialize-and-deserialize-binary-tree/question
+
+```js
+
+```
+
+## Tries - Word Search II -75
+
+https://neetcode.io/problems/search-for-word-ii/question
+
+```js
+
+```
+
+## Heap/Priority Queue - Find Median From Data Stream -75
+
+https://neetcode.io/problems/find-median-in-a-data-stream/question
+
+```js
+
+```
+
+## Advanced Graphs - Alien Dictionary -75
+
+https://neetcode.io/problems/foreign-dictionary/question
+
+```js
+
+```
