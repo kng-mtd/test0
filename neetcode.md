@@ -20253,7 +20253,6 @@ class Solution {
         }
       }
     }
-
     return a;
   }
 }
@@ -21741,7 +21740,22 @@ const mostPoints = (questions) => {
 https://leetcode.com/problems/count-ways-to-build-good-strings/description/
 
 ```js
-
+/**
+ * @param {number} low
+ * @param {number} high
+ * @param {number} zero
+ * @param {number} one
+ * @return {number}
+ */
+const countGoodStrings = (low, high, zero, one) => {
+  let dp = Array(high + 1).fill(0);
+  dp[0] = 1;
+  for (let i = 0; i < high; i++) {
+    if (i + zero <= high) dp[i + zero] = (dp[i + zero] + dp[i]) % (1e9 + 7);
+    if (i + one <= high) dp[i + one] = (dp[i + one] + dp[i]) % (1e9 + 7);
+  }
+  return dp.slice(low, high + 1).reduce((a, x) => (a + x) % (1e9 + 7));
+};
 ```
 
 ## Ugly Number II
@@ -21749,7 +21763,25 @@ https://leetcode.com/problems/count-ways-to-build-good-strings/description/
 https://leetcode.com/problems/ugly-number-ii/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @return {number}
+ */
+const nthUglyNumber = (n) => {
+  if (n < 7) return n;
+  let dp = Array(n);
+  dp[0] = 1;
+  let i2 = 0,
+    i3 = 0,
+    i5 = 0;
+  for (let i = 1; i < n; i++) {
+    dp[i] = Math.min(dp[i2] * 2, dp[i3] * 3, dp[i5] * 5);
+    if (dp[i] == dp[i2] * 2) i2++;
+    if (dp[i] == dp[i3] * 3) i3++;
+    if (dp[i] == dp[i5] * 5) i5++;
+  }
+  return dp[n - 1];
+};
 ```
 
 ## New 21 Game
