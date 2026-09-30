@@ -20133,7 +20133,30 @@ class Solution {
 https://neetcode.io/problems/count-servers-that-communicate/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  countServers(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let a = 0,
+      r = Array(m).fill(0),
+      c = Array(n).fill(0);
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j]) (a++, r[i]++, c[j]++);
+      }
+    }
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] && r[i] == 1 && c[j] == 1) a--;
+      }
+    }
+    return a;
+  }
+}
 ```
 
 ## Find Champion II
@@ -21823,7 +21846,7 @@ https://neetcode.io/problems/largest-divisible-subset/question
 
 ---
 
-# High Problems -75
+# High Problems neetcode75
 
 ## Sliding Window - Minimum Window Substring -75
 
