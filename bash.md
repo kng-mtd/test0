@@ -3,18 +3,18 @@
 ## notes
 
 - prompt
-  echo "export PS1='\[\e[32m\]\w\[\e[0m\]\$ '" >> ~/.bashrc
+  `echo "export PS1='\[\e[32m\]\w\[\e[0m\]\$ '" >> ~/.bashrc`
 
-  echo "export PS1='\[\e[36m\]\w\[\e[0m\]\[\e[33m\]($(git branch --show-current 2>/dev/null))\[\e[0m\]$ '" >> ~/.bashrc
+  `echo "export PS1='\[\e[36m\]\w\[\e[0m\]\[\e[33m\]($(git branch --show-current 2>/dev/null))\[\e[0m\]$ '" >> ~/.bashrc`
 
 - run default editor
-  ctrl+x+e
+  `ctrl+x+e`
 
 - backup .bashrc
-  cp .bashrc .bashrc.org
+  `cp .bashrc .bashrc.org`
 
 - open terminal
-  gnome-terminal
+  `gnome-terminal`
 
 ---
 
@@ -1815,9 +1815,19 @@ lscpu
 
 - -e
 
+---
+
 lsblk
+see strage(HDD,SSD,USB,SD) as /dev/sdx, each partition
 
 - -f
+
+---
+
+dd
+format storage, write .iso, .bin to storage
+
+sudo dd if=xxx.iso of=/dev/sdx bs=4M status=progress conv=fsync
 
 ---
 
@@ -1953,19 +1963,20 @@ systemctl enable service
 
 ## network
 
-local(internal) IP
+private(internal, local) IP 192.168.xxx.xxx
 
 hostname -I
 
 ip -4 -br addr
 
+(router 192.168.1.1)
 (Docker use 172.xxx.xxx.xxx)
 
 ---
 
 global(external, public, internet) IP
 
-curl ifconfig.me
+curl -4 ifconfig.me
 
 ---
 
