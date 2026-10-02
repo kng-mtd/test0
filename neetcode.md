@@ -20263,7 +20263,36 @@ class Solution {
 https://neetcode.io/problems/max-area-of-island/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  maxAreaOfIsland(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let a0 = 0,
+      a;
+    const dfs = (y, x) => {
+      if (y < 0 || x < 0 || y >= m || x >= n) return;
+      if (grid[y][x] != 1) return;
+      a++;
+      grid[y][x] = 0;
+      dfs(y + 1, x);
+      dfs(y - 1, x);
+      dfs(y, x + 1);
+      dfs(y, x - 1);
+    };
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        a = 0;
+        if (grid[i][j] == 1) dfs(i, j);
+        a0 = Math.max(a, a0);
+      }
+    }
+    return a0;
+  }
+}
 ```
 
 ## Maximum Number of Fish in a Grid
@@ -20306,7 +20335,34 @@ const findMaxFish = (grid) => {
 https://neetcode.io/problems/clone-graph/question
 
 ```js
+/**
+ * // Definition for a Node.
+ * class Node {
+ *     constructor(val = 0, neighbors = []) {
+ *       this.val = val;
+ *       this.neighbors = neighbors;
+ *     }
+ * }
+ */
 
+class Solution {
+  /**
+   * @param {Node} node
+   * @return {Node}
+   */
+  cloneGraph(node) {
+    if (!node) return null;
+    let a = {};
+    const dfs = (n) => {
+      if (a[n.val]) return a[n.val];
+      let b = new Node(n.val);
+      a[n.val] = b;
+      for (let i of n.neighbors) b.neighbors.push(dfs(i));
+      return b;
+    };
+    return dfs(node);
+  }
+}
 ```
 
 ## Islands and Treasure
@@ -21797,7 +21853,25 @@ https://neetcode.io/problems/new-21-game/question
 https://leetcode.com/problems/best-team-with-no-conflicts/description/
 
 ```js
-
+/**
+ * @param {number[]} scores
+ * @param {number[]} ages
+ * @return {number}
+ */
+const bestTeamScore = (scores, ages) => {
+  const n = ages.length;
+  let a = [];
+  for (let i = 0; i < n; i++) a.push([scores[i], ages[i]]);
+  a.sort((x1, x2) => x1[1] - x2[1] || x1[0] - x2[0]);
+  let dp = Array(n).fill(0);
+  for (let i = 0; i < n; i++) {
+    dp[i] = a[i][0];
+    for (let ii = 0; ii < i; ii++) {
+      if (a[ii][0] <= a[i][0]) dp[i] = Math.max(dp[i], dp[ii] + a[i][0]);
+    }
+  }
+  return Math.max(...dp);
+};
 ```
 
 ## Longest String Chain
