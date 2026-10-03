@@ -20370,7 +20370,50 @@ class Solution {
 https://neetcode.io/problems/islands-and-treasure/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} grid
+   */
+  islandsAndTreasure(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let q = [];
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == 0) q.push([i, j]);
+      }
+    }
+    let d = 0;
+    while (q.length) {
+      let q1 = [];
+      while (q.length) {
+        const [y, x] = q.pop();
+        for (const [dy, dx] of [
+          [1, 0],
+          [-1, 0],
+          [0, 1],
+          [0, -1],
+        ]) {
+          const y1 = y + dy,
+            x1 = x + dx;
+          if (
+            y1 < 0 ||
+            x1 < 0 ||
+            y1 >= m ||
+            x1 >= n ||
+            grid[y1][x1] != 2147483647
+          )
+            continue;
+          grid[y1][x1] = d + 1;
+          q1.push([y1, x1]);
+        }
+      }
+      q = q1;
+      d++;
+    }
+    return grid;
+  }
+}
 ```
 
 ## Rotting Fruit
@@ -21879,7 +21922,49 @@ const bestTeamScore = (scores, ages) => {
 https://leetcode.com/problems/longest-string-chain/description/
 
 ```js
+/**
+ * @param {string[]} words
+ * @return {number}
+ */
+const longestStrChain = (words) => {
+  let dp = {},
+    a = [];
+  for (let i of words) {
+    dp[i] = 1;
+    (a[i.length] ??= []).push(i);
+  }
+  for (let i = 1; i < a.length; i++) {
+    if (!a[i]) continue;
+    for (let c0 of a[i]) {
+      for (let ii = 0; ii < c0.length; ii++) {
+        const c1 = c0.slice(0, ii) + c0.slice(ii + 1);
+        if (dp[c1]) dp[c0] = Math.max(dp[c0], dp[c1] + 1);
+      }
+    }
+  }
+  return Math.max(...Object.values(dp));
+};
+```
 
+```js
+/**
+ * @param {string[]} words
+ * @return {number}
+ */
+const longestStrChain = (words) => {
+  words.sort((x1, x2) => x1.length - x2.length);
+  let dp = {},
+    a = 1;
+  for (let c0 of words) {
+    dp[c0] = 1;
+    for (let i = 0; i < c0.length; i++) {
+      const c1 = c0.slice(0, i) + c0.slice(i + 1);
+      if (dp[c1]) dp[c0] = Math.max(dp[c0], dp[c1] + 1);
+    }
+    a = Math.max(a, dp[c0]);
+  }
+  return a;
+};
 ```
 
 ## Knight Dialer
@@ -21887,7 +21972,34 @@ https://leetcode.com/problems/longest-string-chain/description/
 https://leetcode.com/problems/knight-dialer/description/
 
 ```js
-
+/**
+ * @param {number} n
+ * @return {number}
+ */
+const knightDialer = (n) => {
+  const a = [
+    [4, 6],
+    [6, 8],
+    [7, 9],
+    [4, 8],
+    [0, 3, 9],
+    [],
+    [0, 1, 7],
+    [2, 6],
+    [1, 3],
+    [2, 4],
+  ];
+  let b = Array(10).fill(1),
+    c = 10;
+  for (let i = 1; i < n; i++) {
+    let b0 = Array(10).fill(0);
+    for (let ii = 0; ii < 10; ii++) {
+      for (let iii of a[ii]) b0[iii] = (b0[iii] + b[ii]) % (1e9 + 7);
+    }
+    b = b0;
+  }
+  return b.reduce((a, x) => (a + x) % (1e9 + 7));
+};
 ```
 
 ## Partition Array for Maximum Sum
