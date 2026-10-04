@@ -20421,7 +20421,93 @@ class Solution {
 https://neetcode.io/problems/rotting-fruit/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  orangesRotting(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == 0) grid[i][j] = -1;
+        else if (grid[i][j] == 1) grid[i][j] = Infinity;
+        else grid[i][j] = 0;
+      }
+    }
+    const dfs = (y, x, d) => {
+      if (y < 0 || x < 0 || y >= m || x >= n) return;
+      if (grid[y][x] < d) return;
+      grid[y][x] = d;
+      dfs(y + 1, x, d + 1);
+      dfs(y - 1, x, d + 1);
+      dfs(y, x + 1, d + 1);
+      dfs(y, x - 1, d + 1);
+    };
 
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == 0) dfs(i, j, 0);
+      }
+    }
+    let a = 0;
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == Infinity) return -1;
+        a = Math.max(a, grid[i][j]);
+      }
+    }
+    return a;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  orangesRotting(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let q = [];
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == 2) q.push([i, j]);
+      }
+    }
+    let a = 0;
+    while (q.length) {
+      let q1 = [];
+      while (q.length) {
+        const [y, x] = q.pop();
+        for (const [dy, dx] of [
+          [1, 0],
+          [-1, 0],
+          [0, 1],
+          [0, -1],
+        ]) {
+          const y1 = y + dy,
+            x1 = x + dx;
+          if (y1 < 0 || y1 >= m || x1 < 0 || x1 >= n || grid[y1][x1] != 1)
+            continue;
+          grid[y1][x1] = 2;
+          q1.push([y1, x1]);
+        }
+      }
+      if (q1.length) a++;
+      q = q1;
+    }
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == 1) return -1;
+      }
+    }
+    return a;
+  }
+}
 ```
 
 ## Count Sub Islands
@@ -22007,7 +22093,23 @@ const knightDialer = (n) => {
 https://leetcode.com/problems/partition-array-for-maximum-sum/description/
 
 ```js
-
+/**
+ * @param {number[]} arr
+ * @param {number} k
+ * @return {number}
+ */
+const maxSumAfterPartitioning = (arr, k) => {
+  const n = arr.length;
+  let dp = Array(n + 1).fill(0);
+  for (let i = 1; i <= n; i++) {
+    let a = 0;
+    for (let ii = 1; ii <= k && ii <= i; ii++) {
+      a = Math.max(a, arr[i - ii]);
+      dp[i] = Math.max(dp[i], dp[i - ii] + a * ii);
+    }
+  }
+  return dp[n];
+};
 ```
 
 ## Largest Divisible Subset
