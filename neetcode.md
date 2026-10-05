@@ -6192,13 +6192,9 @@ class Solution {
    * @return {number}
    */
   climbStairs(n) {
-    if (n == 1) return 1;
-    let dp = Array(n + 1).fill(0);
-    dp[0] = 1;
-    for (let i = 0; i < n; i++) {
-      dp[i + 1] += dp[i];
-      dp[i + 2] += dp[i];
-    }
+    let dp=Array(n+1).fill(0);
+    dp[0]=1, dp[1]=1;
+    for(let i=2;i<=n;i++) dp[i]=dp[i-1]+dp[i-2];
     return dp[n];
   }
 }
@@ -6265,19 +6261,14 @@ https://neetcode.io/problems/n-th-tribonacci-number/question
 
 ```js
 class Solution {
-  /
+  /**
    * @param {number} n
    * @return {number}
    */
   tribonacci(n) {
-    if (n == 0) return 0;
     let dp = Array(n + 1).fill(0);
-    dp[1] = 1;
-    for (let i = 0; i < n; i++) {
-      dp[i + 1] += dp[i];
-      dp[i + 2] += dp[i];
-      dp[i + 3] += dp[i];
-    }
+    ((dp[1] = 1), (dp[2] = 1));
+    for (let i = 3; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
     return dp[n];
   }
 }
@@ -21626,7 +21617,38 @@ const mostProfitablePath = (edges, bob, amount) => {
 https://neetcode.io/problems/house-robber/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  rob(nums) {
+    const n = nums.length;
+    if (n == 1) return nums[0];
+    let dp = [];
+    dp[0] = nums[0];
+    dp[1] = Math.max(nums[0], nums[1]);
+    for (let i = 2; i < n; i++) {
+      dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+    }
+    return dp[n - 1];
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  rob(nums) {
+    let a = 0,
+      b = 0;
+    for (let i of nums) [a, b] = [b, Math.max(b, a + i)];
+    return b;
+  }
+}
 ```
 
 ## House Robber II -75
@@ -21724,7 +21746,7 @@ const deleteAndEarn = (nums) => {
   for (let i of nums) a[i] += i;
   let c1 = 0,
     c2 = 0;
-  for (let i = 0; i <= b; i++) [c1, c2] = [Math.max(c2 + a[i], c1), c1];
+  for (let i = 0; i <= b; i++) [c1, c2] = [Math.max(c1,c2 + a[i]), c1];
   return c1;
 };
 ```
@@ -21734,7 +21756,7 @@ const deleteAndEarn = (nums) => {
 https://leetcode.com/problems/filling-bookcase-shelves/description/
 
 ```js
-/
+/**
  * @param {number[][]} books
  * @param {number} shelfWidth
  * @return {number}
@@ -21743,14 +21765,14 @@ const minHeightShelves = (books, shelfWidth) => {
   const n = books.length;
   let dp = Array(n + 1).fill(Infinity);
   dp[0] = 0;
-  for (let i = 0; i < n; i++) {
+  for (let i = 1; i <= n; i++) {
     let w = 0,
       h = 0;
-    for (let ii = i; ii >= 0; ii--) {
+    for (let ii = i - 1; ii >= 0; ii--) {
       w += books[ii][0];
       if (w > shelfWidth) break;
       h = Math.max(h, books[ii][1]);
-      dp[i + 1] = Math.min(dp[i + 1], dp[ii] + h);
+      dp[i] = Math.min(dp[i], dp[ii] + h);
     }
   }
   return dp[n];
@@ -21778,19 +21800,22 @@ https://neetcode.io/problems/perfect-squares/question
 https://leetcode.com/problems/check-if-there-is-a-valid-partition-for-the-array/description/
 
 ```js
-/
+/**
  * @param {number[]} nums
  * @return {boolean}
  */
 const validPartition = (nums) => {
   const n = nums.length;
   let dp = Array(n + 1).fill(false);
-  dp[0] = true;
-  for (let i = 0; i < n; i++) {
-    if (!dp[i]) continue;
-    dp[i + 2] ||= nums[i] == nums[i + 1];
-    dp[i + 3] ||= nums[i] == nums[i + 1] && nums[i] == nums[i + 2];
-    dp[i + 3] ||= nums[i] == nums[i + 1] - 1 && nums[i] == nums[i + 2] - 2;
+  ((dp[0] = true), (dp[2] = nums[0] == nums[1]));
+  for (let i = 3; i <= n; i++) {
+    dp[i] ||= dp[i - 2] && nums[i - 2] == nums[i - 1];
+    dp[i] ||=
+      dp[i - 3] && nums[i - 3] == nums[i - 2] && nums[i - 3] == nums[i - 1];
+    dp[i] ||=
+      dp[i - 3] &&
+      nums[i - 3] == nums[i - 2] - 1 &&
+      nums[i - 3] == nums[i - 1] - 2;
   }
   return dp[n];
 };
@@ -21971,13 +21996,16 @@ https://leetcode.com/problems/count-ways-to-build-good-strings/description/
  * @return {number}
  */
 const countGoodStrings = (low, high, zero, one) => {
+  const m = 1e9 + 7;
   let dp = Array(high + 1).fill(0);
   dp[0] = 1;
-  for (let i = 0; i < high; i++) {
-    if (i + zero <= high) dp[i + zero] = (dp[i + zero] + dp[i]) % (1e9 + 7);
-    if (i + one <= high) dp[i + one] = (dp[i + one] + dp[i]) % (1e9 + 7);
+  for (let i = 1; i <= high; i++) {
+    if (i >= zero) dp[i] = (dp[i] + dp[i - zero]) % m;
+    if (i >= one) dp[i] = (dp[i] + dp[i - one]) % m;
   }
-  return dp.slice(low, high + 1).reduce((a, x) => (a + x) % (1e9 + 7));
+  let a = 0;
+  for (let i = low; i <= high; i++) a = (a + dp[i]) % m;
+  return a;
 };
 ```
 
