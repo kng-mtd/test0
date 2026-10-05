@@ -20553,7 +20553,45 @@ const countSubIslands = (grid1, grid2) => {
 https://neetcode.io/problems/pacific-atlantic-water-flow/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} heights
+   * @return {number[][]}
+   */
+  pacificAtlantic(heights) {
+    const m = heights.length,
+      n = heights[0].length;
+    const dfs = (y, x, v, a) => {
+      if (y < 0 || x < 0 || y >= m || x >= n) return;
+      if (a[y][x] || heights[y][x] < v) return;
+      a[y][x] = true;
+      const v0 = heights[y][x];
+      dfs(y - 1, x, v0, a);
+      dfs(y + 1, x, v0, a);
+      dfs(y, x - 1, v0, a);
+      dfs(y, x + 1, v0, a);
+    };
+    let a1 = Array(m)
+      .fill()
+      .map(() => Array(n).fill(false));
+    let a2 = Array(m)
+      .fill()
+      .map(() => Array(n).fill(false));
+    for (let i = 0; i < m; i++) {
+      dfs(i, 0, 0, a1);
+      dfs(i, n - 1, 0, a2);
+    }
+    for (let j = 0; j < n; j++) {
+      dfs(0, j, 0, a1);
+      dfs(m - 1, j, 0, a2);
+    }
+    let a = [];
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) if (a1[i][j] && a2[i][j]) a.push([i, j]);
+    }
+    return a;
+  }
+}
 ```
 
 ## Surrounded Regions
@@ -22128,7 +22166,37 @@ https://neetcode.io/problems/largest-divisible-subset/question
 
 # 2-D DP
 
-##
+## Unique Paths -75
+
+https://neetcode.io/problems/count-paths/question
+
+```js
+
+```
+
+## Unique Paths II
+
+https://neetcode.io/problems/unique-paths-ii/question
+
+```js
+
+```
+
+## Minimum Path Sum
+
+https://neetcode.io/problems/minimum-path-sum/question
+
+```js
+
+```
+
+## Maximum Number of Points with Cost
+
+https://neetcode.io/problems/maximum-number-of-points-with-cost/question
+
+```js
+
+```
 
 ---
 
