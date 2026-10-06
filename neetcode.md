@@ -20590,7 +20590,36 @@ class Solution {
 https://neetcode.io/problems/surrounded-regions/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {character[][]} board
+   * @return {void} Do not return anything, modify board in-place instead.
+   */
+  solve(board) {
+    const m = board.length,
+      n = board[0].length;
+    const dfs = (y, x) => {
+      if (y < 0 || x < 0 || y >= m || x >= n) return;
+      if (board[y][x] != "O") return;
+      board[y][x] = "@";
+      dfs(y - 1, x);
+      dfs(y + 1, x);
+      dfs(y, x - 1);
+      dfs(y, x + 1);
+    };
+    for (let i = 0; i < m; i++) {
+      dfs(i, 0);
+      dfs(i, n - 1);
+    }
+    for (let j = 0; j < n; j++) {
+      dfs(0, j);
+      dfs(m - 1, j);
+    }
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) board[i][j] = board[i][j] == "@" ? "O" : "X";
+    }
+  }
+}
 ```
 
 ## Reorder Routes to Make All Paths Lead to the City Zero
