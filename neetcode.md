@@ -20703,7 +20703,48 @@ const snakesAndLadders = (board) => {
 https://neetcode.io/problems/open-the-lock/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string[]} deadends
+   * @param {string} target
+   * @return {number}
+   */
+  openLock(deadends, target) {
+    let vst = Array(10000).fill(false),
+      q = ["0000"],
+      a = 0;
+    vst[0] = true;
+    while (q.length) {
+      let q0 = [];
+      while (q.length) {
+        const b = q.pop();
+        if (deadends.includes(b)) continue;
+        if (b == target) return a;
+        const b0 = b.split("");
+        for (let i = 0; i < 4; i++) {
+          let b1 = b0.slice();
+          let c1 = ((+b0[i] + 1) % 10) + "";
+          let c2 = ((+b0[i] + 9) % 10) + "";
+          b1[i] = c1;
+          let b2 = b1.join("");
+          if (!vst[+b2]) {
+            vst[+b2] = true;
+            q0.push(b2);
+          }
+          b1[i] = c2;
+          b2 = b1.join("");
+          if (!vst[+b2]) {
+            vst[+b2] = true;
+            q0.push(b2);
+          }
+        }
+      }
+      q = q0;
+      a++;
+    }
+    return -1;
+  }
+}
 ```
 
 ## Find Eventual Safe States
