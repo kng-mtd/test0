@@ -20777,7 +20777,32 @@ const eventualSafeNodes = (graph) => {
 https://neetcode.io/problems/course-schedule/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} numCourses
+   * @param {number[][]} prerequisites
+   * @return {boolean}
+   */
+  canFinish(numCourses, prerequisites) {
+    let a = Array(numCourses)
+      .fill()
+      .map(() => []);
+    for (let [i1, i2] of prerequisites) a[i1].push(i2);
+    let vst = Array(numCourses).fill(0);
+    const dfs = (i) => {
+      if (vst[i] == 1) return false;
+      if (vst[i] == 2) return true;
+      vst[i] = 1;
+      for (let ii of a[i]) if (!dfs(ii)) return false;
+      vst[i] = 2;
+      return true;
+    };
+    for (let i = 0; i < numCourses; i++) {
+      if (!dfs(i)) return false;
+    }
+    return true;
+  }
+}
 ```
 
 ## Course Schedule II -150
@@ -20785,7 +20810,34 @@ https://neetcode.io/problems/course-schedule/question
 https://neetcode.io/problems/course-schedule-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} numCourses
+   * @param {number[][]} prerequisites
+   * @return {number[]}
+   */
+  findOrder(numCourses, prerequisites) {
+    let a = Array(numCourses)
+      .fill()
+      .map(() => []);
+    for (let [i1, i2] of prerequisites) a[i1].push(i2);
+    let vst = Array(numCourses).fill(0);
+    let b = [];
+    const dfs = (i) => {
+      if (vst[i] == 1) return false;
+      if (vst[i] == 2) return true;
+      vst[i] = 1;
+      for (let ii of a[i]) if (!dfs(ii)) return false;
+      vst[i] = 2;
+      b.push(i);
+      return true;
+    };
+    for (let i = 0; i < numCourses; i++) {
+      if (!dfs(i)) return [];
+    }
+    return b;
+  }
+}
 ```
 
 ## Graph Valid Tree -75 -150
