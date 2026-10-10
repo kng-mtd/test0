@@ -20845,7 +20845,59 @@ class Solution {
 https://neetcode.io/problems/valid-tree/question
 
 ```js
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @returns {boolean}
+   */
+  validTree(n, edges) {
+    if (edges.length != n - 1) return false;
+    let a = Array(n)
+      .fill()
+      .map((x) => []);
+    for (let [i1, i2] of edges) {
+      a[i1].push(i2);
+      a[i2].push(i1);
+    }
+    let vst = Array(n).fill(false),
+      b = 0;
+    const dfs = (i) => {
+      ((vst[i] = true), b++);
+      for (let ii of a[i]) if (!vst[ii]) dfs(ii);
+      return false;
+    };
+    dfs(0);
+    return b == n;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @returns {boolean}
+   */
+  validTree(n, edges) {
+    if (edges.length != n - 1) return false;
+    let a = Array(n)
+      .fill()
+      .map((_, i) => i);
+    const find = (i) => {
+      if (a[i] == i) return i;
+      return (a[i] = find(a[i]));
+    };
+    for (let [i1, i2] of edges) {
+      let b1 = find(i1),
+        b2 = find(i2);
+      if (b1 == b2) return false;
+      a[b1] = b2;
+    }
+    return true;
+  }
+}
 ```
 
 ## Course Schedule IV
