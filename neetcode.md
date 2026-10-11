@@ -20905,7 +20905,29 @@ class Solution {
 https://neetcode.io/problems/course-schedule-iv/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} numCourses
+   * @param {number[][]} prerequisites
+   * @param {number[][]} queries
+   * @return {boolean[]}
+   */
+  checkIfPrerequisite(numCourses, prerequisites, queries) {
+    const n = numCourses;
+    let a = Array(n)
+      .fill()
+      .map(() => Array(n).fill(false));
+    for (let [x, y] of prerequisites) a[x][y] = true;
+    for (let k = 0; k < n; k++) {
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          if (a[i][k] && a[k][j]) a[i][j] = true;
+        }
+      }
+    }
+    return queries.map(([x, y]) => a[x][y]);
+  }
+}
 ```
 
 ## Check if Move is Legal
