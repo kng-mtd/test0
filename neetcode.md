@@ -22422,6 +22422,38 @@ https://neetcode.io/problems/maximum-number-of-points-with-cost/question
 
 ```
 
+## Longest Common Subsequence
+
+https://neetcode.io/problems/longest-common-subsequence/question
+
+```js
+
+```
+
+## Longest Palindromic Subsequence
+
+https://neetcode.io/problems/longest-palindromic-subsequence/question
+
+```js
+
+```
+
+## Length of Longest Fibonacci Subsequence
+
+https://leetcode.com/problems/length-of-longest-fibonacci-subsequence/description/
+
+```js
+
+```
+
+## Last Stone Weight II
+
+https://neetcode.io/problems/last-stone-weight-ii/question
+
+```js
+
+```
+
 ---
 
 ---
