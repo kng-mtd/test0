@@ -20974,7 +20974,58 @@ const checkMove = (board, rMove, cMove, color) => {
 https://neetcode.io/problems/shortest-bridge/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  shortestBridge(grid) {
+    const n = grid.length,
+      d = [
+        [-1, 0],
+        [0, -1],
+        [1, 0],
+        [0, 1],
+      ];
+    let q = [];
+    const dfs = (y, x) => {
+      if (y < 0 || x < 0 || y >= n || x >= n || grid[y][x] != 1) return;
+      grid[y][x] = 2;
+      q.push([y, x]);
+      for (let [dy, dx] of d) dfs(y + dy, x + dx);
+    };
+    for (let y = 0; y < n; y++) {
+      let f = false;
+      for (let x = 0; x < n; x++) {
+        if (grid[y][x] == 1) {
+          dfs(y, x);
+          f = true;
+          break;
+        }
+      }
+      if (f) break;
+    }
 
+    let a = 0;
+    while (q.length) {
+      let q0 = q;
+      q = [];
+      for (let [y, x] of q0) {
+        for (let [dy, dx] of d) {
+          let y1 = y + dy,
+            x1 = x + dx;
+          if (y1 < 0 || x1 < 0 || y1 >= n || x1 >= n) continue;
+          if (grid[y1][x1] == 1) return a;
+          if (grid[y1][x1] == 0) {
+            grid[y1][x1] = 2;
+            q.push([y1, x1]);
+          }
+        }
+      }
+      a++;
+    }
+  }
+}
 ```
 
 ## Shortest Path in Binary Matrix
