@@ -22657,6 +22657,59 @@ https://neetcode.io/problems/maximal-square/question
 https://leetcode.com/problems/count-square-submatrices-with-all-ones/description/
 
 ```js
+/**
+ * @param {number[][]} matrix
+ * @return {number}
+ */
+const countSquares = (matrix) => {
+  if (!matrix.flat().includes(1)) return 0;
+  const m = matrix.length,
+    n = matrix[0].length;
+  let a = 0;
+  for (let i = 0; i < m; i++) a += matrix[i][0];
+  for (let j = 1; j < n; j++) a += matrix[0][j];
+  for (let i = 1; i < matrix.length; i++) {
+    for (let j = 1; j < matrix[0].length; j++) {
+      if (matrix[i][j] == 0) continue;
+      let b =
+        Math.min(matrix[i - 1][j - 1], matrix[i - 1][j], matrix[i][j - 1]) + 1;
+      matrix[i][j] = b;
+      a += b;
+    }
+  }
+  return a;
+};
+```
+
+## Ones and Zeroes
+
+https://neetcode.io/problems/ones-and-zeroes/question
+
+```js
+
+```
+
+## 2 Keys Keyboard
+
+https://leetcode.com/problems/2-keys-keyboard/description/
+
+```js
+
+```
+
+## Maximum Alternating Subsequence Sum
+
+https://leetcode.com/problems/maximum-alternating-subsequence-sum/description/
+
+```js
+
+```
+
+## Edit Distance
+
+https://neetcode.io/problems/edit-distance/question
+
+```js
 
 ```
 
