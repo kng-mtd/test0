@@ -21033,7 +21033,46 @@ class Solution {
 https://neetcode.io/problems/shortest-path-in-binary-matrix/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  shortestPathBinaryMatrix(grid) {
+    const n = grid.length;
+    if (grid[0][0] || grid[n - 1][n - 1]) return -1;
+    const d = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1],
+    ];
+    let q = [[0, 0]];
+    grid[0][0] = 1;
+    let a = 1;
+    while (q.length) {
+      let q0 = q;
+      q = [];
+      for (let [y, x] of q0) {
+        if (y == n - 1 && x == n - 1) return a;
+        for (let [dy, dx] of d) {
+          let y1 = y + dy,
+            x1 = x + dx;
+          if (y1 < 0 || x1 < 0 || y1 >= n || x1 >= n) continue;
+          if (grid[y1][x1]) continue;
+          grid[y1][x1] = 1;
+          q.push([y1, x1]);
+        }
+      }
+      a++;
+    }
+    return -1;
+  }
+}
 ```
 
 ## Number of Connected Components in an Undirected Graph -75 -150
@@ -22494,7 +22533,59 @@ https://neetcode.io/problems/longest-palindromic-subsequence/question
 https://leetcode.com/problems/length-of-longest-fibonacci-subsequence/description/
 
 ```js
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+const lenLongestFibSubseq = (arr) => {
+  const n = arr.length;
+  const dp = Array(n)
+    .fill()
+    .map((x) => Array(n).fill(2));
+  let a = 0;
+  for (let i = 2; i < n; i++) {
+    for (let j = 1; j < i; j++) {
+      for (let k = 0; k < j; k++) {
+        if (arr[k] + arr[j] == arr[i]) {
+          dp[j][i] = dp[k][j] + 1;
+          a = Math.max(a, dp[j][i]);
+          break;
+        }
+      }
+    }
+  }
+  return a;
+};
+```
 
+```js
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+const lenLongestFibSubseq = (arr) => {
+  const n = arr.length;
+  const dp = Array(n)
+    .fill()
+    .map((x) => Array(n).fill(2));
+  let a = 0;
+  for (let i = 2; i < n; i++) {
+    let i1 = 0,
+      i2 = i - 1;
+    while (i1 < i2) {
+      const b = arr[i1] + arr[i2];
+      if (b < arr[i]) i1++;
+      else if (b > arr[i]) i2--;
+      else {
+        dp[i2][i] = dp[i1][i2] + 1;
+        a = Math.max(a, dp[i2][i]);
+        i1++;
+        i2--;
+      }
+    }
+  }
+  return a;
+};
 ```
 
 ## Last Stone Weight II
