@@ -22566,7 +22566,7 @@ https://neetcode.io/problems/maximum-number-of-points-with-cost/question
 
 ```
 
-## Longest Common Subsequence
+## Longest Common Subsequence -75 -150
 
 https://neetcode.io/problems/longest-common-subsequence/question
 
@@ -22650,7 +22650,7 @@ https://neetcode.io/problems/last-stone-weight-ii/question
 
 ```
 
-## Best Time to Buy and Sell Stock with Cooldown
+## Best Time to Buy and Sell Stock with Cooldown -150
 
 https://neetcode.io/problems/buy-and-sell-crypto-with-cooldown/question
 
@@ -22658,7 +22658,7 @@ https://neetcode.io/problems/buy-and-sell-crypto-with-cooldown/question
 
 ```
 
-## Coin Change II
+## Coin Change II -150
 
 https://neetcode.io/problems/coin-change-ii/question
 
@@ -22666,7 +22666,7 @@ https://neetcode.io/problems/coin-change-ii/question
 
 ```
 
-## Target Sum
+## Target Sum -150
 
 https://neetcode.io/problems/target-sum/question
 
@@ -22674,7 +22674,7 @@ https://neetcode.io/problems/target-sum/question
 
 ```
 
-## Interleaving String
+## Interleaving String -150
 
 https://neetcode.io/problems/interleaving-string/question
 
@@ -22793,7 +22793,7 @@ https://leetcode.com/problems/maximum-alternating-subsequence-sum/description/
 
 ```
 
-## Edit Distance
+## Edit Distance -150
 
 https://neetcode.io/problems/edit-distance/question
 
@@ -22885,9 +22885,25 @@ https://leetcode.com/problems/flip-string-to-monotone-increasing/description/
 
 ---
 
-# High Problems neetcode75
+# High Problems neetcode 75/150
 
-## Sliding Window - Minimum Window Substring -75
+## Stack - Largest Rectangle In Histogram -150
+
+https://neetcode.io/problems/largest-rectangle-in-histogram/question
+
+```js
+
+```
+
+## Two Pointers - Trapping Rain Water -150
+
+https://neetcode.io/problems/trapping-rain-water/question
+
+```js
+
+```
+
+## Sliding Window - Minimum Window Substring -75 -150
 
 https://neetcode.io/problems/minimum-window-with-characters/question
 
@@ -22895,7 +22911,23 @@ https://neetcode.io/problems/minimum-window-with-characters/question
 
 ```
 
-## Linked List - Merge K Sorted Linked Lists -75
+## Sliding Window - Sliding Window Maximum -150
+
+https://neetcode.io/problems/sliding-window-maximum/question
+
+```js
+
+```
+
+## Binary Search - Median of Two Sorted Arrays -150
+
+https://neetcode.io/problems/median-of-two-sorted-arrays/question
+
+```js
+
+```
+
+## Linked List - Merge K Sorted Linked Lists -75 -150
 
 https://neetcode.io/problems/merge-k-sorted-linked-lists/question
 
@@ -22903,7 +22935,15 @@ https://neetcode.io/problems/merge-k-sorted-linked-lists/question
 
 ```
 
-## Trees - Binary Tree Maximum Path Sum -75
+## Linked List - Reverse Nodes in K-Group -150
+
+https://neetcode.io/problems/reverse-nodes-in-k-group/question
+
+```js
+
+```
+
+## Trees - Binary Tree Maximum Path Sum -75 -150
 
 https://neetcode.io/problems/binary-tree-maximum-path-sum/question
 
@@ -22911,7 +22951,7 @@ https://neetcode.io/problems/binary-tree-maximum-path-sum/question
 
 ```
 
-## Trees - Serialize and Deserialize Binary Tree -75
+## Trees - Serialize and Deserialize Binary Tree -75 -150
 
 https://neetcode.io/problems/serialize-and-deserialize-binary-tree/question
 
@@ -22919,7 +22959,7 @@ https://neetcode.io/problems/serialize-and-deserialize-binary-tree/question
 
 ```
 
-## Tries - Word Search II -75
+## Tries - Word Search II -75 -150
 
 https://neetcode.io/problems/search-for-word-ii/question
 
@@ -22927,9 +22967,65 @@ https://neetcode.io/problems/search-for-word-ii/question
 
 ```
 
-## Heap/Priority Queue - Find Median From Data Stream -75
+## Heap/Priority Queue - Find Median From Data Stream -75 -150
 
 https://neetcode.io/problems/find-median-in-a-data-stream/question
+
+```js
+
+```
+
+## Intervals - Minimum Interval to Include Each Query -150
+
+https://neetcode.io/problems/minimum-interval-including-query/question
+
+```js
+
+```
+
+## Back Tracking - N-Queens -150
+
+https://neetcode.io/problems/n-queens/question
+
+```js
+
+```
+
+## Graphs - Word Ladder -150
+
+https://neetcode.io/problems/word-ladder/question
+
+```js
+
+```
+
+## 2-D DP - Longest Increasing Path in Matrix -150
+
+https://neetcode.io/problems/longest-increasing-path-in-matrix/question
+
+```js
+
+```
+
+## 2-D DP - Distinct Subsequences -150
+
+https://neetcode.io/problems/count-subsequences/question
+
+```js
+
+```
+
+## 2-D DP - Burst Balloons -150
+
+https://neetcode.io/problems/burst-balloons/question
+
+```js
+
+```
+
+## 2-D DP - Regular Expression Matching -150
+
+https://neetcode.io/problems/regular-expression-matching/question
 
 ```js
 
@@ -22938,114 +23034,6 @@ https://neetcode.io/problems/find-median-in-a-data-stream/question
 ## Advanced Graphs - Alien Dictionary -75
 
 https://neetcode.io/problems/foreign-dictionary/question
-
-```js
-
-```
-
-## Largest Rectangle In Histogram -150
-
-https://neetcode.io/problems/largest-rectangle-in-histogram/question
-
-```js
-
-```
-
-## Trapping Rain Water -150
-
-https://neetcode.io/problems/trapping-rain-water/question
-
-```js
-
-```
-
-## Minimum Window Substring -150
-
-https://neetcode.io/problems/minimum-window-with-characters/question
-
-```js
-
-```
-
-## Sliding Window Maximum -150
-
-https://neetcode.io/problems/sliding-window-maximum/question
-
-```js
-
-```
-
-## Median of Two Sorted Arrays -150
-
-https://neetcode.io/problems/median-of-two-sorted-arrays/question
-
-```js
-
-```
-
-## Merge K Sorted Linked Lists -150
-
-https://neetcode.io/problems/merge-k-sorted-linked-lists/question
-
-```js
-
-```
-
-## Reverse Nodes in K-Group -150
-
-https://neetcode.io/problems/reverse-nodes-in-k-group/question
-
-```js
-
-```
-
-## Binary Tree Maximum Path Sum -150
-
-https://neetcode.io/problems/binary-tree-maximum-path-sum/question
-
-## Serialize and Deserialize Binary Tree -150
-
-https://neetcode.io/problems/serialize-and-deserialize-binary-tree/question
-
-```js
-
-```
-
-## Word Search II -150
-
-https://neetcode.io/problems/search-for-word-ii/question
-
-```js
-
-```
-
-## Find Median From Data Stream -150
-
-https://neetcode.io/problems/find-median-in-a-data-stream/question
-
-```js
-
-```
-
-## N-Queens -150
-
-https://neetcode.io/problems/n-queens/question
-
-```js
-
-```
-
-## Minimum Interval to Include Each Query -150
-
-https://neetcode.io/problems/minimum-interval-including-query/question
-
-```js
-
-```
-
-## Word Ladder
-
-https://neetcode.io/problems/word-ladder/question
 
 ```js
 
