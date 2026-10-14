@@ -21080,7 +21080,61 @@ class Solution {
 https://neetcode.io/problems/count-connected-components/question
 
 ```js
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @returns {number}
+   */
+  countComponents(n, edges) {
+    let a = Array(n)
+        .fill()
+        .map((x) => []),
+      vst = Array(n).fill(false),
+      b = 0;
+    for (let [i1, i2] of edges) {
+      a[i1].push(i2);
+      a[i2].push(i1);
+    }
+    const dfs = (i) => {
+      vst[i] = true;
+      for (let ii of a[i]) if (!vst[ii]) dfs(ii);
+    };
+    for (let i = 0; i < n; i++) {
+      if (vst[i]) continue;
+      b++;
+      dfs(i);
+    }
+    return b;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @returns {number}
+   */
+  countComponents(n, edges) {
+    let a = Array(n)
+      .fill()
+      .map((_, i) => i);
+    const find = (i) => {
+      if (a[i] == i) return i;
+      return (a[i] = find(a[i]));
+    };
+    for (let [i1, i2] of edges) {
+      let b1 = find(i1),
+        b2 = find(i2);
+      if (b1 == b2) continue;
+      a[b1] = b2;
+      n--;
+    }
+    return n;
+  }
+}
 ```
 
 ## Redundant Connection -150
