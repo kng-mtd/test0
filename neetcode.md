@@ -22748,7 +22748,41 @@ https://neetcode.io/problems/ones-and-zeroes/question
 https://leetcode.com/problems/2-keys-keyboard/description/
 
 ```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+const minSteps = (n) => {
+  let dp = Array(n + 1).fill(0);
+  for (let i = 2; i <= n; i++) {
+    dp[i] = i;
+    for (let j = 2; j * j <= i; j++) {
+      if (i % j == 0) {
+        dp[i] = dp[i / j] + j;
+        break;
+      }
+    }
+  }
+  return dp[n];
+};
+```
 
+```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+const minSteps = (n) => {
+  if (n == 1) return 0;
+  let a = 0;
+  for (let i = 2; i * i <= n; i++) {
+    while (n % i == 0) {
+      a += i;
+      n /= i;
+    }
+  }
+  return a + n;
+};
 ```
 
 ## Maximum Alternating Subsequence Sum
@@ -22762,6 +22796,54 @@ https://leetcode.com/problems/maximum-alternating-subsequence-sum/description/
 ## Edit Distance
 
 https://neetcode.io/problems/edit-distance/question
+
+```js
+
+```
+
+## Number of Dice Rolls with Target Sum
+
+https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/
+
+```js
+
+```
+
+## Minimum Falling Path Sum
+
+https://leetcode.com/problems/minimum-falling-path-sum/description/
+
+```js
+
+```
+
+## Out of Boundary Paths
+
+https://leetcode.com/problems/out-of-boundary-paths/description/
+
+```js
+
+```
+
+## Longest Ideal Subsequence
+
+https://leetcode.com/problems/longest-ideal-subsequence/description/
+
+```js
+
+```
+
+## Count Number of Teams
+
+https://leetcode.com/problems/count-number-of-teams/description/
+
+```js
+
+```
+
+## Flip String to Monotone Increasing
+
+https://leetcode.com/problems/flip-string-to-monotone-increasing/description/
 
 ```js
 
