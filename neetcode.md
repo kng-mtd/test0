@@ -21142,7 +21142,57 @@ class Solution {
 https://neetcode.io/problems/redundant-connection/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} edges
+   * @return {number[]}
+   */
+  findRedundantConnection(edges) {
+    const n = edges.length;
+    let a = Array(n + 1)
+      .fill()
+      .map((x) => []);
+    const dfs = (i1, i2, vst) => {
+      if (i1 == i2) return true;
+      vst[i1] = true;
+      for (let ii of a[i1]) {
+        if (!vst[ii] && dfs(ii, i2, vst)) return true;
+      }
+      return false;
+    };
+    for (let [i1, i2] of edges) {
+      if (dfs(i1, i2, Array(n + 1).fill(false))) return [i1, i2];
 
+      a[i1].push(i2);
+      a[i2].push(i1);
+    }
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number[][]} edges
+   * @return {number[]}
+   */
+  findRedundantConnection(edges) {
+    const n = edges.length;
+    let a = Array(n + 1)
+      .fill()
+      .map((_, i) => i);
+    const find = (i) => {
+      if (a[i] == i) return i;
+      return (a[i] = find(a[i]));
+    };
+    for (let [i1, i2] of edges) {
+      let b1 = find(i1),
+        b2 = find(i2);
+      if (b1 == b2) return [i1, i2];
+      a[b1] = b2;
+    }
+  }
+}
 ```
 
 ## Accounts Merge
