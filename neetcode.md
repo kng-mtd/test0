@@ -21200,7 +21200,59 @@ class Solution {
 https://neetcode.io/problems/accounts-merge/question
 
 ```js
+class Solution {
+  /**
+   * @param {string[][]} accounts
+   * @return {string[][]}
+   */
+  accountsMerge(accounts) {
+    const n = accounts.length;
+    let a = Array(n)
+      .fill()
+      .map((_, i) => i);
+    let b = Array(n).fill(1);
 
+    const find = (i) => {
+      while (a[i] != i) {
+        a[i] = a[a[i]];
+        i = a[i];
+      }
+      return i;
+    };
+
+    const union = (i1, i2) => {
+      ((i1 = find(i1)), (i2 = find(i2)));
+      if (i1 == i2) return;
+      if (b[i1] < b[i2]) [i1, i2] = [i2, i1];
+      a[i2] = i1;
+      b[i1] += b[i2];
+    };
+
+    let c = new Map();
+
+    for (let i = 0; i < n; i++) {
+      for (let j = 1; j < accounts[i].length; j++) {
+        let s = accounts[i][j];
+        if (c.has(s)) union(i, c.get(s));
+        else c.set(s, i);
+      }
+    }
+
+    let d = new Map();
+    for (let [s, i] of c) {
+      let ii = find(i);
+      if (!d.has(ii)) d.set(ii, []);
+      d.get(ii).push(s);
+    }
+
+    let e = [];
+    for (let [i, strs] of d) {
+      strs.sort();
+      e.push([accounts[i][0], ...strs]);
+    }
+    return e;
+  }
+}
 ```
 
 ## Find Closest Node to Given Two Nodes
