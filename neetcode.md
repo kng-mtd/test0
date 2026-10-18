@@ -21257,7 +21257,7 @@ class Solution {
 
 ## Find Closest Node to Given Two Nodes
 
-https://leetcode.com/problems/find-closest-node-to-given-two-nodes/description/
+https://neetcode.io/problems/find-closest-node-to-given-two-nodes/question
 
 ```js
 /
@@ -21294,7 +21294,7 @@ const closestMeetingNode = (edges, node1, node2) => {
 
 ## As Far from Land as Possible
 
-https://leetcode.com/problems/as-far-from-land-as-possible/description/
+https://neetcode.io/problems/as-far-from-land-as-possible/question
 
 ```js
 /
@@ -21304,7 +21304,7 @@ https://leetcode.com/problems/as-far-from-land-as-possible/description/
 const maxDistance = (grid) => {
   const n = grid.length;
   const a = grid.flat().reduce((a, x) => a + x);
-  if (a == 0 || a == n  2) return -1;
+  if (a == 0 || a == n ** 2) return -1;
   let q = [];
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n; j++) if (grid[i][j] == 1) q.push([i, j]);
