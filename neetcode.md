@@ -3230,7 +3230,7 @@ class MyQueue {
 
 ## Final Prices With a Special Discount in a Shop
 
-https://leetcode.com/problems/final-prices-with-a-special-discount-in-a-shop/description/
+https://neetcode.io/problems/final-prices-with-a-special-discount-in-a-shop/question
 
 ```js
 /
@@ -3252,7 +3252,7 @@ const finalPrices = (prices) => {
 
 ## Make the String Great
 
-https://leetcode.com/problems/make-the-string-great/description/
+https://neetcode.io/problems/make-the-string-great/question
 
 ```js
 /
@@ -3272,7 +3272,7 @@ const makeGood = (s) => {
 
 ## Minimum String Length After Removing Substrings
 
-https://leetcode.com/problems/minimum-string-length-after-removing-substrings/editorial/
+https://neetcode.io/problems/minimum-string-length-after-removing-substrings/question
 
 ```js
 /
@@ -3291,7 +3291,7 @@ const minLength = (s) => {
 
 ## Clear Digits
 
-https://leetcode.com/problems/clear-digits/description/
+https://neetcode.io/problems/clear-digits/question
 
 ```js
 /
@@ -3299,7 +3299,7 @@ https://leetcode.com/problems/clear-digits/description/
  * @return {string}
  */
 const clearDigits = (s) => {
-  a = [];
+  let a = [];
   for (let i of s) {
     if (/[a-z]/.test(a.at(-1)) && /[0-9]/.test(i)) a.pop();
     else a.push(i);
@@ -3472,7 +3472,7 @@ class Solution {
 
 ## Merge Two 2D Arrays by Summing Values
 
-https://leetcode.com/problems/merge-two-2d-arrays-by-summing-values/description/
+https://neetcode.io/problems/merge-two-2d-arrays-by-summing-values/question
 
 ```js
 /
@@ -3586,7 +3586,7 @@ class Solution {
 
 ## Find First Palindromic String in the Array
 
-https://leetcode.com/problems/find-first-palindromic-string-in-the-array/description/
+https://neetcode.io/problems/find-first-palindromic-string-in-the-array/question
 
 ```js
 /
@@ -3648,7 +3648,7 @@ class Solution {
 
 ## Reverse Words in a String III
 
-https://leetcode.com/problems/reverse-words-in-a-string-iii/description/
+https://neetcode.io/problems/reverse-words-in-a-string-iii/question
 
 ```js
 /
@@ -3665,47 +3665,53 @@ const reverseWords = (s) => {
 
 ## Backspace String Compare
 
-https://leetcode.com/problems/backspace-string-compare/description/
+https://neetcode.io/problems/backspace-string-compare/question
 
 ```js
-/
- * @param {string} s
- * @param {string} t
- * @return {boolean}
- */
-const backspaceCompare = (s, t) => {
-  let a = [],
-    b = [];
-  for (let i of s) {
-    if (i == "##") a.pop();
-    else a.push(i);
+class Solution {
+  /**
+   * @param {string} s
+   * @param {string} t
+   * @return {boolean}
+   */
+  backspaceCompare(s, t) {
+    let a = [],
+      b = [];
+    for (let i of s) {
+      if (i == "#") a.pop();
+      else a.push(i);
+    }
+    for (let i of t) {
+      if (i == "#") b.pop();
+      else b.push(i);
+    }
+    return a.join("") == b.join("");
   }
-  for (let i of t) {
-    if (i == "##") b.pop();
-    else b.push(i);
-  }
-  return a.join("") == b.join("");
-};
+}
 ```
 
 ```js
-/
- * @param {string} s
- * @param {string} t
- * @return {boolean}
- */
-const fn = (str) => {
-  const a = [];
-  for (let i of str) i == "##" ? a.pop() : a.push(i);
-  return a.join("");
-};
+class Solution {
+  /**
+   * @param {string} s
+   * @param {string} t
+   * @return {boolean}
+   */
+  backspaceCompare(s, t) {
+    const fn = (str) => {
+      const a = [];
+      for (let i of str) i == "#" ? a.pop() : a.push(i);
+      return a.join("");
+    };
 
-const backspaceCompare = (s, t) => fn(s) == fn(t);
+    return fn(s) == fn(t);
+  }
+}
 ```
 
 ## Check If Two String Arrays are Equivalent
 
-https://leetcode.com/problems/check-if-two-string-arrays-are-equivalent/description/
+https://neetcode.io/problems/check-if-two-string-arrays-are-equivalent/question
 
 ```js
 /
@@ -3720,7 +3726,7 @@ const arrayStringsAreEqual = (word1, word2) => {
 
 ## Apply Operations to an Array
 
-https://leetcode.com/problems/apply-operations-to-an-array/description/
+https://neetcode.io/problems/apply-operations-to-an-array/question
 
 ```js
 /
@@ -3842,7 +3848,7 @@ class Solution {
 
 ## Defuse the Bomb
 
-https://leetcode.com/problems/defuse-the-bomb/description/
+https://neetcode.io/problems/defuse-the-bomb/question
 
 ```js
 /
@@ -4981,7 +4987,7 @@ class Solution {
 
 ## Convert Sorted Array to Binary Search Tree
 
-https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
+https://neetcode.io/problems/convert-sorted-array-to-binary-search-tree/question
 
 ```js
 /
@@ -5168,7 +5174,7 @@ class Solution {
 
 ## Leaf-Similar Trees
 
-https://leetcode.com/problems/leaf-similar-trees/description/
+https://neetcode.io/problems/leaf-similar-trees/question
 
 ```js
 /
@@ -5229,154 +5235,179 @@ const leafSimilar = (root1, root2) => {
 
 ## Evaluate Boolean Binary Tree
 
-https://leetcode.com/problems/evaluate-boolean-binary-tree/description/
+https://neetcode.io/problems/evaluate-boolean-binary-tree/question
 
 ```js
-/
+/**
  * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
  * }
  */
-/
- * @param {TreeNode} root
- * @return {boolean}
- */
-const evaluateTree = (root) => {
-  const dfs = (n) => {
-    if (n.val < 2) return !!n.val;
-    const left = dfs(n.left),
-      right = dfs(n.right);
-    return n.val == 2 ? left || right : left && right;
-  };
-  return dfs(root);
-};
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {boolean}
+   */
+  evaluateTree(n) {
+    const dfs = (n) => {
+      if (n.val < 2) return !!n.val;
+      const left = dfs(n.left),
+        right = dfs(n.right);
+      return n.val == 2 ? left || right : left && right;
+    };
+    return dfs(n);
+  }
+}
 ```
 
 ```js
-/
+/**
  * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
  * }
  */
-/
- * @param {TreeNode} root
- * @return {boolean}
- */
-const evaluateTree = (n) => {
-  if (!n.left && !n.right) return n.val;
-  const l = evaluateTree(n.left);
-  const r = evaluateTree(n.right);
-  if (n.val == 2) return l || r;
-  if (n.val == 3) return l && r;
-};
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {boolean}
+   */
+  evaluateTree(n) {
+    if (!n.left && !n.right) return !!n.val;
+    const l = this.evaluateTree(n.left);
+    const r = this.evaluateTree(n.right);
+    if (n.val == 2) return l || r;
+    if (n.val == 3) return l && r;
+  }
+}
 ```
 
 ## Minimum Distance Between BST Nodes
 
-https://leetcode.com/problems/minimum-distance-between-bst-nodes/description/
+https://neetcode.io/problems/minimum-distance-between-bst-nodes/question
 
 ```js
-/
+/**
  * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
  * }
  */
-/
- * @param {TreeNode} root
- * @return {number}
- */
-const minDiffInBST = (root) => {
-  let a = -Infinity,
-    b = Infinity;
-  const dfs = (n) => {
-    if (!n) return;
-    dfs(n.left);
-    b = n.val - a < b ? n.val - a : b;
-    a = n.val;
-    dfs(n.right);
-  };
-  dfs(root);
-  return b;
-};
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {number}
+   */
+  minDiffInBST(root) {
+    let a = -Infinity,
+      b = Infinity;
+    const dfs = (n) => {
+      if (!n) return;
+      dfs(n.left);
+      b = n.val - a < b ? n.val - a : b;
+      a = n.val;
+      dfs(n.right);
+    };
+    dfs(root);
+    return b;
+  }
+}
 ```
 
 ## Symmetric Tree
 
-https://leetcode.com/problems/symmetric-tree/description/
+https://neetcode.io/problems/symmetric-tree/question
 
 ```js
-/
+/**
  * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
  * }
  */
-/
- * @param {TreeNode} root
- * @return {boolean}
- */
-const isSymmetric = (root) => {
-  const dfs1 = (n) => {
-    if (!n) {
-      a1.push(null);
-      return;
-    }
-    a1.push(n.val);
-    dfs1(n.left);
-    dfs1(n.right);
-  };
-  let a1 = [];
-  dfs1(root.left);
 
-  const dfs2 = (n) => {
-    if (!n) {
-      a2.push(null);
-      return;
-    }
-    a2.push(n.val);
-    dfs2(n.right);
-    dfs2(n.left);
-  };
-  let a2 = [];
-  dfs2(root.right);
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {boolean}
+   */
+  isSymmetric(root) {
+    const dfs1 = (n) => {
+      if (!n) {
+        a1.push(null);
+        return;
+      }
+      a1.push(n.val);
+      dfs1(n.left);
+      dfs1(n.right);
+    };
+    let a1 = [];
+    dfs1(root.left);
 
-  return a1.join(",") == a2.join(",");
-};
+    const dfs2 = (n) => {
+      if (!n) {
+        a2.push(null);
+        return;
+      }
+      a2.push(n.val);
+      dfs2(n.right);
+      dfs2(n.left);
+    };
+    let a2 = [];
+    dfs2(root.right);
+
+    return a1.join(",") == a2.join(",");
+  }
+}
 ```
 
 ```js
-/
+/**
  * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
  * }
  */
-/
- * @param {TreeNode} root
- * @return {boolean}
- */
-const isSymmetric = (root) => {
-  const dfs = (l, r) => {
-    if (!l && !r) return true;
-    if (!l || !r) return false;
-    if (l.val != r.val) return false;
-    return dfs(l.left, r.right) && dfs(l.right, r.left);
-  };
-  return dfs(root.left, root.right);
-};
+
+class Solution {
+  /**
+   * @param {TreeNode} root
+   * @return {boolean}
+   */
+  isSymmetric(root) {
+    const dfs = (l, r) => {
+      if (!l && !r) return true;
+      if (!l || !r) return false;
+      if (l.val != r.val) return false;
+      return dfs(l.left, r.right) && dfs(l.right, r.left);
+    };
+    return dfs(root.left, root.right);
+  }
+}
 ```
 
 ---
@@ -5962,57 +5993,63 @@ class Solution {
 
 ## Check if One String Swap Can Make Strings Equal
 
-https://leetcode.com/problems/check-if-one-string-swap-can-make-strings-equal/description/
+https://neetcode.io/problems/check-if-one-string-swap-can-make-strings-equal/question
 
 ```js
-/
- * @param {string} s1
- * @param {string} s2
- * @return {boolean}
- */
-const areAlmostEqual = (s1, s2) => {
-  if (s1 == s2) return true;
-  let a = [];
-  for (let i = 0; i < s1.length; i++) {
-    if (s1[i] != s2[i]) {
-      a.push(i);
-      if (a.length > 2) return false;
+class Solution {
+  /**
+   * @param {string} s1
+   * @param {string} s2
+   * @return {boolean}
+   */
+  areAlmostEqual(s1, s2) {
+    if (s1 == s2) return true;
+    let a = [];
+    for (let i = 0; i < s1.length; i++) {
+      if (s1[i] != s2[i]) {
+        a.push(i);
+        if (a.length > 2) return false;
+      }
     }
+    return a.length == 2 && s1[a[0]] == s2[a[1]] && s1[a[1]] == s2[a[0]];
   }
-  return a.length == 2 && s1[a[0]] == s2[a[1]] && s1[a[1]] == s2[a[0]];
-};
+}
 ```
 
 ## Make Two Arrays Equal by Reversing Subarrays
 
-https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays/description/
+https://neetcode.io/problems/make-two-arrays-equal-by-reversing-subarrays/question
 
 ```js
-/
- * @param {number[]} target
- * @param {number[]} arr
- * @return {boolean}
- */
-const canBeEqual = (target, arr) => {
-  return target.sort().join(",") == arr.sort().join(",");
-};
+class Solution {
+  /**
+   * @param {number[]} target
+   * @param {number[]} arr
+   * @return {boolean}
+   */
+  canBeEqual(target, arr) {
+    return target.sort().join(",") == arr.sort().join(",");
+  }
+}
 ```
 
 ```js
-/
- * @param {number[]} target
- * @param {number[]} arr
- * @return {boolean}
- */
-const canBeEqual = (target, arr) => {
-  let a = {};
-  for (let i of target) a[i] = (a[i] ?? 0) + 1;
-  for (let i of arr) {
-    if (!a[i]) return false;
-    a[i]--;
+class Solution {
+  /**
+   * @param {number[]} target
+   * @param {number[]} arr
+   * @return {boolean}
+   */
+  canBeEqual(target, arr) {
+    let a = {};
+    for (let i of target) a[i] = (a[i] ?? 0) + 1;
+    for (let i of arr) {
+      if (!a[i]) return false;
+      a[i]--;
+    }
+    return true;
   }
-  return true;
-};
+}
 ```
 
 ---
@@ -6425,20 +6462,22 @@ class Solution {
 
 ## Minimum Bit Flips to Convert Number
 
-https://leetcode.com/problems/minimum-bit-flips-to-convert-number/description/
+https://neetcode.io/problems/minimum-bit-flips-to-convert-number/question
 
 ```js
-/
- * @param {number} start
- * @param {number} goal
- * @return {number}
- */
-const minBitFlips = (start, goal) => {
-  let a = start ^ goal,
-    b = 0;
-  while (a) [a, b] = [a & (a - 1), b + 1];
-  return b;
-};
+class Solution {
+  /**
+   * @param {number} start
+   * @param {number} goal
+   * @return {number}
+   */
+  minBitFlips(start, goal) {
+    let a = start ^ goal,
+      b = 0;
+    while (a) [a, b] = [a & (a - 1), b + 1];
+    return b;
+  }
+}
 ```
 
 ## Reverse Bits -75
@@ -6494,39 +6533,43 @@ class Solution {
 
 ## Shuffle the Array
 
-https://leetcode.com/problems/shuffle-the-array/description/
+https://neetcode.io/problems/shuffle-the-array/question
 
 ```js
-/
- * @param {number[]} nums
- * @param {number} n
- * @return {number[]}
- */
-const shuffle = (nums, n) => {
-  let a = [];
-  for (let i = 0; i < n; i++) {
-    a.push(nums[i]);
-    a.push(nums[n + i]);
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} n
+   * @return {number[]}
+   */
+  shuffle(nums, n) {
+    let a = [];
+    for (let i = 0; i < n; i++) {
+      a.push(nums[i]);
+      a.push(nums[n + i]);
+    }
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ## Add to Array-Form of Integer
 
-https://leetcode.com/problems/add-to-array-form-of-integer/description/
+https://neetcode.io/problems/add-to-array-form-of-integer/question
 
 ```js
-/
- * @param {number[]} num
- * @param {number} k
- * @return {number[]}
- */
-const addToArrayForm = (num, k) => {
-  const a = BigInt(num.join(""));
-  const b = BigInt(k);
-  return [...String(a + b)].map(Number);
-};
+class Solution {
+  /**
+   * @param {number[]} num
+   * @param {number} k
+   * @return {number[]}
+   */
+  addToArrayForm(num, k) {
+    const a = BigInt(num.join(""));
+    const b = BigInt(k);
+    return [...String(a + b)].map(Number);
+  }
+}
 ```
 
 ```js
@@ -6685,37 +6728,41 @@ class Solution {
 
 ## Calculate Money in Leetcode Bank
 
-https://leetcode.com/problems/calculate-money-in-leetcode-bank/description/
+https://neetcode.io/problems/calculate-money-in-leetcode-bank/question
 
 ```js
-/
- * @param {number} n
- * @return {number}
- */
-const totalMoney = (n) => {
-  const w = Math.floor(n / 7),
-    d = n % 7;
-  return 28 * w + (7 * w * (w - 1)) / 2 + d * w + (d * (d + 1)) / 2;
-};
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  totalMoney(n) {
+    const w = Math.floor(n / 7),
+      d = n % 7;
+    return 28 * w + (7 * w * (w - 1)) / 2 + d * w + (d * (d + 1)) / 2;
+  }
+}
 ```
 
 ## Largest Odd Number in String
 
-https://leetcode.com/problems/largest-odd-number-in-string/description/
+https://neetcode.io/problems/largest-odd-number-in-string/question
 
 ```js
-/
- * @param {string} num
- * @return {string}
- */
-const largestOddNumber = (num) => {
-  let n = num.length;
-  while (n > 0) {
-    if (num.at(n - 1) % 2 != 0) break;
-    n--;
+class Solution {
+  /**
+   * @param {string} num
+   * @return {string}
+   */
+  largestOddNumber(num) {
+    let n = num.length;
+    while (n > 0) {
+      if (num.at(n - 1) % 2 != 0) break;
+      n--;
+    }
+    return num.slice(0, n);
   }
-  return num.slice(0, n);
-};
+}
 ```
 
 ## Transpose Matrix
@@ -6754,94 +6801,89 @@ class Solution {
 
 ## Image Smoother
 
-https://leetcode.com/problems/image-smoother/description/
+https://neetcode.io/problems/image-smoother/question
 
 ```js
-/
- * @param {number[][]} img
- * @return {number[][]}
- */
-const imageSmoother = (img) => {
-  const m = img.length,
-    n = img[0].length;
-  let a = Array.from({ length: m }, () => Array(n));
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      let b = 0,
-        c = 0;
-      for (let ii = -1; ii <= 1; ii++) {
-        for (let jj = -1; jj <= 1; jj++) {
-          if (i + ii < 0 || i + ii > m - 1 || j + jj < 0 || j + jj > n - 1)
-            continue;
-          b += img[i + ii][j + jj];
-          c++;
+class Solution {
+  /**
+   * @param {number[][]} img
+   * @return {number[][]}
+   */
+  imageSmoother(img) {
+    const m = img.length,
+      n = img[0].length;
+    let a = Array.from({ length: m }, () => Array(n));
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        let b = 0,
+          c = 0;
+        for (let ii = -1; ii <= 1; ii++) {
+          for (let jj = -1; jj <= 1; jj++) {
+            if (i + ii < 0 || i + ii > m - 1 || j + jj < 0 || j + jj > n - 1)
+              continue;
+            b += img[i + ii][j + jj];
+            c++;
+          }
         }
+        a[i][j] = (b / c) | 0;
       }
-      a[i][j] = (b / c) | 0;
     }
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ## Count of Matches in Tournament
 
-https://leetcode.com/problems/count-of-matches-in-tournament/description/
+https://neetcode.io/problems/count-of-matches-in-tournament/question
 
 ```js
-/
- * @param {number} n
- * @return {number}
- */
-const numberOfMatches = (n) => {
-  let a = 0;
-  while (n > 1) {
-    if (n % 2 == 0) [a, n] = [a + n / 2, n / 2];
-    else [a, n] = [a + (n - 1) / 2, (n - 1) / 2 + 1];
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  numberOfMatches(n) {
+    return n - 1;
   }
-  return a;
-};
-```
-
-```js
-/
- * @param {number} n
- * @return {number}
- */
-const numberOfMatches = (n) => n - 1;
+}
 ```
 
 ## Water Bottles
 
-https://leetcode.com/problems/water-bottles/description/
+https://neetcode.io/problems/water-bottles/question
 
 ```js
-/
- * @param {number} numBottles
- * @param {number} numExchange
- * @return {number}
- */
-const numWaterBottles = (numBottles, numExchange) => {
-  let a = numBottles,
-    b = a;
-  while (b >= numExchange) {
-    const c = (b / numExchange) | 0;
-    a += c;
-    b = c + (b % numExchange);
+class Solution {
+  /**
+   * @param {number} numBottles
+   * @param {number} numExchange
+   * @return {number}
+   */
+  numWaterBottles(numBottles, numExchange) {
+    let a = numBottles,
+      b = a;
+    while (b >= numExchange) {
+      const c = (b / numExchange) | 0;
+      a += c;
+      b = c + (b % numExchange);
+    }
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ```js
-/
- * @param {number} numBottles
- * @param {number} numExchange
- * @return {number}
- */
-const numWaterBottles = (numBottles, numExchange) => {
-  return (numBottles + (numBottles - 1) / (numExchange - 1)) | 0;
-};
+class Solution {
+  /**
+   * @param {number} numBottles
+   * @param {number} numExchange
+   * @return {number}
+   */
+  numWaterBottles(numBottles, numExchange) {
+    return (numBottles + (numBottles - 1) / (numExchange - 1)) | 0;
+  }
+}
 ```
 
 ## Largest Local Values in a Matrix
@@ -6894,73 +6936,81 @@ const largestLocal = (grid) => {
 
 ## Power of Four
 
-https://leetcode.com/problems/power-of-four/description/
+https://neetcode.io/problems/power-of-four/question
 
 ```js
-/
- * @param {number} n
- * @return {boolean}
- */
-const isPowerOfFour = (n) => Number.isInteger(Math.log2(n) / 2);
+class Solution {
+  /**
+   * @param {number} n
+   * @return {boolean}
+   */
+  isPowerOfFour(n) {
+    return Number.isInteger(Math.log2(n) / 2);
+  }
+}
 ```
 
 ## Lucky Numbers in a Matrix
 
-https://leetcode.com/problems/lucky-numbers-in-a-matrix/description/
+https://neetcode.io/problems/lucky-numbers-in-a-matrix/question
 
 ```js
-/
- * @param {number[][]} matrix
- * @return {number[]}
- */
-const luckyNumbers = (matrix) => {
-  const m = matrix.length;
-  const n = matrix[0].length;
-  let a = [];
-  for (let i = 0; i < m; i++) {
-    const c = Math.min(...matrix[i]);
-    a.push(matrix[i].indexOf(c));
-  }
-  let b = [];
-  for (let j = 0; j < n; j++) {
-    let c = -Infinity,
-      d;
+class Solution {
+  /**
+   * @param {number[][]} matrix
+   * @return {number[]}
+   */
+  luckyNumbers(matrix) {
+    const m = matrix.length;
+    const n = matrix[0].length;
+    let a = [];
     for (let i = 0; i < m; i++) {
-      if (matrix[i][j] > c) [c, d] = [matrix[i][j], i];
+      const c = Math.min(...matrix[i]);
+      a.push(matrix[i].indexOf(c));
     }
-    b.push(d);
+    let b = [];
+    for (let j = 0; j < n; j++) {
+      let c = -Infinity,
+        d;
+      for (let i = 0; i < m; i++) {
+        if (matrix[i][j] > c) [c, d] = [matrix[i][j], i];
+      }
+      b.push(d);
+    }
+    let c = [];
+    for (let i = 0; i < m; i++) {
+      if (b[a[i]] == i) c.push(matrix[i][a[i]]);
+    }
+    return c;
   }
-  let c = [];
-  for (let i = 0; i < m; i++) {
-    if (b[a[i]] == i) c.push(matrix[i][a[i]]);
-  }
-  return c;
-};
+}
 ```
 
 ```js
-/
- * @param {number[][]} matrix
- * @return {number[]}
- */
-const luckyNumbers = (matrix) => {
-  const m = matrix.length;
-  const n = matrix[0].length;
-  const a = [];
-  for (let i = 0; i < m; i++) {
-    const b = Math.min(...matrix[i]);
-    const c = matrix[i].indexOf(b);
-    let d = true;
-    for (let k = 0; k < m; k++) {
-      if (matrix[k][c] > b) {
-        d = false;
-        break;
+class Solution {
+  /**
+   * @param {number[][]} matrix
+   * @return {number[]}
+   */
+  luckyNumbers(matrix) {
+    const m = matrix.length;
+    const n = matrix[0].length;
+    const a = [];
+    for (let i = 0; i < m; i++) {
+      const b = Math.min(...matrix[i]);
+      const c = matrix[i].indexOf(b);
+      let d = true;
+      for (let k = 0; k < m; k++) {
+        if (matrix[k][c] > b) {
+          d = false;
+          break;
+        }
       }
+      if (d) a.push(b);
     }
-    if (d) a.push(b);
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ## Non-Cyclical Number
@@ -7047,35 +7097,39 @@ class Solution {
 
 ## Convert 1D Array Into 2D Array
 
-https://leetcode.com/problems/convert-1d-array-into-2d-array/description/
+https://neetcode.io/problems/convert-1d-array-into-2d-array/question
 
 ```js
-/
- * @param {number[]} original
- * @param {number} m
- * @param {number} n
- * @return {number[][]}
- */
-const construct2DArray = (original, m, n) => {
-  const l = original.length;
-  if (l != m * n) return [];
-  let a = Array.from({ length: m }, () => Array(n));
-  for (let i = 0; i < l; i++) a[(i / n) | 0][i % n] = original[i];
-  return a;
-};
+class Solution {
+  /**
+   * @param {number[]} original
+   * @param {number} m
+   * @param {number} n
+   * @return {number[][]}
+   */
+  construct2DArray(original, m, n) {
+    const l = original.length;
+    if (l != m * n) return [];
+    let a = Array.from({ length: m }, () => Array(n));
+    for (let i = 0; i < l; i++) a[(i / n) | 0][i % n] = original[i];
+    return a;
+  }
+}
 ```
 
 ```js
-/
- * @param {number[]} original
- * @param {number} m
- * @param {number} n
- * @return {number[][]}
- */
-const construct2DArray = (original, m, n) =>{
-  return original.length !== m * n
-    ? []
-    : Array.from({ length: m }, (_, i) => original.slice(i * n, i * n + n)));
+class Solution {
+  /**
+   * @param {number[]} original
+   * @param {number} m
+   * @param {number} n
+   * @return {number[][]}
+   */
+  construct2DArray(original, m, n) {
+    return original.length !== m * n
+      ? []
+      : Array.from({ length: m }, (_, i) => original.slice(i * n, i * n + n));
+  }
 }
 ```
 
@@ -7132,22 +7186,24 @@ class Solution {
 
 ## Widest Vertical Area Between Two Points Containing No Points
 
-https://leetcode.com/problems/widest-vertical-area-between-two-points-containing-no-points/description/
+https://neetcode.io/problems/widest-vertical-area-between-two-points-containing-no-points/question
 
 ```js
-/
- * @param {number[][]} points
- * @return {number}
- */
-const maxWidthOfVerticalArea = (points) => {
-  const n = points.length;
-  let a = [];
-  for (let i = 0; i < n; i++) a.push(points[i][0]);
-  a.sort((x1, x2) => x1 - x2);
-  let b = 0;
-  for (let i = 1; i < n; i++) b = a[i] - a[i - 1] > b ? a[i] - a[i - 1] : b;
-  return b;
-};
+class Solution {
+  /**
+   * @param {number[][]} points
+   * @return {number}
+   */
+  maxWidthOfVerticalArea(points) {
+    const n = points.length;
+    let a = [];
+    for (let i = 0; i < n; i++) a.push(points[i][0]);
+    a.sort((x1, x2) => x1 - x2);
+    let b = 0;
+    for (let i = 1; i < n; i++) b = a[i] - a[i - 1] > b ? a[i] - a[i - 1] : b;
+    return b;
+  }
+}
 ```
 
 ---
