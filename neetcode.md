@@ -2422,7 +2422,7 @@ class Solution {
 
 ## Destination City
 
-https://leetcode.com/problems/destination-city/description/
+https://neetcode.io/problems/destination-city/question
 
 ```js
 /
@@ -2459,7 +2459,7 @@ class Solution {
 
 ## Circular Sentence
 
-https://leetcode.com/problems/circular-sentence/description/
+https://neetcode.io/problems/circular-sentence/question
 
 ```js
 /
@@ -2571,7 +2571,7 @@ class Solution {
 
 ## Longest Palindrome
 
-https://leetcode.com/problems/longest-palindrome/description/
+https://neetcode.io/problems/longest-palindrome/question
 
 ```js
 /
@@ -2617,7 +2617,7 @@ const longestPalindrome = (s) => {
 
 ## Largest Substring Between Two Equal Characters
 
-https://leetcode.com/problems/largest-substring-between-two-equal-characters/description/
+https://neetcode.io/problems/largest-substring-between-two-equal-characters/question
 
 ```js
 /
@@ -2637,7 +2637,7 @@ const maxLengthBetweenEqualCharacters = (s) => {
 
 ## Set Mismatch
 
-https://leetcode.com/problems/set-mismatch/description/
+https://neetcode.io/problems/set-mismatch/question
 
 ```js
 /
@@ -2715,7 +2715,7 @@ class Solution {
 
 ## Find Common Characters
 
-https://leetcode.com/problems/find-common-characters/description/
+https://neetcode.io/problems/find-common-characters/question
 
 ```js
 /
@@ -2792,7 +2792,7 @@ class Solution {
 
 ## Time Needed to Buy Tickets
 
-https://leetcode.com/problems/time-needed-to-buy-tickets/description/
+https://neetcode.io/problems/time-needed-to-buy-tickets/question
 
 ```js
 /
@@ -2812,7 +2812,7 @@ const timeRequiredToBuy = (tickets, k) => {
 
 ## Special Array With X Elements Greater Than or Equal X
 
-https://leetcode.com/problems/special-array-with-x-elements-greater-than-or-equal-x/description/
+https://neetcode.io/problems/special-array-with-x-elements-greater-than-or-equal-x/question
 
 ```js
 /
@@ -2832,7 +2832,7 @@ const specialArray = (nums) => {
 
 ## Relative Sort Array
 
-https://leetcode.com/problems/relative-sort-array/description/
+https://neetcode.io/problems/relative-sort-array/question
 
 ```js
 /
@@ -2880,7 +2880,7 @@ const relativeSortArray = (arr1, arr2) => {
 
 ## Sort the People
 
-https://leetcode.com/problems/sort-the-people/description/
+https://neetcode.io/problems/sort-the-people/question
 
 ```js
 /
