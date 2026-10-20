@@ -1860,7 +1860,7 @@ class Solution {
     let a = e;
     for (let i of c) a ^= i;
     let b = e;
-    for (let i = 1; i <= grid.length  2; i++) b ^= i;
+    for (let i = 1; i <= grid.length**2; i++) b ^= i;
     return [a, b];
   }
 }
@@ -1874,10 +1874,10 @@ class Solution {
    */
   findMissingAndRepeatedValues(grid) {
     const n = grid.length,
-      n2 = n  2;
+      n2 = n**2;
     let c1 = 0,
       c2 = 0;
-    for (let i of grid.flat()) [c1, c2] = [c1 + i, c2 + i  2];
+    for (let i of grid.flat()) [c1, c2] = [c1 + i, c2 + i**2];
 
     const d1 = (n2 * (n2 + 1)) / 2;
     const d2 = (n2 * (n2 + 1) * (2 * n2 + 1)) / 6;
@@ -1897,14 +1897,14 @@ class Solution {
    */
   findMissingAndRepeatedValues(grid) {
     const n = BigInt(grid.length);
-    const n2 = n  2n;
+    const n2 = n**2n;
     let c1 = 0n,
       c2 = 0n;
 
     for (let v of grid.flat()) {
       const x = BigInt(v);
       c1 += x;
-      c2 += x  2n;
+      c2 += x**2n;
     }
 
     const d1 = (n2 * (n2 + 1n)) / 2n;
@@ -2648,7 +2648,7 @@ const findErrorNums = (nums) => {
   const n = nums.length;
   const a1 = nums.reduce((a, x) => a + x, 0);
   const b1 = (n * (n + 1)) / 2;
-  const a2 = nums.reduce((a, x) => a + x  2, 0);
+  const a2 = nums.reduce((a, x) => a + x**2, 0);
   const b2 = (n * (n + 1) * (2 * n + 1)) / 6;
   const c1 = a1 - b1;
   const c2 = (a2 - b2) / c1;
@@ -3558,7 +3558,7 @@ class Solution {
    * @return {number[]}
    */
   sortedSquares(nums) {
-    return nums.map((x) => x  2).sort((x1, x2) => x1 - x2);
+    return nums.map((x) => x**2).sort((x1, x2) => x1 - x2);
   }
 }
 ```
@@ -4088,10 +4088,10 @@ class Solution {
       m;
     while (l <= r) {
       m = Math.floor((l + r) / 2);
-      if (m  2 == x) return m;
-      [l, r] = m  2 < x ? [m + 1, r] : [l, m - 1];
+      if (m**2 == x) return m;
+      [l, r] = m**2 < x ? [m + 1, r] : [l, m - 1];
     }
-    return m  2 > x ? m - 1 : m;
+    return m**2 > x ? m - 1 : m;
   }
 }
 ```
@@ -7027,7 +7027,7 @@ class Solution {
     let a = [];
     while (true) {
       const arr = Array.from(n + "");
-      const b = arr.map((x) => x  2).reduce((x, a) => x + a);
+      const b = arr.map((x) => x**2).reduce((x, a) => x + a);
       if (b == 1) return true;
       if (a.indexOf(b) != -1) return false;
       a.push(b);
@@ -12319,7 +12319,7 @@ https://leetcode.com/problems/minimum-time-to-repair-cars/description/
  */
 const repairCars = (ranks, cars) => {
   let l = 0,
-    r = Math.min(...ranks) * cars  2;
+    r = Math.min(...ranks) * cars**2;
   while (l < r) {
     const m = Math.floor((l + r) / 2);
     let a = 0;
@@ -16629,7 +16629,7 @@ class Solution {
    */
   kClosest(points, k) {
     for (let i = 0; i < points.length; i++) {
-      points[i].push(points[i][0]  2 + points[i][1]  2);
+      points[i].push(points[i][0]**2 + points[i][1]**2);
     }
     points.sort((x1, x2) => x1[2] - x2[2]);
     let a = [];
@@ -20731,7 +20731,7 @@ const snakesAndLadders = (board) => {
     else a = [...a, ...board[i].reverse()];
   }
   let q = [1],
-    vst = Array(n  2 + 1).fill(false),
+    vst = Array(n**2 + 1).fill(false),
     b = 1;
   vst[1] = true;
   while (q.length) {
@@ -20740,7 +20740,7 @@ const snakesAndLadders = (board) => {
       const i = q.pop();
       for (let ii = i + 1; ii <= i + 6; ii++) {
         const c = a[ii] == -1 ? ii : a[ii];
-        if (c == n  2) return b;
+        if (c == n**2) return b;
         if (!vst[c]) {
           vst[c] = true;
           q0.push(c);
@@ -21394,7 +21394,7 @@ const maxDistance = (grid) => {
 
 ## Shortest Path with Alternating Colors
 
-https://leetcode.com/problems/shortest-path-with-alternating-colors/description/
+https://neetcode.io/problems/shortest-path-with-alternating-colors/question
 
 ```js
 /
@@ -21449,7 +21449,7 @@ const shortestAlternatingPaths = (n, redEdges, blueEdges) => {
 
 ## Minimun Fuel Cost to Report to the Capital
 
-https://leetcode.com/problems/minimum-fuel-cost-to-report-to-the-capital/description/
+https://neetcode.io/problems/minimum-fuel-cost-to-report-to-the-capital/question
 
 ```js
 /
@@ -21488,7 +21488,7 @@ const minimumFuelCost = (roads, seats) => {
 
 ## Minimum Score of a Path between Two Cities
 
-https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/description/
+https://neetcode.io/problems/minimum-score-of-a-path-between-two-cities/question
 
 ```js
 /
@@ -21526,7 +21526,7 @@ const minScore = (n, roads) => {
 
 ## Number of Closed Islands
 
-https://leetcode.com/problems/number-of-closed-islands/description/
+https://neetcode.io/problems/number-of-closed-islands/question
 
 ```js
 /
@@ -21653,7 +21653,7 @@ https://neetcode.io/problems/number-of-provinces/question
 
 ## Regions Cut By Slashes
 
-https://leetcode.com/problems/regions-cut-by-slashes/description/
+https://neetcode.io/problems/regions-cut-by-slashes/question
 
 ```js
 /
@@ -21709,7 +21709,7 @@ const regionsBySlashes = (grid) => {
 
 ## Minimum Number of Vertices to Reach all Nodes
 
-https://leetcode.com/problems/minimum-number-of-vertices-to-reach-all-nodes/description/
+https://neetcode.io/problems/minimum-number-of-vertices-to-reach-all-nodes/question
 
 ```js
 /
@@ -21728,7 +21728,7 @@ const findSmallestSetOfVertices = (n, edges) => {
 
 ## Is Graph Bipartite
 
-https://leetcode.com/problems/is-graph-bipartite/description/
+https://neetcode.io/problems/is-graph-bipartite/question
 
 ```js
 /
@@ -21754,7 +21754,7 @@ const isBipartite = (graph) => {
 
 ## Count the Number of Complete Components
 
-https://leetcode.com/problems/count-the-number-of-complete-components/description/
+https://neetcode.io/problems/count-the-number-of-complete-components/question
 
 ```js
 /
@@ -21805,46 +21805,48 @@ https://neetcode.io/problems/evaluate-division/question
 
 ## Detonate the Maximum Bombs
 
-https://leetcode.com/problems/detonate-the-maximum-bombs/description/
+https://neetcode.io/problems/detonate-the-maximum-bombs/question
 
 ```js
-/
- * @param {number[][]} bombs
- * @return {number}
- */
-const maximumDetonation = (bombs) => {
-  const n = bombs.length,
-    a = Array(n)
-      .fill()
-      .map((x) => []);
-  for (let i1 = 0; i1 < n - 1; i1++) {
-    for (let i2 = i1 + 1; i2 < n; i2++) {
-      const [x1, y1, r1] = bombs[i1],
-        [x2, y2, r2] = bombs[i2];
-      const r = (x1 - x2)  2 + (y1 - y2)  2;
-      if (r <= r1  2) a[i1].push(i2);
-      if (r <= r2  2) a[i2].push(i1);
+class Solution {
+  /**
+   * @param {number[][]} bombs
+   * @return {number}
+   */
+  maximumDetonation(bombs) {
+    const n = bombs.length,
+      a = Array(n)
+        .fill()
+        .map((x) => []);
+    for (let i1 = 0; i1 < n - 1; i1++) {
+      for (let i2 = i1 + 1; i2 < n; i2++) {
+        const [x1, y1, r1] = bombs[i1],
+          [x2, y2, r2] = bombs[i2];
+        const r = (x1 - x2) ** 2 + (y1 - y2) ** 2;
+        if (r <= r1 ** 2) a[i1].push(i2);
+        if (r <= r2 ** 2) a[i2].push(i1);
+      }
     }
+    const dfs = (i, vst) => {
+      if (vst[i]) return 0;
+      vst[i] = true;
+      let b = 1;
+      for (let ii of a[i]) b += dfs(ii, vst);
+      return b;
+    };
+    let c = 0;
+    for (let i = 0; i < n; i++) {
+      let vst = [];
+      c = Math.max(dfs(i, vst), c);
+    }
+    return c;
   }
-  const dfs = (i, vst) => {
-    if (vst[i]) return 0;
-    vst[i] = true;
-    let b = 1;
-    for (let ii of a[i]) b += dfs(ii, vst);
-    return b;
-  };
-  let c = 0;
-  for (let i = 0; i < n; i++) {
-    let vst = [];
-    c = Math.max(dfs(i, vst), c);
-  }
-  return c;
-};
+}
 ```
 
 ## Find All Possible Recipes from Given Supplies
 
-https://leetcode.com/problems/find-all-possible-recipes-from-given-supplies/description/
+https://neetcode.io/problems/find-all-possible-recipes-from-given-supplies/question
 
 ```js
 /
@@ -21910,7 +21912,7 @@ const findAllRecipes = (recipes, ingredients, supplies) => {
 
 ## Shortest Distance After Road Addition Queries I
 
-https://leetcode.com/problems/shortest-distance-after-road-addition-queries-i/description/
+https://neetcode.io/problems/shortest-distance-after-road-addition-queries-i/question
 
 ```js
 /
@@ -21958,7 +21960,7 @@ https://neetcode.io/problems/minimum-height-trees/question
 
 ## Path with Maximum Gold
 
-https://leetcode.com/problems/path-with-maximum-gold/description/
+https://neetcode.io/problems/path-with-maximum-gold/question
 
 ```js
 /
@@ -21992,7 +21994,7 @@ const getMaximumGold = (grid) => {
 
 ## Most Profitable Path in a Tree
 
-https://leetcode.com/problems/most-profitable-path-in-a-tree/description/
+https://neetcode.io/problems/most-profitable-path-in-a-tree/question
 
 ```js
 /
