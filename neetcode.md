@@ -7246,6 +7246,48 @@ function memoize(fn) {
  */
 ```
 
+## Curry
+
+https://leetcode.com/problems/curry/description/
+
+```js
+/**
+ * @param {Function} fn
+ * @return {Function}
+ */
+const curry = (fn) => {
+  return function curried(...a) {
+    if (a.length >= fn.length) return fn(...a);
+    return (...b) => curried(...a, ...b);
+  };
+};
+```
+
+## Promise Pool
+
+https://leetcode.com/problems/promise-pool/description/
+
+```js
+/**
+ * @param {Function[]} functions
+ * @param {number} n
+ * @return {Promise<void>}
+ */
+const promisePool = async (functions, n) => {
+  let i = 0;
+  const run = async () => {
+    if (i == functions.length) return;
+    await functions[i++]();
+    await run();
+  };
+  await Promise.all(
+    Array(Math.min(n, functions.length))
+      .fill()
+      .map(() => run()),
+  );
+};
+```
+
 ## Cache with Time Limit
 
 https://leetcode.com/problems/cache-with-time-limit/description/
@@ -7316,6 +7358,149 @@ const debounce = (fn, t) => {
  * log('Hello'); // cancelled
  * log('Hello'); // Logged at t=100ms
  */
+```
+
+## Throttle
+
+https://leetcode.com/problems/throttle/description/
+
+```js
+/**
+ * @param {Function} fn
+ * @param {number} t
+ * @return {Function}
+ */
+const throttle = (fn, t) => {
+  let a = false,
+    b;
+  const run = (...args) => {
+    b = args;
+    if (a) return;
+    fn(...args);
+    a = true;
+    b = undefined;
+    setTimeout(() => {
+      a = false;
+      if (b) run(...b);
+    }, t);
+  };
+  return run;
+};
+```
+
+## JSON Deep Equal
+
+https://leetcode.com/problems/json-deep-equal/description/
+
+```js
+/**
+ * @param {*} o1
+ * @param {*} o2
+ * @return {boolean}
+ */
+const areDeeplyEqual = (o1, o2) => {
+  if (o1 === o2) return true;
+  if (o1 === null || o2 === null) return false;
+  if (typeof o1 !== "object" || typeof o2 !== "object") return false;
+  if (Array.isArray(o1) !== Array.isArray(o2)) return false;
+
+  let a = Object.keys(o1),
+    b = Object.keys(o2);
+  if (a.length !== b.length) return false;
+
+  for (let i = 0; i < a.length; i++) {
+    if (!(a[i] in o2) || !areDeeplyEqual(o1[a[i]], o2[a[i]])) return false;
+  }
+  return true;
+};
+```
+
+## Convert Object to JSON String
+
+https://leetcode.com/problems/convert-object-to-json-string/description/
+
+```js
+/**
+ * @param {null|boolean|number|string|Array|Object} object
+ * @return {string}
+ */
+const jsonStringify = (object) => {
+  if (object === null) return "null";
+  if (typeof object === "string") return `"${object}"`;
+  if (typeof object !== "object") return String(object);
+  if (Array.isArray(object)) {
+    return `[${object.map((x) => jsonStringify(x)).join(",")}]`;
+  }
+  return `{${Object.keys(object)
+    .map((k) => `"${k}":${jsonStringify(object[k])}`)
+    .join(",")}}`;
+};
+```
+
+## Array of Objects to Matrix
+
+https://leetcode.com/problems/array-of-objects-to-matrix/description/
+
+```js
+/**
+ * @param {Array} arr
+ * @return {Array}
+ */
+const jsonToMatrix = (arr) => {
+  let a = [],
+    b = [];
+  const dfs = (o, k, r) => {
+    if (o === null || typeof o !== "object") {
+      r[k] = o;
+      return;
+    }
+    for (let i of Object.keys(o)) {
+      dfs(o[i], k ? k + "." + i : i, r);
+    }
+  };
+
+  for (let o of arr) {
+    let r = {};
+    dfs(o, "", r);
+    a.push(r);
+    b.push(...Object.keys(r));
+  }
+  b = [...new Set(b)].sort();
+  return [b, ...a.map((r) => b.map((k) => (k in r ? r[k] : "")))];
+};
+```
+
+## Difference Between Two Objects
+
+https://leetcode.com/problems/differences-between-two-objects/description/
+
+```js
+/**
+ * @param {Object|Array} obj1
+ * @param {Object|Array} obj2
+ * @return {Object|Array}
+ */
+const objDiff = (obj1, obj2) => {
+  if (obj1 === obj2) return {};
+  if (obj1 === null || obj2 === null) return [obj1, obj2];
+  if (typeof obj1 !== "object" || typeof obj2 !== "object") {
+    return [obj1, obj2];
+  }
+  if (Array.isArray(obj1) !== Array.isArray(obj2)) {
+    return [obj1, obj2];
+  }
+
+  let a = {};
+  for (let k in obj1) {
+    if (k in obj2) {
+      let b = objDiff(obj1[k], obj2[k]);
+      if (Array.isArray(b) || Object.keys(b).length > 0) {
+        a[k] = b;
+      }
+    }
+  }
+  return a;
+};
 ```
 
 ## Flatten Deeply Nested Array
