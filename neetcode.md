@@ -21501,36 +21501,36 @@ class Solution {
 https://neetcode.io/problems/find-closest-node-to-given-two-nodes/question
 
 ```js
-/
- * @param {number[]} edges
- * @param {number} node1
- * @param {number} node2
- * @return {number}
- */
-const closestMeetingNode = (edges, node1, node2) => {
-  const n = edges.length;
-  const fn = (i) => {
-    let d = Array(n).fill(-1),
-      x = 0;
-    while (i != -1 && d[i] == -1) {
-      d[i] = x++;
-      i = edges[i];
-    }
-    return d;
-  };
+class Solution {
+  /**
+   * @param {number[]} edges
+   * @return {number}
+   */
+  closestMeetingNode(edges, node1, node2) {
+    const n = edges.length;
+    const fn = (i) => {
+      let d = Array(n).fill(-1),
+        x = 0;
+      while (i != -1 && d[i] == -1) {
+        d[i] = x++;
+        i = edges[i];
+      }
+      return d;
+    };
 
-  let d1 = fn(node1),
-    d2 = fn(node2);
-  let a = -1,
-    b = Infinity;
-  for (let i = 0; i < n; i++) {
-    if (d1[i] != -1 && d2[i] != -1) {
-      let d = Math.max(d1[i], d2[i]);
-      if (d < b) [a, b] = [i, d];
+    let d1 = fn(node1),
+      d2 = fn(node2);
+    let a = -1,
+      b = Infinity;
+    for (let i = 0; i < n; i++) {
+      if (d1[i] != -1 && d2[i] != -1) {
+        let d = Math.max(d1[i], d2[i]);
+        if (d < b) [a, b] = [i, d];
+      }
     }
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ## As Far from Land as Possible
@@ -21538,43 +21538,45 @@ const closestMeetingNode = (edges, node1, node2) => {
 https://neetcode.io/problems/as-far-from-land-as-possible/question
 
 ```js
-/
- * @param {number[][]} grid
- * @return {number}
- */
-const maxDistance = (grid) => {
-  const n = grid.length;
-  const a = grid.flat().reduce((a, x) => a + x);
-  if (a == 0 || a == n ** 2) return -1;
-  let q = [];
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) if (grid[i][j] == 1) q.push([i, j]);
-  }
-  let b = -1;
-  const d = [
-    [0, 1],
-    [0, -1],
-    [1, 0],
-    [-1, 0],
-  ];
-  while (q.length) {
-    b++;
-    let q0 = [];
-    for (let [y0, x0] of q) {
-      for (let [dy, dx] of d) {
-        const x = x0 + dx,
-          y = y0 + dy;
-        if (x < 0 || x >= n || y < 0 || y >= n) continue;
-        if (grid[y][x] == 0) {
-          q0.push([y, x]);
-          grid[y][x] = 1;
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  maxDistance(grid) {
+    const n = grid.length;
+    const a = grid.flat().reduce((a, x) => a + x);
+    if (a == 0 || a == n ** 2) return -1;
+    let q = [];
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) if (grid[i][j] == 1) q.push([i, j]);
+    }
+    let b = -1;
+    const d = [
+      [0, 1],
+      [0, -1],
+      [1, 0],
+      [-1, 0],
+    ];
+    while (q.length) {
+      b++;
+      let q0 = [];
+      for (let [y0, x0] of q) {
+        for (let [dy, dx] of d) {
+          const x = x0 + dx,
+            y = y0 + dy;
+          if (x < 0 || x >= n || y < 0 || y >= n) continue;
+          if (grid[y][x] == 0) {
+            q0.push([y, x]);
+            grid[y][x] = 1;
+          }
         }
       }
+      q = q0;
     }
-    q = q0;
+    return b;
   }
-  return b;
-};
+}
 ```
 
 ## Shortest Path with Alternating Colors
@@ -21582,54 +21584,56 @@ const maxDistance = (grid) => {
 https://neetcode.io/problems/shortest-path-with-alternating-colors/question
 
 ```js
-/
- * @param {number} n
- * @param {number[][]} redEdges
- * @param {number[][]} blueEdges
- * @return {number[]}
- */
-const shortestAlternatingPaths = (n, redEdges, blueEdges) => {
-  let a1 = Array(n)
-      .fill()
-      .map((x) => []),
-    a2 = Array(n)
-      .fill()
-      .map((x) => []);
-  for (let [i1, i2] of redEdges) if (i2) a1[i1].push(i2);
-  for (let [i1, i2] of blueEdges) if (i2) a2[i1].push(i2);
-  let v1 = Array(n).fill(false),
-    v2 = Array(n).fill(false);
-  ((v1[0] = true), (v2[0] = true));
-  let b = Array(n).fill(-1);
-  b[0] = 0;
-  let q1 = [0],
-    q2 = [0];
-  let c = 0;
-  while (q1.length || q2.length) {
-    c++;
-    let q10 = [],
-      q20 = [];
-    for (let i of q1) {
-      for (let ii of a2[i]) {
-        if (v2[ii]) continue;
-        v2[ii] = true;
-        if (b[ii] == -1) b[ii] = c;
-        q20.push(ii);
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} redEdges
+   * @param {number[][]} blueEdges
+   * @returns {number[]}
+   */
+  shortestAlternatingPaths(n, redEdges, blueEdges) {
+    let a1 = Array(n)
+        .fill()
+        .map((x) => []),
+      a2 = Array(n)
+        .fill()
+        .map((x) => []);
+    for (let [i1, i2] of redEdges) if (i2) a1[i1].push(i2);
+    for (let [i1, i2] of blueEdges) if (i2) a2[i1].push(i2);
+    let v1 = Array(n).fill(false),
+      v2 = Array(n).fill(false);
+    ((v1[0] = true), (v2[0] = true));
+    let b = Array(n).fill(-1);
+    b[0] = 0;
+    let q1 = [0],
+      q2 = [0];
+    let c = 0;
+    while (q1.length || q2.length) {
+      c++;
+      let q10 = [],
+        q20 = [];
+      for (let i of q1) {
+        for (let ii of a2[i]) {
+          if (v2[ii]) continue;
+          v2[ii] = true;
+          if (b[ii] == -1) b[ii] = c;
+          q20.push(ii);
+        }
       }
-    }
-    for (let i of q2) {
-      for (let ii of a1[i]) {
-        if (v1[ii]) continue;
-        v1[ii] = true;
-        if (b[ii] == -1) b[ii] = c;
-        q10.push(ii);
+      for (let i of q2) {
+        for (let ii of a1[i]) {
+          if (v1[ii]) continue;
+          v1[ii] = true;
+          if (b[ii] == -1) b[ii] = c;
+          q10.push(ii);
+        }
       }
+      q1 = q10;
+      q2 = q20;
     }
-    q1 = q10;
-    q2 = q20;
+    return b;
   }
-  return b;
-};
+}
 ```
 
 ## Minimun Fuel Cost to Report to the Capital
