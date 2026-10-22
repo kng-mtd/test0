@@ -21641,38 +21641,40 @@ class Solution {
 https://neetcode.io/problems/minimum-fuel-cost-to-report-to-the-capital/question
 
 ```js
-/
- * @param {number[][]} roads
- * @param {number} seats
- * @return {number}
- */
-const minimumFuelCost = (roads, seats) => {
-  const n = roads.length + 1;
-  let a = Array(n)
-    .fill()
-    .map((x) => []);
-  for (let [i1, i2] of roads) {
-    a[i1].push(i2);
-    a[i2].push(i1);
-  }
-  let p = Array(n).fill(-1);
-  let q = [0];
-  for (let i of q) {
-    for (let ii of a[i]) {
-      if (ii == p[i]) continue;
-      p[ii] = i;
-      q.push(ii);
+class Solution {
+  /**
+   * @param {number} seats
+   * @param {number[][]} roads
+   * @returns {number}
+   */
+  minimumFuelCost(roads, seats) {
+    const n = roads.length + 1;
+    let a = Array(n)
+      .fill()
+      .map((x) => []);
+    for (let [i1, i2] of roads) {
+      a[i1].push(i2);
+      a[i2].push(i1);
     }
+    let p = Array(n).fill(-1);
+    let q = [0];
+    for (let i of q) {
+      for (let ii of a[i]) {
+        if (ii == p[i]) continue;
+        p[ii] = i;
+        q.push(ii);
+      }
+    }
+    let c = Array(n).fill(1);
+    let d = 0;
+    for (let i = q.length - 1; i > 0; i--) {
+      let e = q[i];
+      d += Math.ceil(c[e] / seats);
+      c[p[e]] += c[e];
+    }
+    return d;
   }
-  let c = Array(n).fill(1);
-  let d = 0;
-  for (let i = q.length - 1; i > 0; i--) {
-    let e = q[i];
-    d += Math.ceil(c[e] / seats);
-    c[p[e]] += c[e];
-  }
-  return d;
-};
+}
 ```
 
 ## Minimum Score of a Path between Two Cities
