@@ -23208,17 +23208,47 @@ https://leetcode.com/problems/flip-string-to-monotone-increasing/description/
 
 ---
 
-# Bit manupulation
-
-##
-
----
-
----
-
----
-
 # Advanced Graphs
+
+## Path with Minimum Effort
+
+https://neetcode.io/problems/path-with-minimum-effort/question
+
+```js
+
+```
+
+## Network Delay Time
+
+https://neetcode.io/problems/network-delay-time/question
+
+```js
+
+```
+
+## Min Cost to Connect Points
+
+https://neetcode.io/problems/min-cost-to-connect-points/question
+
+```js
+
+```
+
+## Path with Maximum Probability
+
+https://neetcode.io/problems/path-with-maximum-probability/question
+
+```js
+
+```
+
+---
+
+---
+
+---
+
+# Bit manupulation
 
 ##
 
