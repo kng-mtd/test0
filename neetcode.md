@@ -21682,37 +21682,39 @@ class Solution {
 https://neetcode.io/problems/minimum-score-of-a-path-between-two-cities/question
 
 ```js
-/
- * @param {number} n
- * @param {number[][]} roads
- * @return {number}
- */
-const minScore = (n, roads) => {
-  let a = Array(n + 1)
-    .fill()
-    .map((x) => []);
-  for (let [i1, i2, d] of roads) {
-    a[i1].push([i2, d]);
-    a[i2].push([i1, d]);
-  }
-  let q = [1],
-    vst = Array(n + 1).fill(false);
-  vst[1] = true;
-  let b = Infinity;
-  while (q.length) {
-    let q0 = [];
-    for (let i of q) {
-      for (let [ii, d] of a[i]) {
-        b = Math.min(b, d);
-        if (vst[ii]) continue;
-        vst[ii] = true;
-        q0.push(ii);
-      }
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} roads
+   * @returns {number}
+   */
+  minScore(n, roads) {
+    let a = Array(n + 1)
+      .fill()
+      .map((x) => []);
+    for (let [i1, i2, d] of roads) {
+      a[i1].push([i2, d]);
+      a[i2].push([i1, d]);
     }
-    q = q0;
+    let q = [1],
+      vst = Array(n + 1).fill(false);
+    vst[1] = true;
+    let b = Infinity;
+    while (q.length) {
+      let q0 = [];
+      for (let i of q) {
+        for (let [ii, d] of a[i]) {
+          b = Math.min(b, d);
+          if (vst[ii]) continue;
+          vst[ii] = true;
+          q0.push(ii);
+        }
+      }
+      q = q0;
+    }
+    return b;
   }
-  return b;
-};
+}
 ```
 
 ## Number of Closed Islands
