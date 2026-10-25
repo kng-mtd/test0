@@ -21722,78 +21722,46 @@ class Solution {
 https://neetcode.io/problems/number-of-closed-islands/question
 
 ```js
-/
- * @param {number[][]} grid
- * @return {number}
- */
-const closedIsland = (grid) => {
-  const m = grid.length,
-    n = grid[0].length;
-  let a = 0,
-    b;
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  closedIsland(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let a = 0,
+      b;
 
-  const dfs = (y, x) => {
-    if (y < 0 || y >= m || x < 0 || x >= n) {
-      b = true;
-      return;
+    const dfs = (y, x) => {
+      let q = [[y, x]];
+      while (q.length) {
+        let [y, x] = q.pop();
+        if (y < 0 || y >= m || x < 0 || x >= n) {
+          b = true;
+          continue;
+        }
+        if (grid[y][x]) continue;
+        grid[y][x] = 1;
+        q.push([y - 1, x]);
+        q.push([y + 1, x]);
+        q.push([y, x - 1]);
+        q.push([y, x + 1]);
+      }
+    };
+
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j]) continue;
+        a++;
+        b = false;
+        dfs(i, j);
+        if (b) a--;
+      }
     }
-    if (grid[y][x]) return;
-    grid[y][x] = 1;
-    dfs(y - 1, x);
-    dfs(y + 1, x);
-    dfs(y, x - 1);
-    dfs(y, x + 1);
-  };
-
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      if (grid[i][j]) continue;
-      a++;
-      b = false;
-      dfs(i, j);
-      if (b) a--;
-    }
+    return a;
   }
-  return a;
-};
-```
-
-```js
-/
- * @param {number[][]} grid
- * @return {number}
- */
-const closedIsland = (grid) => {
-  const m = grid.length,
-    n = grid[0].length;
-
-  const dfs = (y, x) => {
-    if (y < 0 || y >= m || x < 0 || x >= n || grid[y][x]) return;
-    grid[y][x] = 1;
-    dfs(y - 1, x);
-    dfs(y + 1, x);
-    dfs(y, x - 1);
-    dfs(y, x + 1);
-  };
-
-  for (let i = 0; i < m; i++) {
-    dfs(i, 0);
-    dfs(i, n - 1);
-  }
-  for (let j = 0; j < n; j++) {
-    dfs(0, j);
-    dfs(m - 1, j);
-  }
-  let a = 0;
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      if (grid[i][j]) continue;
-      a++;
-      dfs(i, j);
-    }
-  }
-  return a;
-};
+}
 ```
 
 ## Number of Enclaves
@@ -21837,11 +21805,69 @@ class Solution {
 https://neetcode.io/problems/number-of-provinces/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} isConnected
+   * @return {number}
+   */
+  findCircleNum(isConnected) {
+    const n = isConnected.length;
+    let vst = Array(n).fill(false),
+      a = 0;
+    const dfs = (i) => {
+      vst[i] = true;
+      for (let j = 0; j < n; j++) {
+        if (isConnected[i][j] && !vst[j]) dfs(j);
+      }
+    };
 
+    for (let i = 0; i < n; i++) {
+      if (vst[i]) continue;
+      a++;
+      dfs(i);
+    }
+    return a;
+  }
+}
 ```
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} isConnected
+   * @return {number}
+   */
+  findCircleNum(isConnected) {
+    const n = isConnected.length;
+    let a = Array(n)
+      .fill()
+      .map((_, i) => i);
+    let b = Array(n).fill(1);
+    let c = n;
+    const find = (i) => {
+      while (i != a[i]) {
+        a[i] = a[a[i]];
+        i = a[i];
+      }
+      return i;
+    };
+    const union = (i, j) => {
+      i = find(i);
+      j = find(j);
+      if (i == j) return;
+      if (b[i] < b[j]) [i, j] = [j, i];
+      a[j] = i;
+      b[i] += b[j];
+      c--;
+    };
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        if (isConnected[i][j]) union(i, j);
+      }
+    }
+    return c;
+  }
+}
 ```
 
 ## Regions Cut By Slashes
@@ -21849,55 +21875,53 @@ https://neetcode.io/problems/number-of-provinces/question
 https://neetcode.io/problems/regions-cut-by-slashes/question
 
 ```js
-/
- * @param {string[]} grid
- * @return {number}
- */
-const regionsBySlashes = (grid) => {
-  const n = grid.length;
-  const p = Array(n * n * 4)
-    .fill()
-    .map((_, i) => i);
+class Solution {
+  regionsBySlashes(grid) {
+    const n = grid.length;
+    const p = Array(n * n * 4)
+      .fill()
+      .map((_, i) => i);
 
-  const find = (x) => {
-    while (x != p[x]) {
-      p[x] = p[p[x]];
-      x = p[x];
-    }
-    return x;
-  };
-
-  const union = (x, y) => {
-    x = find(x);
-    y = find(y);
-    if (x != y) p[y] = x;
-  };
-
-  const id = (i, j, k) => (i * n + j) * 4 + k;
-
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
-      const c = grid[i][j];
-      if (c == " ") {
-        union(id(i, j, 0), id(i, j, 1));
-        union(id(i, j, 1), id(i, j, 2));
-        union(id(i, j, 2), id(i, j, 3));
-      } else if (c == "/") {
-        union(id(i, j, 0), id(i, j, 3));
-        union(id(i, j, 1), id(i, j, 2));
-      } else {
-        union(id(i, j, 0), id(i, j, 1));
-        union(id(i, j, 2), id(i, j, 3));
+    const find = (x) => {
+      while (x != p[x]) {
+        p[x] = p[p[x]];
+        x = p[x];
       }
-      if (i > 0) union(id(i, j, 0), id(i - 1, j, 2));
-      if (j > 0) union(id(i, j, 3), id(i, j - 1, 1));
-    }
-  }
+      return x;
+    };
 
-  let a = 0;
-  for (let i = 0; i < p.length; i++) if (find(i) == i) a++;
-  return a;
-};
+    const union = (x, y) => {
+      x = find(x);
+      y = find(y);
+      if (x != y) p[y] = x;
+    };
+
+    const id = (i, j, k) => (i * n + j) * 4 + k;
+
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        const c = grid[i][j];
+        if (c == " ") {
+          union(id(i, j, 0), id(i, j, 1));
+          union(id(i, j, 1), id(i, j, 2));
+          union(id(i, j, 2), id(i, j, 3));
+        } else if (c == "/") {
+          union(id(i, j, 0), id(i, j, 3));
+          union(id(i, j, 1), id(i, j, 2));
+        } else {
+          union(id(i, j, 0), id(i, j, 1));
+          union(id(i, j, 2), id(i, j, 3));
+        }
+        if (i > 0) union(id(i, j, 0), id(i - 1, j, 2));
+        if (j > 0) union(id(i, j, 3), id(i, j - 1, 1));
+      }
+    }
+
+    let a = 0;
+    for (let i = 0; i < p.length; i++) if (find(i) == i) a++;
+    return a;
+  }
+}
 ```
 
 ## Minimum Number of Vertices to Reach all Nodes
@@ -21905,18 +21929,20 @@ const regionsBySlashes = (grid) => {
 https://neetcode.io/problems/minimum-number-of-vertices-to-reach-all-nodes/question
 
 ```js
-/
- * @param {number} n
- * @param {number[][]} edges
- * @return {number[]}
- */
-const findSmallestSetOfVertices = (n, edges) => {
-  let a = Array(n).fill(true);
-  for (let [i1, i2] of edges) a[i2] = false;
-  let b = [];
-  for (let i = 0; i < n; i++) if (a[i]) b.push(i);
-  return b;
-};
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @returns {number[]}
+   */
+  findSmallestSetOfVertices(n, edges) {
+    let a = Array(n).fill(true);
+    for (let [i1, i2] of edges) a[i2] = false;
+    let b = [];
+    for (let i = 0; i < n; i++) if (a[i]) b.push(i);
+    return b;
+  }
+}
 ```
 
 ## Is Graph Bipartite
@@ -21924,25 +21950,27 @@ const findSmallestSetOfVertices = (n, edges) => {
 https://neetcode.io/problems/is-graph-bipartite/question
 
 ```js
-/
- * @param {number[][]} graph
- * @return {boolean}
- */
-const isBipartite = (graph) => {
-  let a = [];
-  const dfs = (i, c) => {
-    a[i] = c;
-    for (let ii of graph[i]) {
-      if (a[ii] == c) return false;
-      if (a[ii] == undefined && !dfs(ii, 1 - c)) return false;
+class Solution {
+  /**
+   * @param {number[][]} graph
+   * @return {boolean}
+   */
+  isBipartite(graph) {
+    let a = [];
+    const dfs = (i, c) => {
+      a[i] = c;
+      for (let ii of graph[i]) {
+        if (a[ii] == c) return false;
+        if (a[ii] == undefined && !dfs(ii, 1 - c)) return false;
+      }
+      return true;
+    };
+    for (let i = 0; i < graph.length; i++) {
+      if (a[i] == undefined && !dfs(i, 0)) return false;
     }
     return true;
-  };
-  for (let i = 0; i < graph.length; i++) {
-    if (a[i] == undefined && !dfs(i, 0)) return false;
   }
-  return true;
-};
+}
 ```
 
 ## Count the Number of Complete Components
@@ -21950,42 +21978,44 @@ const isBipartite = (graph) => {
 https://neetcode.io/problems/count-the-number-of-complete-components/question
 
 ```js
-/
- * @param {number} n
- * @param {number[][]} edges
- * @return {number}
- */
-const countCompleteComponents = (n, edges) => {
-  let a = Array(n)
-    .fill()
-    .map((x) => []);
-  for (let [i1, i2] of edges) {
-    a[i1].push(i2);
-    a[i2].push(i1);
-  }
-  let b = 0,
-    vst = Array(n).fill(false);
-
-  const dfs = (i) => {
-    if (vst[i]) return [0, 0];
-    vst[i] = true;
-    let k = 1,
-      e = a[i].length;
-    for (let ii of a[i]) {
-      let [k0, e0] = dfs(ii);
-      k += k0;
-      e += e0;
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @returns {number}
+   */
+  countCompleteComponents(n, edges) {
+    let a = Array(n)
+      .fill()
+      .map((x) => []);
+    for (let [i1, i2] of edges) {
+      a[i1].push(i2);
+      a[i2].push(i1);
     }
-    return [k, e];
-  };
+    let b = 0,
+      vst = Array(n).fill(false);
 
-  for (let i = 0; i < n; i++) {
-    if (vst[i]) continue;
-    let [k, e] = dfs(i);
-    if (e == k * (k - 1)) b++;
+    const dfs = (i) => {
+      if (vst[i]) return [0, 0];
+      vst[i] = true;
+      let k = 1,
+        e = a[i].length;
+      for (let ii of a[i]) {
+        let [k0, e0] = dfs(ii);
+        k += k0;
+        e += e0;
+      }
+      return [k, e];
+    };
+
+    for (let i = 0; i < n; i++) {
+      if (vst[i]) continue;
+      let [k, e] = dfs(i);
+      if (e == k * (k - 1)) b++;
+    }
+    return b;
   }
-  return b;
-};
+}
 ```
 
 ## Evaluate Division
@@ -21993,7 +22023,43 @@ const countCompleteComponents = (n, edges) => {
 https://neetcode.io/problems/evaluate-division/question
 
 ```js
+class Solution {
+  /**
+   * @param {string[][]} equations
+   * @param {number[]} values
+   * @param {string[][]} queries
+   * @return {number[]}
+   */
+  calcEquation(equations, values, queries) {
+    let a = {};
+    for (let i = 0; i < equations.length; i++) {
+      const [i1, i2] = equations[i];
+      (a[i1] ??= []).push([i2, values[i]]);
+      (a[i2] ??= []).push([i1, 1 / values[i]]);
+    }
 
+    const dfs = (i, t, v0, vst) => {
+      if (i == t) return v0;
+      if (vst[i]) return -1;
+      vst[i] = true;
+      for (let [ii, v] of a[i]) {
+        let b = dfs(ii, t, v0 * v, vst);
+        if (b != -1) return b;
+      }
+      return -1;
+    };
+
+    let b = [];
+    for (let [s, t] of queries) {
+      if (a[s] == undefined || a[t] == undefined) {
+        b.push(-1);
+        continue;
+      }
+      b.push(dfs(s, t, 1, {}));
+    }
+    return b;
+  }
+}
 ```
 
 ## Detonate the Maximum Bombs
@@ -22042,65 +22108,57 @@ class Solution {
 https://neetcode.io/problems/find-all-possible-recipes-from-given-supplies/question
 
 ```js
-/
- * @param {string[]} recipes
- * @param {string[][]} ingredients
- * @param {string[]} supplies
- * @return {string[]}
- */
-const findAllRecipes = (recipes, ingredients, supplies) => {
-  const n = recipes.length;
-  let a = [];
-  for (let i = 0; i < n; i++) a[i] = new Set(ingredients[i]);
-  let b = new Set(supplies),
-    c = [];
-  let d = true;
-  while (d) {
-    d = false;
-    for (let i = 0; i < n; i++) {
-      const e = recipes[i];
-      if (!e) continue;
-      if (a[i].difference(b).size == 0) {
-        b.add(e);
-        c.push(e);
-        recipes[i] = "";
-        d = true;
-      }
+class Solution {
+  findAllRecipes(recipes, ingredients, supplies) {
+    let a = {},
+      b = {},
+      c = [];
+    for (let i = 0; i < recipes.length; i++) a[recipes[i]] = ingredients[i];
+    for (let i of supplies) b[i] = true;
+
+    const dfs = (i, vst) => {
+      if (b[i]) return true;
+      if (vst[i]) return false;
+      if (a[i] == undefined) return false;
+      vst[i] = true;
+      for (let ii of a[i]) if (!dfs(ii, vst)) return false;
+      b[i] = true;
+      return true;
+    };
+
+    for (let i of recipes) {
+      if (dfs(i, {})) c.push(i);
     }
+    return c;
   }
-  return c;
-};
+}
 ```
 
 ```js
-/
- * @param {string[]} recipes
- * @param {string[][]} ingredients
- * @param {string[]} supplies
- * @return {string[]}
- */
-const findAllRecipes = (recipes, ingredients, supplies) => {
-  let a = {},
-    b = {},
-    c = [];
-  for (let i = 0; i < recipes.length; i++) a[recipes[i]] = ingredients[i];
-  for (let i of supplies) b[i] = true;
-
-  const dfs = (i, vst) => {
-    if (b[i]) return true;
-    if (vst[i]) return false;
-    if (a[i] == undefined) return false;
-    vst[i] = true;
-    for (let ii of a[i]) if (!dfs(ii, vst)) return false;
-    b[i] = true;
-    return true;
-  };
-
-  for (let i of recipes) {
-    if (dfs(i, {})) c.push(i);
+class Solution {
+  findAllRecipes(recipes, ingredients, supplies) {
+    const n = recipes.length;
+    let a = [];
+    for (let i = 0; i < n; i++) a[i] = new Set(ingredients[i]);
+    let b = new Set(supplies),
+      c = [];
+    let d = true;
+    while (d) {
+      d = false;
+      for (let i = 0; i < n; i++) {
+        const e = recipes[i];
+        if (!e) continue;
+        if (a[i].difference(b).size == 0) {
+          b.add(e);
+          c.push(e);
+          recipes[i] = "";
+          d = true;
+        }
+      }
+    }
+    return c;
   }
-  return c;
-};
+}
 ```
 
 ## Shortest Distance After Road Addition Queries I
@@ -22108,39 +22166,41 @@ const findAllRecipes = (recipes, ingredients, supplies) => {
 https://neetcode.io/problems/shortest-distance-after-road-addition-queries-i/question
 
 ```js
-/
- * @param {number} n
- * @param {number[][]} queries
- * @return {number[]}
- */
-const shortestDistanceAfterQueries = (n, queries) => {
-  let a = Array(n)
-    .fill()
-    .map(() => []);
-  for (let i = 0; i < n - 1; i++) a[i].push(i + 1);
-  let b = [];
-  for (let [i1, i2] of queries) {
-    a[i1].push(i2);
-    let d = Array(n).fill(-1),
-      q = [0];
-    d[0] = 0;
-    while (q.length) {
-      let q0 = [];
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} queries
+   * @returns {number[]}
+   */
+  shortestDistanceAfterQueries(n, queries) {
+    let a = Array(n)
+      .fill()
+      .map(() => []);
+    for (let i = 0; i < n - 1; i++) a[i].push(i + 1);
+    let b = [];
+    for (let [i1, i2] of queries) {
+      a[i1].push(i2);
+      let d = Array(n).fill(-1),
+        q = [0];
+      d[0] = 0;
       while (q.length) {
-        const i = q.pop();
-        for (let ii of a[i]) {
-          if (d[ii] == -1) {
-            d[ii] = d[i] + 1;
-            q0.push(ii);
+        let q0 = [];
+        while (q.length) {
+          const i = q.pop();
+          for (let ii of a[i]) {
+            if (d[ii] == -1) {
+              d[ii] = d[i] + 1;
+              q0.push(ii);
+            }
           }
         }
+        q = q0;
       }
-      q = q0;
+      b.push(d[n - 1]);
     }
-    b.push(d[n - 1]);
+    return b;
   }
-  return b;
-};
+}
 ```
 
 ## Minimum Height Trees
@@ -22148,7 +22208,41 @@ const shortestDistanceAfterQueries = (n, queries) => {
 https://neetcode.io/problems/minimum-height-trees/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @return {number[]}
+   */
+  findMinHeightTrees(n, edges) {
+    if (n == 1) return [0];
+    let a = Array(n)
+      .fill()
+      .map(() => []);
+    let d = Array(n).fill(0);
+    for (let [i1, i2] of edges) {
+      a[i1].push(i2);
+      d[i1]++;
+      a[i2].push(i1);
+      d[i2]++;
+    }
+    let q = [];
+    for (let i = 0; i < n; i++) if (d[i] == 1) q.push(i);
+    let b = n;
+    while (b > 2) {
+      let q0 = [];
+      for (let i of q) {
+        b--;
+        for (let ii of a[i]) {
+          d[ii]--;
+          if (d[ii] == 1) q0.push(ii);
+        }
+      }
+      q = q0;
+    }
+    return q;
+  }
+}
 ```
 
 ## Path with Maximum Gold
@@ -22156,33 +22250,35 @@ https://neetcode.io/problems/minimum-height-trees/question
 https://neetcode.io/problems/path-with-maximum-gold/question
 
 ```js
-/
- * @param {number[][]} grid
- * @return {number}
- */
-const getMaximumGold = (grid) => {
-  const m = grid.length,
-    n = grid[0].length;
-  const dfs = (y, x) => {
-    if (y < 0 || y >= m || x < 0 || x >= n || !grid[y][x]) return 0;
-    let a = grid[y][x];
-    grid[y][x] = 0;
-    let b = Math.max(
-      dfs(y - 1, x),
-      dfs(y + 1, x),
-      dfs(y, x - 1),
-      dfs(y, x + 1),
-    );
-    grid[y][x] = a;
-    return a + b;
-  };
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  getMaximumGold(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    const dfs = (y, x) => {
+      if (y < 0 || y >= m || x < 0 || x >= n || !grid[y][x]) return 0;
+      let a = grid[y][x];
+      grid[y][x] = 0;
+      let b = Math.max(
+        dfs(y - 1, x),
+        dfs(y + 1, x),
+        dfs(y, x - 1),
+        dfs(y, x + 1),
+      );
+      grid[y][x] = a;
+      return a + b;
+    };
 
-  let b = 0;
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) if (grid[i][j]) b = Math.max(dfs(i, j), b);
+    let b = 0;
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) if (grid[i][j]) b = Math.max(dfs(i, j), b);
+    }
+    return b;
   }
-  return b;
-};
+}
 ```
 
 ## Most Profitable Path in a Tree
@@ -22190,111 +22286,115 @@ const getMaximumGold = (grid) => {
 https://neetcode.io/problems/most-profitable-path-in-a-tree/question
 
 ```js
-/
- * @param {number[][]} edges
- * @param {number} bob
- * @param {number[]} amount
- * @return {number}
- */
-const mostProfitablePath = (edges, bob, amount) => {
-  const n = amount.length;
-  let a = Array(n)
-    .fill()
-    .map(() => []);
-  for (let [i1, i2] of edges) {
-    a[i1].push(i2);
-    a[i2].push(i1);
-  }
-
-  let p = Array(n).fill(-1),
-    q = [0];
-  for (let k = 0; k < q.length; k++) {
-    let i = q[k];
-    for (let ii of a[i]) {
-      if (ii == p[i]) continue;
-      p[ii] = i;
-      q.push(ii);
+class Solution {
+  /**
+   * @param {number} bob
+   * @param {number[][]} edges
+   * @param {number[]} amount
+   * @returns {number}
+   */
+  mostProfitablePath(edges, bob, amount) {
+    const n = amount.length;
+    let a = Array(n)
+      .fill()
+      .map(() => []);
+    for (let [i1, i2] of edges) {
+      a[i1].push(i2);
+      a[i2].push(i1);
     }
-  }
+    let b = Array(n).fill(Infinity);
 
-  let b = Array(n).fill(Infinity);
-  let i = bob,
-    t = 0;
-  while (i != -1) {
-    b[i] = t++;
-    i = p[i];
-  }
-
-  let d = -Infinity;
-  let e = [[0, -1, 0, 0]];
-  while (e.length) {
-    let [i, pi, t, v] = e.pop();
-    if (t < b[i]) v += amount[i];
-    else if (t == b[i]) v += amount[i] / 2;
-    let c = true;
-    for (let ii of a[i]) {
-      if (ii == pi) continue;
-      c = false;
-      e.push([ii, i, t + 1, v]);
-    }
-    if (c) d = Math.max(v, d);
-  }
-  return d;
-};
-```
-
-```js
-/
- * @param {number[][]} edges
- * @param {number} bob
- * @param {number[]} amount
- * @return {number}
- */
-const mostProfitablePath = (edges, bob, amount) => {
-  const n = amount.length;
-  let a = Array(n)
-    .fill()
-    .map(() => []);
-  for (let [i1, i2] of edges) {
-    a[i1].push(i2);
-    a[i2].push(i1);
-  }
-  let b = Array(n).fill(Infinity);
-
-  const dfs1 = (i, p, t) => {
-    if (i == 0) {
-      b[i] = t;
-      return true;
-    }
-    for (let ii of a[i]) {
-      if (ii != p && dfs1(ii, i, t + 1)) {
+    const dfs1 = (i, p, t) => {
+      if (i == 0) {
         b[i] = t;
         return true;
       }
+      for (let ii of a[i]) {
+        if (ii != p && dfs1(ii, i, t + 1)) {
+          b[i] = t;
+          return true;
+        }
+      }
+      return false;
+    };
+
+    dfs1(bob, -1, 0);
+
+    let d = -Infinity;
+
+    const dfs2 = (i, p, t, v) => {
+      if (t < b[i]) v += amount[i];
+      else if (t == b[i]) v += amount[i] / 2;
+      let c = true;
+      for (let ii of a[i]) {
+        if (ii != p) {
+          c = false;
+          dfs2(ii, i, t + 1, v);
+        }
+      }
+      if (c) d = Math.max(v, d);
+    };
+
+    dfs2(0, -1, 0, 0);
+    return d;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {number} bob
+   * @param {number[][]} edges
+   * @param {number[]} amount
+   * @returns {number}
+   */
+  mostProfitablePath(edges, bob, amount) {
+    const n = amount.length;
+    let a = Array(n)
+      .fill()
+      .map(() => []);
+    for (let [i1, i2] of edges) {
+      a[i1].push(i2);
+      a[i2].push(i1);
     }
-    return false;
-  };
 
-  dfs1(bob, -1, 0);
-
-  let d = -Infinity;
-
-  const dfs2 = (i, p, t, v) => {
-    if (t < b[i]) v += amount[i];
-    else if (t == b[i]) v += amount[i] / 2;
-    let c = true;
-    for (let ii of a[i]) {
-      if (ii != p) {
-        c = false;
-        dfs2(ii, i, t + 1, v);
+    let p = Array(n).fill(-1),
+      q = [0];
+    for (let k = 0; k < q.length; k++) {
+      let i = q[k];
+      for (let ii of a[i]) {
+        if (ii == p[i]) continue;
+        p[ii] = i;
+        q.push(ii);
       }
     }
-    if (c) d = Math.max(v, d);
-  };
 
-  dfs2(0, -1, 0, 0);
-  return d;
-};
+    let b = Array(n).fill(Infinity);
+    let i = bob,
+      t = 0;
+    while (i != -1) {
+      b[i] = t++;
+      i = p[i];
+    }
+
+    let d = -Infinity;
+    let e = [[0, -1, 0, 0]];
+    while (e.length) {
+      let [i, pi, t, v] = e.pop();
+      if (t < b[i]) v += amount[i];
+      else if (t == b[i]) v += amount[i] / 2;
+      let c = true;
+      for (let ii of a[i]) {
+        if (ii == pi) continue;
+        c = false;
+        e.push([ii, i, t + 1, v]);
+      }
+      if (c) d = Math.max(v, d);
+    }
+    return d;
+  }
+}
 ```
 
 ---
