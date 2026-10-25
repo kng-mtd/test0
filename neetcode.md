@@ -603,6 +603,94 @@ const buildTree = (arr) => {
 
 ---
 
+## Shortest path
+
+### Label Correcting
+
+```js
+const shortestPath = (n, a, s) => {
+  let b = Array(n).fill(Infinity);
+  b[s] = 0;
+  let q = [[s, 0]];
+  while (q.length) {
+    let q0 = [];
+    while (q.length) {
+      const [i0, t0] = q.pop();
+      if (t0 > b[i0]) continue;
+      for (let [i1, w] of a[i0]) {
+        let t1 = t0 + w;
+        if (t1 < b[i1]) {
+          b[i1] = t1;
+          q0.push([i1, t1]);
+        }
+      }
+    }
+    q = q0;
+  }
+
+  return b;
+};
+
+const n = 4;
+let a = Array(n)
+  .fill()
+  .map(() => []);
+for (let [i1, i2, w] of [
+  [0, 1, 2],
+  [0, 2, 5],
+  [1, 2, 1],
+  [2, 3, 3],
+]) {
+  a[i1].push([i2, w]);
+  a[i2].push([i1, w]);
+}
+
+console.log(shortestPath(n, a, 0));
+```
+
+### Dijkstra method
+
+```js
+const dijkstra = (n, a, s) => {
+  let d = Array(n).fill(Infinity);
+  let q = [[s, 0]];
+  d[s] = 0;
+  while (q.length) {
+    q.sort((x1, x2) => x2[1] - x1[1]);
+    let [i0, t0] = q.pop();
+    if (t > d[i0]) continue;
+    for (let [i1, w] of a[i0]) {
+      let t1 = t0 + w;
+      if (t1 < d[i1]) {
+        d[i1] = t1;
+        q.push([i1, t1]);
+      }
+    }
+  }
+  return d;
+};
+
+const n = 4;
+let a = Array(n)
+  .fill()
+  .map(() => []);
+for (let [i1, i2, w] of [
+  [0, 1, 2],
+  [0, 2, 5],
+  [1, 2, 1],
+  [2, 3, 3],
+]) {
+  a[i1].push([i2, w]);
+  a[i2].push([i1, w]);
+}
+
+console.log(dijkstra(n, a, 0));
+```
+
+```js
+
+```
+
 ## Heap
 
 Min-heap Function
@@ -23337,6 +23425,46 @@ https://neetcode.io/problems/min-cost-to-connect-points/question
 ## Path with Maximum Probability
 
 https://neetcode.io/problems/path-with-maximum-probability/question
+
+```js
+
+```
+
+## Find the Safest Path in a Grid
+
+https://neetcode.io/problems/find-the-safest-path-in-a-grid/question
+
+```js
+
+```
+
+## Cheapest Flights Within K Stops
+
+https://neetcode.io/problems/cheapest-flight-path/question
+
+```js
+
+```
+
+## Find the City With the Smallest Number of Neighbors at a Threshold Distance
+
+https://neetcode.io/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/question
+
+```js
+
+```
+
+## Minimum Cost to Convert String I
+
+https://neetcode.io/problems/minimum-cost-to-convert-string-i/question
+
+```js
+
+```
+
+## Number of Ways to Arrive at Destination
+
+https://neetcode.io/problems/number-of-ways-to-arrive-at-destination/question
 
 ```js
 
