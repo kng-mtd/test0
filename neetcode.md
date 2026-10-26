@@ -611,23 +611,20 @@ const buildTree = (arr) => {
 const shortestPath = (n, a, s) => {
   let b = Array(n).fill(Infinity);
   b[s] = 0;
-  let q = [[s, 0]];
+  let q = [s];
   while (q.length) {
     let q0 = [];
     while (q.length) {
-      const [i0, t0] = q.pop();
-      if (t0 > b[i0]) continue;
+      const i0 = q.pop();
       for (let [i1, w] of a[i0]) {
-        let t1 = t0 + w;
-        if (t1 < b[i1]) {
-          b[i1] = t1;
-          q0.push([i1, t1]);
-        }
+        let c = b[i0] + w;
+        if (c >= b[i1]) continue;
+        b[i1] = c;
+        q0.push(i1);
       }
     }
     q = q0;
   }
-
   return b;
 };
 
@@ -661,10 +658,9 @@ const dijkstra = (n, a, s) => {
     if (t > d[i0]) continue;
     for (let [i1, w] of a[i0]) {
       let t1 = t0 + w;
-      if (t1 < d[i1]) {
-        d[i1] = t1;
-        q.push([i1, t1]);
-      }
+      if (t1 >= d[i1]) continue;
+      d[i1] = t1;
+      q.push([i1, t1]);
     }
   }
   return d;
@@ -7099,7 +7095,7 @@ class Solution {
 }
 ```
 
-## Non-Cyclical Number
+## Non-Cyclical Number -150
 
 https://neetcode.io/problems/non-cyclical-number/question
 
@@ -7123,7 +7119,7 @@ class Solution {
 }
 ```
 
-## Plus One
+## Plus One -150
 
 https://neetcode.io/problems/plus-one/question
 
@@ -23419,7 +23415,7 @@ https://neetcode.io/problems/path-with-minimum-effort/question
 
 ```
 
-## Network Delay Time
+## Network Delay Time -150
 
 https://neetcode.io/problems/network-delay-time/question
 
@@ -23427,7 +23423,7 @@ https://neetcode.io/problems/network-delay-time/question
 
 ```
 
-## Min Cost to Connect Points
+## Min Cost to Connect Points -150
 
 https://neetcode.io/problems/min-cost-to-connect-points/question
 
@@ -23451,7 +23447,7 @@ https://neetcode.io/problems/find-the-safest-path-in-a-grid/question
 
 ```
 
-## Cheapest Flights Within K Stops
+## Cheapest Flights Within K Stops -150
 
 https://neetcode.io/problems/cheapest-flight-path/question
 
@@ -23491,7 +23487,37 @@ https://neetcode.io/problems/number-of-ways-to-arrive-at-destination/question
 
 # Bit manupulation
 
-##
+## Single Number III
+
+https://neetcode.io/problems/single-number-iii/question
+
+```js
+
+```
+
+## Sum of Two Integers
+
+https://neetcode.io/problems/sum-of-two-integers/question
+
+```js
+
+```
+
+## Reverse Integer
+
+https://neetcode.io/problems/reverse-integer/question
+
+```js
+
+```
+
+## Bitwise XOR of All Pairings
+
+https://neetcode.io/problems/bitwise-xor-of-all-pairings/question
+
+```js
+
+```
 
 ---
 
@@ -23655,9 +23681,25 @@ https://neetcode.io/problems/regular-expression-matching/question
 
 ```
 
-## Advanced Graphs - Alien Dictionary -75
+## Advanced Graphs - Alien Dictionary -75 -150
 
 https://neetcode.io/problems/foreign-dictionary/question
+
+```js
+
+```
+
+## Advanced Graphs - Reconstruct Flight Path -150
+
+https://neetcode.io/problems/reconstruct-flight-path/question
+
+```js
+
+```
+
+## Advanced Graphs - Swim in Rising Water -150
+
+https://neetcode.io/problems/swim-in-rising-water/question
 
 ```js
 
