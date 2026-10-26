@@ -687,9 +687,7 @@ for (let [i1, i2, w] of [
 console.log(dijkstra(n, a, 0));
 ```
 
-```js
-
-```
+---
 
 ## Heap
 
@@ -22537,7 +22535,22 @@ class Solution {
 https://neetcode.io/problems/house-robber-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  rob(nums) {
+    if (nums.length == 1) return nums[0];
+    let a = 0,
+      b1 = 0,
+      b2 = 0;
+    for (let i of nums.slice(0, -1)) [a, b1] = [b1, Math.max(b1, a + i)];
+    a = 0;
+    for (let i of nums.slice(1)) [a, b2] = [b2, Math.max(b2, a + i)];
+    return Math.max(b1, b2);
+  }
+}
 ```
 
 ## Longest Palindromic Substring -75 -150
