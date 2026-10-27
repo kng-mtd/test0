@@ -2191,7 +2191,7 @@ class Solution {
    * @return {number}
    */
   heightChecker(nums) {
-    const nums0 = nums.slice();
+    const nums0 = [...nums];
     const nums1 = nums.sort((x1, x2) => x1 - x2);
     let a = 0;
     for (let i = 0; i < nums.length; i++) a = nums0[i] != nums1[i] ? a + 1 : a;
@@ -6448,10 +6448,7 @@ class Solution {
    */
   hammingWeight(n) {
     let a = 0;
-    while (n) {
-      n &= n - 1;
-      a++;
-    }
+    while(n) [n,a]=[n&(n-1),a+1];
     return a;
   }
 }
@@ -6465,10 +6462,7 @@ class Solution {
    */
   hammingWeight(n) {
     let a = 0;
-    while (n) {
-      a += n & 1;
-      n >>= 1;
-    }
+    while (n) [a,n]=[a+n&1,n>>1];
     return a;
   }
 }
@@ -6488,11 +6482,8 @@ class Solution {
     let a = [];
     for (let i = 0; i <= n; i++) {
       let b = i,
-        c = 0;
-      while (b) {
-        b &= b - 1;
-        c++;
-      }
+      c = 0;
+      while (b) [b,c]=[b&(b-1),c+1];
       a.push(c);
     }
     return a;
@@ -6626,10 +6617,7 @@ class Solution {
    */
   shuffle(nums, n) {
     let a = [];
-    for (let i = 0; i < n; i++) {
-      a.push(nums[i]);
-      a.push(nums[n + i]);
-    }
+    for (let i = 0; i < n; i++) a.push(nums[i], nums[n + i]);
     return a;
   }
 }
@@ -17717,13 +17705,13 @@ class Solution {
     for (let i of nums) {
       const b = a.length;
       for (let ii = 0; ii < b; ii++) {
-        let c = a[ii].slice();
+        let c = [...a[ii]];
         let d = a[ii].reduce((a, x) => a + x, 0);
         while (d + i <= target) {
           c.push(i);
           d += i;
-          if (d == target) e.push(c.slice());
-          else a.push(c.slice());
+          if (d == target) e.push([...c]);
+          else a.push([...c]);
         }
       }
     }
@@ -21045,7 +21033,7 @@ class Solution {
         if (b == target) return a;
         const b0 = b.split("");
         for (let i = 0; i < 4; i++) {
-          let b1 = b0.slice();
+          let b1 = [...b0];
           let c1 = ((+b0[i] + 1) % 10) + "";
           let c2 = ((+b0[i] + 9) % 10) + "";
           b1[i] = c1;
@@ -22554,7 +22542,38 @@ class Solution {
 https://neetcode.io/problems/longest-palindromic-substring/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {string}
+   */
+  longestPalindrome(s) {
+    const n = s.length;
+    let a = 0,
+      b = "";
+    for (let i = 0; i < n; i++) {
+      let l = i,
+        r = i;
+      while (l >= 0 && r < n && s[l] == s[r]) {
+        if (r - l + 1 > a) {
+          ((a = r - l + 1), (b = s.slice(l, r + 1)));
+        }
+        (l--, r++);
+      }
+    }
+    for (let i = 0; i < n; i++) {
+      let l = i,
+        r = i + 1;
+      while (l >= 0 && r < n && s[l] == s[r]) {
+        if (r - l + 1 > a) {
+          ((a = r - l + 1), (b = s.slice(l, r + 1)));
+        }
+        (l--, r++);
+      }
+    }
+    return b;
+  }
+}
 ```
 
 ## Palindromic Substrings -75 -150
