@@ -305,6 +305,14 @@ Dijkstra など
 
 ---
 
+## sleep function
+
+```js
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+```
+
+---
+
 ## 2d Array
 
 ```js
@@ -22581,7 +22589,27 @@ class Solution {
 https://neetcode.io/problems/palindromic-substrings/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  countSubstrings(s) {
+    const n = s.length;
+    let a = 0;
+    for (let i = 0; i < n; i++) {
+      let l = i,
+        r = i;
+      while (l >= 0 && r < n && s[l] == s[r]) (a++, l--, r++);
+    }
+    for (let i = 0; i < n; i++) {
+      let l = i,
+        r = i + 1;
+      while (l >= 0 && r < n && s[l] == s[r]) (a++, l--, r++);
+    }
+    return a;
+  }
+}
 ```
 
 ## Decode Ways -75 -150
@@ -23506,6 +23534,26 @@ https://neetcode.io/problems/number-of-ways-to-arrive-at-destination/question
 
 # Bit manupulation
 
+## Single Number II
+
+https://leetcode.com/problems/single-number-ii/description/
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+const singleNumber = (nums) => {
+  let a = 0,
+    b = 0;
+  for (let i of nums) {
+    a = (a ^ i) & ~b;
+    b = (b ^ i) & ~a;
+  }
+  return a;
+};
+```
+
 ## Single Number III
 
 https://neetcode.io/problems/single-number-iii/question
@@ -23533,6 +23581,38 @@ https://neetcode.io/problems/reverse-integer/question
 ## Bitwise XOR of All Pairings
 
 https://neetcode.io/problems/bitwise-xor-of-all-pairings/question
+
+```js
+
+```
+
+## Largest Combination With Bitwise AND Greater Than Zero
+
+https://neetcode.io/problems/largest-combination-with-bitwise-and-greater-than-zero/question
+
+```js
+
+```
+
+## XOR Queries of a Subarray
+
+https://neetcode.io/problems/xor-queries-of-a-subarray/question
+
+```js
+
+```
+
+## XOR Queries of a Subarray
+
+https://neetcode.io/problems/xor-queries-of-a-subarray/question
+
+```js
+
+```
+
+## Neighboring Bitwise XOR
+
+https://neetcode.io/problems/neighboring-bitwise-xor/question
 
 ```js
 
