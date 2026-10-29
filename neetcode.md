@@ -22617,7 +22617,47 @@ class Solution {
 https://neetcode.io/problems/decode-ways/question
 
 ```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  numDecodings(s) {
+    if (s[0] == "0") return 0;
+    let a = 1,
+      b = 1;
+    for (let i = 1; i < s.length; i++) {
+      let c = 0;
+      if (s[i] != "0") c = b;
+      const d = +(s[i - 1] + s[i]);
+      if (d >= 10 && d <= 26) c += a;
+      if (c == 0) return 0;
+      [a, b] = [b, c];
+    }
+    return b;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  numDecodings(s) {
+    if (s[0] == "0") return 0;
+    const n = s.length;
+    let dp = [1, 1];
+    for (let i = 1; i < n; i++) {
+      let a = +(s[i - 1] + s[i]);
+      dp[i + 1] = 0;
+      if (s[i] != "0") dp[i + 1] += dp[i];
+      if (a >= 10 && a <= 26) dp[i + 1] += dp[i - 1];
+    }
+    return dp[n];
+  }
+}
 ```
 
 ## Coin Change -75 -150
