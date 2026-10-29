@@ -23658,6 +23658,38 @@ https://neetcode.io/problems/neighboring-bitwise-xor/question
 
 ```
 
+## Shortest Subarray With OR at Least K II
+
+https://neetcode.io/problems/shortest-subarray-with-or-at-least-k-ii/question
+
+```js
+
+```
+
+## Bitwise AND of Numbers Range
+
+https://neetcode.io/problems/bitwise-and-of-numbers-range/question
+
+```js
+
+```
+
+## Find Kth Bit in Nth Binary String
+
+https://neetcode.io/problems/find-kth-bit-in-nth-binary-string/question
+
+```js
+
+```
+
+## Count Triplets That Can Form Two Arrays of Equal XOR
+
+https://neetcode.io/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/question
+
+```js
+
+```
+
 ---
 
 ---
