@@ -22665,7 +22665,41 @@ class Solution {
 https://neetcode.io/problems/coin-change/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} coins
+   * @param {number} amount
+   * @return {number}
+   */
+  coinChange(coins, amount) {
+    let dp = Array(amount + 1).fill(Infinity);
+    dp[0] = 0;
+    for (let i = 0; i < amount; i++) {
+      for (let ii of coins) dp[i + ii] = Math.min(dp[i + ii], dp[i] + 1);
+    }
+    return dp[amount] == Infinity ? -1 : dp[amount];
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} coins
+   * @param {number} amount
+   * @return {number}
+   */
+  coinChange(coins, amount) {
+    let dp = Array(amount + 1).fill(Infinity);
+    dp[0] = 0;
+    for (let i = 1; i <= amount; i++) {
+      for (let ii of coins) {
+        if (i >= ii) dp[i] = Math.min(dp[i], dp[i - ii] + 1);
+      }
+    }
+    return dp[amount] == Infinity ? -1 : dp[amount];
+  }
+}
 ```
 
 ## Maximum Product Subarray -75 -150
