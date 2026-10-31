@@ -22707,7 +22707,23 @@ class Solution {
 https://neetcode.io/problems/maximum-product-subarray/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  maxProduct(nums) {
+    let a = nums[0],
+      b = a,
+      c = a;
+    for (let i = 1; i < nums.length; i++) {
+      let d = nums[i];
+      [a, b] = [Math.max(d, a * d, b * d), Math.min(d, a * d, b * d)];
+      c = Math.max(c, a);
+    }
+    return c;
+  }
+}
 ```
 
 ## Word Break -75 -150
@@ -23719,6 +23735,54 @@ https://neetcode.io/problems/find-kth-bit-in-nth-binary-string/question
 ## Count Triplets That Can Form Two Arrays of Equal XOR
 
 https://neetcode.io/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/question
+
+```js
+
+```
+
+## Minimum Array End
+
+https://neetcode.io/problems/minimum-array-end/question
+
+```js
+
+```
+
+## Find if Array Can Be Sorted
+
+https://neetcode.io/problems/find-if-array-can-be-sorted/question
+
+```js
+
+```
+
+## Longest Subarray With Maximum Bitwise AND
+
+https://neetcode.io/problems/longest-subarray-with-maximum-bitwise-and/question
+
+```js
+
+```
+
+## Longest Nice Subarray
+
+https://neetcode.io/problems/longest-nice-subarray/question
+
+```js
+
+```
+
+## Find the Longest Substring Containing Vowels in Even Counts
+
+https://neetcode.io/problems/find-the-longest-substring-containing-vowels-in-even-counts/question
+
+```js
+
+```
+
+## Minimize XOR
+
+https://neetcode.io/problems/minimize-xor/question
 
 ```js
 
