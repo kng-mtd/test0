@@ -6426,7 +6426,7 @@ class Solution {
 
 # Bit Manupulation
 
-## Single Number
+## Single Number -150
 
 https://neetcode.io/problems/single-number/question
 
@@ -6444,7 +6444,7 @@ class Solution {
 }
 ```
 
-## Number of 1 Bits -75
+## Number of 1 Bits -75 -150
 
 https://neetcode.io/problems/number-of-one-bits/question
 
@@ -6476,7 +6476,7 @@ class Solution {
 }
 ```
 
-## Counting Bits -75
+## Counting Bits -75 -150
 
 https://neetcode.io/problems/counting-bits/question
 
@@ -6561,7 +6561,7 @@ class Solution {
 }
 ```
 
-## Reverse Bits -75
+## Reverse Bits -75 -150
 
 https://neetcode.io/problems/reverse-bits/question
 
@@ -6579,7 +6579,7 @@ class Solution {
 }
 ```
 
-## Missing Number -75
+## Missing Number -75 -150
 
 https://neetcode.io/problems/missing-number/question
 
@@ -23652,7 +23652,7 @@ https://neetcode.io/problems/single-number-iii/question
 
 ```
 
-## Sum of Two Integers
+## Sum of Two Integers -75
 
 https://neetcode.io/problems/sum-of-two-integers/question
 
@@ -23660,7 +23660,7 @@ https://neetcode.io/problems/sum-of-two-integers/question
 
 ```
 
-## Reverse Integer
+## Reverse Integer -150
 
 https://neetcode.io/problems/reverse-integer/question
 
