@@ -6730,7 +6730,7 @@ class Solution {
    */
   convertToTitle(columnNumber) {
     let n = columnNumber;
-    let a = "";
+    let a = '';
     while (n > 0) {
       n--;
       a = String.fromCharCode((n % 26) + 65) + a;
@@ -6759,7 +6759,7 @@ class Solution {
     while (true) {
       a++;
       b = str2.slice(0, str2.length / a);
-      if (str1.split(b).join("") == "" || b == "") return b;
+      if (str1.split(b).join('') == '' || b == '') return b;
     }
   }
 }
@@ -7104,7 +7104,7 @@ class Solution {
   isHappy(n) {
     let a = [];
     while (true) {
-      const arr = Array.from(n + "");
+      const arr = Array.from(n + '');
       const b = arr.map((x) => x**2).reduce((x, a) => x + a);
       if (b == 1) return true;
       if (a.indexOf(b) != -1) return false;
@@ -7126,8 +7126,8 @@ class Solution {
    * @return {number[]}
    */
   plusOne(digits) {
-    const a = digits.join("") * 1 + 1;
-    return Array.from(a + "").map(Number);
+    const a = digits.join('') * 1 + 1;
+    return Array.from(a + '').map(Number);
   }
 }
 ```
@@ -7144,7 +7144,7 @@ class Solution {
    */
   isPalindrome(x) {
     if (x < 0) return false;
-    return [...(x + "")].reverse().join("") == x + "";
+    return [...(x + '')].reverse().join('') == x + '';
   }
 }
 ```
@@ -7188,7 +7188,9 @@ class Solution {
   construct2DArray(original, m, n) {
     const l = original.length;
     if (l != m * n) return [];
-    let a = Array.from({ length: m }, () => Array(n));
+    let a = Array(m)
+      .fill()
+      .map(() => Array(n));
     for (let i = 0; i < l; i++) a[(i / n) | 0][i % n] = original[i];
     return a;
   }
@@ -24052,7 +24054,69 @@ https://neetcode.io/problems/minimize-xor/question
 
 # Math & Geometry
 
-##
+## Insert Greatest Common Divisors in Linked List
+
+https://neetcode.io/problems/insert-greatest-common-divisors-in-linked-list/question
+
+```js
+
+```
+
+## Magic Squares In Grid
+
+https://neetcode.io/problems/magic-squares-in-grid/question
+
+```js
+
+```
+
+## Rotate Image
+
+https://neetcode.io/problems/rotate-matrix/question
+
+```js
+
+```
+
+## Spiral Matrix
+
+https://neetcode.io/problems/spiral-matrix/question
+
+```js
+
+```
+
+## Spiral Matrix II
+
+https://neetcode.io/problems/spiral-matrix-ii/question
+
+```js
+
+```
+
+## Spiral Matrix III
+
+https://neetcode.io/problems/spiral-matrix-iii/question
+
+```js
+
+```
+
+## Spiral Matrix IV
+
+https://neetcode.io/problems/spiral-matrix-iv/question
+
+```js
+
+```
+
+## Set Matrix Zeroes
+
+https://neetcode.io/problems/set-zeroes-in-matrix/question
+
+```js
+
+```
 
 ---
 
