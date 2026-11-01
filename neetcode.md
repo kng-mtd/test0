@@ -22731,7 +22731,25 @@ class Solution {
 https://neetcode.io/problems/word-break/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @param {string[]} wordDict
+   * @return {boolean}
+   */
+  wordBreak(s, wordDict) {
+    const n = s.length;
+    let dp = Array(n + 1).fill(false);
+    dp[0] = true;
+    for (let i = 0; i < n; i++) {
+      if (!dp[i]) continue;
+      for (let ii of wordDict) {
+        if (ii == s.slice(i, i + ii.length)) dp[i + ii.length] = true;
+      }
+    }
+    return dp[n];
+  }
+}
 ```
 
 ## Longest Increasing Subsequence -75 -150
@@ -22739,7 +22757,46 @@ https://neetcode.io/problems/word-break/question
 https://neetcode.io/problems/longest-increasing-subsequence/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  lengthOfLIS(nums) {
+    const n = nums.length;
+    let dp = Array(n).fill(1),
+      a = 1;
+    for (let i1 = 1; i1 < n; i1++) {
+      for (let i2 = 0; i2 < i1; i2++) {
+        if (nums[i1] > nums[i2]) dp[i1] = Math.max(dp[i1], dp[i2] + 1);
+      }
+      a = Math.max(a, dp[i1]);
+    }
+    return a;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  lengthOfLIS(nums) {
+    let a = [];
+    for (let i of nums) {
+      let l = 0,
+        r = a.length;
+      while (l < r) {
+        const m = (l + r) >> 1;
+        [l, r] = a[m] < i ? [m + 1, r] : [l, m];
+      }
+      a[l] = i;
+    }
+    return a.length;
+  }
+}
 ```
 
 ## Partition Equal Subset Sum -150
@@ -22747,7 +22804,23 @@ https://neetcode.io/problems/longest-increasing-subsequence/question
 https://neetcode.io/problems/partition-equal-subset-sum/question
 
 ```js
-
+class Solution {
+    /**
+     * @param {number[]} nums
+     * @return {boolean}
+     */
+    canPartition(nums) {
+        const a = nums.reduce((a,x) => a+x);
+        if (a % 2) return false;
+        const b>>1;
+        let dp = Array(b + 1).fill(false);
+        dp[0] = true;
+        for (let i of nums) {
+            for (let ii = b; ii >= i; ii--) dp[ii] ||= dp[ii - i];
+        }
+        return dp[b];
+    }
+}
 ```
 
 ## Triangle
@@ -22755,7 +22828,23 @@ https://neetcode.io/problems/partition-equal-subset-sum/question
 https://neetcode.io/problems/triangle/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} triangle
+   * @return {number}
+   */
+  minimumTotal(triangle) {
+    for (let i = triangle.length - 2; i >= 0; i--) {
+      for (let ii = 0; ii <= i; ii++) {
+        triangle[i][ii] += Math.min(
+          triangle[i + 1][ii],
+          triangle[i + 1][ii + 1],
+        );
+      }
+    }
+    return triangle[0][0];
+  }
+}
 ```
 
 ## Delete and Earn
@@ -22763,19 +22852,21 @@ https://neetcode.io/problems/triangle/question
 https://leetcode.com/problems/delete-and-earn/description/
 
 ```js
-/
- * @param {number[]} nums
- * @return {number}
- */
-const deleteAndEarn = (nums) => {
-  const b = Math.max(...nums);
-  let a = Array(b + 1).fill(0);
-  for (let i of nums) a[i] += i;
-  let c1 = 0,
-    c2 = 0;
-  for (let i = 0; i <= b; i++) [c1, c2] = [Math.max(c1,c2 + a[i]), c1];
-  return c1;
-};
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  deleteAndEarn(nums) {
+    const b = Math.max(...nums);
+    let a = Array(b + 1).fill(0);
+    for (let i of nums) a[i] += i;
+    let c1 = 0,
+      c2 = 0;
+    for (let i = 0; i <= b; i++) [c1, c2] = [Math.max(c1, c2 + a[i]), c1];
+    return c1;
+  }
+}
 ```
 
 ## Filling Bookcase Shelves
@@ -22783,27 +22874,29 @@ const deleteAndEarn = (nums) => {
 https://leetcode.com/problems/filling-bookcase-shelves/description/
 
 ```js
-/**
- * @param {number[][]} books
- * @param {number} shelfWidth
- * @return {number}
- */
-const minHeightShelves = (books, shelfWidth) => {
-  const n = books.length;
-  let dp = Array(n + 1).fill(Infinity);
-  dp[0] = 0;
-  for (let i = 1; i <= n; i++) {
-    let w = 0,
-      h = 0;
-    for (let ii = i - 1; ii >= 0; ii--) {
-      w += books[ii][0];
-      if (w > shelfWidth) break;
-      h = Math.max(h, books[ii][1]);
-      dp[i] = Math.min(dp[i], dp[ii] + h);
+class Solution {
+  /**
+   * @param {number[][]} books
+   * @param {number} shelfWidth
+   * @return {number}
+   */
+  minHeightShelves(books, shelfWidth) {
+    const n = books.length;
+    let dp = Array(n + 1).fill(Infinity);
+    dp[0] = 0;
+    for (let i = 1; i <= n; i++) {
+      let w = 0,
+        h = 0;
+      for (let ii = i - 1; ii >= 0; ii--) {
+        w += books[ii][0];
+        if (w > shelfWidth) break;
+        h = Math.max(h, books[ii][1]);
+        dp[i] = Math.min(dp[i], dp[ii] + h);
+      }
     }
+    return dp[n];
   }
-  return dp[n];
-};
+}
 ```
 
 ## Combination Sum IV
@@ -22811,7 +22904,21 @@ const minHeightShelves = (books, shelfWidth) => {
 https://neetcode.io/problems/combination-sum-iv/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number}
+   */
+  combinationSum4(nums, target) {
+    let dp = Array(target + 1).fill(0);
+    dp[0] = 1;
+    for (let i = 0; i < target; i++) {
+      for (let ii of nums) dp[i + ii] += dp[i];
+    }
+    return dp[target];
+  }
+}
 ```
 
 ## Perfect Squares
@@ -22819,7 +22926,22 @@ https://neetcode.io/problems/combination-sum-iv/question
 https://neetcode.io/problems/perfect-squares/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  numSquares(n) {
+    let dp = Array(n + 1).fill(Infinity);
+    dp[0] = 0;
+    for (let i = 1; i <= n; i++) {
+      for (let ii = 1; ii ** 2 <= i; ii++) {
+        dp[i] = Math.min(dp[i], dp[i - ii ** 2] + 1);
+      }
+    }
+    return dp[n];
+  }
+}
 ```
 
 ## Check if There is a Valid Partition for the Array
@@ -22827,25 +22949,27 @@ https://neetcode.io/problems/perfect-squares/question
 https://leetcode.com/problems/check-if-there-is-a-valid-partition-for-the-array/description/
 
 ```js
-/**
- * @param {number[]} nums
- * @return {boolean}
- */
-const validPartition = (nums) => {
-  const n = nums.length;
-  let dp = Array(n + 1).fill(false);
-  ((dp[0] = true), (dp[2] = nums[0] == nums[1]));
-  for (let i = 3; i <= n; i++) {
-    dp[i] ||= dp[i - 2] && nums[i - 2] == nums[i - 1];
-    dp[i] ||=
-      dp[i - 3] && nums[i - 3] == nums[i - 2] && nums[i - 3] == nums[i - 1];
-    dp[i] ||=
-      dp[i - 3] &&
-      nums[i - 3] == nums[i - 2] - 1 &&
-      nums[i - 3] == nums[i - 1] - 2;
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {boolean}
+   */
+  validPartition(nums) {
+    const n = nums.length;
+    let dp = Array(n + 1).fill(false);
+    ((dp[0] = true), (dp[2] = nums[0] == nums[1]));
+    for (let i = 3; i <= n; i++) {
+      dp[i] ||= dp[i - 2] && nums[i - 2] == nums[i - 1];
+      dp[i] ||=
+        dp[i - 3] && nums[i - 3] == nums[i - 2] && nums[i - 3] == nums[i - 1];
+      dp[i] ||=
+        dp[i - 3] &&
+        nums[i - 3] == nums[i - 2] - 1 &&
+        nums[i - 3] == nums[i - 1] - 2;
+    }
+    return dp[n];
   }
-  return dp[n];
-};
+}
 ```
 
 ## Maximum Subarray Min Product
@@ -22853,50 +22977,54 @@ const validPartition = (nums) => {
 https://leetcode.com/problems/maximum-subarray-min-product/description/
 
 ```js
-/
- * @param {number[]} nums
- * @return {number}
- */
-const maxSumMinProduct = (nums) => {
-  const n = nums.length;
-  let a = 0n;
-  for (let i = 0; i < n; i++) {
-    const c = BigInt(nums[i]);
-    let b = c,
-      ii = i - 1;
-    while (ii >= 0 && nums[ii] >= nums[i]) b += BigInt(nums[ii--]);
-    ii = i + 1;
-    while (ii < n && nums[ii] >= nums[i]) b += BigInt(nums[ii++]);
-    a = a > b * c ? a : b * c;
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  maxSumMinProduct(nums) {
+    const n = nums.length;
+    let a = 0n;
+    for (let i = 0; i < n; i++) {
+      const c = BigInt(nums[i]);
+      let b = c,
+        ii = i - 1;
+      while (ii >= 0 && nums[ii] >= nums[i]) b += BigInt(nums[ii--]);
+      ii = i + 1;
+      while (ii < n && nums[ii] >= nums[i]) b += BigInt(nums[ii++]);
+      a = a > b * c ? a : b * c;
+    }
+    return Number(a % 1000000007n);
   }
-  return Number(a % 1000000007n);
-};
+}
 ```
 
 ```js
-/
- * @param {number[]} nums
- * @return {number}
- */
-const maxSumMinProduct = (nums) => {
-  const n = nums.length;
-  let a = 0n,
-    s = [0n],
-    q = [];
-  for (let i = 0; i < n; i++) s.push(s[i] + BigInt(nums[i]));
-  for (let i = 0; i <= n; i++) {
-    const x = i < n ? nums[i] : 0;
-    while (q.length && nums[q.at(-1)] > x) {
-      const ii = q.pop();
-      const l = q.length ? q.at(-1) + 1 : 0;
-      const r = i - 1;
-      const b = BigInt(nums[ii]) * (s[r + 1] - s[l]);
-      a = a > b ? a : b;
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  maxSumMinProduct(nums) {
+    const n = nums.length;
+    let a = 0n,
+      s = [0n],
+      q = [];
+    for (let i = 0; i < n; i++) s.push(s[i] + BigInt(nums[i]));
+    for (let i = 0; i <= n; i++) {
+      const x = i < n ? nums[i] : 0;
+      while (q.length && nums[q.at(-1)] > x) {
+        const ii = q.pop();
+        const l = q.length ? q.at(-1) + 1 : 0;
+        const r = i - 1;
+        const b = BigInt(nums[ii]) * (s[r + 1] - s[l]);
+        a = a > b ? a : b;
+      }
+      q.push(i);
     }
-    q.push(i);
+    return Number(a % 1000000007n);
   }
-  return Number(a % 1000000007n);
-};
+}
 ```
 
 ## Minimum Cost For Tickets
@@ -22904,7 +23032,28 @@ const maxSumMinProduct = (nums) => {
 https://neetcode.io/problems/minimum-cost-for-tickets/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} days
+   * @param {number[]} costs
+   * @return {number}
+   */
+  mincostTickets(days, costs) {
+    const n = days.length;
+    let dp = Array(n + 1).fill(Infinity);
+    dp[0] = 0;
+    for (let i = 0; i < n; i++) {
+      dp[i + 1] = Math.min(dp[i + 1], dp[i] + costs[0]);
+      let ii = i + 1;
+      while (ii < n && days[ii] < days[i] + 7) ii++;
+      dp[ii] = Math.min(dp[ii], dp[i] + costs[1]);
+      ii = i + 1;
+      while (ii < n && days[ii] < days[i] + 30) ii++;
+      dp[ii] = Math.min(dp[ii], dp[i] + costs[2]);
+    }
+    return dp[n];
+  }
+}
 ```
 
 ## Integer Break
@@ -22912,7 +23061,22 @@ https://neetcode.io/problems/minimum-cost-for-tickets/question
 https://neetcode.io/problems/integer-break/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  integerBreak(n) {
+    let dp = Array(n + 1).fill(0);
+    dp[1] = 1;
+    for (let i = 2; i <= n; i++) {
+      for (let ii = 1; ii < i; ii++) {
+        dp[i] = Math.max(dp[i], ii * Math.max(i - ii, dp[i - ii]));
+      }
+    }
+    return dp[n];
+  }
+}
 ```
 
 ## Number of Longest Increasing Subsequence
@@ -22920,28 +23084,30 @@ https://neetcode.io/problems/integer-break/question
 https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/
 
 ```js
-/**
- * @param {number[]} nums
- * @return {number}
- */
-const findNumberOfLIS = (nums) => {
-  const n = nums.length;
-  let dp = Array(n).fill(1),
-    c = Array(n).fill(1);
-  let a = 1;
-  for (let i = 0; i < n; i++) {
-    for (let ii = 0; ii < i; ii++) {
-      if (nums[ii] < nums[i]) {
-        if (dp[ii] + 1 > dp[i]) [dp[i], c[i]] = [dp[ii] + 1, c[ii]];
-        else if (dp[ii] + 1 == dp[i]) c[i] += c[ii];
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  findNumberOfLIS(nums) {
+    const n = nums.length;
+    let dp = Array(n).fill(1),
+      c = Array(n).fill(1);
+    let a = 1;
+    for (let i = 0; i < n; i++) {
+      for (let ii = 0; ii < i; ii++) {
+        if (nums[ii] < nums[i]) {
+          if (dp[ii] + 1 > dp[i]) [dp[i], c[i]] = [dp[ii] + 1, c[ii]];
+          else if (dp[ii] + 1 == dp[i]) c[i] += c[ii];
+        }
       }
+      a = Math.max(a, dp[i]);
     }
-    a = Math.max(a, dp[i]);
+    let b = 0;
+    for (let i = 0; i < n; i++) if (dp[i] == a) b += c[i];
+    return b;
   }
-  let b = 0;
-  for (let i = 0; i < n; i++) if (dp[i] == a) b += c[i];
-  return b;
-};
+}
 ```
 
 ## Uncrossed Lines
@@ -22949,26 +23115,28 @@ const findNumberOfLIS = (nums) => {
 https://leetcode.com/problems/uncrossed-lines/description/
 
 ```js
-/**
- * @param {number[]} nums1
- * @param {number[]} nums2
- * @return {number}
- */
-const maxUncrossedLines = (nums1, nums2) => {
-  const n1 = nums1.length,
-    n2 = nums2.length;
-  let dp = Array(n2 + 1).fill(0);
-  for (let i1 = 1; i1 <= n1; i1++) {
-    let a = 0;
-    for (let i2 = 1; i2 <= n2; i2++) {
-      const b = dp[i2];
-      if (nums1[i1 - 1] == nums2[i2 - 1]) dp[i2] = a + 1;
-      else dp[i2] = Math.max(dp[i2], dp[i2 - 1]);
-      a = b;
+class Solution {
+  /**
+   * @param {number[]} nums1
+   * @param {number[]} nums2
+   * @return {number}
+   */
+  maxUncrossedLines(nums1, nums2) {
+    const n1 = nums1.length,
+      n2 = nums2.length;
+    let dp = Array(n2 + 1).fill(0);
+    for (let i1 = 1; i1 <= n1; i1++) {
+      let a = 0;
+      for (let i2 = 1; i2 <= n2; i2++) {
+        const b = dp[i2];
+        if (nums1[i1 - 1] == nums2[i2 - 1]) dp[i2] = a + 1;
+        else dp[i2] = Math.max(dp[i2], dp[i2 - 1]);
+        a = b;
+      }
     }
+    return dp[n2];
   }
-  return dp[n2];
-};
+}
 ```
 
 ## Solving Questions with Brainpower
@@ -22976,38 +23144,42 @@ const maxUncrossedLines = (nums1, nums2) => {
 https://leetcode.com/problems/solving-questions-with-brainpower/description/
 
 ```js
-/**
- * @param {number[][]} questions
- * @return {number}
- */
-const mostPoints = (questions) => {
-  const n = questions.length;
-  let a = Array(n).fill(0);
-  const fn = (i) => {
-    if (i >= n) return 0;
-    if (a[i]) return a[i];
-    const [b, c] = questions[i];
-    a[i] = Math.max(fn(i + 1), b + fn(i + 1 + c));
-    return a[i];
-  };
-  return fn(0);
-};
+class Solution {
+  /**
+   * @param {number[][]} questions
+   * @return {number}
+   */
+  mostPoints(questions) {
+    const n = questions.length;
+    let a = Array(n).fill(0);
+    const fn = (i) => {
+      if (i >= n) return 0;
+      if (a[i]) return a[i];
+      const [b, c] = questions[i];
+      a[i] = Math.max(fn(i + 1), b + fn(i + 1 + c));
+      return a[i];
+    };
+    return fn(0);
+  }
+}
 ```
 
 ```js
-/**
- * @param {number[][]} questions
- * @return {number}
- */
-const mostPoints = (questions) => {
-  const n = questions.length;
-  let dp = Array(n + 1).fill(0);
-  for (let i = n - 1; i >= 0; i--) {
-    const [a, b] = questions[i];
-    dp[i] = Math.max(dp[i + 1], a + dp[Math.min(i + b + 1, n)]);
+class Solution {
+  /**
+   * @param {number[][]} questions
+   * @return {number}
+   */
+  mostPoints(questions) {
+    const n = questions.length;
+    let a = Array(n + 1).fill(0);
+    for (let i = n - 1; i >= 0; i--) {
+      const [b, c] = questions[i];
+      a[i] = Math.max(a[i + 1], b + (a[i + c + 1] || 0));
+    }
+    return a[0];
   }
-  return dp[0];
-};
+}
 ```
 
 ## Count Ways To Build Good Strings
@@ -23015,25 +23187,27 @@ const mostPoints = (questions) => {
 https://leetcode.com/problems/count-ways-to-build-good-strings/description/
 
 ```js
-/**
- * @param {number} low
- * @param {number} high
- * @param {number} zero
- * @param {number} one
- * @return {number}
- */
-const countGoodStrings = (low, high, zero, one) => {
-  const m = 1e9 + 7;
-  let dp = Array(high + 1).fill(0);
-  dp[0] = 1;
-  for (let i = 1; i <= high; i++) {
-    if (i >= zero) dp[i] = (dp[i] + dp[i - zero]) % m;
-    if (i >= one) dp[i] = (dp[i] + dp[i - one]) % m;
+class Solution {
+  /**
+   * @param {number} low
+   * @param {number} high
+   * @param {number} zero
+   * @param {number} one
+   * @return {number}
+   */
+  countGoodStrings(low, high, zero, one) {
+    const m = 1e9 + 7;
+    let dp = Array(high + 1).fill(0);
+    dp[0] = 1;
+    for (let i = 1; i <= high; i++) {
+      if (i >= zero) dp[i] = (dp[i] + dp[i - zero]) % m;
+      if (i >= one) dp[i] = (dp[i] + dp[i - one]) % m;
+    }
+    let a = 0;
+    for (let i = low; i <= high; i++) a = (a + dp[i]) % m;
+    return a;
   }
-  let a = 0;
-  for (let i = low; i <= high; i++) a = (a + dp[i]) % m;
-  return a;
-};
+}
 ```
 
 ## Ugly Number II
@@ -23041,25 +23215,27 @@ const countGoodStrings = (low, high, zero, one) => {
 https://leetcode.com/problems/ugly-number-ii/description/
 
 ```js
-/**
- * @param {number} n
- * @return {number}
- */
-const nthUglyNumber = (n) => {
-  if (n < 7) return n;
-  let dp = Array(n);
-  dp[0] = 1;
-  let i2 = 0,
-    i3 = 0,
-    i5 = 0;
-  for (let i = 1; i < n; i++) {
-    dp[i] = Math.min(dp[i2] * 2, dp[i3] * 3, dp[i5] * 5);
-    if (dp[i] == dp[i2] * 2) i2++;
-    if (dp[i] == dp[i3] * 3) i3++;
-    if (dp[i] == dp[i5] * 5) i5++;
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  nthUglyNumber(n) {
+    if (n < 7) return n;
+    let dp = Array(n);
+    dp[0] = 1;
+    let i2 = 0,
+      i3 = 0,
+      i5 = 0;
+    for (let i = 1; i < n; i++) {
+      dp[i] = Math.min(dp[i2] * 2, dp[i3] * 3, dp[i5] * 5);
+      if (dp[i] == dp[i2] * 2) i2++;
+      if (dp[i] == dp[i3] * 3) i3++;
+      if (dp[i] == dp[i5] * 5) i5++;
+    }
+    return dp[n - 1];
   }
-  return dp[n - 1];
-};
+}
 ```
 
 ## New 21 Game
@@ -23067,7 +23243,49 @@ const nthUglyNumber = (n) => {
 https://neetcode.io/problems/new-21-game/question
 
 ```js
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number} k
+   * @param {number} maxPts
+   * @return {number}
+   */
+  new21Game(n, k, maxPts) {
+    let dp = Array(n + 1).fill(0);
+    dp[0] = 1;
+    for (let i = 1; i <= n; i++) {
+      for (let ii = 1; ii <= maxPts; ii++) {
+        if (i - ii < 0) break;
+        if (i - ii >= k) continue;
+        dp[i] += dp[i - ii] / maxPts;
+      }
+    }
+    return dp.slice(k).reduce((a, x) => a + x);
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number} k
+   * @param {number} maxPts
+   * @return {number}
+   */
+  new21Game(n, k, maxPts) {
+    if (k == 0 || n >= k + maxPts - 1) return 1;
+    let dp = Array(n + 1).fill(0);
+    dp[0] = 1;
+    let a = 1;
+    for (let i = 1; i <= n; i++) {
+      dp[i] = a / maxPts;
+      if (i < k) a += dp[i];
+      if (i - maxPts >= 0 && i - maxPts < k) a -= dp[i - maxPts];
+    }
+    return dp.slice(k).reduce((a, x) => a + x);
+  }
+}
 ```
 
 ## Best Team with no Conflicts
@@ -23075,25 +23293,27 @@ https://neetcode.io/problems/new-21-game/question
 https://leetcode.com/problems/best-team-with-no-conflicts/description/
 
 ```js
-/**
- * @param {number[]} scores
- * @param {number[]} ages
- * @return {number}
- */
-const bestTeamScore = (scores, ages) => {
-  const n = ages.length;
-  let a = [];
-  for (let i = 0; i < n; i++) a.push([scores[i], ages[i]]);
-  a.sort((x1, x2) => x1[1] - x2[1] || x1[0] - x2[0]);
-  let dp = Array(n).fill(0);
-  for (let i = 0; i < n; i++) {
-    dp[i] = a[i][0];
-    for (let ii = 0; ii < i; ii++) {
-      if (a[ii][0] <= a[i][0]) dp[i] = Math.max(dp[i], dp[ii] + a[i][0]);
+class Solution {
+  /**
+   * @param {number[]} scores
+   * @param {number[]} ages
+   * @return {number}
+   */
+  bestTeamScore(scores, ages) {
+    const n = ages.length;
+    let a = [];
+    for (let i = 0; i < n; i++) a.push([scores[i], ages[i]]);
+    a.sort((x1, x2) => x1[1] - x2[1] || x1[0] - x2[0]);
+    let dp = Array(n).fill(0);
+    for (let i = 0; i < n; i++) {
+      dp[i] = a[i][0];
+      for (let ii = 0; ii < i; ii++) {
+        if (a[ii][0] <= a[i][0]) dp[i] = Math.max(dp[i], dp[ii] + a[i][0]);
+      }
     }
+    return Math.max(...dp);
   }
-  return Math.max(...dp);
-};
+}
 ```
 
 ## Longest String Chain
@@ -23101,49 +23321,53 @@ const bestTeamScore = (scores, ages) => {
 https://leetcode.com/problems/longest-string-chain/description/
 
 ```js
-/**
- * @param {string[]} words
- * @return {number}
- */
-const longestStrChain = (words) => {
-  let dp = {},
-    a = [];
-  for (let i of words) {
-    dp[i] = 1;
-    (a[i.length] ??= []).push(i);
-  }
-  for (let i = 1; i < a.length; i++) {
-    if (!a[i]) continue;
-    for (let c0 of a[i]) {
-      for (let ii = 0; ii < c0.length; ii++) {
-        const c1 = c0.slice(0, ii) + c0.slice(ii + 1);
-        if (dp[c1]) dp[c0] = Math.max(dp[c0], dp[c1] + 1);
+class Solution {
+  /**
+   * @param {string[]} words
+   * @return {number}
+   */
+  longestStrChain(words) {
+    let dp = {},
+      a = [];
+    for (let i of words) {
+      dp[i] = 1;
+      (a[i.length] ??= []).push(i);
+    }
+    for (let i = 1; i < a.length; i++) {
+      if (!a[i]) continue;
+      for (let c0 of a[i]) {
+        for (let ii = 0; ii < c0.length; ii++) {
+          const c1 = c0.slice(0, ii) + c0.slice(ii + 1);
+          if (dp[c1]) dp[c0] = Math.max(dp[c0], dp[c1] + 1);
+        }
       }
     }
+    return Math.max(...Object.values(dp));
   }
-  return Math.max(...Object.values(dp));
-};
+}
 ```
 
 ```js
-/**
- * @param {string[]} words
- * @return {number}
- */
-const longestStrChain = (words) => {
-  words.sort((x1, x2) => x1.length - x2.length);
-  let dp = {},
-    a = 1;
-  for (let c0 of words) {
-    dp[c0] = 1;
-    for (let i = 0; i < c0.length; i++) {
-      const c1 = c0.slice(0, i) + c0.slice(i + 1);
-      if (dp[c1]) dp[c0] = Math.max(dp[c0], dp[c1] + 1);
+class Solution {
+  /**
+   * @param {string[]} words
+   * @return {number}
+   */
+  longestStrChain(words) {
+    words.sort((x1, x2) => x1.length - x2.length);
+    let dp = {},
+      a = 1;
+    for (let c0 of words) {
+      dp[c0] = 1;
+      for (let i = 0; i < c0.length; i++) {
+        const c1 = c0.slice(0, i) + c0.slice(i + 1);
+        if (dp[c1]) dp[c0] = Math.max(dp[c0], dp[c1] + 1);
+      }
+      a = Math.max(a, dp[c0]);
     }
-    a = Math.max(a, dp[c0]);
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ## Knight Dialer
@@ -23151,34 +23375,36 @@ const longestStrChain = (words) => {
 https://leetcode.com/problems/knight-dialer/description/
 
 ```js
-/**
- * @param {number} n
- * @return {number}
- */
-const knightDialer = (n) => {
-  const a = [
-    [4, 6],
-    [6, 8],
-    [7, 9],
-    [4, 8],
-    [0, 3, 9],
-    [],
-    [0, 1, 7],
-    [2, 6],
-    [1, 3],
-    [2, 4],
-  ];
-  let b = Array(10).fill(1),
-    c = 10;
-  for (let i = 1; i < n; i++) {
-    let b0 = Array(10).fill(0);
-    for (let ii = 0; ii < 10; ii++) {
-      for (let iii of a[ii]) b0[iii] = (b0[iii] + b[ii]) % (1e9 + 7);
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  knightDialer(n) {
+    const a = [
+      [4, 6],
+      [6, 8],
+      [7, 9],
+      [4, 8],
+      [0, 3, 9],
+      [],
+      [0, 1, 7],
+      [2, 6],
+      [1, 3],
+      [2, 4],
+    ];
+    let b = Array(10).fill(1),
+      c = 10;
+    for (let i = 1; i < n; i++) {
+      let b0 = Array(10).fill(0);
+      for (let ii = 0; ii < 10; ii++) {
+        for (let iii of a[ii]) b0[iii] = (b0[iii] + b[ii]) % (1e9 + 7);
+      }
+      b = b0;
     }
-    b = b0;
+    return b.reduce((a, x) => (a + x) % (1e9 + 7));
   }
-  return b.reduce((a, x) => (a + x) % (1e9 + 7));
-};
+}
 ```
 
 ## Partition Array for Maximum Sum
@@ -23186,23 +23412,25 @@ const knightDialer = (n) => {
 https://leetcode.com/problems/partition-array-for-maximum-sum/description/
 
 ```js
-/**
- * @param {number[]} arr
- * @param {number} k
- * @return {number}
- */
-const maxSumAfterPartitioning = (arr, k) => {
-  const n = arr.length;
-  let dp = Array(n + 1).fill(0);
-  for (let i = 1; i <= n; i++) {
-    let a = 0;
-    for (let ii = 1; ii <= k && ii <= i; ii++) {
-      a = Math.max(a, arr[i - ii]);
-      dp[i] = Math.max(dp[i], dp[i - ii] + a * ii);
+class Solution {
+  /**
+   * @param {number[]} arr
+   * @param {number} k
+   * @return {number}
+   */
+  maxSumAfterPartitioning(arr, k) {
+    const n = arr.length;
+    let dp = Array(n + 1).fill(0);
+    for (let i = 1; i <= n; i++) {
+      let a = 0;
+      for (let ii = 1; ii <= k && ii <= i; ii++) {
+        a = Math.max(a, arr[i - ii]);
+        dp[i] = Math.max(dp[i], dp[i - ii] + a * ii);
+      }
     }
+    return dp[n];
   }
-  return dp[n];
-};
+}
 ```
 
 ## Largest Divisible Subset
@@ -23210,7 +23438,35 @@ const maxSumAfterPartitioning = (arr, k) => {
 https://neetcode.io/problems/largest-divisible-subset/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  largestDivisibleSubset(nums) {
+    nums.sort((x1, x2) => x1 - x2);
+    const n = nums.length;
+    let dp = Array(n).fill(1);
+    let a = Array(n).fill(-1);
+    let b = 0;
+    for (let i = 1; i < n; i++) {
+      for (let ii = 0; ii < i; ii++) {
+        if (nums[i] % nums[ii]) continue;
+        if (dp[ii] + 1 > dp[i]) {
+          dp[i] = dp[ii] + 1;
+          a[i] = ii;
+        }
+      }
+      if (dp[i] > dp[b]) b = i;
+    }
+    let c = [];
+    while (b != -1) {
+      c.push(nums[b]);
+      b = a[b];
+    }
+    return c.reverse();
+  }
+}
 ```
 
 ---
