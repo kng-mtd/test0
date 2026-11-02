@@ -23484,7 +23484,24 @@ class Solution {
 https://neetcode.io/problems/count-paths/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} m
+   * @param {number} n
+   * @return {number}
+   */
+  uniquePaths(m, n) {
+    let dp = Array(m)
+      .fill()
+      .map((x) => Array(n).fill(0));
+    for (let i = 0; i < m; i++) dp[i][0] = 1;
+    for (let j = 0; j < n; j++) dp[0][j] = 1;
+    for (let i = 1; i < m; i++) {
+      for (let j = 1; j < n; j++) dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    }
+    return dp[m - 1][n - 1];
+  }
+}
 ```
 
 ## Unique Paths II
@@ -24113,6 +24130,70 @@ https://neetcode.io/problems/spiral-matrix-iv/question
 ## Set Matrix Zeroes
 
 https://neetcode.io/problems/set-zeroes-in-matrix/question
+
+```js
+
+```
+
+## Integer to Roman
+
+https://neetcode.io/problems/integer-to-roman/question
+
+```js
+
+```
+
+## Pow(x, n)
+
+https://neetcode.io/problems/pow-x-n/question
+
+```js
+
+```
+
+## Find the Punishment Number of an Integer
+
+https://neetcode.io/problems/find-the-punishment-number-of-an-integer/question
+
+```js
+
+```
+
+## Check if Number is a Sum of Powers of Three
+
+https://neetcode.io/problems/check-if-number-is-a-sum-of-powers-of-three/question
+
+```js
+
+```
+
+## Multiply Strings
+
+https://neetcode.io/problems/multiply-strings/question
+
+```js
+
+```
+
+## Detect Squares
+
+https://neetcode.io/problems/count-squares/question
+
+```js
+
+```
+
+## Robot Bounded In Circle
+
+https://neetcode.io/problems/robot-bounded-in-circle/question
+
+```js
+
+```
+
+## Walking Robot Simulation
+
+https://neetcode.io/problems/walking-robot-simulation/question
 
 ```js
 
