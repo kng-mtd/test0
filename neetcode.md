@@ -23504,12 +23504,74 @@ class Solution {
 }
 ```
 
+```js
+class Solution {
+  /**
+   * @param {number} m
+   * @param {number} n
+   * @return {number}
+   */
+  uniquePaths(m, n) {
+    let dp = Array(n).fill(1);
+    for (let i = 1; i < m; i++) {
+      for (let j = 1; j < n; j++) dp[j] += dp[j - 1];
+    }
+    return dp[n - 1];
+  }
+}
+```
+
 ## Unique Paths II
 
 https://neetcode.io/problems/unique-paths-ii/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  uniquePathsWithObstacles(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let dp = Array(m)
+      .fill()
+      .map((x) => Array(n).fill(0));
+    if (grid[0][0]) return 0;
+    dp[0][0] = 1;
+    for (let i = 1; i < m; i++) dp[i][0] = dp[i - 1][0] * !grid[i][0];
+    for (let j = 1; j < n; j++) dp[0][j] = dp[0][j - 1] * !grid[0][j];
+    for (let i = 1; i < m; i++) {
+      for (let j = 1; j < n; j++) {
+        if (grid[i][j]) continue;
+        dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+      }
+    }
+    return dp[m - 1][n - 1];
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  uniquePathsWithObstacles(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    let dp = Array(n).fill(0);
+    dp[0] = 1;
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j]) dp[j] = 0;
+        else if (j > 0) dp[j] += dp[j - 1];
+      }
+    }
+    return dp[n - 1];
+  }
+}
 ```
 
 ## Minimum Path Sum
