@@ -23580,7 +23580,24 @@ class Solution {
 https://neetcode.io/problems/minimum-path-sum/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  minPathSum(grid) {
+    const m = grid.length,
+      n = grid[0].length;
+    for (let i = 1; i < m; i++) grid[i][0] += grid[i - 1][0];
+    for (let j = 1; j < n; j++) grid[0][j] += grid[0][j - 1];
+    for (let i = 1; i < m; i++) {
+      for (let j = 1; j < n; j++) {
+        grid[i][j] += Math.min(grid[i - 1][j], grid[i][j - 1]);
+      }
+    }
+    return grid[m - 1][n - 1];
+  }
+}
 ```
 
 ## Maximum Number of Points with Cost
@@ -24257,6 +24274,38 @@ https://neetcode.io/problems/robot-bounded-in-circle/question
 ## Walking Robot Simulation
 
 https://neetcode.io/problems/walking-robot-simulation/question
+
+```js
+
+```
+
+## Zigzag Conversion
+
+https://neetcode.io/problems/zigzag-conversion/question
+
+```js
+
+```
+
+## Rotating the Box
+
+https://neetcode.io/problems/rotating-the-box/question
+
+```js
+
+```
+
+## Sum of Square Numbers
+
+https://neetcode.io/problems/sum-of-square-numbers/question
+
+```js
+
+```
+
+## Find Missing Observations
+
+https://neetcode.io/problems/find-missing-observations/question
 
 ```js
 
