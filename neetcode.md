@@ -23605,7 +23605,28 @@ class Solution {
 https://neetcode.io/problems/maximum-number-of-points-with-cost/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} points
+   * @return {number}
+   */
+  maxPoints(points) {
+    const m = points.length,
+      n = points[0].length;
+    let dp = [...points[0]];
+    for (let i = 1; i < m; i++) {
+      let a = Array(n),
+        b = Array(n);
+      a[0] = dp[0];
+      b[n - 1] = dp[n - 1];
+      for (let j = 1; j < n; j++) a[j] = Math.max(dp[j], a[j - 1] - 1);
+      for (let j = n - 2; j >= 0; j--) b[j] = Math.max(dp[j], b[j + 1] - 1);
+      for (let j = 0; j < n; j++) a[j] = points[i][j] + Math.max(a[j], b[j]);
+      dp = a;
+    }
+    return Math.max(...dp);
+  }
+}
 ```
 
 ## Longest Common Subsequence -75 -150
@@ -24306,6 +24327,38 @@ https://neetcode.io/problems/sum-of-square-numbers/question
 ## Find Missing Observations
 
 https://neetcode.io/problems/find-missing-observations/question
+
+```js
+
+```
+
+## Minimum Time Difference
+
+https://neetcode.io/problems/minimum-time-difference/question
+
+```js
+
+```
+
+## Minimum Operations to Make a Uni-Value Grid
+
+https://neetcode.io/problems/minimum-operations-to-make-a-uni-value-grid/question
+
+```js
+
+```
+
+## Largest Submatrix With Rearrangements
+
+https://neetcode.io/problems/largest-submatrix-with-rearrangements/question
+
+```js
+
+```
+
+## Tuple with Same Product
+
+https://neetcode.io/problems/tuple-with-same-product/question
 
 ```js
 
