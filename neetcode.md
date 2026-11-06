@@ -23634,7 +23634,25 @@ class Solution {
 https://neetcode.io/problems/longest-common-subsequence/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} text1
+   * @param {string} text2
+   * @return {number}
+   */
+  longestCommonSubsequence(text1, text2) {
+    const m = text1.length,
+      n = text2.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (text1[i - 1] == text2[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+        else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+    return dp[m][n];
+  }
+}
 ```
 
 ## Longest Palindromic Subsequence
@@ -24188,7 +24206,7 @@ https://neetcode.io/problems/magic-squares-in-grid/question
 
 ```
 
-## Rotate Image
+## Rotate Image -75 -150
 
 https://neetcode.io/problems/rotate-matrix/question
 
@@ -24196,7 +24214,7 @@ https://neetcode.io/problems/rotate-matrix/question
 
 ```
 
-## Spiral Matrix
+## Spiral Matrix -75 -150
 
 https://neetcode.io/problems/spiral-matrix/question
 
@@ -24228,7 +24246,7 @@ https://neetcode.io/problems/spiral-matrix-iv/question
 
 ```
 
-## Set Matrix Zeroes
+## Set Matrix Zeroes -75 -150
 
 https://neetcode.io/problems/set-zeroes-in-matrix/question
 
@@ -24244,7 +24262,7 @@ https://neetcode.io/problems/integer-to-roman/question
 
 ```
 
-## Pow(x, n)
+## Pow(x, n) -150
 
 https://neetcode.io/problems/pow-x-n/question
 
@@ -24268,7 +24286,7 @@ https://neetcode.io/problems/check-if-number-is-a-sum-of-powers-of-three/questio
 
 ```
 
-## Multiply Strings
+## Multiply Strings -150
 
 https://neetcode.io/problems/multiply-strings/question
 
@@ -24276,7 +24294,7 @@ https://neetcode.io/problems/multiply-strings/question
 
 ```
 
-## Detect Squares
+## Detect Squares -150
 
 https://neetcode.io/problems/count-squares/question
 
@@ -24359,6 +24377,62 @@ https://neetcode.io/problems/largest-submatrix-with-rearrangements/question
 ## Tuple with Same Product
 
 https://neetcode.io/problems/tuple-with-same-product/question
+
+```js
+
+```
+
+## Lexicographical Numbers
+
+https://neetcode.io/problems/lexicographical-numbers/question
+
+```js
+
+```
+
+## Find the Winner of the Circular Game
+
+https://neetcode.io/problems/find-the-winner-of-the-circular-game/question
+
+```js
+
+```
+
+## Count Total Number of Colored Cells
+
+https://neetcode.io/problems/count-total-number-of-colored-cells/question
+
+```js
+
+```
+
+## Prime Subtraction Operation
+
+https://neetcode.io/problems/prime-subtraction-operation/question
+
+```js
+
+```
+
+## Closest Prime Numbers in Range
+
+https://neetcode.io/problems/closest-prime-numbers-in-range/question
+
+```js
+
+```
+
+## Count Primes
+
+https://neetcode.io/problems/count-primes/question
+
+```js
+
+```
+
+## Distribute Candies Among Children II
+
+https://neetcode.io/problems/distribute-candies-among-children-ii/question
 
 ```js
 
