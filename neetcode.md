@@ -23660,7 +23660,25 @@ class Solution {
 https://neetcode.io/problems/longest-palindromic-subsequence/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  longestPalindromeSubseq(s) {
+    const s1 = s.split("").reverse().join("");
+    const m = s.length,
+      n = s1.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (s[i - 1] == s1[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+        else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+    return dp[m][n];
+  }
+}
 ```
 
 ## Length of Longest Fibonacci Subsequence
@@ -23668,59 +23686,63 @@ https://neetcode.io/problems/longest-palindromic-subsequence/question
 https://leetcode.com/problems/length-of-longest-fibonacci-subsequence/description/
 
 ```js
-/**
- * @param {number[]} arr
- * @return {number}
- */
-const lenLongestFibSubseq = (arr) => {
-  const n = arr.length;
-  const dp = Array(n)
-    .fill()
-    .map((x) => Array(n).fill(2));
-  let a = 0;
-  for (let i = 2; i < n; i++) {
-    for (let j = 1; j < i; j++) {
-      for (let k = 0; k < j; k++) {
-        if (arr[k] + arr[j] == arr[i]) {
-          dp[j][i] = dp[k][j] + 1;
-          a = Math.max(a, dp[j][i]);
-          break;
+class Solution {
+  /**
+   * @param {number[]} arr
+   * @return {number}
+   */
+  lenLongestFibSubseq(arr) {
+    const n = arr.length;
+    const dp = Array(n)
+      .fill()
+      .map((x) => Array(n).fill(2));
+    let a = 0;
+    for (let i = 2; i < n; i++) {
+      for (let j = 1; j < i; j++) {
+        for (let k = 0; k < j; k++) {
+          if (arr[k] + arr[j] == arr[i]) {
+            dp[j][i] = dp[k][j] + 1;
+            a = Math.max(a, dp[j][i]);
+            break;
+          }
         }
       }
     }
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ```js
-/**
- * @param {number[]} arr
- * @return {number}
- */
-const lenLongestFibSubseq = (arr) => {
-  const n = arr.length;
-  const dp = Array(n)
-    .fill()
-    .map((x) => Array(n).fill(2));
-  let a = 0;
-  for (let i = 2; i < n; i++) {
-    let i1 = 0,
-      i2 = i - 1;
-    while (i1 < i2) {
-      const b = arr[i1] + arr[i2];
-      if (b < arr[i]) i1++;
-      else if (b > arr[i]) i2--;
-      else {
-        dp[i2][i] = dp[i1][i2] + 1;
-        a = Math.max(a, dp[i2][i]);
-        i1++;
-        i2--;
+class Solution {
+  /**
+   * @param {number[]} arr
+   * @return {number}
+   */
+  lenLongestFibSubseq(arr) {
+    const n = arr.length;
+    const dp = Array(n)
+      .fill()
+      .map((x) => Array(n).fill(2));
+    let a = 0;
+    for (let i = 2; i < n; i++) {
+      let i1 = 0,
+        i2 = i - 1;
+      while (i1 < i2) {
+        const b = arr[i1] + arr[i2];
+        if (b < arr[i]) i1++;
+        else if (b > arr[i]) i2--;
+        else {
+          dp[i2][i] = dp[i1][i2] + 1;
+          a = Math.max(a, dp[i2][i]);
+          i1++;
+          i2--;
+        }
       }
     }
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ## Last Stone Weight II
@@ -23728,7 +23750,28 @@ const lenLongestFibSubseq = (arr) => {
 https://neetcode.io/problems/last-stone-weight-ii/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} stones
+   * @return {number}
+   */
+  lastStoneWeightII(stones) {
+    const sum = stones.reduce((a, b) => a + b, 0);
+    const n = Math.floor(sum / 2);
+    let dp = Array(n + 1).fill(false);
+    dp[0] = true;
 
+    for (let i of stones) {
+      for (let j = n; j >= i; j--) {
+        dp[j] = dp[j] || dp[j - i];
+      }
+    }
+
+    for (let i = n; i >= 0; i--) {
+      if (dp[i]) return sum - i * 2;
+    }
+  }
+}
 ```
 
 ## Best Time to Buy and Sell Stock with Cooldown -150
@@ -23736,7 +23779,23 @@ https://neetcode.io/problems/last-stone-weight-ii/question
 https://neetcode.io/problems/buy-and-sell-crypto-with-cooldown/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} prices
+   * @return {number}
+   */
+  maxProfit(prices) {
+    const n = prices.length;
+    let a = Array(n).fill(0),
+      b = Array(n).fill(0);
+    a[0] = -prices[0];
+    for (let i = 1; i < n; i++) {
+      a[i] = Math.max(a[i - 1], (i >= 2 ? b[i - 2] : 0) - prices[i]);
+      b[i] = Math.max(b[i - 1], a[i - 1] + prices[i]);
+    }
+    return b[n - 1];
+  }
+}
 ```
 
 ## Coin Change II -150
@@ -23744,7 +23803,21 @@ https://neetcode.io/problems/buy-and-sell-crypto-with-cooldown/question
 https://neetcode.io/problems/coin-change-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} amount
+   * @param {number[]} coins
+   * @return {number}
+   */
+  change(amount, coins) {
+    let dp = Array(amount + 1).fill(0);
+    dp[0] = 1;
+    for (let i of coins) {
+      for (let ii = i; i <= amount; i++) dp[i] += dp[i - ii];
+    }
+    return dp[amount];
+  }
+}
 ```
 
 ## Target Sum -150
@@ -23752,7 +23825,26 @@ https://neetcode.io/problems/coin-change-ii/question
 https://neetcode.io/problems/target-sum/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} target
+   * @return {number}
+   */
+  findTargetSumWays(nums, target) {
+    let b = nums.reduce((a, x) => a + Math.abs(x), 0);
+    if (Math.abs(target) > b) return 0;
+    let a = Array(b * 2 + 1).fill(0);
+    a[b] = 1;
+    for (let i of nums) {
+      let a1 = Array(b * 2 + 1).fill(0);
+      for (let ii = 0; ii <= b * 2; ii++)
+        a1[ii] = (a[ii - i] ?? 0) + (a[ii + i] ?? 0);
+      a = a1;
+    }
+    return a[target + b];
+  }
+}
 ```
 
 ## Interleaving String -150
@@ -23760,7 +23852,102 @@ https://neetcode.io/problems/target-sum/question
 https://neetcode.io/problems/interleaving-string/question
 
 ```js
+class Solution {
+  /**
+   * @param {string} s1
+   * @param {string} s2
+   * @param {string} s3
+   * @return {boolean}
+   */
+  isInterleave(s1, s2, s3) {
+    const n1 = s1.length,
+      n2 = s2.length,
+      n3 = s3.length;
+    if (n3 != n1 + n2) return false;
+    let a = [[0, 0]],
+      i = 0;
+    while (a.length) {
+      let a1 = [];
+      while (a.length) {
+        const [i1, i2] = a.pop();
+        i = i1 + i2;
+        if (i == n3) return true;
+        if (s3[i] == s1[i1]) a1.push([i1 + 1, i2]);
+        if (s3[i] == s2[i2]) a1.push([i1, i2 + 1]);
+      }
+      a = a1;
+    }
+    return false;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {string} s1
+   * @param {string} s2
+   * @param {string} s3
+   * @return {boolean}
+   */
+  isInterleave(s1, s2, s3) {
+    const n1 = s1.length,
+      n2 = s2.length,
+      n3 = s3.length;
+    if (n3 != n1 + n2) return false;
+    let a = [[0, 0]],
+      vst = Array(n1 + 1)
+        .fill()
+        .map((x) => Array(n2 + 1).fill(false));
+    vst[0][0] = true;
+    while (a.length) {
+      let a1 = [];
+      while (a.length) {
+        const [i1, i2] = a.pop(),
+          i = i1 + i2;
+        if (i == n3) return true;
+        if (s3[i] == s1[i1] && !vst[i1 + 1][i2]) {
+          vst[i1 + 1][i2] = true;
+          a1.push([i1 + 1, i2]);
+        }
+        if (s3[i] == s2[i2] && !vst[i1][i2 + 1]) {
+          vst[i1][i2 + 1] = true;
+          a1.push([i1, i2 + 1]);
+        }
+      }
+      a = a1;
+    }
+    return false;
+  }
+}
+```
+
+```js
+class Solution {
+  /**
+   * @param {string} s1
+   * @param {string} s2
+   * @param {string} s3
+   * @return {boolean}
+   */
+  isInterleave(s1, s2, s3) {
+    const n1 = s1.length,
+      n2 = s2.length,
+      n3 = s3.length;
+    if (n3 != n1 + n2) return false;
+    let a = Array(n2 + 1).fill(false);
+    a[0] = true;
+    for (let j = 1; j <= n2; j++) a[j] = a[j - 1] && s2[j - 1] == s3[j - 1];
+    for (let i = 1; i <= n1; i++) {
+      a[0] = a[0] && s1[i - 1] == s3[i - 1];
+      for (let j = 1; j <= n2; j++) {
+        const k = i + j - 1;
+        a[j] = (a[j] && s1[i - 1] == s3[k]) || (a[j - 1] && s2[j - 1] == s3[k]);
+      }
+    }
+    return a[n2];
+  }
+}
 ```
 
 ## Stone Game
@@ -23768,7 +23955,34 @@ https://neetcode.io/problems/interleaving-string/question
 https://neetcode.io/problems/stone-game/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} piles
+   * @return {boolean}
+   */
+  stoneGame(piles) {
+    const n = piles.length;
+    let dp = piles.slice();
+    for (let l = n - 2; l >= 0; l--) {
+      for (let r = l + 1; r < n; r++) {
+        dp[r] = Math.max(piles[l] - dp[r], piles[r] - dp[r - 1]);
+      }
+    }
+    return dp[n - 1] > 0;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[]} piles
+   * @return {boolean}
+   */
+  stoneGame(piles) {
+    return true;
+  }
+}
 ```
 
 ## Stone Game II
@@ -23776,7 +23990,32 @@ https://neetcode.io/problems/stone-game/question
 https://neetcode.io/problems/stone-game-ii/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[]} piles
+   * @return {number}
+   */
+  stoneGameII(piles) {
+    const n = piles.length;
+    let dp = Array(n)
+      .fill()
+      .map((x) => Array(n + 1).fill(-1));
+    let a = Array(n + 1).fill(0);
+    for (let i = n - 1; i >= 0; i--) a[i] = a[i + 1] + piles[i];
 
+    const fn = (i, m) => {
+      if (i >= n) return 0;
+      if (dp[i][m] != -1) return dp[i][m];
+      let b = 0;
+      for (let x = 1; x <= 2 * m && i + x <= n; x++) {
+        b = Math.max(b, a[i] - fn(i + x, Math.max(m, x)));
+      }
+      return (dp[i][m] = b);
+    };
+
+    return fn(0, 1);
+  }
+}
 ```
 
 ## Maximal Square
@@ -23784,7 +24023,30 @@ https://neetcode.io/problems/stone-game-ii/question
 https://neetcode.io/problems/maximal-square/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {character[][]} matrix
+   * @return {number}
+   */
+  maximalSquare(matrix) {
+    if (!matrix.flat().includes("1")) return 0;
+    let a = 1;
+    for (let i = 1; i < matrix.length; i++) {
+      for (let j = 1; j < matrix[0].length; j++) {
+        if (matrix[i][j] == "0") continue;
+        let b =
+          Math.min(
+            +matrix[i - 1][j - 1],
+            +matrix[i - 1][j],
+            +matrix[i][j - 1],
+          ) + 1;
+        matrix[i][j] = b;
+        a = Math.max(a, b);
+      }
+    }
+    return a ** 2;
+  }
+}
 ```
 
 ## Count Square Submatrices with All Ones
@@ -23792,28 +24054,31 @@ https://neetcode.io/problems/maximal-square/question
 https://leetcode.com/problems/count-square-submatrices-with-all-ones/description/
 
 ```js
-/**
- * @param {number[][]} matrix
- * @return {number}
- */
-const countSquares = (matrix) => {
-  if (!matrix.flat().includes(1)) return 0;
-  const m = matrix.length,
-    n = matrix[0].length;
-  let a = 0;
-  for (let i = 0; i < m; i++) a += matrix[i][0];
-  for (let j = 1; j < n; j++) a += matrix[0][j];
-  for (let i = 1; i < matrix.length; i++) {
-    for (let j = 1; j < matrix[0].length; j++) {
-      if (matrix[i][j] == 0) continue;
-      let b =
-        Math.min(matrix[i - 1][j - 1], matrix[i - 1][j], matrix[i][j - 1]) + 1;
-      matrix[i][j] = b;
-      a += b;
+class Solution {
+  /**
+   * @param {number[][]} matrix
+   * @return {number}
+   */
+  countSquares(matrix) {
+    if (!matrix.flat().includes(1)) return 0;
+    const m = matrix.length,
+      n = matrix[0].length;
+    let a = 0;
+    for (let i = 0; i < m; i++) a += matrix[i][0];
+    for (let j = 1; j < n; j++) a += matrix[0][j];
+    for (let i = 1; i < matrix.length; i++) {
+      for (let j = 1; j < matrix[0].length; j++) {
+        if (matrix[i][j] == 0) continue;
+        let b =
+          Math.min(matrix[i - 1][j - 1], matrix[i - 1][j], matrix[i][j - 1]) +
+          1;
+        matrix[i][j] = b;
+        a += b;
+      }
     }
+    return a;
   }
-  return a;
-};
+}
 ```
 
 ## Ones and Zeroes
@@ -23821,7 +24086,35 @@ const countSquares = (matrix) => {
 https://neetcode.io/problems/ones-and-zeroes/question
 
 ```js
+class Solution {
+  /**
+   * @param {string[]} strs
+   * @param {number} m
+   * @param {number} n
+   * @return {number}
+   */
+  findMaxForm(strs, m, n) {
+    const count1 = (s) => {
+      let a = 0;
+      for (let c of s) if (c == "1") a++;
+      return a;
+    };
 
+    let dp = Array(m + 1)
+      .fill()
+      .map((x) => Array(n + 1).fill(0));
+    for (let s of strs) {
+      const a1 = count1(s),
+        a0 = s.length - a1;
+      for (let i = m; i >= a0; i--) {
+        for (let j = n; j >= a1; j--) {
+          dp[i][j] = Math.max(dp[i][j], dp[i - a0][j - a1] + 1);
+        }
+      }
+    }
+    return dp[m][n];
+  }
+}
 ```
 
 ## 2 Keys Keyboard
@@ -23849,21 +24142,23 @@ const minSteps = (n) => {
 ```
 
 ```js
-/**
- * @param {number} n
- * @return {number}
- */
-const minSteps = (n) => {
-  if (n == 1) return 0;
-  let a = 0;
-  for (let i = 2; i * i <= n; i++) {
-    while (n % i == 0) {
-      a += i;
-      n /= i;
+class Solution {
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  minSteps(n) {
+    if (n == 1) return 0;
+    let a = 0;
+    for (let i = 2; i * i <= n; i++) {
+      while (n % i == 0) {
+        a += i;
+        n /= i;
+      }
     }
+    return a + (n > 1 ? n : 0);
   }
-  return a + n;
-};
+}
 ```
 
 ## Maximum Alternating Subsequence Sum
@@ -23871,7 +24166,24 @@ const minSteps = (n) => {
 https://leetcode.com/problems/maximum-alternating-subsequence-sum/description/
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number}
+   */
+  maxAlternatingSum(nums) {
+    const n = nums.length;
+    let dp = Array(n)
+      .fill()
+      .map((x) => Array(2).fill(0));
+    dp[0][0] = nums[0];
+    for (let i = 1; i < n; i++) {
+      dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + nums[i]);
+      dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - nums[i]);
+    }
+    return Math.max(dp[n - 1][0], dp[n - 1][1]);
+  }
+}
 ```
 
 ## Edit Distance -150
@@ -23879,7 +24191,34 @@ https://leetcode.com/problems/maximum-alternating-subsequence-sum/description/
 https://neetcode.io/problems/edit-distance/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} word1
+   * @param {string} word2
+   * @return {number}
+   */
+  minDistance(word1, word2) {
+    const n1 = word1.length,
+      n2 = word2.length;
+    let dp = Array(n1 + 1)
+      .fill()
+      .map((x) => Array(n2 + 1).fill(Infinity));
+    for (let i1 = 0; i1 <= n1; i1++) dp[i1][0] = i1;
+    for (let i2 = 0; i2 <= n2; i2++) dp[0][i2] = i2;
+    for (let i1 = 1; i1 <= n1; i1++) {
+      for (let i2 = 1; i2 <= n2; i2++) {
+        if (word1[i1 - 1] == word2[i2 - 1]) dp[i1][i2] = dp[i1 - 1][i2 - 1];
+        else
+          dp[i1][i2] = Math.min(
+            dp[i1 - 1][i2 - 1] + 1,
+            dp[i1 - 1][i2] + 1,
+            dp[i1][i2 - 1] + 1,
+          );
+      }
+    }
+    return dp[n1][n2];
+  }
+}
 ```
 
 ## Number of Dice Rolls with Target Sum
@@ -23887,7 +24226,28 @@ https://neetcode.io/problems/edit-distance/question
 https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number} k
+   * @param {number} target
+   * @return {number}
+   */
+  numRollsToTarget(n, k, target) {
+    let dp = Array(n + 1)
+      .fill()
+      .map((x) => Array(target + 1).fill(0));
+    dp[0][0] = 1;
+    for (let i1 = 1; i1 <= n; i1++) {
+      for (let i2 = 1; i2 <= target; i2++) {
+        for (let a = 1; a <= k && a <= i2; a++) {
+          dp[i1][i2] = (dp[i1][i2] + dp[i1 - 1][i2 - a]) % (1e9 + 7);
+        }
+      }
+    }
+    return dp[n][target];
+  }
+}
 ```
 
 ## Minimum Falling Path Sum
@@ -23895,7 +24255,28 @@ https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/description/
 https://leetcode.com/problems/minimum-falling-path-sum/description/
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} matrix
+   * @return {number}
+   */
+  minFallingPathSum(matrix) {
+    const m = matrix.length,
+      n = matrix[0].length;
+    for (let i = 1; i < m; i++) {
+      matrix[i][0] += Math.min(matrix[i - 1][0], matrix[i - 1][1]);
+      matrix[i][n - 1] += Math.min(matrix[i - 1][n - 2], matrix[i - 1][n - 1]);
+      for (let j = 1; j < n - 1; j++) {
+        matrix[i][j] += Math.min(
+          matrix[i - 1][j - 1],
+          matrix[i - 1][j],
+          matrix[i - 1][j + 1],
+        );
+      }
+    }
+    return Math.min(...matrix[m - 1]);
+  }
+}
 ```
 
 ## Out of Boundary Paths
@@ -23903,7 +24284,46 @@ https://leetcode.com/problems/minimum-falling-path-sum/description/
 https://leetcode.com/problems/out-of-boundary-paths/description/
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} m
+   * @param {number} n
+   * @param {number} maxMove
+   * @param {number} startRow
+   * @param {number} startColumn
+   * @return {number}
+   */
+  findPaths(m, n, maxMove, startRow, startColumn) {
+    let a = 0,
+      dp = Array(m)
+        .fill()
+        .map((x) => Array(n).fill(0));
+    dp[startRow][startColumn] = 1;
+    for (let k = 0; k < maxMove; k++) {
+      let dp1 = Array(m)
+        .fill()
+        .map((x) => Array(n).fill(0));
+      for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+          for (let [dy, dx] of [
+            [1, 0],
+            [-1, 0],
+            [0, 1],
+            [0, -1],
+          ]) {
+            const y = i + dy,
+              x = j + dx;
+            if (y < 0 || y >= m || x < 0 || x >= n)
+              a = (a + dp[i][j]) % (1e9 + 7);
+            else dp1[y][x] = (dp1[y][x] + dp[i][j]) % (1e9 + 7);
+          }
+        }
+      }
+      dp = dp1;
+    }
+    return a;
+  }
+}
 ```
 
 ## Longest Ideal Subsequence
@@ -23911,7 +24331,25 @@ https://leetcode.com/problems/out-of-boundary-paths/description/
 https://leetcode.com/problems/longest-ideal-subsequence/description/
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  longestIdealString(s, k) {
+    let a = [...s].map((x) => x.charCodeAt(0) - 97);
+    let dp = Array(26).fill(0);
+    dp[a[0]] = 1;
+    for (let i = 1; i < s.length; i++) {
+      let b = 0;
+      for (let j = 0; j < 26; j++) {
+        if (Math.abs(j - a[i]) <= k) b = Math.max(b, dp[j]);
+      }
+      dp[a[i]] = b + 1;
+    }
+    return Math.max(...dp);
+  }
+}
 ```
 
 ## Count Number of Teams
@@ -23919,7 +24357,31 @@ https://leetcode.com/problems/longest-ideal-subsequence/description/
 https://leetcode.com/problems/count-number-of-teams/description/
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} rating
+   * @return {number}
+   */
+  numTeams(rating) {
+    let a = 0;
+    for (let i0 = 1; i0 < rating.length - 1; i0++) {
+      let l1 = 0,
+        l2 = 0;
+      for (let i = i0 - 1; i >= 0; i--) {
+        if (rating[i] < rating[i0]) l1++;
+        if (rating[i] > rating[i0]) l2++;
+      }
+      let r1 = 0,
+        r2 = 0;
+      for (let i = i0 + 1; i < rating.length; i++) {
+        if (rating[i] > rating[i0]) r1++;
+        if (rating[i] < rating[i0]) r2++;
+      }
+      a += l1 * r1 + l2 * r2;
+    }
+    return a;
+  }
+}
 ```
 
 ## Flip String to Monotone Increasing
@@ -23927,7 +24389,21 @@ https://leetcode.com/problems/count-number-of-teams/description/
 https://leetcode.com/problems/flip-string-to-monotone-increasing/description/
 
 ```js
-
+class Solution {
+  /**
+   * @param {string} s
+   * @return {number}
+   */
+  minFlipsMonoIncr(s) {
+    let a = 0,
+      b = 0;
+    for (let i of s) {
+      if (i == "1") b++;
+      else a = Math.min(a + 1, b);
+    }
+    return a;
+  }
+}
 ```
 
 ---
