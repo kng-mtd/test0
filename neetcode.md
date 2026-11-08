@@ -24419,7 +24419,43 @@ class Solution {
 https://neetcode.io/problems/path-with-minimum-effort/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} heights
+   * @return {number}
+   */
+  minimumEffortPath(heights) {
+    const m = heights.length,
+      n = heights[0].length;
+    let dp = Array(m)
+      .fill()
+      .map(() => Array(n).fill(Infinity));
+    dp[0][0] = 0;
+    let q = [[0, 0, 0]];
+    while (q.length) {
+      q.sort((x1, x2) => x2[0] - x1[0]);
+      let [d0, y0, x0] = q.pop();
+      if (y0 == m - 1 && x0 == n - 1) return d0;
+      if (d0 > dp[y0][x0]) continue;
+      for (let [dy, dx] of [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ]) {
+        let y1 = y0 + dy,
+          x1 = x0 + dx;
+        if (y1 < 0 || y1 >= m || x1 < 0 || x1 >= n) continue;
+        let d1 = Math.max(d0, Math.abs(heights[y0][x0] - heights[y1][x1]));
+        if (d1 < dp[y1][x1]) {
+          dp[y1][x1] = d1;
+          q.push([d1, y1, x1]);
+        }
+      }
+    }
+    return 0;
+  }
+}
 ```
 
 ## Network Delay Time -150
