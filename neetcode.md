@@ -24463,7 +24463,73 @@ class Solution {
 https://neetcode.io/problems/network-delay-time/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} times
+   * @param {number} n
+   * @param {number} k
+   * @return {number}
+   */
+  networkDelayTime(times, n, k) {
+    let a = Array(n)
+      .fill()
+      .map((x) => []);
+    for (let [i1, i2, t] of times) a[i1 - 1].push([i2 - 1, t]);
+    let b = Array(n).fill(Infinity);
+    k--;
+    b[k] = 0;
+    let q = [[k, 0]];
+    while (q.length) {
+      let q0 = [];
+      while (q.length) {
+        const [i, t] = q.pop();
+        for (let [ii, ti] of a[i]) {
+          if (t + ti < b[ii]) {
+            b[ii] = t + ti;
+            q0.push([ii, t + ti]);
+          }
+        }
+      }
+      q = q0;
+    }
+    const c = Math.max(...b);
+    return c == Infinity ? -1 : c;
+  }
+}
+```
 
+```js
+class Solution {
+  /**
+   * @param {number[][]} times
+   * @param {number} n
+   * @param {number} k
+   * @return {number}
+   */
+  networkDelayTime(times, n, k) {
+    let a = Array(n)
+      .fill()
+      .map((x) => []);
+    for (let [i1, i2, t] of times) a[i1 - 1].push([i2 - 1, t]);
+    let b = Array(n).fill(Infinity);
+    k--;
+    b[k] = 0;
+    let q = [[k, 0]];
+    while (q.length) {
+      q.sort((x1, x2) => x2[1] - x1[1]);
+      let [i, t] = q.pop();
+      if (t > b[i]) continue;
+      for (let [ii, ti] of a[i]) {
+        if (t + ti < b[ii]) {
+          b[ii] = t + ti;
+          q.push([ii, t + ti]);
+        }
+      }
+    }
+    let ans = Math.max(...b);
+    return ans == Infinity ? -1 : ans;
+  }
+}
 ```
 
 ## Min Cost to Connect Points -150
