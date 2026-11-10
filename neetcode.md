@@ -24537,7 +24537,35 @@ class Solution {
 https://neetcode.io/problems/min-cost-to-connect-points/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[][]} points
+   * @return {number}
+   */
+  minCostConnectPoints(points) {
+    const n = points.length;
+    let a = Array(n).fill(Infinity),
+      b = Array(n).fill(false),
+      c = 0;
+    a[0] = 0;
+    for (let i = 0; i < n; i++) {
+      let i1 = -1;
+      for (let k = 0; k < n; k++) {
+        if (!b[k] && (i1 == -1 || a[k] < a[i1])) i1 = k;
+      }
+      c += a[i1];
+      b[i1] = true;
+      for (let k = 0; k < n; k++) {
+        if (b[k]) continue;
+        let d =
+          Math.abs(points[i1][0] - points[k][0]) +
+          Math.abs(points[i1][1] - points[k][1]);
+        a[k] = Math.min(a[k], d);
+      }
+    }
+    return c;
+  }
+}
 ```
 
 ## Path with Maximum Probability
