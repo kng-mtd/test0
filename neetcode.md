@@ -24573,7 +24573,44 @@ class Solution {
 https://neetcode.io/problems/path-with-maximum-probability/question
 
 ```js
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @param {number[]} succProb
+   * @param {number} start_node
+   * @param {number} end_node
+   * @return {number}
+   */
+  maxProbability(n, edges, succProb, start_node, end_node) {
+    let g = Array(n)
+      .fill()
+      .map(() => []);
+    for (let i = 0; i < edges.length; i++) {
+      const [u, v] = edges[i];
+      g[u].push([v, succProb[i]]);
+      g[v].push([u, succProb[i]]);
+    }
+    let dp = Array(n).fill(0);
+    dp[start_node] = 1;
+    let q = [[1, start_node]];
+    while (q.length) {
+      q.sort((a, b) => b[0] - a[0]);
+      const [p, u] = q.shift();
+      if (u == end_node) return p;
+      if (p < dp[u]) continue;
+      for (let [v, w] of g[u]) {
+        let p1 = p * w;
+        if (p1 > dp[v]) {
+          dp[v] = p1;
+          q.push([p1, v]);
+        }
+      }
+    }
 
+    return 0;
+  }
+}
 ```
 
 ## Find the Safest Path in a Grid
