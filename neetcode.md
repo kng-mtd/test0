@@ -24618,7 +24618,71 @@ class Solution {
 https://neetcode.io/problems/find-the-safest-path-in-a-grid/question
 
 ```js
+class Solution {
+  /**
+   * @param {number[][]} grid
+   * @return {number}
+   */
+  maximumSafenessFactor(grid) {
+    const n = grid.length;
+    let a = Array(n)
+      .fill()
+      .map(() => Array(n).fill(-1));
+    let q = [];
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        if (grid[i][j] == 1) {
+          a[i][j] = 0;
+          q.push([i, j]);
+        }
+      }
+    }
 
+    const dir = [0, 1, 0, -1, 0];
+    let h = 0;
+    while (h < q.length) {
+      let [i, j] = q[h++];
+      for (let k = 0; k < 4; k++) {
+        let y = i + dir[k],
+          x = j + dir[k + 1];
+        if (y < 0 || y >= n || x < 0 || x >= n || a[y][x] != -1) continue;
+        a[y][x] = a[i][j] + 1;
+        q.push([y, x]);
+      }
+    }
+
+    const canReach = (d) => {
+      if (a[0][0] < d) return false;
+      let q = [[0, 0]];
+      let vst = Array(n)
+        .fill()
+        .map(() => Array(n).fill(false));
+      vst[0][0] = true;
+      for (let h = 0; h < q.length; h++) {
+        let [i, j] = q[h];
+        if (i == n - 1 && j == n - 1) return true;
+        for (let k = 0; k < 4; k++) {
+          let y = i + dir[k],
+            x = j + dir[k + 1];
+          if (y < 0 || y >= n || x < 0 || x >= n) continue;
+          if (vst[y][x] || a[y][x] < d) continue;
+          vst[y][x] = true;
+          q.push([y, x]);
+        }
+      }
+      return false;
+    };
+
+    let l = 0,
+      r = 2 * (n - 1);
+    while (l < r) {
+      let m = (l + r + 1) >> 1;
+      if (canReach(m)) l = m;
+      else r = m - 1;
+    }
+    return l;
+  }
+}
 ```
 
 ## Cheapest Flights Within K Stops -150
