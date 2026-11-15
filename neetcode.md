@@ -24690,7 +24690,28 @@ class Solution {
 https://neetcode.io/problems/cheapest-flight-path/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} flights
+   * @param {number} src
+   * @param {number} dst
+   * @param {number} k
+   * @return {number}
+   */
+  findCheapestPrice(n, flights, src, dst, k) {
+    let a = Array(n).fill(Infinity);
+    a[src] = 0;
+    for (let i = 0; i <= k; i++) {
+      let b = [...a];
+      for (let [i1, i2, t] of flights) {
+        if (a[i1] != Infinity) b[i2] = Math.min(b[i2], a[i1] + t);
+      }
+      a = b;
+    }
+    return a[dst] == Infinity ? -1 : a[dst];
+  }
+}
 ```
 
 ## Find the City With the Smallest Number of Neighbors at a Threshold Distance
@@ -24698,7 +24719,37 @@ https://neetcode.io/problems/cheapest-flight-path/question
 https://neetcode.io/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} n
+   * @param {number[][]} edges
+   * @param {number} distanceThreshold
+   * @return {number}
+   */
+  findTheCity(n, edges, distanceThreshold) {
+    let a = Array(n)
+      .fill()
+      .map(() => Array(n).fill(Infinity));
+    for (let i = 0; i < n; i++) a[i][i] = 0;
+    for (let [i1, i2, w] of edges) [a[i1][i2], a[i2][i1]] = [w, w];
+    for (let k = 0; k < n; k++) {
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++)
+          a[i][j] = Math.min(a[i][j], a[i][k] + a[k][j]);
+      }
+    }
+    let ans = -1,
+      min = Infinity;
+    for (let i = 0; i < n; i++) {
+      let cnt = 0;
+      for (let j = 0; j < n; j++) {
+        if (i != j && a[i][j] <= distanceThreshold) cnt++;
+      }
+      if (cnt <= min) [min, ans] = [cnt, i];
+    }
+    return ans;
+  }
+}
 ```
 
 ## Minimum Cost to Convert String I
