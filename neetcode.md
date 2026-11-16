@@ -24757,7 +24757,43 @@ class Solution {
 https://neetcode.io/problems/minimum-cost-to-convert-string-i/question
 
 ```js
+class Solution {
+  /**
+   * @param {string} source
+   * @param {string} target
+   * @param {string[]} original
+   * @param {string[]} changed
+   * @param {number[]} cost
+   * @return {number}
+   */
+  minimumCost(source, target, original, changed, cost) {
+    let a = Array(26)
+      .fill()
+      .map(() => Array(26).fill(Infinity));
 
+    for (let i = 0; i < 26; i++) a[i][i] = 0;
+    for (let i = 0; i < cost.length; i++) {
+      let i1 = original[i].charCodeAt(0) - 97;
+      let i2 = changed[i].charCodeAt(0) - 97;
+      a[i1][i2] = Math.min(a[i1][i2], cost[i]);
+    }
+    for (let k = 0; k < 26; k++) {
+      for (let i = 0; i < 26; i++) {
+        for (let j = 0; j < 26; j++) {
+          a[i][j] = Math.min(a[i][j], a[i][k] + a[k][j]);
+        }
+      }
+    }
+    let ans = 0;
+    for (let i = 0; i < source.length; i++) {
+      let i1 = source.charCodeAt(i) - 97;
+      let i2 = target.charCodeAt(i) - 97;
+      if (a[i1][i2] == Infinity) return -1;
+      ans += a[i1][i2];
+    }
+    return ans;
+  }
+}
 ```
 
 ## Number of Ways to Arrive at Destination
