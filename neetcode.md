@@ -877,14 +877,14 @@ const h = new Heap((a, b) => {
 https://leetcode.com/problems/create-hello-world-function/description/
 
 ```js
-/
+/*
  * @return {Function}
  */
 const createHelloWorld = () => {
   return () => "Hello World";
 };
 
-/
+/*
  * const f = createHelloWorld();
  * f(); // "Hello World"
  */
@@ -895,13 +895,13 @@ const createHelloWorld = () => {
 https://leetcode.com/problems/counter/description/
 
 ```js
-/
+/*
  * @param {number} n
  * @return {Function} counter
  */
 const createCounter = (n) => () => n++;
 
-/
+/*
  * const counter = createCounter(10)
  * counter() // 10
  * counter() // 11
@@ -914,7 +914,7 @@ const createCounter = (n) => () => n++;
 https://leetcode.com/problems/counter-ii/description/
 
 ```js
-/
+/*
  * @param {integer} init
  * @return { increment: Function, decrement: Function, reset: Function }
  */
@@ -930,7 +930,7 @@ const createCounter = (init) => {
   return { increment, decrement, reset };
 };
 
-/
+/*
  * const counter = createCounter(5)
  * counter.increment(); // 6
  * counter.reset(); // 5
@@ -943,7 +943,7 @@ const createCounter = (init) => {
 https://leetcode.com/problems/apply-transform-over-each-element-in-array/description/
 
 ```js
-/
+/*
  * @param {number[]} arr
  * @param {Function} fn
  * @return {number[]}
@@ -960,7 +960,7 @@ const map = (arr, fn) => {
 https://leetcode.com/problems/filter-elements-from-array/description/
 
 ```js
-/
+/*
  * @param {number[]} arr
  * @param {Function} fn
  * @return {number[]}
@@ -979,7 +979,7 @@ const filter = (arr, fn) => {
 https://leetcode.com/problems/array-reduce-transformation/description/
 
 ```js
-/
+/*
  * @param {number[]} nums
  * @param {Function} fn
  * @param {number} init
@@ -997,7 +997,7 @@ const reduce = (nums, fn, init) => {
 https://leetcode.com/problems/function-composition/description/
 
 ```js
-/
+/*
  * @param {Function[]} functions
  * @return {Function}
  */
@@ -1008,7 +1008,7 @@ const compose = (functions) => {
   };
 };
 
-/
+/*
  * const fn = compose([x => x + 1, x => 2 * x])
  * fn(4) // 9
  */
@@ -1019,7 +1019,7 @@ const compose = (functions) => {
 https://leetcode.com/problems/allow-one-function-call/description/
 
 ```js
-/
+/*
  * @param {Function} fn
  * @return {Function}
  */
@@ -1046,13 +1046,13 @@ const once = (fn) => {
 https://leetcode.com/problems/sleep/description/
 
 ```js
-/
+/*
  * @param {number} millis
  * @return {Promise}
  */
 const sleep = (millis) => new Promise((res) => setTimeout(res, millis));
 
-/
+/*
  * let t = Date.now()
  * sleep(100).then(() => console.log(Date.now() - t)) // 100
  */
@@ -1063,7 +1063,7 @@ const sleep = (millis) => new Promise((res) => setTimeout(res, millis));
 https://leetcode.com/problems/promise-time-limit/description/
 
 ```js
-/
+/*
  * @param {Function} fn
  * @param {number} t
  * @return {Function}
@@ -1076,7 +1076,7 @@ const timeLimit =
       new Promise((_, rej) => setTimeout(() => rej("Time Limit Exceeded"), t)),
     ]);
 
-/
+/*
  * const limited = timeLimit((t) => new Promise(res => setTimeout(res, t)), 100);
  * limited(150).catch(console.log) // "Time Limit Exceeded" at t=100ms
  */
@@ -1087,7 +1087,7 @@ const timeLimit =
 https://leetcode.com/problems/chunk-array/description/
 
 ```js
-/
+/*
  * @param {Array} arr
  * @param {number} size
  * @return {Array}
@@ -1104,7 +1104,7 @@ const chunk = (arr, size) => {
 https://leetcode.com/problems/array-prototype-last/description/
 
 ```js
-/
+/*
  * @return {null|boolean|number|string|Array|Object}
  */
 Array.prototype.last = function () {
@@ -1112,7 +1112,7 @@ Array.prototype.last = function () {
   return this.pop();
 };
 
-/
+/*
  * const arr = [1, 2, 3];
  * arr.last(); // 3
  */
@@ -1123,7 +1123,7 @@ Array.prototype.last = function () {
 https://leetcode.com/problems/array-wrapper/
 
 ```js
-/
+/*
  * @param {number[]} nums
  * @return {void}
  */
@@ -1131,21 +1131,21 @@ var ArrayWrapper = function (nums) {
   this.nums = nums;
 };
 
-/
+/*
  * @return {number}
  */
 ArrayWrapper.prototype.valueOf = function () {
   return this.nums.reduce((a, x) => a + x, 0);
 };
 
-/
+/*
  * @return {string}
  */
 ArrayWrapper.prototype.toString = function () {
   return "[" + String(this.nums) + "]";
 };
 
-/
+/*
  * const obj1 = new ArrayWrapper([1,2]);
  * const obj2 = new ArrayWrapper([3,4]);
  * obj1 + obj2; // 10
@@ -1159,7 +1159,7 @@ ArrayWrapper.prototype.toString = function () {
 https://leetcode.com/problems/generate-fibonacci-sequence/description/
 
 ```js
-/
+/*
  * @return {Generator<number>}
  */
 const fibGenerator = function* () {
@@ -1171,7 +1171,7 @@ const fibGenerator = function* () {
   }
 };
 
-/
+/*
  * const gen = fibGenerator();
  * gen.next().value; // 0
  * gen.next().value; // 1
@@ -1192,7 +1192,7 @@ https://neetcode.io/problems/concatenation-of-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number[]}
    */
@@ -1208,7 +1208,7 @@ https://neetcode.io/problems/duplicate-integer/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {boolean}
    */
@@ -1225,7 +1225,7 @@ https://neetcode.io/problems/is-anagram/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @param {string} t
    * @return {boolean}
@@ -1243,7 +1243,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @param {string} t
    * @return {boolean}
@@ -1264,7 +1264,7 @@ https://neetcode.io/problems/replace-elements-with-greatest-element-on-right-sid
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} arr
    * @return {number[]}
    */
@@ -1283,7 +1283,7 @@ https://neetcode.io/problems/is-subsequence/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @param {string} t
    * @return {boolean}
@@ -1310,7 +1310,7 @@ https://neetcode.io/problems/score-of-a-string/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -1329,7 +1329,7 @@ https://neetcode.io/problems/length-of-last-word/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -1355,7 +1355,7 @@ https://neetcode.io/problems/number-of-senior-citizens/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} details
    * @return {number}
    */
@@ -1375,7 +1375,7 @@ https://neetcode.io/problems/two-integer-sum/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} target
    * @return {number[]}
@@ -1395,7 +1395,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} target
    * @return {number[]}
@@ -1414,7 +1414,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} target
    * @return {number[]}
@@ -1440,7 +1440,7 @@ https://neetcode.io/problems/max-consecutive-ones/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -1455,7 +1455,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -1477,7 +1477,7 @@ https://neetcode.io/problems/longest-common-prefix/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} strs
    * @return {string}
    */
@@ -1502,7 +1502,7 @@ https://neetcode.io/problems/string-matching-in-an-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} words
    * @return {string[]}
    */
@@ -1523,7 +1523,7 @@ https://neetcode.io/problems/pascals-triangle/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} numRows
    * @return {number[][]}
    */
@@ -1546,7 +1546,7 @@ https://neetcode.io/problems/remove-element/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} val
    * @return {number}
@@ -1567,7 +1567,7 @@ https://neetcode.io/problems/unique-email-addresses/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} emails
    * @return {number}
    */
@@ -1589,7 +1589,7 @@ https://neetcode.io/problems/isomorphic-strings/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @param {string} t
    * @return {boolean}
@@ -1618,7 +1618,7 @@ https://neetcode.io/problems/can-place-flowers/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} flowerbed
    * @param {number} n
    * @return {boolean}
@@ -1645,7 +1645,7 @@ https://neetcode.io/problems/majority-element/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -1665,7 +1665,7 @@ https://neetcode.io/problems/maximum-difference-between-even-and-odd-frequency-i
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -1681,7 +1681,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -1708,7 +1708,7 @@ https://neetcode.io/problems/next-greater-element-i/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums1
    * @param {number[]} nums2
    * @return {number[]}
@@ -1731,7 +1731,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums1
    * @param {number[]} nums2
    * @return {number[]}
@@ -1757,7 +1757,7 @@ https://neetcode.io/problems/longest-strictly-increasing-or-strictly-decreasing-
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -1781,7 +1781,7 @@ https://neetcode.io/problems/maximum-ascending-subarray-sum/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -1803,7 +1803,7 @@ https://neetcode.io/problems/find-pivot-index/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -1830,7 +1830,7 @@ https://neetcode.io/problems/kth-distinct-string-in-an-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} arr
    * @param {number} k
    * @return {string}
@@ -1850,7 +1850,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} arr
    * @param {number} k
    * @return {string}
@@ -1875,14 +1875,14 @@ https://neetcode.io/problems/range-sum-query-immutable/question
 
 ```js
 class NumArray {
-  /
+  /*
    * @param {number[]} nums
    */
   constructor(nums) {
     this.nums = nums;
   }
 
-  /
+  /*
    * @param {number} left
    * @param {number} right
    * @return {number}
@@ -1899,7 +1899,7 @@ https://neetcode.io/problems/find-all-numbers-disappeared-in-an-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number[]}
    */
@@ -1914,7 +1914,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number[]}
    */
@@ -1938,7 +1938,7 @@ https://neetcode.io/problems/find-missing-and-repeated-values/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} grid
    * @return {number[]}
    */
@@ -1950,7 +1950,7 @@ class Solution {
     let a = e;
     for (let i of c) a ^= i;
     let b = e;
-    for (let i = 1; i <= grid.length**2; i++) b ^= i;
+    for (let i = 1; i <= grid.length ** 2; i++) b ^= i;
     return [a, b];
   }
 }
@@ -1958,16 +1958,16 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} grid
    * @return {number[]}
    */
   findMissingAndRepeatedValues(grid) {
     const n = grid.length,
-      n2 = n**2;
+      n2 = n ** 2;
     let c1 = 0,
       c2 = 0;
-    for (let i of grid.flat()) [c1, c2] = [c1 + i, c2 + i**2];
+    for (let i of grid.flat()) [c1, c2] = [c1 + i, c2 + i ** 2];
 
     const d1 = (n2 * (n2 + 1)) / 2;
     const d2 = (n2 * (n2 + 1) * (2 * n2 + 1)) / 6;
@@ -1981,20 +1981,20 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} grid
    * @return {number[]}
    */
   findMissingAndRepeatedValues(grid) {
     const n = BigInt(grid.length);
-    const n2 = n**2n;
+    const n2 = n ** 2n;
     let c1 = 0n,
       c2 = 0n;
 
     for (let v of grid.flat()) {
       const x = BigInt(v);
       c1 += x;
-      c2 += x**2n;
+      c2 += x ** 2n;
     }
 
     const d1 = (n2 * (n2 + 1n)) / 2n;
@@ -2013,7 +2013,7 @@ https://neetcode.io/problems/maximum-number-of-balloons/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} text
    * @return {number}
    */
@@ -2027,7 +2027,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} text
    * @return {number}
    */
@@ -2055,7 +2055,7 @@ https://neetcode.io/problems/word-pattern/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} pattern
    * @param {string} s
    * @return {boolean}
@@ -2079,7 +2079,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} pattern
    * @param {string} s
    * @return {boolean}
@@ -2109,7 +2109,7 @@ class MyHashSet {
     this.hash = {};
   }
 
-  /
+  /*
    * @param {number} key
    * @return {void}
    */
@@ -2117,7 +2117,7 @@ class MyHashSet {
     this.hash[key] = true;
   }
 
-  /
+  /*
    * @param {number} key
    * @return {void}
    */
@@ -2125,7 +2125,7 @@ class MyHashSet {
     delete this.hash[key];
   }
 
-  /
+  /*
    * @param {number} key
    * @return {boolean}
    */
@@ -2134,7 +2134,7 @@ class MyHashSet {
   }
 }
 
-/
+/*
  * Your MyHashSet object will be instantiated and called as such:
  * var obj = new MyHashSet()
  * obj.add(key)
@@ -2153,7 +2153,7 @@ class MyHashMap {
     this.hash = {};
   }
 
-  /
+  /*
    * @param {number} key
    * @param {number} value
    * @return {void}
@@ -2162,7 +2162,7 @@ class MyHashMap {
     this.hash[key] = value;
   }
 
-  /
+  /*
    * @param {number} key
    * @return {number}
    */
@@ -2170,7 +2170,7 @@ class MyHashMap {
     return key in this.hash ? this.hash[key] : -1;
   }
 
-  /
+  /*
    * @param {number} key
    * @return {void}
    */
@@ -2179,7 +2179,7 @@ class MyHashMap {
   }
 }
 
-/
+/*
  * Your MyHashMap object will be instantiated and called as such:
  * var obj = new MyHashMap()
  * obj.put(key,value)
@@ -2194,7 +2194,7 @@ https://neetcode.io/problems/height-checker/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} heights
    * @return {number}
    */
@@ -2214,7 +2214,7 @@ https://neetcode.io/problems/find-lucky-integer-in-an-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} arr
    * @return {number}
    */
@@ -2236,7 +2236,7 @@ https://neetcode.io/problems/special-array-i/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {boolean}
    */
@@ -2255,7 +2255,7 @@ https://neetcode.io/problems/check-if-array-is-sorted-and-rotated/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {boolean}
    */
@@ -2278,7 +2278,7 @@ https://neetcode.io/problems/monotonic-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {boolean}
    */
@@ -2302,7 +2302,7 @@ https://neetcode.io/problems/divide-array-into-equal-pairs/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {boolean}
    */
@@ -2316,7 +2316,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {boolean}
    */
@@ -2334,7 +2334,7 @@ https://neetcode.io/problems/number-of-good-pairs/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -2356,7 +2356,7 @@ https://neetcode.io/problems/pascals-triangle-ii/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} rowIndex
    * @return {number[]}
    */
@@ -2376,7 +2376,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} rowIndex
    * @return {number[]}
    */
@@ -2393,7 +2393,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} rowIndex
    * @return {number[]}
    */
@@ -2415,7 +2415,7 @@ https://neetcode.io/problems/find-words-that-can-be-formed-by-characters/questio
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} words
    * @param {string} chars
    * @return {number}
@@ -2449,7 +2449,7 @@ https://neetcode.io/problems/count-the-number-of-consistent-strings/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} allowed
    * @param {string[]} words
    * @return {number}
@@ -2471,7 +2471,7 @@ https://neetcode.io/problems/ransom-note/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} ransomNote
    * @param {string} magazine
    * @return {boolean}
@@ -2494,7 +2494,7 @@ https://neetcode.io/problems/largest-3-same-digit-number-in-string/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} num
    * @return {string}
    */
@@ -2515,7 +2515,7 @@ class Solution {
 https://neetcode.io/problems/destination-city/question
 
 ```js
-/
+/*
  * @param {string[][]} paths
  * @return {string}
  */
@@ -2536,7 +2536,7 @@ https://neetcode.io/problems/maximum-product-difference-between-two-pairs/questi
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -2552,7 +2552,7 @@ class Solution {
 https://neetcode.io/problems/circular-sentence/question
 
 ```js
-/
+/*
  * @param {string} sentence
  * @return {boolean}
  */
@@ -2572,7 +2572,7 @@ https://neetcode.io/problems/maximum-score-after-splitting-a-string/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -2597,7 +2597,7 @@ https://neetcode.io/problems/path-crossing/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} path
    * @return {boolean}
    */
@@ -2622,7 +2622,7 @@ https://neetcode.io/problems/minimum-changes-to-make-alternating-binary-string/q
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -2647,7 +2647,7 @@ https://neetcode.io/problems/redistribute-characters-to-make-all-strings-equal/q
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} words
    * @return {boolean}
    */
@@ -2664,7 +2664,7 @@ class Solution {
 https://neetcode.io/problems/longest-palindrome/question
 
 ```js
-/
+/*
  * @param {string} s
  * @return {number}
  */
@@ -2686,7 +2686,7 @@ const longestPalindrome = (s) => {
 ```
 
 ```js
-/
+/*
  * @param {string} s
  * @return {number}
  */
@@ -2710,7 +2710,7 @@ const longestPalindrome = (s) => {
 https://neetcode.io/problems/largest-substring-between-two-equal-characters/question
 
 ```js
-/
+/*
  * @param {string} s
  * @return {number}
  */
@@ -2730,7 +2730,7 @@ const maxLengthBetweenEqualCharacters = (s) => {
 https://neetcode.io/problems/set-mismatch/question
 
 ```js
-/
+/*
  * @param {number[]} nums
  * @return {number[]}
  */
@@ -2738,7 +2738,7 @@ const findErrorNums = (nums) => {
   const n = nums.length;
   const a1 = nums.reduce((a, x) => a + x, 0);
   const b1 = (n * (n + 1)) / 2;
-  const a2 = nums.reduce((a, x) => a + x**2, 0);
+  const a2 = nums.reduce((a, x) => a + x ** 2, 0);
   const b2 = (n * (n + 1) * (2 * n + 1)) / 6;
   const c1 = a1 - b1;
   const c2 = (a2 - b2) / c1;
@@ -2752,7 +2752,7 @@ https://neetcode.io/problems/first-unique-character-in-a-string/question?list=al
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -2767,7 +2767,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -2786,7 +2786,7 @@ https://neetcode.io/problems/intersection-of-two-arrays/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums1
    * @param {number[]} nums2
    * @return {number[]}
@@ -2808,7 +2808,7 @@ class Solution {
 https://neetcode.io/problems/find-common-characters/question
 
 ```js
-/
+/*
  * @param {string[]} words
  * @return {string[]}
  */
@@ -2834,7 +2834,7 @@ https://neetcode.io/problems/number-of-students-unable-to-eat-lunch/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} students
    * @param {number[]} sandwiches
    * @return {number}
@@ -2858,7 +2858,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} students
    * @param {number[]} sandwiches
    * @return {number}
@@ -2885,7 +2885,7 @@ class Solution {
 https://neetcode.io/problems/time-needed-to-buy-tickets/question
 
 ```js
-/
+/*
  * @param {number[]} tickets
  * @param {number} k
  * @return {number}
@@ -2905,7 +2905,7 @@ const timeRequiredToBuy = (tickets, k) => {
 https://neetcode.io/problems/special-array-with-x-elements-greater-than-or-equal-x/question
 
 ```js
-/
+/*
  * @param {number[]} nums
  * @return {number}
  */
@@ -2925,7 +2925,7 @@ const specialArray = (nums) => {
 https://neetcode.io/problems/relative-sort-array/question
 
 ```js
-/
+/*
  * @param {number[]} arr1
  * @param {number[]} arr2
  * @return {number[]}
@@ -2952,7 +2952,7 @@ const relativeSortArray = (arr1, arr2) => {
 ```
 
 ```js
-/
+/*
  * @param {number[]} arr1
  * @param {number[]} arr2
  * @return {number[]}
@@ -2973,7 +2973,7 @@ const relativeSortArray = (arr1, arr2) => {
 https://neetcode.io/problems/sort-the-people/question
 
 ```js
-/
+/*
  * @param {string[]} names
  * @param {number[]} heights
  * @return {string[]}
@@ -2994,7 +2994,7 @@ https://neetcode.io/problems/sort-array-by-increasing-frequency/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number[]}
    */
@@ -3015,7 +3015,7 @@ https://neetcode.io/problems/find-the-index-of-the-first-occurrence-in-a-string/
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} haystack
    * @param {string} needle
    * @return {number}
@@ -3031,7 +3031,7 @@ class Solution {
 https://leetcode.com/problems/sign-of-the-product-of-an-array/description/
 
 ```js
-/
+/*
  * @param {number[]} nums
  * @return {number}
  */
@@ -3046,7 +3046,7 @@ https://neetcode.io/problems/find-the-difference-of-two-arrays/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums1
    * @param {number[]} nums2
    * @return {number[][]}
@@ -3066,7 +3066,7 @@ class Solution {
 https://leetcode.com/problems/uncommon-words-from-two-sentences/description/
 
 ```js
-/
+/*
  * @param {string} s1
  * @param {string} s2
  * @return {string[]}
@@ -3085,7 +3085,7 @@ const uncommonFromSentences = (s1, s2) => {
 https://leetcode.com/problems/design-parking-system/description/
 
 ```js
-/
+/*
  * @param {number} big
  * @param {number} medium
  * @param {number} small
@@ -3094,7 +3094,7 @@ var ParkingSystem = function (big, medium, small) {
   this.slots = [big, medium, small];
 };
 
-/
+/*
  * @param {number} carType
  * @return {boolean}
  */
@@ -3121,7 +3121,7 @@ https://neetcode.io/problems/crawler-log-folder/question?
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} logs
    * @return {number}
    */
@@ -3142,7 +3142,7 @@ https://neetcode.io/problems/baseball-game/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} operations
    * @return {number}
    */
@@ -3172,7 +3172,7 @@ https://neetcode.io/problems/validate-parentheses/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {boolean}
    */
@@ -3192,7 +3192,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {boolean}
    */
@@ -3228,7 +3228,7 @@ class MyStack {
     this.a = [];
   }
 
-  /
+  /*
    * @param {number} x
    * @return {void}
    */
@@ -3236,21 +3236,21 @@ class MyStack {
     this.a.push(x);
   }
 
-  /
+  /*
    * @return {number}
    */
   pop() {
     return this.a.pop();
   }
 
-  /
+  /*
    * @return {number}
    */
   top() {
     return this.a[this.a.length - 1];
   }
 
-  /
+  /*
    * @return {boolean}
    */
   empty() {
@@ -3258,7 +3258,7 @@ class MyStack {
   }
 }
 
-/
+/*
  * Your MyStack object will be instantiated and called as such:
  * var obj = new MyStack()
  * obj.push(x)
@@ -3278,7 +3278,7 @@ class MyQueue {
     this.a = [];
   }
 
-  /
+  /*
    * @param {number} x
    * @return {void}
    */
@@ -3286,21 +3286,21 @@ class MyQueue {
     this.a.push(x);
   }
 
-  /
+  /*
    * @return {number}
    */
   pop() {
     return this.a.shift();
   }
 
-  /
+  /*
    * @return {number}
    */
   peek() {
     return this.a[0];
   }
 
-  /
+  /*
    * @return {boolean}
    */
   empty() {
@@ -3308,7 +3308,7 @@ class MyQueue {
   }
 }
 
-/
+/*
  * Your MyQueue object will be instantiated and called as such:
  * var obj = new MyQueue()
  * obj.push(x)
@@ -3323,7 +3323,7 @@ class MyQueue {
 https://neetcode.io/problems/final-prices-with-a-special-discount-in-a-shop/question
 
 ```js
-/
+/*
  * @param {number[]} prices
  * @return {number[]}
  */
@@ -3345,7 +3345,7 @@ const finalPrices = (prices) => {
 https://neetcode.io/problems/make-the-string-great/question
 
 ```js
-/
+/*
  * @param {string} s
  * @return {string}
  */
@@ -3365,7 +3365,7 @@ const makeGood = (s) => {
 https://neetcode.io/problems/minimum-string-length-after-removing-substrings/question
 
 ```js
-/
+/*
  * @param {string} s
  * @return {number}
  */
@@ -3384,7 +3384,7 @@ const minLength = (s) => {
 https://neetcode.io/problems/clear-digits/question
 
 ```js
-/
+/*
  * @param {string} s
  * @return {string}
  */
@@ -3412,7 +3412,7 @@ https://neetcode.io/problems/reverse-string/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {character[]} s
    * @return {void} Do not return anything, modify s in-place instead.
    */
@@ -3428,7 +3428,7 @@ https://neetcode.io/problems/is-palindrome/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {boolean}
    */
@@ -3449,7 +3449,7 @@ https://neetcode.io/problems/valid-palindrome-ii/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {boolean}
    */
@@ -3463,7 +3463,7 @@ class Solution {
     return true;
   }
 
-  /
+  /*
    * @param {string} s
    * @return {boolean}
    */
@@ -3492,7 +3492,7 @@ https://neetcode.io/problems/valid-word-abbreviation/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} word
    * @param {string} abbr
    * @return {boolean}
@@ -3525,7 +3525,7 @@ https://neetcode.io/problems/merge-strings-alternately/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} word1
    * @param {string} word2
    * @return {string}
@@ -3546,7 +3546,7 @@ https://neetcode.io/problems/merge-sorted-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums1
    * @param {number} m
    * @param {number[]} nums2
@@ -3565,7 +3565,7 @@ class Solution {
 https://neetcode.io/problems/merge-two-2d-arrays-by-summing-values/question
 
 ```js
-/
+/*
  * @param {number[][]} nums1
  * @param {number[][]} nums2
  * @return {number[][]}
@@ -3585,7 +3585,7 @@ https://neetcode.io/problems/move-zeroes/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {void} Do not return anything, modify nums in-place instead.
    */
@@ -3603,7 +3603,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {void} Do not return anything, modify nums in-place instead.
    */
@@ -3622,7 +3622,7 @@ https://neetcode.io/problems/remove-duplicates-from-sorted-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -3643,12 +3643,12 @@ https://neetcode.io/problems/squares-of-a-sorted-array/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number[]}
    */
   sortedSquares(nums) {
-    return nums.map((x) => x**2).sort((x1, x2) => x1 - x2);
+    return nums.map((x) => x ** 2).sort((x1, x2) => x1 - x2);
   }
 }
 ```
@@ -3659,7 +3659,7 @@ https://neetcode.io/problems/assign-cookies/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} g
    * @param {number[]} s
    * @return {number}
@@ -3679,7 +3679,7 @@ class Solution {
 https://neetcode.io/problems/find-first-palindromic-string-in-the-array/question
 
 ```js
-/
+/*
  * @param {string[]} words
  * @return {string}
  */
@@ -3701,7 +3701,7 @@ https://neetcode.io/problems/sort-array-by-parity/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number[]}
    */
@@ -3719,7 +3719,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number[]}
    */
@@ -3741,7 +3741,7 @@ class Solution {
 https://neetcode.io/problems/reverse-words-in-a-string-iii/question
 
 ```js
-/
+/*
  * @param {string} s
  * @return {string}
  */
@@ -3759,7 +3759,7 @@ https://neetcode.io/problems/backspace-string-compare/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {string} s
    * @param {string} t
    * @return {boolean}
@@ -3782,7 +3782,7 @@ class Solution {
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {string} s
    * @param {string} t
    * @return {boolean}
@@ -3804,7 +3804,7 @@ class Solution {
 https://neetcode.io/problems/check-if-two-string-arrays-are-equivalent/question
 
 ```js
-/
+/*
  * @param {string[]} word1
  * @param {string[]} word2
  * @return {boolean}
@@ -3819,7 +3819,7 @@ const arrayStringsAreEqual = (word1, word2) => {
 https://neetcode.io/problems/apply-operations-to-an-array/question
 
 ```js
-/
+/*
  * @param {number[]} nums
  * @return {number[]}
  */
@@ -3851,7 +3851,7 @@ https://neetcode.io/problems/contains-duplicate-ii/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} k
    * @return {boolean}
@@ -3874,7 +3874,7 @@ https://neetcode.io/problems/buy-and-sell-crypto/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} prices
    * @return {number}
    */
@@ -3896,7 +3896,7 @@ https://neetcode.io/problems/minimum-recolors-to-get-k-consecutive-black-blocks/
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} blocks
    * @param {number} k
    * @return {number}
@@ -3919,7 +3919,7 @@ https://neetcode.io/problems/minimum-difference-between-highest-and-lowest-of-k-
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} k
    * @return {number}
@@ -3941,7 +3941,7 @@ class Solution {
 https://neetcode.io/problems/defuse-the-bomb/question
 
 ```js
-/
+/*
  * @param {number[]} code
  * @param {number} k
  * @return {number[]}
@@ -3965,7 +3965,7 @@ const decrypt = (code, k) => {
 ```
 
 ```js
-/
+/*
  * @param {number[]} code
  * @param {number} k
  * @return {number[]}
@@ -4001,7 +4001,7 @@ https://neetcode.io/problems/binary-search/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} target
    * @return {number}
@@ -4027,7 +4027,7 @@ https://neetcode.io/problems/search-insert-position/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} target
    * @return {number}
@@ -4049,7 +4049,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} target
    * @return {number}
@@ -4076,7 +4076,7 @@ class Solution {
 https://neetcode.io/problems/guess-number-higher-or-lower/question
 
 ```js
-/
+/*
  * Forward declaration of guess API.
  * @param {number} num   your guess
  * @return 	     -1 if num is higher than the picked number
@@ -4086,7 +4086,7 @@ https://neetcode.io/problems/guess-number-higher-or-lower/question
  */
 
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {number}
    */
@@ -4101,7 +4101,7 @@ class Solution {
     }
   }
 }
-/
+/*
  * Forward declaration of guess API.
  * @param {number} num   your guess
  * @return 	     -1 if num is higher than the picked number
@@ -4111,7 +4111,7 @@ class Solution {
  */
 
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {number}
    */
@@ -4134,7 +4134,7 @@ https://neetcode.io/problems/arranging-coins/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {number}
    */
@@ -4152,7 +4152,7 @@ https://neetcode.io/problems/valid-perfect-square/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} num
    * @return {boolean}
    */
@@ -4168,7 +4168,7 @@ https://neetcode.io/problems/sqrtx/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} x
    * @return {number}
    */
@@ -4178,10 +4178,10 @@ class Solution {
       m;
     while (l <= r) {
       m = Math.floor((l + r) / 2);
-      if (m**2 == x) return m;
-      [l, r] = m**2 < x ? [m + 1, r] : [l, m - 1];
+      if (m ** 2 == x) return m;
+      [l, r] = m ** 2 < x ? [m + 1, r] : [l, m - 1];
     }
-    return m**2 > x ? m - 1 : m;
+    return m ** 2 > x ? m - 1 : m;
   }
 }
 ```
@@ -4199,7 +4199,7 @@ class Solution {
 https://neetcode.io/problems/reverse-a-linked-list/question
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4210,7 +4210,7 @@ https://neetcode.io/problems/reverse-a-linked-list/question
  */
 
 class Solution {
-  /
+  /*
    * @param {ListNode} head
    * @return {ListNode}
    */
@@ -4227,7 +4227,7 @@ class Solution {
 https://neetcode.io/problems/merge-two-sorted-linked-lists/question
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4238,21 +4238,23 @@ https://neetcode.io/problems/merge-two-sorted-linked-lists/question
  */
 
 class Solution {
-  /
+  /*
    * @param {ListNode} list1
    * @param {ListNode} list2
    * @return {ListNode}
    */
   mergeTwoLists(list1, list2) {
-    const n0 = new ListNode();
-    let n = n0;
+    let a = new ListNode(),
+      n = a;
     while (list1 && list2) {
-      if (list1.val < list2.val) [n.next, list1] = [list1, list1.next];
-      else [n.next, list2] = [list2, list2.next];
+      [n.next, list1, list2] =
+        list1.val < list2.val
+          ? [list1, list1.next, list2]
+          : [list2, list1, list2.next];
       n = n.next;
     }
     n.next = list1 || list2;
-    return n0.next;
+    return a.next;
   }
 }
 ```
@@ -4262,7 +4264,7 @@ class Solution {
 https://neetcode.io/problems/linked-list-cycle-detection/question
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4273,7 +4275,7 @@ https://neetcode.io/problems/linked-list-cycle-detection/question
  */
 
 class Solution {
-  /
+  /*
    * @param {ListNode} head
    * @return {boolean}
    */
@@ -4294,7 +4296,7 @@ class Solution {
 https://neetcode.io/problems/palindrome-linked-list/question
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4304,7 +4306,7 @@ https://neetcode.io/problems/palindrome-linked-list/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {ListNode} head
    * @return {boolean}
    */
@@ -4324,7 +4326,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4334,7 +4336,7 @@ class Solution {
  * }
  */
 class Solution {
-  /
+  /*
    * @param {ListNode} head
    * @return {boolean}
    */
@@ -4359,7 +4361,7 @@ class Solution {
 https://neetcode.io/problems/remove-linked-list-elements/question
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4387,7 +4389,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4397,48 +4399,23 @@ class Solution {
  * }
  */
 class Solution {
-  /
+  /*
    * @param {ListNode} head
    * @param {number} val
    * @return {ListNode}
    */
   removeElements(head, val) {
-    const n0 = new ListNode();
-    let n = n0;
+    const a = new ListNode();
+    let n = a;
     while (head) {
-      if (head.val != val) n = n.next = head;
+      if (head.val != val) {
+        n.next = head;
+        n = n.next;
+      }
       head = head.next;
     }
     n.next = null;
-    return n0.next;
-  }
-}
-```
-
-```js
-/
- * Definition for singly-linked list.
- * class ListNode {
- *     constructor(val = 0, next = null) {
- *         this.val = val;
- *         this.next = next;
- *     }
- * }
- */
-class Solution {
-  /
-   * @param {ListNode} head
-   * @param {number} val
-   * @return {ListNode}
-   */
-  removeElements(head, val) {
-    const n0 = new ListNode(0, head);
-    let n = n0;
-    while (n.next) {
-      if (n.next.val == val) n.next = n.next.next;
-      else n = n.next;
-    }
-    return n0.next;
+    return a.next;
   }
 }
 ```
@@ -4448,14 +4425,14 @@ class Solution {
 https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * function ListNode(val, next) {
  *     this.val = (val===undefined ? 0 : val)
  *     this.next = (next===undefined ? null : next)
  * }
  */
-/
+/*
  * @param {ListNode} head
  * @return {ListNode}
  */
@@ -4474,7 +4451,7 @@ const deleteDuplicates = (head) => {
 https://neetcode.io/problems/middle-of-the-linked-list/question
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4484,7 +4461,7 @@ https://neetcode.io/problems/middle-of-the-linked-list/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {ListNode} head
    * @return {ListNode}
    */
@@ -4505,7 +4482,7 @@ class Solution {
 https://neetcode.io/problems/intersection-of-two-linked-lists/question
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4515,7 +4492,7 @@ https://neetcode.io/problems/intersection-of-two-linked-lists/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {ListNode} headA
    * @param {ListNode} headB
    * @return {ListNode}
@@ -4534,7 +4511,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for singly-linked list.
  * class ListNode {
  *     constructor(val = 0, next = null) {
@@ -4544,7 +4521,7 @@ class Solution {
  * }
  */
 class Solution {
-  /
+  /*
    * @param {ListNode} headA
    * @param {ListNode} headB
    * @return {ListNode}
@@ -4574,7 +4551,7 @@ class Solution {
 https://neetcode.io/problems/binary-tree-inorder-traversal/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4585,7 +4562,7 @@ https://neetcode.io/problems/binary-tree-inorder-traversal/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number[]}
    */
@@ -4607,7 +4584,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4618,7 +4595,7 @@ class Solution {
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number[]}
    */
@@ -4641,7 +4618,7 @@ class Solution {
 https://neetcode.io/problems/binary-tree-preorder-traversal/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4652,7 +4629,7 @@ https://neetcode.io/problems/binary-tree-preorder-traversal/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number[]}
    */
@@ -4673,7 +4650,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4684,7 +4661,7 @@ class Solution {
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number[]}
    */
@@ -4707,7 +4684,7 @@ class Solution {
 https://neetcode.io/problems/binary-tree-postorder-traversal/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4718,7 +4695,7 @@ https://neetcode.io/problems/binary-tree-postorder-traversal/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number[]}
    */
@@ -4747,7 +4724,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4758,7 +4735,7 @@ class Solution {
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number[]}
    */
@@ -4781,7 +4758,7 @@ class Solution {
 https://neetcode.io/problems/n-ary-tree-postorder-traversal/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class Node {
  *     constructor(val = 0, children = []) {
@@ -4791,7 +4768,7 @@ https://neetcode.io/problems/n-ary-tree-postorder-traversal/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {Node|null} root
    * @return {number[]}
    */
@@ -4813,7 +4790,7 @@ class Solution {
 https://neetcode.io/problems/invert-a-binary-tree/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4825,7 +4802,7 @@ https://neetcode.io/problems/invert-a-binary-tree/question
  */
 
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {TreeNode}
    */
@@ -4847,7 +4824,7 @@ class Solution {
 https://neetcode.io/problems/depth-of-binary-tree/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4859,7 +4836,7 @@ https://neetcode.io/problems/depth-of-binary-tree/question
  */
 
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number}
    */
@@ -4880,7 +4857,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4892,7 +4869,7 @@ class Solution {
  */
 
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number}
    */
@@ -4910,7 +4887,7 @@ class Solution {
 https://neetcode.io/problems/binary-tree-diameter/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4922,7 +4899,7 @@ https://neetcode.io/problems/binary-tree-diameter/question
  */
 
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {number}
    */
@@ -4946,7 +4923,7 @@ class Solution {
 https://neetcode.io/problems/balanced-binary-tree/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4958,7 +4935,7 @@ https://neetcode.io/problems/balanced-binary-tree/question
  */
 
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @return {boolean}
    */
@@ -4980,7 +4957,7 @@ class Solution {
 https://neetcode.io/problems/same-binary-tree/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -4992,7 +4969,7 @@ https://neetcode.io/problems/same-binary-tree/question
  */
 
 class Solution {
-  /
+  /*
    * @param {TreeNode} p
    * @param {TreeNode} q
    * @return {boolean}
@@ -5010,7 +4987,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5022,7 +4999,7 @@ class Solution {
  */
 
 class Solution {
-  /
+  /*
    * @param {TreeNode} p
    * @param {TreeNode} q
    * @return {boolean}
@@ -5043,7 +5020,7 @@ class Solution {
 https://neetcode.io/problems/subtree-of-a-binary-tree/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5055,7 +5032,7 @@ https://neetcode.io/problems/subtree-of-a-binary-tree/question
  */
 
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @param {TreeNode} subRoot
    * @return {boolean}
@@ -5080,7 +5057,7 @@ class Solution {
 https://neetcode.io/problems/convert-sorted-array-to-binary-search-tree/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * function TreeNode(val, left, right) {
  *     this.val = (val===undefined ? 0 : val)
@@ -5088,7 +5065,7 @@ https://neetcode.io/problems/convert-sorted-array-to-binary-search-tree/question
  *     this.right = (right===undefined ? null : right)
  * }
  */
-/
+/*
  * @param {number[]} nums
  * @return {TreeNode}
  */
@@ -5107,7 +5084,7 @@ const sortedArrayToBST = (nums) => {
 https://neetcode.io/problems/merge-two-binary-trees/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5118,7 +5095,7 @@ https://neetcode.io/problems/merge-two-binary-trees/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root1
    * @param {TreeNode} root2
    * @return {TreeNode}
@@ -5135,7 +5112,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5146,7 +5123,7 @@ class Solution {
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root1
    * @param {TreeNode} root2
    * @return {TreeNode}
@@ -5168,7 +5145,7 @@ class Solution {
 https://neetcode.io/problems/path-sum/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5179,7 +5156,7 @@ https://neetcode.io/problems/path-sum/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @param {number} targetSum
    * @return {boolean}
@@ -5201,7 +5178,7 @@ class Solution {
 https://neetcode.io/problems/range-sum-of-bst/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5212,7 +5189,7 @@ https://neetcode.io/problems/range-sum-of-bst/question
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @param {number} low
    * @param {number} high
@@ -5233,7 +5210,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5244,7 +5221,7 @@ class Solution {
  * }
  */
 class Solution {
-  /
+  /*
    * @param {TreeNode} root
    * @param {number} low
    * @param {number} high
@@ -5267,7 +5244,7 @@ class Solution {
 https://neetcode.io/problems/leaf-similar-trees/question
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * function TreeNode(val, left, right) {
  *     this.val = (val===undefined ? 0 : val)
@@ -5275,7 +5252,7 @@ https://neetcode.io/problems/leaf-similar-trees/question
  *     this.right = (right===undefined ? null : right)
  * }
  */
-/
+/*
  * @param {TreeNode} root1
  * @param {TreeNode} root2
  * @return {boolean}
@@ -5300,7 +5277,7 @@ const leafSimilar = (root1, root2) => {
 ```
 
 ```js
-/
+/*
  * Definition for a binary tree node.
  * function TreeNode(val, left, right) {
  *     this.val = (val===undefined ? 0 : val)
@@ -5308,7 +5285,7 @@ const leafSimilar = (root1, root2) => {
  *     this.right = (right===undefined ? null : right)
  * }
  */
-/
+/*
  * @param {TreeNode} root1
  * @param {TreeNode} root2
  * @return {boolean}
@@ -5328,7 +5305,7 @@ const leafSimilar = (root1, root2) => {
 https://neetcode.io/problems/evaluate-boolean-binary-tree/question
 
 ```js
-/**
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5340,7 +5317,7 @@ https://neetcode.io/problems/evaluate-boolean-binary-tree/question
  */
 
 class Solution {
-  /**
+  /*
    * @param {TreeNode} root
    * @return {boolean}
    */
@@ -5357,7 +5334,7 @@ class Solution {
 ```
 
 ```js
-/**
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5369,7 +5346,7 @@ class Solution {
  */
 
 class Solution {
-  /**
+  /*
    * @param {TreeNode} root
    * @return {boolean}
    */
@@ -5388,7 +5365,7 @@ class Solution {
 https://neetcode.io/problems/minimum-distance-between-bst-nodes/question
 
 ```js
-/**
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5400,7 +5377,7 @@ https://neetcode.io/problems/minimum-distance-between-bst-nodes/question
  */
 
 class Solution {
-  /**
+  /*
    * @param {TreeNode} root
    * @return {number}
    */
@@ -5425,7 +5402,7 @@ class Solution {
 https://neetcode.io/problems/symmetric-tree/question
 
 ```js
-/**
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5437,7 +5414,7 @@ https://neetcode.io/problems/symmetric-tree/question
  */
 
 class Solution {
-  /**
+  /*
    * @param {TreeNode} root
    * @return {boolean}
    */
@@ -5472,7 +5449,7 @@ class Solution {
 ```
 
 ```js
-/**
+/*
  * Definition for a binary tree node.
  * class TreeNode {
  *     constructor(val = 0, left = null, right = null) {
@@ -5484,7 +5461,7 @@ class Solution {
  */
 
 class Solution {
-  /**
+  /*
    * @param {TreeNode} root
    * @return {boolean}
    */
@@ -5514,7 +5491,7 @@ https://neetcode.io/problems/count-prefix-and-suffix-pairs-i/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} words
    * @return {number}
    */
@@ -5537,7 +5514,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} words
    * @return {number}
    */
@@ -5566,7 +5543,7 @@ https://neetcode.io/problems/counting-words-with-a-given-prefix/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} words
    * @param {string} pref
    * @return {number}
@@ -5614,7 +5591,7 @@ class Trie {
 }
 
 class Solution {
-  /
+  /*
    * @param {string[]} words
    * @param {string} pref
    * @return {number}
@@ -5643,7 +5620,7 @@ https://neetcode.io/problems/kth-largest-integer-in-a-stream/question
 
 ```js
 class KthLargest {
-  /
+  /*
    * @param {number} k
    * @param {number[]} nums
    */
@@ -5652,7 +5629,7 @@ class KthLargest {
     this.nums = nums;
   }
 
-  /
+  /*
    * @param {number} val
    * @return {number}
    */
@@ -5666,7 +5643,7 @@ class KthLargest {
 
 ```js
 class KthLargest {
-  /
+  /*
    * @param {number} k
    * @param {number[]} nums
    */
@@ -5712,7 +5689,7 @@ https://neetcode.io/problems/last-stone-weight/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} stones
    * @return {number}
    */
@@ -5768,7 +5745,7 @@ class MaxHeap {
 }
 
 class Solution {
-  /
+  /*
    * @param {number[]} stones
    * @return {number}
    */
@@ -5789,7 +5766,7 @@ https://neetcode.io/problems/take-gifts-from-the-richest-pile/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} gifts
    * @param {number} k
    * @return {number}
@@ -5844,7 +5821,7 @@ class MaxHeap {
 }
 
 class Solution {
-  /
+  /*
    * @param {number[]} gifts
    * @param {number} k
    * @return {number}
@@ -5865,7 +5842,7 @@ https://neetcode.io/problems/final-array-state-after-k-multiplication-operations
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @param {number} k
    * @param {number} multiplier
@@ -5895,7 +5872,7 @@ https://neetcode.io/problems/sum-of-all-subset-xor-totals/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -5909,7 +5886,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -5935,7 +5912,7 @@ class Solution {
 https://neetcode.io/problems/meeting-schedule/question
 
 ```js
-/
+/*
  * Definition of Interval:
  * class Interval {
  *   constructor(start, end) {
@@ -5946,7 +5923,7 @@ https://neetcode.io/problems/meeting-schedule/question
  */
 
 class Solution {
-  /
+  /*
    * @param {Interval[]} intervals
    * @returns {boolean}
    */
@@ -5974,7 +5951,7 @@ https://neetcode.io/problems/buy-two-chocolates/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} prices
    * @param {number} money
    * @return {number}
@@ -5993,7 +5970,7 @@ https://neetcode.io/problems/lemonade-change/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} bills
    * @return {boolean}
    */
@@ -6026,7 +6003,7 @@ https://neetcode.io/problems/minimum-number-of-moves-to-seat-everyone/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} seats
    * @param {number[]} students
    * @return {number}
@@ -6048,7 +6025,7 @@ https://neetcode.io/problems/maximum-odd-binary-number/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {string}
    */
@@ -6064,7 +6041,7 @@ https://neetcode.io/problems/maximum-nesting-depth-of-the-parentheses/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -6087,7 +6064,7 @@ https://neetcode.io/problems/check-if-one-string-swap-can-make-strings-equal/que
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {string} s1
    * @param {string} s2
    * @return {boolean}
@@ -6112,7 +6089,7 @@ https://neetcode.io/problems/make-two-arrays-equal-by-reversing-subarrays/questi
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[]} target
    * @param {number[]} arr
    * @return {boolean}
@@ -6125,7 +6102,7 @@ class Solution {
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[]} target
    * @param {number[]} arr
    * @return {boolean}
@@ -6156,7 +6133,7 @@ https://neetcode.io/problems/island-perimeter/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} grid
    * @return {number}
    */
@@ -6183,7 +6160,7 @@ https://neetcode.io/problems/verifying-an-alien-dictionary/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string[]} words
    * @param {string} order
    * @return {boolean}
@@ -6210,7 +6187,7 @@ https://neetcode.io/problems/find-the-town-judge/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @param {number[][]} trust
    * @return {number}
@@ -6232,7 +6209,7 @@ https://neetcode.io/problems/flood-fill/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} image
    * @param {number} sr
    * @param {number} sc
@@ -6262,7 +6239,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} image
    * @param {number} sr
    * @param {number} sc
@@ -6314,14 +6291,14 @@ https://neetcode.io/problems/climbing-stairs/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {number}
    */
   climbStairs(n) {
-    let dp=Array(n+1).fill(0);
-    dp[0]=1, dp[1]=1;
-    for(let i=2;i<=n;i++) dp[i]=dp[i-1]+dp[i-2];
+    let dp = Array(n + 1).fill(0);
+    ((dp[0] = 1), (dp[1] = 1));
+    for (let i = 2; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2];
     return dp[n];
   }
 }
@@ -6329,7 +6306,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {number}
    */
@@ -6348,7 +6325,7 @@ https://neetcode.io/problems/min-cost-climbing-stairs/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} cost
    * @return {number}
    */
@@ -6367,7 +6344,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} cost
    * @return {number}
    */
@@ -6388,7 +6365,7 @@ https://neetcode.io/problems/n-th-tribonacci-number/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number} n
    * @return {number}
    */
@@ -6403,7 +6380,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {number}
    */
@@ -6432,7 +6409,7 @@ https://neetcode.io/problems/single-number/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -6450,13 +6427,13 @@ https://neetcode.io/problems/number-of-one-bits/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n - a positive integer
    * @return {number}
    */
   hammingWeight(n) {
     let a = 0;
-    while(n) [n,a]=[n&(n-1),a+1];
+    while (n) [n, a] = [n & (n - 1), a + 1];
     return a;
   }
 }
@@ -6464,13 +6441,13 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n - a positive integer
    * @return {number}
    */
   hammingWeight(n) {
     let a = 0;
-    while (n) [a,n]=[a+n&1,n>>1];
+    while (n) [a, n] = [(a + n) & 1, n >> 1];
     return a;
   }
 }
@@ -6482,7 +6459,7 @@ https://neetcode.io/problems/counting-bits/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {number[]}
    */
@@ -6490,8 +6467,8 @@ class Solution {
     let a = [];
     for (let i = 0; i <= n; i++) {
       let b = i,
-      c = 0;
-      while (b) [b,c]=[b&(b-1),c+1];
+        c = 0;
+      while (b) [b, c] = [b & (b - 1), c + 1];
       a.push(c);
     }
     return a;
@@ -6505,7 +6482,7 @@ https://neetcode.io/problems/add-binary/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} a
    * @param {string} b
    * @return {string}
@@ -6530,7 +6507,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} a
    * @param {string} b
    * @return {string}
@@ -6547,7 +6524,7 @@ https://neetcode.io/problems/minimum-bit-flips-to-convert-number/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number} start
    * @param {number} goal
    * @return {number}
@@ -6567,7 +6544,7 @@ https://neetcode.io/problems/reverse-bits/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n - a positive integer
    * @return {number} - a positive integer
    */
@@ -6585,7 +6562,7 @@ https://neetcode.io/problems/missing-number/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -6599,7 +6576,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} nums
    * @return {number}
    */
@@ -6618,7 +6595,7 @@ https://neetcode.io/problems/shuffle-the-array/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[]} nums
    * @param {number} n
    * @return {number[]}
@@ -6637,7 +6614,7 @@ https://neetcode.io/problems/add-to-array-form-of-integer/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[]} num
    * @param {number} k
    * @return {number[]}
@@ -6651,7 +6628,7 @@ class Solution {
 ```
 
 ```js
-/
+/*
  * @param {number[]} num
  * @param {number} k
  * @return {number[]}
@@ -6678,7 +6655,7 @@ https://neetcode.io/problems/find-the-difference/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @param {string} t
    * @return {character}
@@ -6700,7 +6677,7 @@ https://neetcode.io/problems/power-of-two/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {boolean}
    */
@@ -6724,13 +6701,13 @@ https://neetcode.io/problems/excel-sheet-column-title/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} columnNumber
    * @return {string}
    */
   convertToTitle(columnNumber) {
     let n = columnNumber;
-    let a = '';
+    let a = "";
     while (n > 0) {
       n--;
       a = String.fromCharCode((n % 26) + 65) + a;
@@ -6747,7 +6724,7 @@ https://neetcode.io/problems/greatest-common-divisor-of-strings/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} str1
    * @param {string} str2
    * @return {string}
@@ -6759,7 +6736,7 @@ class Solution {
     while (true) {
       a++;
       b = str2.slice(0, str2.length / a);
-      if (str1.split(b).join('') == '' || b == '') return b;
+      if (str1.split(b).join("") == "" || b == "") return b;
     }
   }
 }
@@ -6771,7 +6748,7 @@ https://neetcode.io/problems/count-odd-numbers-in-an-interval-range/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} low
    * @param {number} high
    * @return {number}
@@ -6788,7 +6765,7 @@ https://neetcode.io/problems/matrix-diagonal-sum/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} mat
    * @return {number}
    */
@@ -6810,7 +6787,7 @@ https://neetcode.io/problems/calculate-money-in-leetcode-bank/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number} n
    * @return {number}
    */
@@ -6828,7 +6805,7 @@ https://neetcode.io/problems/largest-odd-number-in-string/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {string} num
    * @return {string}
    */
@@ -6849,7 +6826,7 @@ https://neetcode.io/problems/transpose-matrix/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} matrix
    * @return {number[][]}
    */
@@ -6867,7 +6844,7 @@ class Solution {
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[][]} matrix
    * @return {number[][]}
    */
@@ -6883,7 +6860,7 @@ https://neetcode.io/problems/image-smoother/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[][]} img
    * @return {number[][]}
    */
@@ -6917,7 +6894,7 @@ https://neetcode.io/problems/count-of-matches-in-tournament/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number} n
    * @return {number}
    */
@@ -6933,7 +6910,7 @@ https://neetcode.io/problems/water-bottles/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number} numBottles
    * @param {number} numExchange
    * @return {number}
@@ -6953,7 +6930,7 @@ class Solution {
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number} numBottles
    * @param {number} numExchange
    * @return {number}
@@ -6969,7 +6946,7 @@ class Solution {
 https://leetcode.com/problems/largest-local-values-in-a-matrix/description/
 
 ```js
-/
+/*
  * @param {number[][]} grid
  * @return {number[][]}
  */
@@ -6992,7 +6969,7 @@ const largestLocal = (grid) => {
 ```
 
 ```js
-/
+/*
  * @param {number[][]} grid
  * @return {number[][]}
  */
@@ -7018,7 +6995,7 @@ https://neetcode.io/problems/power-of-four/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number} n
    * @return {boolean}
    */
@@ -7034,7 +7011,7 @@ https://neetcode.io/problems/lucky-numbers-in-a-matrix/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[][]} matrix
    * @return {number[]}
    */
@@ -7066,7 +7043,7 @@ class Solution {
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[][]} matrix
    * @return {number[]}
    */
@@ -7097,15 +7074,15 @@ https://neetcode.io/problems/non-cyclical-number/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {boolean}
    */
   isHappy(n) {
     let a = [];
     while (true) {
-      const arr = Array.from(n + '');
-      const b = arr.map((x) => x**2).reduce((x, a) => x + a);
+      const arr = Array.from(n + "");
+      const b = arr.map((x) => x ** 2).reduce((x, a) => x + a);
       if (b == 1) return true;
       if (a.indexOf(b) != -1) return false;
       a.push(b);
@@ -7121,13 +7098,13 @@ https://neetcode.io/problems/plus-one/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number[]} digits
    * @return {number[]}
    */
   plusOne(digits) {
-    const a = digits.join('') * 1 + 1;
-    return Array.from(a + '').map(Number);
+    const a = digits.join("") * 1 + 1;
+    return Array.from(a + "").map(Number);
   }
 }
 ```
@@ -7138,13 +7115,13 @@ https://neetcode.io/problems/palindrome-number/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} x
    * @return {boolean}
    */
   isPalindrome(x) {
     if (x < 0) return false;
-    return [...(x + '')].reverse().join('') == x + '';
+    return [...(x + "")].reverse().join("") == x + "";
   }
 }
 ```
@@ -7155,7 +7132,7 @@ https://neetcode.io/problems/ugly-number/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {number} n
    * @return {boolean}
    */
@@ -7179,7 +7156,7 @@ https://neetcode.io/problems/convert-1d-array-into-2d-array/question
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[]} original
    * @param {number} m
    * @param {number} n
@@ -7199,7 +7176,7 @@ class Solution {
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[]} original
    * @param {number} m
    * @param {number} n
@@ -7218,7 +7195,7 @@ class Solution {
 https://leetcode.com/problems/shift-2d-grid/description/
 
 ```js
-/
+/*
  * @param {number[][]} grid
  * @param {number} k
  * @return {number[][]}
@@ -7240,7 +7217,7 @@ https://neetcode.io/problems/roman-to-integer/question
 
 ```js
 class Solution {
-  /
+  /*
    * @param {string} s
    * @return {number}
    */
@@ -7270,7 +7247,7 @@ https://neetcode.io/problems/widest-vertical-area-between-two-points-containing-
 
 ```js
 class Solution {
-  /**
+  /*
    * @param {number[][]} points
    * @return {number}
    */
