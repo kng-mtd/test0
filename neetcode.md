@@ -611,6 +611,58 @@ const buildTree = (arr) => {
 
 ---
 
+## Trie
+
+```js
+let tr = {};
+
+const add = (s) => {
+  let n = tr;
+  for (let i of s) {
+    n[i] ??= {};
+    n = n[i];
+  }
+  n.end = true;
+  n.word = s;
+};
+
+const exist = (s) => {
+  let n = tr;
+  for (let i of s) {
+    if (!n[i]) return false;
+    n = n[i];
+  }
+  return n.end == true;
+};
+
+const pref = (p) => {
+  let n = tr;
+  for (let i of p) {
+    if (!n[i]) return false;
+    n = n[i];
+  }
+  return true;
+};
+
+add("abc");
+add("abd");
+add("abea");
+add("bcd");
+add("abcde");
+
+console.log(Object.entries(tr));
+
+console.log(exist("abc"));
+console.log(exist("abcd"));
+console.log(exist("abe"));
+
+console.log(pref("ab"));
+console.log(pref("abcd"));
+console.log(pref("ac"));
+```
+
+---
+
 ## Shortest path
 
 ### Label Correcting
