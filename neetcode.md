@@ -24896,7 +24896,24 @@ const singleNumber = (nums) => {
 https://neetcode.io/problems/single-number-iii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  singleNumber(nums) {
+    let a = 0;
+    for (let i of nums) a ^= i;
+    let b = a & -a,
+      c = 0,
+      d = 0;
+    for (let i of nums) {
+      if (i & b) c ^= i;
+      else d ^= i;
+    }
+    return [c, d];
+  }
+}
 ```
 
 ## Sum of Two Integers -75
@@ -24904,7 +24921,17 @@ https://neetcode.io/problems/single-number-iii/question
 https://neetcode.io/problems/sum-of-two-integers/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} a
+   * @param {number} b
+   * @return {number}
+   */
+  getSum(a, b) {
+    while (b) [a, b] = [a ^ b, (a & b) << 1];
+    return a;
+  }
+}
 ```
 
 ## Reverse Integer -150
