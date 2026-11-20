@@ -24939,7 +24939,18 @@ class Solution {
 https://neetcode.io/problems/reverse-integer/question
 
 ```js
-
+class Solution {
+  /*
+   * @param {number} x
+   * @return {number}
+   */
+  reverse(x) {
+    let a = "";
+    for (let i of Math.abs(x) + "") a = i + a;
+    const b = x >= 0 ? +a : -a;
+    return b < -(2 ** 31) || b > 2 ** 31 - 1 ? 0 : b;
+  }
+}
 ```
 
 ## Bitwise XOR of All Pairings
