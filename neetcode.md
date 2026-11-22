@@ -24958,7 +24958,23 @@ class Solution {
 https://neetcode.io/problems/bitwise-xor-of-all-pairings/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums1
+   * @param {number[]} nums2
+   * @return {number}
+   */
+  xorAllNums(nums1, nums2) {
+    let a = 0;
+    if (nums1.length % 2) {
+      for (let i of nums2) a ^= i;
+    }
+    if (nums2.length % 2) {
+      for (let i of nums1) a ^= i;
+    }
+    return a;
+  }
+}
 ```
 
 ## Largest Combination With Bitwise AND Greater Than Zero
@@ -24966,7 +24982,23 @@ https://neetcode.io/problems/bitwise-xor-of-all-pairings/question
 https://neetcode.io/problems/largest-combination-with-bitwise-and-greater-than-zero/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} candidates
+   * @return {number}
+   */
+  largestCombination(candidates) {
+    let a = 0;
+    for (let i = 0; i < 32; i++) {
+      let b = 0;
+      for (let ii of candidates) {
+        if (ii & (1 << i)) b++;
+        a = Math.max(a, b);
+      }
+    }
+    return a;
+  }
+}
 ```
 
 ## XOR Queries of a Subarray
@@ -25481,14 +25513,6 @@ https://neetcode.io/problems/regular-expression-matching/question
 
 ```
 
-## Advanced Graphs - Alien Dictionary -75 -150
-
-https://neetcode.io/problems/foreign-dictionary/question
-
-```js
-
-```
-
 ## Advanced Graphs - Reconstruct Flight Path -150
 
 https://neetcode.io/problems/reconstruct-flight-path/question
@@ -25500,6 +25524,14 @@ https://neetcode.io/problems/reconstruct-flight-path/question
 ## Advanced Graphs - Swim in Rising Water -150
 
 https://neetcode.io/problems/swim-in-rising-water/question
+
+```js
+
+```
+
+## Advanced Graphs - Alien Dictionary -75 -150
+
+https://neetcode.io/problems/foreign-dictionary/question
 
 ```js
 
