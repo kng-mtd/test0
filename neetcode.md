@@ -2,23 +2,27 @@
 
 ## operator ? / ?. / ??
 
-| 構文        | 具体例                 | 結果         | 意味                                         |
-| ----------- | ---------------------- | ------------ | -------------------------------------------- |
-| `a ? b : c` | `1 > 0 ? 'yes' : 'no'` | `'yes'`      | 条件`a`が真なら`b`、偽なら`c`                |
-| `a?.[i]`    | `arr?.[i]`             | `arr[i]`     | `arr[i]`があれば`arr[i]`                     |
-|             |                        | `undefined`  | `arr[i]`がなければundefined、エラーにしない  |
-| `a?.b`      | `obj?.key`             | `'obj.key'`  | `obj.key`があれば`obj.key`を取得             |
-|             |                        | `undefined`  | `obj`がなければundefined、エラーにしない     |
-| `a?.b()`    | `obj?.fn()`            | `'obj.fn()'` | `obj.fn`があればメソッド`fn`を実行           |
-|             |                        | `undefined`  | `obj.fn`がなければ何もしない、エラーにしない |
-| `a?.()`     | `fn?.()`               | `fn()`       | 関数`fn`があれば実行                         |
-|             |                        | `undefined`  | 関数`fn`がなければ何もしない、エラーにしない |
-| `a ?? b`    | `undefined ?? 1`       | `1`          | `undefined`なら`1`                           |
-|             | `null ?? 1`            | `1`          | `null`なら`1`                                |
-|             | `0 ?? 1`               | `0`          | `0`はそのまま                                |
-|             | `'' ?? 'abc'`          | `''`         | 空文字はそのまま                             |
-| `a ??= b`   | `x=val0;x ??= val`     | `x = val0`   | `x`に値があればそのまま                      |
-|             | `x ??= val`            | `x = val`    | `x`が未定義なら代入                          |
+| 構文        | 具体例                 | 結果          | 意味                                            |
+| ----------- | ---------------------- | ------------- | ----------------------------------------------- |
+| `a ? b : c` | `1 > 0 ? 'yes' : 'no'` | `'yes'`       | 条件`a`が真なら`b`、偽なら`c`                   |
+| `a?.[i]`    | `arr?.[i]`             | `arr[i]`      | `arr[i]`があれば`arr[i]`                        |
+|             |                        | `undefined`   | `arr[i]`がなければundefined、エラーにしない     |
+| `a?.b`      | `obj?.['key']`         | `'obj['key']` | `obj['key']`があれば`obj['key']`を取得          |
+|             |                        | `undefined`   | `obj['key']`がなければundefined、エラーにしない |
+| `a?.b()`    | `obj?.fn()`            | `'obj.fn()'`  | `obj.fn`があればメソッド`fn`を実行              |
+|             |                        | `undefined`   | `obj.fn`がなければ何もしない、エラーにしない    |
+| `a?.()`     | `fn?.()`               | `fn()`        | 関数`fn`があれば実行                            |
+|             |                        | `undefined`   | 関数`fn`がなければ何もしない、エラーにしない    |
+| `a ?? b`    | `undefined ?? 1`       | `1`           | `undefined`なら`1`                              |
+|             | `null ?? 1`            | `1`           | `null`なら`1`                                   |
+|             | `0 ?? 1`               | `0`           | `0`はそのまま                                   |
+|             | `'' ?? 'abc'`          | `''`          | 空文字はそのまま                                |
+| `a ??= b`   | `x=val0;x ??= val`     | `x = val0`    | `x`に値があればそのまま                         |
+|             | `x ??= val`            | `x = val`     | `x`が未定義なら代入                             |
+
+`(arr[i] ??= []).push(val)`　　　`arr[i]`がArray未定義ならば、新たにArray定義してvalを追加
+
+`(obj[key] ??= []).push(val)`　　　`obj[key]`がArray未定義ならば、新たにArray定義してvalを追加
 
 ## sub...
 
@@ -25006,7 +25010,20 @@ class Solution {
 https://neetcode.io/problems/xor-queries-of-a-subarray/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} arr
+   * @param {number[][]} queries
+   * @return {number[]}
+   */
+  xorQueries(arr, queries) {
+    let a = [0],
+      b = [];
+    for (let i of arr) a.push(a.at(-1) ^ i);
+    for (let [l, r] of queries) b.push(a[l] ^ a[r + 1]);
+    return b;
+  }
+}
 ```
 
 ## XOR Queries of a Subarray
