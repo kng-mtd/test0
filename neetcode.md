@@ -25026,12 +25026,28 @@ class Solution {
 }
 ```
 
-## XOR Queries of a Subarray
+## Maximum XOR for Each Query
 
-https://neetcode.io/problems/xor-queries-of-a-subarray/question
+https://neetcode.io/problems/maximum-xor-for-each-query/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} maximumBit
+   * @return {number[]}
+   */
+  getMaximumXor(nums, maximumBit) {
+    let a = nums.reduce((a, x) => a ^ x, 0);
+    let b = [],
+      c = 2 ** maximumBit - 1;
+    for (let i = nums.length - 1; i >= 0; i--) {
+      b.push(a ^ c);
+      a ^= nums[i];
+    }
+    return b;
+  }
+}
 ```
 
 ## Neighboring Bitwise XOR
