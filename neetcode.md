@@ -24920,7 +24920,7 @@ class Solution {
 }
 ```
 
-## Sum of Two Integers -75
+## Sum of Two Integers -75 -150
 
 https://neetcode.io/problems/sum-of-two-integers/question
 
@@ -25055,7 +25055,17 @@ class Solution {
 https://neetcode.io/problems/neighboring-bitwise-xor/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} derived
+   * @return {boolean}
+   */
+  doesValidArrayExist(derived) {
+    let a = 0;
+    for (let i of derived) a ^= i;
+    return !a;
+  }
+}
 ```
 
 ## Shortest Subarray With OR at Least K II
