@@ -25073,7 +25073,42 @@ class Solution {
 https://neetcode.io/problems/shortest-subarray-with-or-at-least-k-ii/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number[]} nums
+   * @param {number} k
+   * @return {number}
+   */
+  minimumSubarrayLength(nums, k) {
+    const n = nums.length;
+    let a = n + 1,
+      b = 0,
+      i = 0;
+    let c = Array(32).fill(0);
+    if (k == 0) return 1;
+    for (let ii = 0; ii < n; ii++) {
+      let x = nums[ii];
+      while (x) {
+        let d = 31 - Math.clz32(x & -x);
+        c[d]++;
+        b |= 1 << d;
+        x &= x - 1;
+      }
+      while (b >= k) {
+        a = Math.min(a, ii - i + 1);
+        x = nums[i];
+        while (x) {
+          let d = 31 - Math.clz32(x & -x);
+          c[d]--;
+          if (c[d] === 0) b &= ~(1 << d);
+          x &= x - 1;
+        }
+        i++;
+      }
+    }
+    return a <= n ? a : -1;
+  }
+}
 ```
 
 ## Bitwise AND of Numbers Range
