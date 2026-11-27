@@ -25116,7 +25116,22 @@ class Solution {
 https://neetcode.io/problems/bitwise-and-of-numbers-range/question
 
 ```js
-
+class Solution {
+  /**
+   * @param {number} left
+   * @param {number} right
+   * @return {number}
+   */
+  rangeBitwiseAnd(left, right) {
+    let a = 0;
+    while (left != right) {
+      left >>= 1;
+      right >>= 1;
+      a++;
+    }
+    return left << a;
+  }
+}
 ```
 
 ## Find Kth Bit in Nth Binary String
